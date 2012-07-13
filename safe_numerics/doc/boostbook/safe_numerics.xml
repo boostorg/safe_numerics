@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE library PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<library dirname="safe_numerics" id="safe_numerics" last-revision="$Date"
+         name="Safe Numerics">
+  <title>Safe Numerics</title>
+
+  <libraryinfo>
+    <author>
+      <firstname>Robert</firstname>
+
+      <surname>Ramey</surname>
+    </author>
+
+    <copyright>
+      <year>2012</year>
+
+      <holder>Robert Ramey</holder>
+    </copyright>
+
+    <legalnotice>
+      <para><ulink url="???">Subject to Boost Software License</ulink></para>
+    </legalnotice>
+
+    <librarypurpose>Safe integer operations</librarypurpose>
+
+    <librarycategory name="???">Numerics</librarycategory>
+  </libraryinfo>
+
+  <section id="safe_numerics.introduction">
+    <title>Introduction</title>
+
+    <para>Arithmetic operations in C++ are NOT guarenteed to yield a correct
+    mathematical result. This feature is inherited from the early days of C.
+    The behavior of <code>int</code>, <code>unsigned int</code> and others
+    were designed to map closely to the underlying hardware. Computer hardware
+    implements these types as a fixed number of bits. When the result of
+    arithmetic operations exceeds this number of bits, the result is undefined
+    and usually not what the programmer intended. It is incumbent up the C++
+    programmer to guarentee that this behavior does not result in incorrect
+    behavior of the program. This library implements special versions of these
+    data types which behave exactly like the original ones EXCEPT that the
+    results of these operations are checked to be sure that an exception will
+    be thrown anytime an attempt is made to store the result of an undefined
+    operation.</para>
+
+    <para>Additionally, we define data types <code>safe_signed_range&lt;MIN,
+    MAX&gt;</code> and <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which
+    will throw an exception if an attempt is made to store a result which is
+    outside the closed range [MIN, MAX]</para>
+  </section>
+
+  <xi:include href="tutorial.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+  <section id="safe_numerics.notes">
+    <title>Notes</title>
+
+    <para>This library really an re-implementation the facilities provided by
+    <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
+    Library</ulink> using <ulink url="www.boost.org">Boost</ulink>. I found
+    this library very well done in every way. My main usage was to run unit
+    tests for my embedded systems projects on my PC. Still, I had a few
+    issues.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>I was a lot of code in one header - 6400 lines. Very unwieldy to
+        understand and modify.</para>
+      </listitem>
+
+      <listitem>
+        <para>I couldn't find separate documentation other than that in the
+        header file.</para>
+      </listitem>
+
+      <listitem>
+        <para>I didn't use <ulink url="www.boost.org">Boost</ulink>
+        conventions for naming.</para>
+      </listitem>
+
+      <listitem>
+        <para>I required porting to different compilers.</para>
+      </listitem>
+
+      <listitem>
+        <para>It had a very long license associated with it.</para>
+      </listitem>
+
+      <listitem>
+        <para>The package I downloaded didn't have a test suite</para>
+      </listitem>
+
+      <listitem>
+        <para>I believe the original <ulink
+        url="http://safeint.codeplex.com/releases/view/73792">SafeInt</ulink>
+        library is not easily found. MSVC 10 has this built in so I seems that
+        they've decided to make it less attractive to use on other
+        systems.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>This version addresses these issues. It exploits <ulink
+    url="www.boost.org">Boost</ulink> facilities such as template
+    metaprogramming to reduce the number of lines of source code to
+    approximately 1500. It exploits the Boost Preprocessor Library to generate
+    exhaustive tests.</para>
+
+    <para>All concepts, types and functions documented are declared in the
+    namespace <code>boost::numeric</code>.</para>
+  </section>
+
+  <section id="safe_numerics.concepts">
+    <title>Concepts</title>
+
+    <xi:include href="numeric_concept.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  </section>
+
+  <section id="safe_numerics.types">
+    <title>Types</title>
+
+    <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="safe_signed_range.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="safe.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  </section>
+
+  <section id="safe_numerics.functions">
+    <title>Functions</title>
+
+    <xi:include href="safe_cast.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="safe_compare.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="overflow.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  </section>
+
+  <section id="safe_numerics.rationale">
+    <title>Rationale</title>
+
+    <qandaset defaultlabel="number">
+      <qandaentry>
+        <question>
+          <para>Why does a binary operation on two
+          <code>safe&lt;int&gt;</code> values not necessarily return another
+          <code>safe</code> type ?</para>
+        </question>
+
+        <answer>
+          <para>There are a number of</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>it was hard to implement.</para>
+            </listitem>
+
+            <listitem>
+              <para>it doesn't really seem necessary. We always do SOMETHING
+              with result of the operation. This will result in an assignment
+              or a conversion to some other type where the result will be
+              validated.</para>
+            </listitem>
+          </itemizedlist>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why is there no policy driven design for handling
+          overflows</para>
+
+          <para>The question was - to which type does one apply it to?
+          Consider the following example:</para>
+
+          <para><programlisting>safe&lt;int, overflow_policy_1&gt; t1 = 2;
+safe&lt;int, overflow_policy_2&gt; t2 = 4;
+unsigned int x = t1 - t2; // which policy should be invoked?</programlisting></para>
+        </question>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why is Boost.Convert not used.</para>
+
+          <para>I couldn't figure out how to use it from the
+          documentation.</para>
+        </question>
+      </qandaentry>
+    </qandaset>
+  </section>
+
+  <section id="safe_numerics.change_log">
+    <title>Change Log</title>
+
+    <para>This is the initial version.</para>
+  </section>
+
+  <section id="safe_numerics.acknowledgements">
+    <title>Acknowledgements</title>
+
+    <para><ulink url="http://safeint.codeplex.com/releases/view/73792">David
+    LeBlanc's</ulink> is the author of <ulink
+    url="http://safeint.codeplex.com/releases/view/73792">SafeInt3</ulink>
+    library which motivated this work</para>
+  </section>
+
+  <section id="safe_numerics.references">
+    <title>References</title>
+
+    <orderedlist>
+      <listitem>
+        <para>David LeBlanc, <ulink url="http://safeint.codeplex.com">Codeplex
+        SafeInt Page</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Daniel Plakosh, <ulink
+        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
+        Integer Operations</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Omer Katz, <ulink
+        url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
+        code proposal</ulink>, <ulink
+        url="https://svn.boost.org/trac/boost/wiki/LibrariesUnderConstruction">Boost.SafeInt</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Software Engineering Institute, Carnegie Mellon, <ulink
+        url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT32-C.
+        Ensure that operations on signed integers do not result in
+        overflow</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Will Dietz, Peng Li,y John Regehr,y and Vikram Adve, <ulink
+        url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
+        Integer Overflow in C/C++</ulink></para>
+      </listitem>
+    </orderedlist>
+  </section>
+</library>

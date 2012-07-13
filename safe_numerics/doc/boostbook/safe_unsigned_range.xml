@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.safe_unsigned_range">
+  <title>safe_unsigned_range&lt;MIN, MAX&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>This type holds a integer in the range [MIN, MAX]. It will throw a
+    <code>std::out_of_range</code> exception for any operation which would
+    result in assigning an integer value outside of this range.</para>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
+
+    <informaltable>
+      <tgroup cols="3">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry align="left">Requirements</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>MIN</code></entry>
+
+            <entry>must be a positive integer literal</entry>
+
+            <entry>The minimum integer value that this type may hold</entry>
+          </row>
+
+          <row>
+            <entry><code>MAX</code></entry>
+
+            <entry>must be a positive integer literal</entry>
+
+            <entry>The maximum integer value that this type may hold</entry>
+          </row>
+
+          <row>
+            <entry><code/></entry>
+
+            <entry>MIN &lt; MAX</entry>
+
+            <entry/>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><filename><ulink url="../../include/safe_range.hpp">#include
+    &lt;safe/numeric/safe_range.hpp&gt;</ulink></filename></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <programlisting>#include &lt;safe/numeric/safe_range.hpp&gt;
+
+void f(){
+    boost::numeric::safe_unsigned_range&lt;7, 24&gt; i;
+    i = 0;  // throws out_of_range exception
+    i = 9;  // ok
+    i *= 9; // throws out_of_range exception
+    i = -1; // throws out_of_range exception
+}</programlisting>
+  </section>
+
+  <section>
+    <title>See Also</title>
+
+    <para><code>std::out_of_range</code></para>
+  </section>
+</section>

@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>safe_cast</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="functions.html" title="Functions">
+<link rel="prev" href="functions.html" title="Functions">
+<link rel="next" href="safe_compare.html" title="safe_compare">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="functions.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="functions.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_compare.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.safe_cast"></a>safe_cast</h3></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="safe_cast.html#id754202">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754218">Description</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754243">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754329">Preconditions</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754355">Complexity</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754371">Header</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754391">Example of use</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754202"></a>Synopsis</h4></div></div></div>
+<pre class="programlisting">template&lt;class T, class U&gt;
+T safe_cast(const U &amp; u);</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754218"></a>Description</h4></div></div></div>
+<p>Converts one <a href="numeric_concept.xml" target="_top">Numeric</a> type
+    to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if such a
+    conversion is not possible without changing the value.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754243"></a>Type requirements</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Type</th>
+<th align="left">Requirements</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><a href="numeric_concept.xml" target="_top">Numeric</a></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">U </code></td>
+<td align="left"><a href="numeric_concept.xml" target="_top">Numeric</a></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754329"></a>Preconditions</h4></div></div></div>
+<p>The value of u can be represented by the type <code class="computeroutput">T</code>. If
+    this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
+    thrown.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754355"></a>Complexity</h4></div></div></div>
+<p>[Example:]</p>
+<p>O(N log(N)) comparisons (both average and worst-case), where N is
+    last - first. [2]</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754371"></a>Header</h4></div></div></div>
+<p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
+    &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="id754391"></a>Example of use</h4></div></div></div>
+<p>[A code fragment that illustrates how to use the function.]</p>
+<pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
+#include &lt;boost/numeric/safe_integer.hpp&gt; 
+
+void f(){
+    safe_integer&lt;char&gt; i;
+    unsigned char j;
+    i = 1;
+    j = safe_cast&lt;unsigned char&gt;(i);  // ok
+    i = -1;
+    j = safe_cast&lt;unsigned char&gt;(i);  // throws std::out_of_range exception
+    i = 1024;
+    j = safe_cast&lt;unsigned char&gt;(i);  // throws std::out_of_range exception
+}</pre>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
+        <a href="???" target="_top">Subject to Boost Software License</a>
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="functions.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="functions.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_compare.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

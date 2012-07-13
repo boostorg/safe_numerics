@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Notes</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="index.html" title="Safe Numerics">
+<link rel="prev" href="tutorial/3.html" title="Problem:Implicit conversions change data values">
+<link rel="next" href="concepts.html" title="Concepts">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial/3.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="concepts.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="safe_numerics.notes"></a>Notes</h2></div></div></div>
+<p>This library really an re-implementation the facilities provided by
+    <a href="http://safeint.codeplex.com" target="_top">David LeBlanc's SafeInt
+    Library</a> using <a href="www.boost.org" target="_top">Boost</a>. I found
+    this library very well done in every way. My main usage was to run unit
+    tests for my embedded systems projects on my PC. Still, I had a few
+    issues.</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>I was a lot of code in one header - 6400 lines. Very unwieldy to
+        understand and modify.</p></li>
+<li class="listitem"><p>I couldn't find separate documentation other than that in the
+        header file.</p></li>
+<li class="listitem"><p>I didn't use <a href="www.boost.org" target="_top">Boost</a>
+        conventions for naming.</p></li>
+<li class="listitem"><p>I required porting to different compilers.</p></li>
+<li class="listitem"><p>It had a very long license associated with it.</p></li>
+<li class="listitem"><p>I believe the original <a href="http://safeint.codeplex.com/releases/view/73792" target="_top">SafeInt</a>
+        library is not easily found. MSVC 10 has this built in so I seems that
+        they've decided to make it less attractive to use on other
+        systems.</p></li>
+</ul></div>
+<p>This version addresses these issues. It exploits <a href="www.boost.org" target="_top">Boost</a> facilities such as template
+    metaprogramming to reduce the number of lines of source code. It exploits
+    the Boost Preprocessor Library to generate exhaustive tests.</p>
+<p>All concepts, types and functions documented are declared in the
+    namespace <code class="computeroutput">boost::numeric</code>.</p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
+        <a href="???" target="_top">Subject to Boost Software License</a>
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial/3.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="concepts.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

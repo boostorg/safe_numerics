@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.safe_compare">
+  <title>safe_compare</title>
+
+  <section>
+    <title>Synopsis</title>
+
+    <para>safe_compare is really two functions:.</para>
+
+    <programlisting>template&lt;class T, class U&gt;
+bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);</programlisting>
+  </section>
+
+  <section>
+    <title>Description</title>
+
+    <para>With normal comparison operators, comparison of unsigned types to
+    signed types will be done by converting the unsigned type to a signed type
+    before comparing. Unfortunately this is not always possible. Most C++
+    compilers will emit an warning message when this is possible but won't
+    check that an error is made in the conversion. This function guarentees a
+    correct result regardless of the types of the arguments.</para>
+  </section>
+
+  <section>
+    <title>Type requirements</title>
+
+    <para>[This section lists the requirements that must be satisfied by the
+    function's template parameters. If the function has no template
+    parameters, this section can be skipped. Example:]</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Type</entry>
+
+            <entry align="left">Requirements</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T</code></entry>
+
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
+          </row>
+
+          <row>
+            <entry><code>U </code></entry>
+
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para>[A link to the source code where the function header is
+    defined.]</para>
+
+    <para><ulink url="../../include/safe_compare.hpp"><filename>#include
+    &lt;boost/numeric/safe_compare.hpp&gt; </filename></ulink></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <programlisting>#include &lt;boost/numeric/safe_compare.hpp&gt;
+
+void f(){
+    int i = -1;
+    unsigned char i = 0x129;
+    unsigned int j = 1;
+    bool result;
+    result = j &lt; i; // incorrect result
+    result = safe_compare::less_than(j &lt; i); // correct result
+}</programlisting>
+  </section>
+</section>

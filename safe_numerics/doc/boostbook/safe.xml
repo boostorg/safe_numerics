@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.safe">
+  <title>safe&lt;T&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>A <code>safe&lt;T&gt;</code> can be used anywhere a type T is used.
+    When T is used in operation which overflows, a exception is thrown</para>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
+
+    <para/>
+
+    <informaltable>
+      <tgroup cols="3">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry align="left">Type Requirements</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T</code></entry>
+
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
+
+            <entry><para>The underlying integer type</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+  </section>
+
+  <section>
+    <title>Derived From</title>
+
+    <para><code><link
+    linkend="safe_numerics.safe_signed_range">safe_signed_range&lt;T&gt;</link></code>
+    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</para>
+
+    <para><code><link
+    linkend="safe_numerics.safe_unsigned_range">safe_unsigned_range&lt;T&gt;</link></code>
+    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</para>
+  </section>
+
+  <section>
+    <title>Notation</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="6*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Symbol</entry>
+
+            <entry align="left">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T</code></entry>
+
+            <entry>A type that models the <link
+            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
+          </row>
+
+          <row>
+            <entry>t</entry>
+
+            <entry>An object of type <code>T</code></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><filename><ulink url="../../include/safe_integer.hpp">#include
+    &lt;boost/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <para>The following program will emit an error message on a machine where
+    int is only 16 bits but run without problem on a machine where int is 32
+    bits.</para>
+
+    <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
+#include &lt;iostream&gt;
+void f(){
+    safe&lt;int&gt; i = 400;
+    safe&lt;int&gt; j;
+    try {
+        j = i * i;
+    }
+    catch(...){
+       std::cout &lt;&lt; "overflow error" &lt;&lt; std::endl;
+    }
+}
+
+</programlisting></para>
+  </section>
+
+  <section>
+    <title>Notes</title>
+
+    <para>Footnotes (if any) that are referred to by other parts of the
+    page.</para>
+  </section>
+
+  <section>
+    <title>See Also</title>
+
+    <para>Footnotes (if any) that are referred to by other parts of the
+    page.</para>
+  </section>
+</section>

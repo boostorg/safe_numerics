@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<section id="safe_numerics.tutorial">
+  <title>Tutorial</title>
+
+  <section id="safe_numerics.tutorial.1">
+    <title>Problem:arithmetic operations can yield in correct results.</title>
+
+    <para>When some operation results in a result which exceeds the capacity
+    of a data variable to hold it, the result is undefined. This is called
+    "overflow". Since word size can differ between machines, code which
+    produces correct results in one set of circumstances may fail when
+    re-compiled on a machine with different hardware. When this occurs, Most
+    C++ compilers will continue to execute with no indication that the results
+    are wrong. It is the programmer's responsabiity to ensure such undefined
+    behavior is avoided.</para>
+
+    <para>This program demonstrates this problem. The solution is to replace
+    instances of <code>char</code> type with <code>safe&lt;char&gt;</code>
+    type.</para>
+
+    <programlisting><xi:include href="../../examples/example1.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+  </section>
+
+  <section id="safe_numerics.tutorial.2">
+    <title>Problem:Undetected overflow</title>
+
+    <para>A variation of the above is when a value is incremented/decremented
+    beyond it's domain. This is a common problem with for loops.</para>
+
+    <programlisting><xi:include href="../../examples/example3.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+  </section>
+
+  <section id="safe_numerics.tutorial.3">
+    <title>Problem:Implicit conversions change data values</title>
+
+    <para>A simple assign or arithment expression will generally convert all
+    the terms to the same type. Sometimes this can silently change values. For
+    example, when a signed data variable contains a negative type, assigning
+    to a unsigned type will be permitted by any C/C++ compiler but will be
+    treated as large unsigned value. Most modern compilers will emit a compile
+    time warning when this conversion is performed. The user may then decide
+    to change some data types or apply a <code>static_cast</code>. This is
+    less than satisfactory for two reasons:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>It may be unwield to change all the types to signed or
+          unsigned.</para>
+        </listitem>
+
+        <listitem>
+          <para>Litering one's program with <code>static_cast</code><code>
+          </code>makes it more difficult to read.</para>
+        </listitem>
+
+        <listitem>
+          <para>We may believe that our signed type will never contain a
+          negative value. If we use a <code>static_cast</code> to suppress the
+          warning, we'll fail to detect a program error when it is commited.
+          This is aways a risk with casts.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This solution is the same as the above, Just replace instances of
+    the <code>int </code>with <code>safe&lt;int&gt;</code>.</para>
+
+    <programlisting><xi:include href="../../examples/example2.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+  </section>
+</section>
