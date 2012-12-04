@@ -330,7 +330,7 @@
           <row>
             <entry><code>t &amp; u</code></entry>
 
-            <entry>bool</entry>
+            <entry>V</entry>
 
             <entry>and of t and u padded out max # bits in t, u</entry>
           </row>
@@ -338,7 +338,7 @@
           <row>
             <entry><code>t | u</code></entry>
 
-            <entry>bool</entry>
+            <entry>V</entry>
 
             <entry>or of t and u padded out max # bits in t, u</entry>
           </row>
