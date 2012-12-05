@@ -26,23 +26,23 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_signed_range"></a>safe_signed_range&lt;MIN, MAX&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_signed_range.html#id753667">Description</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#id753683">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#id753800">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#id753814">Header</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#id753834">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#id753854">See Also</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753773">Description</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753791">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753908">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753922">Header</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753942">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#id753956">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753667"></a>Description</h4></div></div></div>
+<a name="id753773"></a>Description</h4></div></div></div>
 <p>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code class="computeroutput">std::out_of_range</code> exception for operation which would result
     in assigning an integer value outside of this range.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753683"></a>Template Parameters</h4></div></div></div>
+<a name="id753791"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -75,22 +75,22 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753800"></a>Model of</h4></div></div></div>
+<a name="id753908"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753814"></a>Header</h4></div></div></div>
+<a name="id753922"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753834"></a>Example of use</h4></div></div></div>
+<a name="id753942"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
-    boost::numeric::safe_signed_integer&lt;7, 24&gt; i;
+    boost::numeric::safe_signed_range&lt;7, 24&gt; i;
     i = 0; // error
     i = 9; // ok
     i *= 9; // throws overflow exception
@@ -98,15 +98,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753854"></a>See Also</h4></div></div></div>
+<a name="id753956"></a>See Also</h4></div></div></div>
 <p><code class="computeroutput">std::out_of_range</code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

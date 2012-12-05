@@ -26,15 +26,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_compare"></a>safe_compare</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_compare.html#id754426">Synopsis</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#id754449">Description</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#id754474">Type requirements</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#id754568">Header</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#id754593">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#id754544">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#id754567">Description</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#id754586">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#id754679">Header</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#id754704">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754426"></a>Synopsis</h4></div></div></div>
+<a name="id754544"></a>Synopsis</h4></div></div></div>
 <p>safe_compare is really two functions:.</p>
 <pre class="programlisting">template&lt;class T, class U&gt;
 bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
@@ -44,7 +44,7 @@ bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754449"></a>Description</h4></div></div></div>
+<a name="id754567"></a>Description</h4></div></div></div>
 <p>With normal comparison operators, comparison of unsigned types to
     signed types will be done by converting the unsigned type to a signed type
     before comparing. Unfortunately this is not always possible. Most C++
@@ -54,7 +54,7 @@ bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754474"></a>Type requirements</h4></div></div></div>
+<a name="id754586"></a>Type requirements</h4></div></div></div>
 <p>[This section lists the requirements that must be satisfied by the
     function's template parameters. If the function has no template
     parameters, this section can be skipped. Example:]</p>
@@ -81,7 +81,7 @@ bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754568"></a>Header</h4></div></div></div>
+<a name="id754679"></a>Header</h4></div></div></div>
 <p>[A link to the source code where the function header is
     defined.]</p>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="filename">#include
@@ -89,7 +89,7 @@ bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754593"></a>Example of use</h4></div></div></div>
+<a name="id754704"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_compare.hpp&gt;
 
 void f(){
@@ -104,9 +104,7 @@ void f(){
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

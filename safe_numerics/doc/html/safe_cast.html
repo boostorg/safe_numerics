@@ -26,30 +26,30 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_cast"></a>safe_cast</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_cast.html#id754202">Synopsis</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754218">Description</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754243">Type requirements</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754329">Preconditions</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754355">Complexity</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754371">Header</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#id754391">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754315">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754330">Description</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754354">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754441">Preconditions</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754467">Complexity</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754483">Header</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#id754503">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754202"></a>Synopsis</h4></div></div></div>
+<a name="id754315"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting">template&lt;class T, class U&gt;
 T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754218"></a>Description</h4></div></div></div>
+<a name="id754330"></a>Description</h4></div></div></div>
 <p>Converts one <a href="numeric_concept.xml" target="_top">Numeric</a> type
     to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if such a
     conversion is not possible without changing the value.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754243"></a>Type requirements</h4></div></div></div>
+<a name="id754354"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -73,27 +73,27 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754329"></a>Preconditions</h4></div></div></div>
+<a name="id754441"></a>Preconditions</h4></div></div></div>
 <p>The value of u can be represented by the type <code class="computeroutput">T</code>. If
     this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
     thrown.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754355"></a>Complexity</h4></div></div></div>
+<a name="id754467"></a>Complexity</h4></div></div></div>
 <p>[Example:]</p>
 <p>O(N log(N)) comparisons (both average and worst-case), where N is
     last - first. [2]</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754371"></a>Header</h4></div></div></div>
+<a name="id754483"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
     &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754391"></a>Example of use</h4></div></div></div>
+<a name="id754503"></a>Example of use</h4></div></div></div>
 <p>[A code fragment that illustrates how to use the function.]</p>
 <pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 
@@ -112,9 +112,7 @@ void f(){
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

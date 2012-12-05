@@ -25,18 +25,27 @@
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
-<p>Arithmetic operations in C++ are NOT guarenteed to yield the correct
-    mathematical result. The feature is inherited from the early days of C the
-    behavior of int, unsigned int and others were designed to map closely to
-    the underlying hardware. The result is that one cannot know when
-    the</p>
-<p></p>
+<p>Arithmetic operations in C++ are NOT guarenteed to yield a correct
+    mathematical result. This feature is inherited from the early days of C.
+    The behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and others
+    were designed to map closely to the underlying hardware. Computer hardware
+    implements these types as a fixed number of bits. When the result of
+    arithmetic operations exceeds this number of bits, the result is undefined
+    and usually not what the programmer intended. It is incumbent up the C++
+    programmer to guarentee that this behavior does not result in incorrect
+    behavior of the program. This library implements special versions of these
+    data types which behave exactly like the original ones EXCEPT that the
+    results of these operations are checked to be sure that an exception will
+    be thrown anytime an attempt is made to store the result of an undefined
+    operation.</p>
+<p>Additionally, we define data types <code class="computeroutput">safe_signed_range&lt;MIN,
+    MAX&gt;</code> and <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX&gt;</code> which
+    will throw an exception if an attempt is made to store a result which is
+    outside the closed range [MIN, MAX]</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

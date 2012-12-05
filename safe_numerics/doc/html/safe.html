@@ -26,25 +26,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#id753878">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#id753896">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#id753982">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#id753996">Derived From</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754035">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754113">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754133">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754160">Notes</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754172">See Also</a></span></dt>
+<dt><span class="section"><a href="safe.html#id753980">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#id753999">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754085">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754099">Derived From</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754139">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754225">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754246">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754272">Notes</a></span></dt>
+<dt><span class="section"><a href="safe.html#id754284">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753878"></a>Description</h4></div></div></div>
+<a name="id753980"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T&gt;</code> can be used anywhere a type T is used.
     When T is used in operation which overflows, a exception is thrown</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753896"></a>Template Parameters</h4></div></div></div>
+<a name="id753999"></a>Template Parameters</h4></div></div></div>
 <p></p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -59,19 +59,19 @@
 </tr></thead>
 <tbody><tr>
 <td align="left"><code class="computeroutput">T</code></td>
-<td align="left"><a href="numeric_concept.xml" target="_top">Numeric</a></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></td>
 <td align="left"><p>The underlying integer type</p></td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753982"></a>Model of</h4></div></div></div>
+<a name="id754085"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753996"></a>Derived From</h4></div></div></div>
+<a name="id754099"></a>Derived From</h4></div></div></div>
 <p><code class="computeroutput"><a class="link" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX&gt;">safe_signed_range&lt;T&gt;</a></code>
     (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</p>
 <p><code class="computeroutput"><a class="link" href="safe_unsigned_range.html" title="safe_unsigned_range&lt;MIN, MAX&gt;">safe_unsigned_range&lt;T&gt;</a></code>
@@ -79,41 +79,38 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754035"></a>Notation</h4></div></div></div>
-<div class="table">
-<a name="id754041"></a><p class="title"><b>Table&#160;6.&#160;</b></p>
-<div class="table-contents"><table class="table">
+<a name="id754139"></a>Notation</h4></div></div></div>
+<div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
 </colgroup>
+<thead><tr>
+<th align="left">Symbol</th>
+<th align="left">Description</th>
+</tr></thead>
 <tbody>
 <tr>
-<td align="left">
-              <code class="computeroutput">T</code>
-            </td>
-<td align="left">A type that is a model of the Numeric</td>
+<td align="left"><code class="computeroutput">T</code></td>
+<td align="left">A type that models the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept</td>
 </tr>
 <tr>
-<td align="left">
-              <code class="computeroutput">t</code>
-            </td>
-<td align="left">An object of type modeling Numeric</td>
+<td align="left">t</td>
+<td align="left">An object of type <code class="computeroutput">T</code>
+</td>
 </tr>
 </tbody>
 </table></div>
 </div>
-<br class="table-break">
-</div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754113"></a>Header</h4></div></div></div>
+<a name="id754225"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754133"></a>Example of use</h4></div></div></div>
+<a name="id754246"></a>Example of use</h4></div></div></div>
 <p>The following program will emit an error message on a machine where
     int is only 16 bits but run without problem on a machine where int is 32
     bits.</p>
@@ -134,22 +131,20 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754160"></a>Notes</h4></div></div></div>
+<a name="id754272"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754172"></a>See Also</h4></div></div></div>
+<a name="id754284"></a>See Also</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

@@ -26,15 +26,15 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale</h2></div></div></div>
 <div class="qandaset">
-<a name="id754744"></a><dl>
-<dt>1. <a href="rationale.html#id754748">Why does an operation on two safe&lt;int&gt;
-          values not necessarily return another safe type
-          ?</a>
+<a name="id754861"></a><dl>
+<dt>1. <a href="rationale.html#id754866">Why does a binary operation on two
+          safe&lt;int&gt; values not necessarily return another
+          safe type ?</a>
 </dt>
-<dt>2. <a href="rationale.html#id754811">Why is there no policy driven design for handling
+<dt>2. <a href="rationale.html#id754917">Why is there no policy driven design for handling
           overflows</a>
 </dt>
-<dt>3. <a href="rationale.html#id754823">Why is Boost.Convert not used.</a>
+<dt>3. <a href="rationale.html#id754946">Why is Boost.Convert not used.</a>
 </dt>
 </dl>
 <table border="0" width="100%" summary="Q and A Set">
@@ -43,11 +43,11 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754748"></a><a name="id754750"></a><p><b>1.</b></p>
+<a name="id754866"></a><a name="id754868"></a><p><b>1.</b></p>
 </td>
-<td align="left" valign="top"><p>Why does an operation on two <code class="computeroutput">safe&lt;int&gt;</code>
-          values not necessarily return another <code class="computeroutput">safe</code> type
-          ?</p></td>
+<td align="left" valign="top"><p>Why does a binary operation on two
+          <code class="computeroutput">safe&lt;int&gt;</code> values not necessarily return another
+          <code class="computeroutput">safe</code> type ?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
@@ -59,23 +59,32 @@
               with result of the operation. This will result in an assignment
               or a conversion to some other type where the result will be
               validated.</p></li>
-<li class="listitem"><p></p></li>
-<li class="listitem"><p></p></li>
 </ul></div>
 </td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754811"></a><a name="id754814"></a><p><b>2.</b></p>
+<a name="id754917"></a><a name="id754920"></a><p><b>2.</b></p>
 </td>
-<td align="left" valign="top"><p>Why is there no policy driven design for handling
-          overflows</p></td>
+<td align="left" valign="top">
+<p>Why is there no policy driven design for handling
+          overflows</p>
+<p>The question was - to which type does one apply it to?
+          Consider the following example:</p>
+<pre class="programlisting">safe&lt;int, overflow_policy_1&gt; t1 = 2;
+safe&lt;int, overflow_policy_2&gt; t2 = 4;
+unsigned int x = t1 - t2; // which policy should be invoked?</pre>
+</td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754823"></a><a name="id754826"></a><p><b>3.</b></p>
+<a name="id754946"></a><a name="id754948"></a><p><b>3.</b></p>
 </td>
-<td align="left" valign="top"><p>Why is Boost.Convert not used.</p></td>
+<td align="left" valign="top">
+<p>Why is Boost.Convert not used.</p>
+<p>I couldn't figure out how to use it from the
+          documentation.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -83,9 +92,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="???" target="_top">Subject to Boost Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
