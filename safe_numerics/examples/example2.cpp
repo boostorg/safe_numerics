@@ -1,5 +1,6 @@
 void example2(){
-    // problem: undetected overflow in data type
+    std::cout << "example 2 ";
+    std::cout << "(undetected overflow in data type)" << std::endl;
     try{
         int x = INT_MAX;
         // the following silently produces an incorrect result
