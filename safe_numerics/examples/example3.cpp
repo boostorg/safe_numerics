@@ -1,21 +1,20 @@
 void example3(){
-    // problem: undetected overflow in data type
+    // problem: implicit conversions change data values
     try{
-        int x = INT_MAX;
+        int x = -1;
         // the following silently produces an incorrect result
-        ++x;
-        //std::cout << x << " != " << -1;
+        char y = x;
         detected_msg(false);
     }
     catch(...){
         assert(false); // never arrive here
     }
-    // solution: replace int with safe<int>
+    // solution: replace int with safe<int> and char with safe<char>
     try{
         using namespace boost::numeric;
-        safe<int> x = INT_MAX;
-        // throws exception when result is past maximum possible 
-        ++x;
+        safe<int> x = -1;
+        // throws exception when conversion change data value
+        safe<char> y = x;
         assert(false); // never arrive here
     }
     catch(std::range_error & e){
