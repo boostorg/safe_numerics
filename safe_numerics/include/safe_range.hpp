@@ -508,7 +508,7 @@ typename boost::enable_if<
     bool
 >::type
 operator<(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
-    return rhs >= lhs;
+    return rhs > lhs;
 }
 template<class T, class Stored, class Derived>
 typename boost::enable_if<
@@ -516,7 +516,7 @@ typename boost::enable_if<
     bool
 >::type
 inline operator>(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
-    return rhs <= lhs;
+    return rhs < lhs;
 }
 template<class T, class Stored, class Derived>
 typename boost::enable_if<
@@ -540,7 +540,7 @@ typename boost::enable_if<
     bool
 >::type
 inline operator>=(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
-    return rhs < lhs;
+    return rhs <= lhs;
 }
 template<class T, class Stored, class Derived>
 typename boost::enable_if<
@@ -548,7 +548,7 @@ typename boost::enable_if<
     bool
 >::type
 inline operator<=(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
-    return  rhs > lhs;
+    return  rhs >= lhs;
 }
 
 // addition
