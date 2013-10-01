@@ -1,5 +1,6 @@
 void example1(){
-    // problem: undetected erroneous expression evaluation
+    std::cout << "example 1 ";
+    std::cout << "(undetected erroneous expression evaluation)" << std::endl;
     try{
         char x = 127;
         char y = 2;

@@ -1,7 +1,8 @@
 #include "../include/safe_compare.hpp"
 
 void example4(){
-    // problem: undetected underflow in data type
+    std::cout << "example 4 ";
+    std::cout << "(undetected underflow in data type)" << std::endl;
     try{
         unsigned int x = 0;
         // the following silently produces an incorrect result
