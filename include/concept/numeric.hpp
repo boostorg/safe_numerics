@@ -22,6 +22,11 @@ struct Numeric {
     // see C++ standard 18.3.2.2
     BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_specialized == true);
     BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_bounded == true);
+};
+
+template <class T>
+class Integer : public Numeric<T> {
+    // integer types must have the corresponding numeric trait.
     BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_integer == true);
 };
 
