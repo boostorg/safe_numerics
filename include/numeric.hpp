@@ -21,6 +21,7 @@
 #include <boost/mpl/or.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/identity.hpp>
 
 #include "concept/numeric.hpp"
 #include "boost/concept/assert.hpp"
@@ -271,23 +272,27 @@ struct multiply_result_bits : public
 // return smallest type that can hold the product of types T and U
 template<class T, class U>
 struct multiply_result_type {
-    typedef typename boost::mpl::if_<
+    typedef typename boost::mpl::eval_if<
         typename boost::mpl::or_<
             is_signed<T>,
             is_signed<U>
         >,
+        typename boost::mpl::identity<
         typename boost::int_t<
             boost::mpl::min<
                 bits<boost::intmax_t>,
                 multiply_result_bits<T, U>
             >::type::value
-        >::least,
+        >::least
+        >,
+        typename boost::mpl::identity<
         typename boost::uint_t<
             boost::mpl::min<
                 bits<boost::uintmax_t>,
                 multiply_result_bits<T, U>
             >::type::value
         >::least
+        >
     >::type type;
 };
 

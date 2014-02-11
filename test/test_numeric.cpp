@@ -6,7 +6,8 @@
 
 #include "../include/numeric.hpp"
 
-#include <boost/limits.hpp>
+//#include <boost/limits.hpp>
+#include <limits>
 #include <boost/cstdint.hpp>
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
@@ -198,7 +199,7 @@ struct multiply_display {};
         >::const_min),                                       \
         <=,                                                  \
         boost::integer_traits<T>::const_min                  \
-        + boost::integer_traits<U>::const_min                \
+        * boost::integer_traits<U>::const_min                \
     );                                                       \
     {                                                        \
         typedef boost::mpl::print<                           \
@@ -214,6 +215,7 @@ struct multiply_display {};
 
 void multiply(){
     using namespace boost::numeric;
+    
     TEST_MULTIPLICATION1(boost::int8_t, boost::int8_t)
     TEST_MULTIPLICATION1(boost::int16_t, boost::int8_t)
     TEST_MULTIPLICATION1(boost::uint8_t, boost::uint8_t)
@@ -227,4 +229,22 @@ void multiply(){
     TEST_MULTIPLICATION2(boost::uint16_t, boost::uint8_t)
     TEST_MULTIPLICATION2(boost::uint16_t, boost::int8_t)
     TEST_MULTIPLICATION2(boost::int16_t, boost::uint8_t)
+}
+
+const bool b = (boost::integer_traits<unsigned long>::const_max > boost::integer_traits<unsigned long>::const_max);
+
+#include <iostream>
+
+int main(int argc, char * argv[]){
+    std::cerr << boost::integer_traits<uint16_t>::const_max << std::endl;
+    std::cerr << boost::integer_traits<uint8_t>::const_max << std::endl;
+    std::cerr <<
+        boost::integer_traits<uint16_t>::const_max
+        *boost::integer_traits<uint8_t>::const_max
+        << std::endl;
+
+    add();
+    subtract();
+    multiply();
+    return 0;
 }

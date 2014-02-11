@@ -13,8 +13,10 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/limits.hpp>
-#include <boost/mpl/if.hpp>
+#include <boost/mpl/identity.hpp>
 #include "safe_range.hpp"
+
+#include <boost/config.hpp> // BOOST_NOEXCEPT
 
 namespace boost {
 namespace numeric {
@@ -59,9 +61,8 @@ struct safe : public detail::safe_integer_base<T>::type {
 };
 
 } // numeric
-} // boost
 
-#include <boost/config.hpp> // BOOST_NOEXCEPT
+} // boost
 
 namespace std {
 
@@ -77,5 +78,6 @@ public:
 };
 
 } // std
+
 
 #endif // BOOST_NUMERIC_SAFE_INTEGER_HPP

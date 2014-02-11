@@ -339,7 +339,6 @@ public:
             boost::numeric::is_signed<U>::value
         >::add(m_t, rhs);
     }
-
     /////////////////////////////////////////////////////////////////
     // subtraction
     template<class U>
@@ -371,7 +370,6 @@ public:
              overflow("safe range subtraction out of range");
         return tmp;
     }
-
     /////////////////////////////////////////////////////////////////
     // multiplication
     template<class U>

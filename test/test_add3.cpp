@@ -19,6 +19,7 @@ bool test_add3(){
     bool rval = true;
     #pragma message("0")
     EACH_TYPE1(boost::int8_t);
+    #if 0
     #pragma message("1")
     EACH_TYPE1(boost::uint8_t);
     #pragma message("2")
@@ -33,6 +34,8 @@ bool test_add3(){
     EACH_TYPE1(boost::int64_t);
     #pragma message("7")
     EACH_TYPE1(boost::uint64_t);
+    #endif
+    
     return rval;
 }
 
