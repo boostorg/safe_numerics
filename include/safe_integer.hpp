@@ -12,30 +12,34 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/limits.hpp>
-#include <boost/mpl/identity.hpp>
-#include "safe_range.hpp"
-
 #include <boost/config.hpp> // BOOST_NOEXCEPT
+#include <boost/limits.hpp>
+#include <boost/integer_traits.hpp>
+#include <boost/mpl/if.hpp>
+
+#include "safe_range.hpp"
+#include "numeric.hpp"
 
 namespace boost {
 namespace numeric {
 
 namespace detail{
-    template<class T>
-    struct safe_integer_base {
-        typedef typename boost::mpl::if_c<
-            std::numeric_limits<T>::is_signed,
-            safe_signed_range<
-                boost::integer_traits<T>::const_min,
-                boost::integer_traits<T>::const_max
-            >,
-            safe_unsigned_range<
-                boost::integer_traits<T>::const_min,
-                boost::integer_traits<T>::const_max
-            >
-        >::type type;
-    };
+
+template<class T>
+struct safe_integer_base {
+    typedef typename boost::mpl::if_<
+        boost::numeric::is_signed<T>,
+        boost::numeric::safe_signed_range<
+            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_min),
+            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_max)
+        >,
+        boost::numeric::safe_unsigned_range<
+            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_min),
+            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_max)
+        >
+    >::type type;
+};
+
 } // detail
 
 template<class T>
@@ -78,6 +82,5 @@ public:
 };
 
 } // std
-
 
 #endif // BOOST_NUMERIC_SAFE_INTEGER_HPP

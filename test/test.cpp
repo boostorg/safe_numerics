@@ -8,6 +8,7 @@
 #include <cstdlib>   // EXIT_SUCCESS
 
 #include <boost/mpl/print.hpp>
+
 #include "../include/safe_range.hpp"
 #include "../include/safe_integer.hpp"
 
@@ -36,7 +37,6 @@ bool test1(){
             int
         >::type
     >::type t3;
-
     zi = x + yi;
     
     bool success = false;

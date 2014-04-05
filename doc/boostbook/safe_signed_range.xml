@@ -66,6 +66,12 @@
     <title>Model of</title>
 
     <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+
+    <para>The usage of this type in an arithmetic expression will result in
+    another type fulfilling the <link
+    linkend="safe_numerics.numeric">Numeric</link> concept. This will be the
+    smallest signed integer type of sufficient size to hold the result of the
+    operation.</para>
   </section>
 
   <section>
@@ -85,6 +91,12 @@ void f(){
     i = 0; // error
     i = 9; // ok
     i *= 9; // throws overflow exception
+
+    std::int8_t j = 4;
+    auto k = i + j;
+        // since i can vary between 7 and 24 and j can vary between 0 and 255
+        // the smallest unsigned integer which can hold the result std::int16_t
+        // j will be of type std::int16_t 
 }</programlisting>
   </section>
 
@@ -92,5 +104,7 @@ void f(){
     <title>See Also</title>
 
     <para><code>std::out_of_range</code></para>
+
+    <para><code>safe_unsigned_range</code></para>
   </section>
 </section>

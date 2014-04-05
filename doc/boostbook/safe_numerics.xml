@@ -65,8 +65,8 @@
 
     <itemizedlist>
       <listitem>
-        <para>I was a lot of code in one header - 6400 lines. Very unwieldy to
-        understand and modify.</para>
+        <para>It was a lot of code in one header - 6400 lines. Very unwieldy
+        to understand and modify.</para>
       </listitem>
 
       <listitem>
@@ -75,12 +75,12 @@
       </listitem>
 
       <listitem>
-        <para>I didn't use <ulink url="www.boost.org">Boost</ulink>
+        <para>It didn't use <ulink url="www.boost.org">Boost</ulink>
         conventions for naming.</para>
       </listitem>
 
       <listitem>
-        <para>I required porting to different compilers.</para>
+        <para>It required porting to different compilers.</para>
       </listitem>
 
       <listitem>
@@ -150,7 +150,7 @@
       <qandaentry>
         <question>
           <para>Why does a binary operation on two
-          <code>safe&lt;int&gt;</code> values not necessarily return another
+          <code>safe&lt;int&gt;</code> values not return another
           <code>safe</code> type ?</para>
         </question>
 
@@ -159,7 +159,7 @@
 
           <itemizedlist>
             <listitem>
-              <para>it was hard to implement.</para>
+              <para>it was too hard to implement.</para>
             </listitem>
 
             <listitem>

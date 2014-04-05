@@ -228,7 +228,7 @@
 
             <entry>V</entry>
 
-            <entry>Invert sign</entry>
+            <entry>subtract u from t</entry>
           </row>
 
           <row>
@@ -236,7 +236,7 @@
 
             <entry>V</entry>
 
-            <entry>unary plus - a no op</entry>
+            <entry>add u to t</entry>
           </row>
 
           <row>

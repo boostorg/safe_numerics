@@ -14,143 +14,15 @@
 
 #include <iostream>
 #include <algorithm>
-#include <boost/cstdint.hpp>
-#include <boost/limits.hpp>
+#include <boost/mpl/or.hpp>
+#include <boost/mpl/if.hpp>
 
 #include "../include/safe_integer.hpp"
 #include "../include/safe_cast.hpp"
 #include "../include/safe_compare.hpp"
+#include "../include/numeric.hpp"
 
 #include "test.hpp"
-
-template<class T1, class T2, class V>
-bool test_subtract(
-    V v1, 
-    V v2, 
-    const char *at1,
-    const char *at2,
-    const char *av1,
-    const char *av2
-){
-    bool success;
-
-    T1 t1;
-    try{
-        t1 = boost::numeric::safe_cast<T1>(v1);
-        success = true;
-    }
-    catch(std::range_error){
-        success = false;
-    }
-    if(success){
-        if(boost::numeric::safe_compare::greater_than(
-                v1,
-                std::numeric_limits<T1>::max()
-            )
-        || boost::numeric::safe_compare::less_than(
-                v1,
-                std::numeric_limits<T1>::min()
-            )
-        ){
-            std::cout
-                << "constructed invalid value "
-                << at1 << ' ' << av1
-                << std::endl;
-            return false;
-        }
-    }
-    else{
-        if(! boost::numeric::safe_compare::greater_than(
-                v1,
-                std::numeric_limits<T1>::max()
-            )
-        && ! boost::numeric::safe_compare::less_than(
-                v1,
-                std::numeric_limits<T1>::min()
-            )
-        ){
-            std::cout
-                << "failed to construct valid value "
-                << at1 << ' ' << av1
-                << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    T2 t2;
-    try{
-        t2 = boost::numeric::safe_cast<T2>(v2);
-        success = true;
-    }
-    catch(std::range_error){
-        success = false;
-    }
-    if(success){
-        if(boost::numeric::safe_compare::greater_than(
-            v2,
-            std::numeric_limits<T2>::max()
-        )
-        || boost::numeric::safe_compare::less_than(
-            v2,
-            std::numeric_limits<T2>::min()
-        )){
-            std::cout
-                << "constructed invalid value "
-                << at2 << ' ' << av2
-                << std::endl;
-            return false;
-        }
-    }
-    else{
-        if(!boost::numeric::safe_compare::greater_than(
-            v2,
-            std::numeric_limits<T2>::max()
-        )
-        && !boost::numeric::safe_compare::less_than(
-            v2,
-            std::numeric_limits<T2>::min()
-        )){
-            std::cout
-                << "failed to construct valid value "
-                << at2 << ' ' << av2
-                << std::endl;
-            return false;
-        }
-        return true;
-    }
-
-    V result;
-    try{
-        result = t1 - t2;
-        success = true;
-    }
-    catch(std::range_error){
-        success = false;
-    }
-    if(success){
-        if(result != v1 - v2){
-            std::cout
-                << "failed to detect error in subtraction "
-                << at1 << ' ' << at2 << ' ' << av1 << ' ' << av2
-                << std::endl;
-            return false;
-        }
-    }
-    else{
-        if(boost::numeric::safe_compare::greater_than_equal(
-            boost::numeric::bits<boost::uintmax_t>::value,
-            std::max(count_bits(v1),count_bits(v2))
-        )){
-            std::cout
-                << "erroneously detected error in subtraction "
-                << at1 << ' ' << at2 << ' ' << av1 << ' ' << av2
-                << std::endl;
-            return false;
-        }
-    }
-    return true; // correct result
-}
 
 template<class T1, class T2>
 struct subtract_result {
@@ -164,15 +36,43 @@ struct subtract_result {
     >::type type;
 }; 
 
-#define TEST_IMPL(a, b, c, d)                   \
-    rval &= test_subtract<d, c>(                \
-        (static_cast<subtract_result<c, d>::type>(a)),   \
-        (static_cast<subtract_result<c, d>::type>(b)),   \
-        BOOST_PP_STRINGIZE(d),                  \
-        BOOST_PP_STRINGIZE(c),                  \
-        BOOST_PP_STRINGIZE(b),                  \
-        BOOST_PP_STRINGIZE(a)                   \
-    );                                          \
-/**/
+template<class T1, class T2>
+bool test_subtract(
+    T1 v1,
+    T2 v2,
+    const char *av1,
+    const char *av2
+){
+        typename subtract_result<T1, T2>::type result;
+    try{
+        boost::numeric::safe<T1> t1 = v1;
+
+        result = t1 - v2;
+        if(boost::numeric::safe_compare::less_than(
+            boost::numeric::bits<boost::uintmax_t>::value,
+            std::max(count_bits(v1),count_bits(v2))
+        )){
+            std::cout
+                << "failed to detect error in subtraction "
+                << av1 << " - " << av2
+                << std::endl;
+            return false;
+        }
+    }
+    catch(std::range_error){
+        if(boost::numeric::safe_compare::greater_than_equal(
+            boost::numeric::bits<boost::uintmax_t>::value,
+            std::max(count_bits(v1),count_bits(v2))
+        )){
+            std::cout
+                << "erroneously detected error in subtraction "
+                << av1 << " - " << av2
+                << std::endl;
+            return false;
+        }
+    }
+    return true; // correct result
+}
+
 
 #endif // TEST_SUBTRACT_HPP

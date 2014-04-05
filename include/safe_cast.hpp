@@ -16,24 +16,48 @@
 #include <boost/integer.hpp>
 #include <boost/mpl/min_max.hpp>
 #include <boost/mpl/plus.hpp>
+#include <boost/mpl/less.hpp>
+#include <boost/mpl/greater.hpp>
+
 #include "numeric.hpp"
 #include "overflow.hpp"
+#include "safe_compare.hpp"
 
 namespace boost {
 namespace numeric {
 namespace detail {
-    // simple case when signess are the same.
+    // default signature
     template<bool TS, bool US>
-    struct safe_cast {
+    struct safe_cast;
+
+    // T signed <- U signed
+    template<>
+    struct safe_cast<true, true> {
         template<class T, class U>
         inline static T invoke(const U & u){
-            if(u > std::numeric_limits<T>::max())
+            if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
                 overflow("safe range overflow");
-            if(u < std::numeric_limits<T>::min())
+
+            if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
                 overflow("safe range underflow");
             return static_cast<T>(u);
         }
     };
+
+    // T unsigned <- U unsigned
+    template<>
+    struct safe_cast<false, false> {
+        template<class T, class U>
+        inline static T invoke(const U & u){
+            if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
+                overflow("safe range overflow");
+            if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
+                    overflow("safe range underflow");
+            return static_cast<T>(u);
+        }
+
+    };
+
 
     // T signed <- U unsigned
     template<>
@@ -41,17 +65,8 @@ namespace detail {
         template<class T>
         struct sbits : public
             boost::mpl::min<
-                typename boost::mpl::integral_c<
-                    int, 
-                    std::numeric_limits<boost::intmax_t>::digits
-                >,
-                typename boost::mpl::plus<
-                    typename boost::mpl::integral_c<
-                        int, 
-                        std::numeric_limits<T>::digits
-                    >,
-                    typename boost::mpl::integral_c<int, 1>
-                >
+                boost::numeric::bits<boost::intmax_t>,
+                boost::numeric::bits<T>
             >::type
         {};
         template<class T, class U>

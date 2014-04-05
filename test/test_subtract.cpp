@@ -4,14 +4,14 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-bool test_subtract1();
-bool test_subtract2();
-bool test_subtract3();
+#include "test_subtract.hpp"
+
+#define TESTX(a, b) \
+    rval &= test_subtract(a, b, BOOST_PP_STRINGIZE(a), BOOST_PP_STRINGIZE(b));
+/**/
 
 int main(int argc, char * argv[]){
-    bool result = true;
-    result = test_subtract1();
-    result &= test_subtract2();
-    result &= test_subtract3();
-    return ! result ;
+    bool rval = true;
+    TEST_ALL
+    return ! rval ;
 }

@@ -187,6 +187,7 @@ struct max_bits : public
     >::type
 {};
 
+
 // return # of bit in the result of an addition of two types
 template<class T, class U>
 struct addition_result_bits : public

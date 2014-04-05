@@ -115,12 +115,25 @@ link_directories("${Boost_LIBRARY_DIRS}")
 ###########################
 
 ###########################
-# testing
+# testing and submitting test results
 
-enable_testing()
+include (CTest)
+
+# the include above includes enable_testing() so the following line isn't
+# necessary
+# enable_testing()
+
+message(STATUS "test_cast")
+add_executable( test_cast
+  ../test/test_cast.hpp
+  ../test/test_cast.cpp
+)
+target_link_libraries( test_cast ${Boost_LIBRARIES} )
+add_test(NAME test_cast COMMAND test_cast)
 
 message(STATUS "test_add")
-  add_executable( test_add 
+add_executable( test_add
+  ../test/test_add.hpp 
   ../test/test_add.cpp 
   ../test/test_add1.cpp 
   ../test/test_add2.cpp 
@@ -128,10 +141,10 @@ message(STATUS "test_add")
 )
 target_link_libraries( test_add  ${Boost_LIBRARIES} )
 add_test(NAME test_add COMMAND test_add)
-add_custom_target(test_add_header SOURCES ../test/test_add.hpp)
 
 message(STATUS "test_subtract")
-add_executable( test_subtract 
+add_executable( test_subtract
+  ../test/test_subtract.hpp
   ../test/test_subtract.cpp 
   ../test/test_subtract1.cpp 
   ../test/test_subtract2.cpp 
@@ -139,10 +152,10 @@ add_executable( test_subtract
 )
 target_link_libraries( test_subtract  ${Boost_LIBRARIES} )
 add_test(NAME test_subtract COMMAND test_subtract)
-add_custom_target(test_subtract_header SOURCES ../test/test_subtract.hpp)
 
 message(STATUS "test_multiply")
-add_executable( test_multiply 
+add_executable( test_multiply
+  ../test/test_multiply.hpp
   ../test/test_multiply.cpp 
   ../test/test_multiply1.cpp 
   ../test/test_multiply2.cpp 
@@ -150,10 +163,10 @@ add_executable( test_multiply
 )
 target_link_libraries( test_multiply  ${Boost_LIBRARIES} )
 add_test(NAME test_multiply COMMAND test_multiply)
-add_custom_target(test_multiply_header SOURCES ../test/test_multiply.hpp)
 
 message(STATUS "test_divide")
-add_executable( test_divide 
+add_executable( test_divide
+  ../test/test_divide.hpp 
   ../test/test_divide.cpp 
   ../test/test_divide1.cpp 
   ../test/test_divide2.cpp 
@@ -161,10 +174,10 @@ add_executable( test_divide
 )
 target_link_libraries( test_divide  ${Boost_LIBRARIES} )
 add_test(NAME test_divide COMMAND test_divide)
-add_custom_target(test_divide_header SOURCES ../test/test_divide.hpp)
 
 message(STATUS "test_modulus")
 add_executable( test_modulus 
+  ../test/test_modulus.hpp
   ../test/test_modulus.cpp 
   ../test/test_modulus1.cpp 
   ../test/test_modulus2.cpp 
@@ -172,7 +185,6 @@ add_executable( test_modulus
 )
 target_link_libraries( test_modulus ${Boost_LIBRARIES} )
 add_test(NAME test_modulus COMMAND test_modulus)
-add_custom_target(test_modulus_header SOURCES ../test/test_modulus.hpp)
 
 message(STATUS "test_compare")
 add_executable( test_compare ../test/test_compare.cpp)

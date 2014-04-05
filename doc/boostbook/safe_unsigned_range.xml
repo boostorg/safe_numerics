@@ -9,7 +9,7 @@
 
     <para>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code>std::out_of_range</code> exception for any operation which would
-    result in assigning an integer value outside of this range.</para>
+    result in assigning an integer value outside of this range. </para>
   </section>
 
   <section>
@@ -66,6 +66,12 @@
     <title>Model of</title>
 
     <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+
+    <para>The usage of this type in an arithmetic expression with another
+    unsigned type will result in another unsigned type fulfilling the <link
+    linkend="safe_numerics.numeric">Numeric</link> concept. This will be the
+    smallest unsigned integer type of sufficient size to hold the result of
+    the operation. </para>
   </section>
 
   <section>
@@ -86,6 +92,13 @@ void f(){
     i = 9;  // ok
     i *= 9; // throws out_of_range exception
     i = -1; // throws out_of_range exception
+
+    std::uint8_t j = 4;
+    auto k = i + j;
+        // since i can vary between 7 and 24 and j can vary between 0 and 255
+        // the smallest unsigned integer which can hold the result std::uint16_t
+        // j will be of type std::uint16_t 
+    
 }</programlisting>
   </section>
 
@@ -93,5 +106,7 @@ void f(){
     <title>See Also</title>
 
     <para><code>std::out_of_range</code></para>
+
+    <para><code>safe_signed_range</code></para>
   </section>
 </section>
