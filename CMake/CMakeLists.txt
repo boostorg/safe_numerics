@@ -125,7 +125,6 @@ include (CTest)
 
 message(STATUS "test_cast")
 add_executable( test_cast
-  ../test/test_cast.hpp
   ../test/test_cast.cpp
 )
 target_link_libraries( test_cast ${Boost_LIBRARIES} )
@@ -133,55 +132,35 @@ add_test(NAME test_cast COMMAND test_cast)
 
 message(STATUS "test_add")
 add_executable( test_add
-  ../test/test_add.hpp 
   ../test/test_add.cpp 
-  ../test/test_add1.cpp 
-  ../test/test_add2.cpp 
-  ../test/test_add3.cpp
 )
 target_link_libraries( test_add  ${Boost_LIBRARIES} )
 add_test(NAME test_add COMMAND test_add)
 
 message(STATUS "test_subtract")
 add_executable( test_subtract
-  ../test/test_subtract.hpp
   ../test/test_subtract.cpp 
-  ../test/test_subtract1.cpp 
-  ../test/test_subtract2.cpp 
-  ../test/test_subtract3.cpp
 )
 target_link_libraries( test_subtract  ${Boost_LIBRARIES} )
 add_test(NAME test_subtract COMMAND test_subtract)
 
 message(STATUS "test_multiply")
 add_executable( test_multiply
-  ../test/test_multiply.hpp
   ../test/test_multiply.cpp 
-  ../test/test_multiply1.cpp 
-  ../test/test_multiply2.cpp 
-  ../test/test_multiply3.cpp
 )
 target_link_libraries( test_multiply  ${Boost_LIBRARIES} )
 add_test(NAME test_multiply COMMAND test_multiply)
 
 message(STATUS "test_divide")
 add_executable( test_divide
-  ../test/test_divide.hpp 
   ../test/test_divide.cpp 
-  ../test/test_divide1.cpp 
-  ../test/test_divide2.cpp 
-  ../test/test_divide3.cpp
 )
 target_link_libraries( test_divide  ${Boost_LIBRARIES} )
 add_test(NAME test_divide COMMAND test_divide)
 
 message(STATUS "test_modulus")
 add_executable( test_modulus 
-  ../test/test_modulus.hpp
   ../test/test_modulus.cpp 
-  ../test/test_modulus1.cpp 
-  ../test/test_modulus2.cpp 
-  ../test/test_modulus3.cpp
 )
 target_link_libraries( test_modulus ${Boost_LIBRARIES} )
 add_test(NAME test_modulus COMMAND test_modulus)
