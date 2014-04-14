@@ -56,12 +56,20 @@ struct safe : public detail::safe_integer_base<T>::type {
         std::numeric_limits<T>::is_integer,
         "T is not an integer type"
     );
-    safe(){}
+    safe() :
+        detail::safe_integer_base<T>::type()
+    {}
 
+    /*
     template<class U>
     safe(const U & u) :
         detail::safe_integer_base<T>::type(u)
     {}
+    */
+    safe(const T & t) :
+        detail::safe_integer_base<T>::type(t)
+    {}
+
 };
 
 } // numeric

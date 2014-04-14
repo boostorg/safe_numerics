@@ -7,8 +7,8 @@
 // test construction conversions
 
 #include <iostream>
+#include <cstdlib> // EXIT_SUCCESS
 
-#include <boost/cstdint.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/array/elem.hpp>
 #include <boost/preprocessor/array/size.hpp>
@@ -21,26 +21,34 @@
 #include "test_values.hpp"
 
 // test conversion to T2 from different literal types
-template<class T1, class V>
-bool test_conversion(V v, const char *t_name, const char *v_name){
+template<class T2, class T1>
+bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
     /* test conversion constructor to T1 */
-    boost::numeric::safe<T1> t1;
+    boost::numeric::safe<T2> v2;
     try{
-        t1 = v;
-        if(! boost::numeric::safe_compare::equal(t1, v)){
+        v2 = v1;
+        if(! boost::numeric::safe_compare::equal(v2, v1)){
             std::cout
                 << "failed to detect error in construction "
-                << t_name << "<-" << v_name
+                << t2_name << "<-" << t1_name
                 << std::endl;
+            try{
+                v2 = v1;
+            }
+            catch(...){}
             return false;
         }
     }
     catch(std::range_error e){
-        if(boost::numeric::safe_compare::equal(t1, v)){
+        if(boost::numeric::safe_compare::equal(v2, v1)){
             std::cout
                 << "failed to detect error in construction "
-                << t_name << "<-" << v_name
+                << t2_name << "<-" << t2_name
                 << std::endl;
+            try{
+                v2 = v1;
+            }
+            catch(...){}
             return false;
         }
     }

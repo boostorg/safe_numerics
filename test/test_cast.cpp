@@ -7,19 +7,13 @@
 #include <iostream>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include <boost/cstdint.hpp>
-#include <boost/limits.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/array/elem.hpp>
 #include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/tuple/elem.hpp>
 #include <boost/preprocessor/stringize.hpp>
-
-#include <boost/type_traits/is_signed.hpp>
 
 #include "../include/safe_cast.hpp"
 #include "../include/safe_compare.hpp"
-#include "../include/safe_integer.hpp"
 
 #include "test_types.hpp"
 #include "test_values.hpp"

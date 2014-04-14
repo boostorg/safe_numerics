@@ -873,7 +873,9 @@ public:
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
-    safe_signed_range(){}
+    safe_signed_range() :
+        base()
+    {}
 
     template<class T>
     safe_signed_range(const T & t) :

@@ -1,46 +1,159 @@
-// Copyright (c) 2013 Ruslan Baratov
+// Copyright (c) 2014 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "../include/safe_integer.hpp"
+#include <iostream>
 #include <cassert>
 
-template <class T>
-void test_equal(T test_val) {
-  namespace num = boost::numeric;
-  num::safe<T> x = test_val;
-  num::safe<T> y = test_val;
-  assert(x == y);
-  assert(x >= y);
-  assert(x <= y);
-  assert(!(x < y));
-  assert(!(x > y));
+#include "../include/safe_integer.hpp"
+#include "../include/safe_compare.hpp"
+
+// we could have used decltype and auto for C++11 but we've decided
+// to use boost/typeof to be compatible with older compilers
+#include <boost/typeof/typeof.hpp>
+
+template<class T1, class T2>
+bool test_compare_detail(
+    T1 v1,
+    T2 v2,
+    char expected_result
+){
+    if('=' == expected_result){
+        if(! boost::numeric::safe_compare::equal(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::less_than(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::greater_than(v1, v2))
+            return false;
+    }
+    if('<' == expected_result){
+        if(! boost::numeric::safe_compare::less_than(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::equal(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::greater_than(v1, v2))
+            return false;
+    }
+    if('>' == expected_result){
+        if(! boost::numeric::safe_compare::greater_than(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::less_than(v1, v2))
+            return false;
+        if(boost::numeric::safe_compare::equal(v1, v2))
+            return false;
+    }
+    return true;
 }
 
-template <class T>
-void test_non_equal(T test_val) {
-  namespace num = boost::numeric;
-  num::safe<T> x(test_val);
-  num::safe<T> y(test_val + 1);
-  assert(x != y);
-  assert(!(x >= y));
-  assert(x <= y);
-  assert(x < y);
-  assert(!(x > y));
+template<class T1, class T2>
+bool test_compare(
+    T1 v1,
+    T2 v2,
+    const char *av1,
+    const char *av2,
+    char expected_result
+){
+    std::cout
+        << "testing  "
+        << av1 << ' ' << expected_result << ' ' << av2
+        << std::endl;
+
+    if(! test_compare_detail(v1, v2,expected_result)){
+        std::cout
+            << "error "
+            << av1 << ' ' << expected_result << ' ' << av2
+            << std::endl;
+        return false;
+    }
+
+    boost::numeric::safe<T1> t1 = v1;
+    if(!test_compare_detail(t1, v2, expected_result)){
+        std::cout
+            << "error "
+            << "safe(" << av1 << ')' << ' ' << expected_result << ' ' << av2
+            << std::endl;
+        return false;
+    }
+
+    return true; // correct result
 }
 
-int main() {
-  test_equal<unsigned>(0);
-  test_equal<unsigned>(3);
-  test_equal<unsigned short>(14);
+#include "test.hpp"
+#include "test_values.hpp"
 
-  test_equal<int>(3);
+const char *test_compare_result[VALUE_ARRAY_SIZE] = {
+//      0       0       0       0
+//      01234567012345670123456701234567
+//      01234567890123456789012345678901
+/* 0*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/* 1*/ ">=>>><>>><>>><>>>=<<><<<><<<><<<",
+/* 2*/ "<<=<<<><<<><<<><<<<<<<<<<<<<<<<<",
+/* 3*/ "<<>=<<>=<<>=<<>=<<<<<<<<<<<<<<<<",
+/* 4*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/* 5*/ ">>>>>=>>><>>><>>>>>>>=<<><<<><<<",
+/* 6*/ "<<<<<<=<<<><<<><<<<<<<<<<<<<<<<<",
+/* 7*/ "<<>=<<>=<<>=<<>=<<<<<<<<<<<<<<<<",
 
-  test_equal<uint64_t>(45);
+/* 8*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/* 9*/ ">>>>>>>>>=>>><>>>>>>>>>>>=<<><<<",
+/*10*/ "<<<<<<<<<<=<<<><<<<<<<<<<<<<<<<<",
+/*11*/ "<<>=<<>=<<>=<<>=<<<<<<<<<<<<<<<<",
+/*12*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/*13*/ ">>>>>>>>>>>>>=>>>>>>>>>>>>>>>=<<",
+/*14*/ "<<<<<<<<<<<<<<=<<<<<<<<<<<<<<<<<",
+/*15*/ "<<>=<<>=<<>=<<>=<<<<<<<<<<<<<<<<",
 
-  test_non_equal<unsigned>(342);
-  test_non_equal<signed char>(33);
-  test_non_equal<int32_t>(-988);
+//      0       0       0       0
+//      01234567012345670123456701234567
+//      01234567890123456789012345678901
+/*16*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/*17*/ ">=>>><>>><>>><>>>=<<><<<><<<><<<",
+/*18*/ ">>>>><>>><>>><>>>>=<><<<><<<><<<",
+/*19*/ ">>>>><>>><>>><>>>>>=><<<><<<><<<",
+/*20*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/*21*/ ">>>>>=>>><>>><>>>>>>>=<<><<<><<<",
+/*22*/ ">>>>>>>>><>>><>>>>>>>>=<><<<><<<",
+/*23*/ ">>>>>>>>><>>><>>>>>>>>>=><<<><<<",
+
+/*24*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/*25*/ ">>>>>>>>>=>>><>>>>>>>>>>>=<<><<<",
+/*26*/ ">>>>>>>>>>>>><>>>>>>>>>>>>=<><<<",
+/*27*/ ">>>>>>>>>>>>><>>>>>>>>>>>>>=><<<",
+/*28*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<",
+/*29*/ ">>>>>>>>>>>>>=>>>>>>>>>>>>>>>=<<",
+/*30*/ ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>=<",
+/*31*/ ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>="
+};
+
+#define TEST_IMPL(v1, v2, result) \
+    rval &= test_compare(         \
+        v1,                       \
+        v2,                       \
+        BOOST_PP_STRINGIZE(v1),   \
+        BOOST_PP_STRINGIZE(v2),   \
+        result                    \
+    );
+/**/
+
+#define TESTX(value_index1, value_index2)          \
+    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    TEST_IMPL(                                     \
+        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
+        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
+        test_compare_result[value_index1][value_index2] \
+    )
+/**/
+
+#define COUNT sizeof(test_addition_result)
+int main(int argc, char * argv[]){
+    // sanity check on test matrix - should be symetrical
+    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
+        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
+            ;//assert(test_compare_result[i][j] == test_compare_result[j][i]);
+
+    bool rval = true;
+    TEST_EACH_VALUE_PAIR
+    return ! rval ;
 }
