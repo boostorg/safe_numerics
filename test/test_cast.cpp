@@ -5,6 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
+#include <cstdlib> // EXIT_SUCCESS
+
 #include <boost/cstdint.hpp>
 #include <boost/limits.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -23,37 +25,45 @@
 #include "test_values.hpp"
 
 // test conversion to T2 from different literal types
-template<class T1, class V>
-bool test_cast(V v, const char *t_name, const char *v_name){
+template<class T2, class T1>
+bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     /* test conversion constructor to T1 */
-    T1 t1;
+    T2 v2;
     try{
-        t1 = boost::numeric::safe_cast<T1>(v);
-        if(! boost::numeric::safe_compare::equal(t1, v)){
+        v2 = boost::numeric::safe_cast<T2>(v1);
+        if(! boost::numeric::safe_compare::equal(v2, v1)){
             std::cout
                 << "failed to detect error in construction "
-                << t_name << "<-" << v_name
+                << t2_name << "<-" << t1_name
                 << std::endl;
+            try{
+                v2 = boost::numeric::safe_cast<T2>(v1);
+            }
+            catch(...){}
             return false;
         }
     }
     catch(std::range_error e){
-        if(boost::numeric::safe_compare::equal(t1, v)){
+        if(boost::numeric::safe_compare::equal(v2, v1)){
             std::cout
                 << "failed to detect error in construction "
-                << t_name << "<-" << v_name
+                << t1_name << "<-" << t2_name
                 << std::endl;
+            try{
+                v2 = boost::numeric::safe_cast<T2>(v1);
+            }
+            catch(...){}
             return false;
         }
     }
     return true; // passed test
 }
 
-#define TEST_CAST(T1, v)        \
-    test_cast<T1>(              \
-        v,                      \
-        BOOST_PP_STRINGIZE(T1), \
-        BOOST_PP_STRINGIZE(v)   \
+#define TEST_CAST(T1, v)              \
+    rval = rval && test_cast<T1>(     \
+        v,                            \
+        BOOST_PP_STRINGIZE(T1),       \
+        BOOST_PP_STRINGIZE(v)         \
     );
 /**/
 
@@ -73,10 +83,11 @@ bool test_cast(V v, const char *t_name, const char *v_name){
 /**/
 
 int main(int argc, char *argv[]){
+    bool rval = true;
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),
         EACH_TYPE1,
         nothing
     )
-    return 0;
+    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -254,147 +254,103 @@ namespace detail {
     ////////////////////////////////
     // multiplication implementation
 
-    template<bool TS, bool US>
-    struct check_multiplication_overflow;
+    template<class T, class U>
+    BOOST_TYPEOF_TPL(T() * U())
+    check_multiplication_overflow(const T & t, const U & u){
+        typedef BOOST_TYPEOF_TPL(T() * U()) result_type;
+        char const * const msg = "safe range multiplication overflow";
+        // presume that size of uintmax_t and intmax_t are the same
+        typedef bits<boost::uintmax_t> available_bits;
 
-    template<>
-    struct check_multiplication_overflow<false, false> {
-        typedef typename boost::uint_t<32>::fast t;
-        template<class T, class U>
-        static void
-        invoke(const T & t, const U & u){
-            BOOST_STATIC_ASSERT((boost::numeric::is_unsigned<T>::value));
-            BOOST_STATIC_ASSERT((boost::numeric::is_unsigned<U>::value));
-            typedef BOOST_TYPEOF_TPL(T() * U()) result_type;
-            char const * const msg = "safe range multiplication overflow";
-            typedef typename boost::mpl::times<
-                bits<result_type>,
-                boost::mpl::integral_c<unsigned int, 2>
-            > required_bits;
-            typedef bits<boost::uintmax_t> available_bits;
-            if(required_bits::value <= available_bits::value){
-                // note: I would like to use
-                // typedef typename boost::uint_t<required_bits::value>::fast temp_type;
-                // but the following fails to compile
-                // typedef typename boost::uint_t<128>::fast temp_type;
-                // so use
-                typedef typename boost::uintmax_t temp_type;
+        if(multiply_result_bits<T, U>::value <= boost::numeric::bits<result_type>::value)
+            return t * u;
 
-                temp_type temp_value = static_cast<temp_type>(t) * static_cast<temp_type>(u);
-                result_type rvalue = boost::integer_traits<result_type>::const_max;
-                if(temp_value > boost::integer_traits<result_type>::const_max)
-                    boost::numeric::overflow(msg);
-            }
-            else{
-                typedef boost::uintmax_t accumulator_type;
-                const int temp_bits = bits<accumulator_type>::value / 2;
-                typedef typename boost::uint_t<temp_bits>::least temp_type;
-
-                temp_type a = (static_cast<accumulator_type>(t) >> temp_bits);
-                temp_type c = (static_cast<accumulator_type>(u) >> temp_bits);
-                if(0 != a && 0 != c)
-                    overflow(msg);
-
-                temp_type b = static_cast<temp_type>(t);
-                if((static_cast<accumulator_type>(b) * static_cast<accumulator_type>(c) >> temp_bits) > 0)
-                    overflow(msg);
-
-                temp_type d = static_cast<const temp_type>(u);
-                if(0 != (static_cast<accumulator_type>(a) * static_cast<accumulator_type>(d) >> temp_bits))
-                    overflow(msg);
-            }
+        if(multiply_result_bits<T, U>::value <= available_bits::value){
+            typedef typename multiply_result_type<T, U>::type temp_type;
+            temp_type tmp = static_cast<temp_type>(t) * temp_type(u);
+            // the following works for both positive and negative results
+            // and for both signed and unsigned numbers
+            if(tmp > boost::integer_traits<result_type>::const_max)
+                boost::numeric::overflow(msg);
+            if(tmp < boost::integer_traits<result_type>::const_min)
+                boost::numeric::overflow(msg);
+            return static_cast<result_type>(tmp);
         }
-    };
 
-    // T unsigned, U signed
-    template<>
-    struct check_multiplication_overflow<false, true> {
-        template<class T, class U>
-        static void
-        invoke (const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() * U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
-                if(u < 0)
-                    boost::numeric::overflow("safe range right operand value altered");
-            }
-            check_multiplication_overflow<false, false>::invoke(
-                t,
-                static_cast<typename boost::make_unsigned<U>::type>(
-                    u < 0 ? check_unary_negation_overflow(u) : u
-                )
-            );
+        // when the there is no native type which can hold the product
+        // use multible precision
+
+        // t is factored as (a << temp_bits) + b
+        // u is factored as (c << temp_bits) + d
+        // so we use multi-precision:
+        // a + b
+        // c + d
+        // -----
+        //    bd
+        //   ad
+        //   cb
+        //  ac
+        // -----
+        //    ..
+
+        if(boost::numeric::is_unsigned<result_type>::value
+        && (t < 0 || u < 0))
+            overflow("conversion of negative value to unsigned");
+
+        if(t == 1)
+            return u;
+        if(u == 1)
+            return t;
+            
+        result_type rt = t;
+        if(rt < 0){
+            rt = ~rt + 1;
+            // address
+            if(rt < 0)
+                overflow("overflow of negative value");
         }
-    };
-    // T signed, U unsigned
-    template<>
-    struct check_multiplication_overflow<true, false> {
-        template<class T, class U>
-        static void
-        invoke(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() * U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
-                if(t < 0)
-                    boost::numeric::overflow("safe range left operand value altered");
-            }
-            check_multiplication_overflow<false, false>::invoke(
-                static_cast<typename boost::make_unsigned<T>::type>(
-                    t < 0 ? check_unary_negation_overflow(t) : t
-                ),
-                u
-            );
+        result_type ru = u;
+        if(ru < 0){
+            ru = ~ru + 1;
+            // address
+            if(ru < 0)
+                overflow("overflow of negative value");
         }
-    };
-    // both arguments signed, signed
-    template<>
-    struct check_multiplication_overflow<true, true> {
-        template<class T, class U>
-        static void
-        invoke(const T & t, const U & u){
-            /*
-            check_multiplication_overflow<false, false>::invoke(
-                static_cast<typename boost::make_unsigned<T>::type>(
-                    t < 0 ? -t : t
-                ),
-                static_cast<typename boost::make_unsigned<U>::type>(
-                    u < 0 ? -u : u
-                )
-            );
-            */
-            if(t < 0){
-                if(u < 0)
-                    check_multiplication_overflow<false, false>::invoke(
-                        static_cast<typename boost::make_unsigned<T>::type>(
-                            check_unary_negation_overflow(t)
-                        ),
-                        static_cast<typename boost::make_unsigned<T>::type>(check_unary_negation_overflow(u)
-                        )
-                    );
-                else
-                // u >= 0
-                    check_multiplication_overflow<false, false>::invoke(
-                        static_cast<typename boost::make_unsigned<T>::type>(check_unary_negation_overflow(u)
-                        ),
-                        static_cast<typename boost::make_unsigned<T>::type>(u)
-                    );
-            }
-            else{
-            // t >= 0
-                if(u < 0)
-                    check_multiplication_overflow<false, false>::invoke(
-                        static_cast<typename boost::make_unsigned<T>::type>(t),
-                        static_cast<typename boost::make_unsigned<T>::type>(
-                            check_unary_negation_overflow(u)
-                        )
-                    );
-                else
-                // u > 0
-                    check_multiplication_overflow<false, false>::invoke(
-                        static_cast<typename boost::make_unsigned<T>::type>(t),
-                        static_cast<typename boost::make_unsigned<T>::type>(u)
-                    );
-            }
-        }
-    };
+
+        // check positive values for overflow
+
+        // t is factored as (a << temp_bits) + b
+        // u is factored as (c << temp_bits) + d
+        // so we use multi-precision:
+        // a + b
+        // c + d
+        // -----
+        //    bd
+        //   ad
+        //   cb
+        //  ac
+        // -----
+        //    ..
+
+        typedef boost::uintmax_t accumulator_type;
+        const int temp_bits = bits<accumulator_type>::value / 2;
+        typedef typename boost::uint_t<temp_bits>::least temp_type;
+
+        temp_type a = (static_cast<accumulator_type>(rt) >> temp_bits);
+        temp_type c = (static_cast<accumulator_type>(ru) >> temp_bits);
+        if(0 != a && 0 != c)
+            overflow(msg);
+
+        temp_type b = static_cast<temp_type>(rt);
+        if((static_cast<accumulator_type>(b) * static_cast<accumulator_type>(c) >> temp_bits) > 0)
+            overflow(msg);
+
+        temp_type d = static_cast<const temp_type>(ru);
+        if(0 != (static_cast<accumulator_type>(a) * static_cast<accumulator_type>(d) >> temp_bits))
+            overflow(msg);
+            
+        return t * u;
+    }
 }   // detail
 
 template<
@@ -620,20 +576,7 @@ public:
     template<class U>
     BOOST_TYPEOF_TPL(U() * Stored())
     inline operator*(const U & rhs) const {
-        if(boost::mpl::less_equal<
-            bits<BOOST_TYPEOF_TPL(U() * Stored())>,
-            multiply_result_bits<Stored, U>
-        >::value){
-            // implement multiply larger numbers.  This is
-            // intended to function for all combinations of
-            // signed/unsigned types when the product exceeds
-            // the maximum integer size
-            detail::check_multiplication_overflow<
-                boost::numeric::is_signed<Stored>::value,
-                boost::numeric::is_signed<U>::value
-            >::invoke(m_t, rhs);
-        }
-        return m_t + rhs;
+        return detail::check_multiplication_overflow(m_t, rhs);
     }
 
     /////////////////////////////////////////////////////////////////

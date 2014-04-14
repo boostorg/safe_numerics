@@ -169,7 +169,7 @@ struct max_digits : public
     >::type
 {};
 
-// return the number of bits in a type
+// return the number of bits in a type including the sign
 template<class T>
 struct bits : public 
     boost::mpl::plus<

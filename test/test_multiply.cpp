@@ -69,6 +69,10 @@ bool test_multiply(
 #include "test.hpp"
 #include "test_values.hpp"
 
+// note: These tables presume that the the size of an int is 32 bits.
+// This should be changed for a different architecture or better yet
+// be dynamically adjusted depending on the indicated architecture
+
 const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
@@ -76,20 +80,20 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 /* 0*/ "................................",
 /* 1*/ ".........xx..xx..........xxx.xxx",
 /* 2*/ ".........xx..xx.........xxxxxxxx",
-/* 3*/ "........................xxxxxxxx",
+/* 3*/ "..........x...x.........xxxxxxxx",
 /* 4*/ "................................",
 /* 5*/ ".........xx..xx..........xxx.xxx",
 /* 6*/ ".........xx..xx.........xxxxxxxx",
-/* 7*/ "........................xxxxxxxx",
+/* 7*/ "..........x...x.........xxxxxxxx",
 
 /* 8*/ "................................",
 /* 9*/ ".xx..xx..xx..xx..xxx.xxx.xxx.xxx",
-/*10*/ ".xx..xx..xx?.xx..xxx.xxxxxxxxxxx",
-/*11*/ "..........?...x.........xxxxxxxx",
+/*10*/ ".xxx.xxx.xxx.xx..xxx.xxxxxxxxxxx",
+/*11*/ "..........x...x.........xxxxxxxx",
 /*12*/ "................................",
 /*13*/ ".xx..xx..xx..xx..xxx.xxx.xxx.xxx",
-/*14*/ ".xx..xx..xxx.xx?.xxx.xxx.xxxxxxx",
-/*15*/ "..............?.............xxxx",
+/*14*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxxxxxx",
+/*15*/ "..............x.............xxxx",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
@@ -101,7 +105,7 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 /*20*/ "................................",
 /*21*/ ".........xx..xx..........xxx.xxx",
 /*22*/ ".........xx..xx..........xxx.xxx",
-/*23*/ ".........xx..xx........x.xxx.xxx",
+/*23*/ ".........xx..xx..........xxx.xxx",
 
 /*24*/ "..xx..xx..xx....................",
 /*25*/ ".xxx.xxx.xxx.xx..xxx.xxx.xxx.xxx",
@@ -137,7 +141,8 @@ int main(int argc, char * argv[]){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
         for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(!(test_multiplication_result[i][j] == test_multiplication_result[j][i]))
+            if(!(test_multiplication_result[i][j]
+            == test_multiplication_result[j][i]))
                 std::cerr << "asymmetry in operations "
                     << "i == " << i
                     << " j == " << j
