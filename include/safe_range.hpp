@@ -245,7 +245,12 @@ namespace detail {
 
     template<class T>
     T check_unary_negation_overflow(const T & t){
+        // this makes no sense for unsigned types
         BOOST_STATIC_ASSERT((boost::numeric::is_signed<T>::value));
+        // the most common situation would be doing something like
+        // boost::uint8_t x = -128;
+        // ...
+        // --x;
         if(boost::integer_traits<T>::const_max == t)
             overflow("safe range unary negation overflow");
         return -t;
@@ -262,7 +267,8 @@ namespace detail {
         // presume that size of uintmax_t and intmax_t are the same
         typedef bits<boost::uintmax_t> available_bits;
 
-        if(multiply_result_bits<T, U>::value <= boost::numeric::bits<result_type>::value)
+        if(multiply_result_bits<T, U>::value
+        <= boost::numeric::bits<result_type>::value)
             return t * u;
 
         if(multiply_result_bits<T, U>::value <= available_bits::value){
@@ -351,6 +357,31 @@ namespace detail {
             
         return t * u;
     }
+    template<class T, class U>
+    BOOST_TYPEOF_TPL(T() / U())
+    check_division_overflow(const T & t, const U & u){
+        if(0 == u)
+            overflow("divide by zero");
+
+        if(boost::numeric::is_signed<U>::value){
+            // t unsigned, u signed
+            if(boost::numeric::is_unsigned<T>::value){
+                if(u < 0){
+                    overflow("conversion of negative value to unsigned");
+                }
+            }
+            else{
+            // both signed
+                // pathological case: change sign on negative number so it overflows
+                if(t == boost::integer_traits<T>::const_min && u == -1)
+                    overflow("overflow in result");
+            }
+        }
+        // both unsigned
+        // t signed, u unsigned
+        return t / u;
+    }
+
 }   // detail
 
 template<
@@ -391,6 +422,8 @@ protected:
     }
     typedef Stored stored_type;
 public:
+    /////////////////////////////////////////////////////////////////
+    // modification binary operators
     template<class T>
     Derived & operator=(const T & rhs){
         m_t = validate(rhs);
@@ -446,6 +479,7 @@ public:
         *this = *this << rhs;
         return derived();
     }
+    // unary operators
     Derived operator++(){
         *this = *this + 1;
         return derived();
@@ -465,7 +499,9 @@ public:
         return rvalue;
     }
     Derived operator-() const {
-        return validate(- m_t);
+        return validate(
+            check_unary_negation_overflow(m_t)
+        );
     }
     Derived operator~() const {
         return validate(~m_t);
@@ -581,34 +617,10 @@ public:
 
     /////////////////////////////////////////////////////////////////
     // division
-    // simple case - default rules work
     template<class U>
-    typename boost::enable_if<
-        typename boost::mpl::less_equal<
-            division_result_bits<Stored, U>, 
-            bits<boost::uintmax_t>
-        >,
-        typename division_result_type<Stored, U>::type
-    >::type
+    BOOST_TYPEOF_TPL(U() * Stored())
     inline operator/(const U & rhs) const {
-        if(0 == rhs)
-            throw std::domain_error("Divide by zero");
-        return safe_cast<typename division_result_type<Stored, U>::type>(m_t / rhs);
-    }
-
-    // special case - possible overflow
-    template<class U>
-    typename boost::enable_if<
-        typename boost::mpl::greater<
-            division_result_bits<Stored, U>, 
-            bits<boost::uintmax_t>
-        >,
-        typename division_result_type<Stored, U>::type
-    >::type
-    inline operator/(const U & rhs) const {
-        if(0 == rhs)
-            throw std::domain_error("Divide by zero");
-        return safe_cast<typename division_result_type<Stored, U>::type>(m_t / rhs);
+        return detail::check_division_overflow(m_t, rhs);
     }
 
     /////////////////////////////////////////////////////////////////

@@ -148,11 +148,6 @@ const char *test_compare_result[VALUE_ARRAY_SIZE] = {
 
 #define COUNT sizeof(test_addition_result)
 int main(int argc, char * argv[]){
-    // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            ;//assert(test_compare_result[i][j] == test_compare_result[j][i]);
-
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     return ! rval ;
