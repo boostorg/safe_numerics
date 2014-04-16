@@ -241,22 +241,6 @@ namespace detail {
     };
 
     ////////////////////////////////
-    // unary negation implementation
-
-    template<class T>
-    T check_unary_negation_overflow(const T & t){
-        // this makes no sense for unsigned types
-        BOOST_STATIC_ASSERT((boost::numeric::is_signed<T>::value));
-        // the most common situation would be doing something like
-        // boost::uint8_t x = -128;
-        // ...
-        // --x;
-        if(boost::integer_traits<T>::const_max == t)
-            overflow("safe range unary negation overflow");
-        return -t;
-    }
-
-    ////////////////////////////////
     // multiplication implementation
 
     template<class T, class U>
@@ -380,6 +364,30 @@ namespace detail {
         // both unsigned
         // t signed, u unsigned
         return t / u;
+    }
+    template<class T, class U>
+    BOOST_TYPEOF_TPL(T() / U())
+    check_modulus_overflow(const T & t, const U & u){
+        if(0 == u)
+            overflow("modulus divide by zero");
+
+        if(boost::numeric::is_signed<U>::value){
+            // t unsigned, u signed
+            if(boost::numeric::is_unsigned<T>::value){
+                if(u < 0){
+                    overflow("conversion of negative value to unsigned");
+                }
+            }
+            else{
+            // both signed
+                // pathological case: change sign on negative number so it overflows
+                if(t == boost::integer_traits<T>::const_min && u == -1)
+                    overflow("overflow in result");
+            }
+        }
+        // both unsigned
+        // t signed, u unsigned
+        return t % u;
     }
 
 }   // detail
@@ -630,38 +638,87 @@ public:
     inline operator%(const U & rhs) const {
         if(0 == rhs)
             throw std::domain_error("Divide by zero");
-        return safe_cast<typename division_result_type<Stored, U>::type>(m_t % rhs);
+        return detail::check_modulus_overflow(m_t, rhs);
     }
 
     /////////////////////////////////////////////////////////////////
     // logical operators
     template<class U>
-    typename logical_result_type<Stored, U>::type
+    BOOST_TYPEOF_TPL(Stored() | U())
     inline operator|(const U & rhs) const {
-        typedef typename logical_result_type<Stored, U>::type result_type;
-        return static_cast<result_type>(m_t) | static_cast<result_type>(rhs);
+        // verify that U is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "right hand side is not an integer type"
+        );
+        typedef BOOST_TYPEOF_TPL(Stored() | U()) result_type;
+        return m_t | rhs;
     }
     template<class U>
-    typename logical_result_type<Stored, U>::type
+    BOOST_TYPEOF_TPL(Stored() & U())
     inline operator&(const U & rhs) const {
-        typedef typename logical_result_type<Stored, U>::type result_type;
-        return static_cast<result_type>(m_t) & static_cast<result_type>(rhs);
+        // verify that U is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "right hand side is not an integer type"
+        );
+        typedef BOOST_TYPEOF_TPL(Stored() & U()) result_type;
+        return m_t & rhs;
     }
     template<class U>
-    typename logical_result_type<Stored, U>::type
+    BOOST_TYPEOF_TPL(Stored() ^ U())
     inline operator^(const U & rhs) const {
-        typedef typename logical_result_type<Stored, U>::type result_type;
-        return static_cast<result_type>(m_t) ^ static_cast<result_type>(rhs);
+        // verify that U is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "right hand side is not an integer type"
+        );
+        typedef BOOST_TYPEOF_TPL(Stored() ^ U()) result_type;
+        return m_t ^ rhs;
     }
     template<class U>
     Stored inline operator>>(const U & rhs) const {
-        typedef typename logical_result_type<Stored, U>::type result_type;
-        return static_cast<result_type>(m_t) >> static_cast<result_type>(rhs);
+        // verify that U is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "right hand side is not an integer type"
+        );
+        if(m_t < 0)
+            overflow("right shift of negative number undefined");
+        typedef BOOST_TYPEOF_TPL(Stored() >> U()) result_type;
+        if(rhs > boost::numeric::bits<Stored>::value)
+            overflow("conversion of negative value to unsigned");
+
+        return m_t >> rhs;
     }
     template<class U>
     Stored inline operator<<(const U & rhs) const {
-        typedef typename logical_result_type<Stored, U>::type result_type;
-        return static_cast<result_type>(m_t) << static_cast<result_type>(rhs);
+        // verify that U is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "right hand side is not an integer type"
+        );
+        if(m_t < 0)
+            overflow("right shift of negative number undefined");
+        typedef BOOST_TYPEOF_TPL(Stored() >> U()) result_type;
+        if(rhs > boost::numeric::bits<Stored>::value)
+            overflow("conversion of negative value to unsigned");
+        return m_t << rhs;
+    }
+
+    ////////////////////////////////
+    // unary negation implementation
+    Stored
+    operator-(){
+        // this makes no sense for unsigned types
+        BOOST_STATIC_ASSERT((boost::numeric::is_signed<Stored>::value));
+        // the most common situation would be doing something like
+        // boost::uint8_t x = -128;
+        // ...
+        // --x;
+        if(boost::integer_traits<Stored>::const_max == m_t)
+            overflow("safe range unary negation overflow");
+        return -m_t;
     }
 
     /////////////////////////////////////////////////////////////////

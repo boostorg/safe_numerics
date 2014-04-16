@@ -175,11 +175,6 @@ add_executable( test_conversion ../test/test_conversion.cpp)
 target_link_libraries( test_conversion  ${Boost_LIBRARIES} )
 add_test(NAME test_conversion COMMAND test_conversion)
 
-message(STATUS "test_numeric")
-add_executable( test_numeric ../test/test_numeric.cpp)
-target_link_libraries( test_numeric  ${Boost_LIBRARIES} )
-add_test(NAME test_numeric COMMAND test_numeric)
-
 message(STATUS "test")
 add_executable( test ../test/test.cpp)
 target_link_libraries( test  ${Boost_LIBRARIES} )
