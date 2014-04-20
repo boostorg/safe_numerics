@@ -24,29 +24,57 @@
 template<class T2, class T1>
 bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
     /* test conversion constructor to T1 */
-    boost::numeric::safe<T2> v2;
+    boost::numeric::safe<T2> t2;
     try{
-        v2 = v1;
-        if(! boost::numeric::safe_compare::equal(v2, v1)){
+        t2 = v1;
+        if(! boost::numeric::safe_compare::equal(t2, v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
                 << std::endl;
             try{
-                v2 = v1;
+                t2 = v1;
             }
             catch(...){}
             return false;
         }
     }
     catch(std::range_error e){
-        if(boost::numeric::safe_compare::equal(v2, v1)){
+        if(boost::numeric::safe_compare::equal(t2, v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t2_name
                 << std::endl;
             try{
-                v2 = v1;
+                t2 = v1;
+            }
+            catch(...){}
+            return false;
+        }
+    }
+    boost::numeric::safe<T1> t1 = v1;
+    try{
+        t2 = t1;
+        if(! boost::numeric::safe_compare::equal(t2, t1)){
+            std::cout
+                << "failed to detect error in construction "
+                << t2_name << "<-" << t1_name
+                << std::endl;
+            try{
+                t2 = t1;
+            }
+            catch(...){}
+            return false;
+        }
+    }
+    catch(std::range_error e){
+        if(boost::numeric::safe_compare::equal(t2, t1)){
+            std::cout
+                << "failed to detect error in construction "
+                << t2_name << "<-" << t2_name
+                << std::endl;
+            try{
+                t2 = t1;
             }
             catch(...){}
             return false;

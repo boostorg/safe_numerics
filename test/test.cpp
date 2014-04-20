@@ -126,7 +126,14 @@ bool test5(){
     y = 2;
     z = 3;
     z = x + y;
-    z = x - y;
+    try{
+        z = x - y; // should trap here
+    }
+    catch(std::exception e){
+        success = true;
+    }
+    if(success == false)
+        return false;
     boost::uint64_t yi, zi;
     zi = x;
     zi = x + yi;

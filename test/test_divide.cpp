@@ -63,6 +63,40 @@ bool test_divide(
             return false;
         }
     }
+    boost::numeric::safe<T2> t2 = v2;
+
+    try{
+        result = t1 / t2;
+
+        if(expected_result != '.'){
+        //if(expected_result == 'x'){
+            std::cout
+                << "failed to detect error in division "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " ! = "<< av1 << " / " << av2
+                << std::endl;
+            try{
+                result = t1 / t2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
+    catch(std::range_error){
+        if(expected_result != 'x'){
+        //if(expected_result == '.'){
+            std::cout
+                << "erroneously detected error in division "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " == "<< av1 << " / " << av2
+                << std::endl;
+            try{
+                result = t1 / t2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
     return true;
 }
 
@@ -73,7 +107,7 @@ bool test_divide(
 // This should be changed for a different architecture or better yet
 // be dynamically adjusted depending on the indicated architecture
 
-const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
+const char *test_division_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
@@ -132,7 +166,7 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_multiplication_result[value_index1][value_index2] \
+        test_division_result[value_index1][value_index2] \
     )
 /**/
 

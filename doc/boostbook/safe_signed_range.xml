@@ -2,7 +2,8 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_signed_range">
-  <title>safe_signed_range&lt;MIN, MAX&gt;</title>
+  <title>safe_signed_range&lt;boost::intmax_t MIN,
+  boost::intmax_tMAX&gt;</title>
 
   <section>
     <title>Description</title>
@@ -69,9 +70,9 @@
 
     <para>The usage of this type in an arithmetic expression will result in
     another type fulfilling the <link
-    linkend="safe_numerics.numeric">Numeric</link> concept. This will be the
-    smallest signed integer type of sufficient size to hold the result of the
-    operation.</para>
+    linkend="safe_numerics.numeric">Numeric</link> concept. </para>
+
+    <para>Operations on safe_signed_range will result in the same</para>
   </section>
 
   <section>

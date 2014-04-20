@@ -12,17 +12,50 @@
   </section>
 
   <section>
-    <title>Template Parameters</title>
+    <title>Notation</title>
 
-    <para/>
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Symbol</entry>
+
+            <entry align="left">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T, U, V</code></entry>
+
+            <entry>Types which model the <link
+            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
+          </row>
+
+          <row>
+            <entry>t, u, v</entry>
+
+            <entry>objects of types T and U respectively</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
 
     <informaltable>
       <tgroup cols="3">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
         <colspec align="left" colwidth="3*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="6*"/>
 
         <thead>
           <row>
@@ -39,9 +72,10 @@
             <entry><code>T</code></entry>
 
             <entry><link
-            linkend="safe_numerics.numeric">Numeric</link></entry>
+            linkend="safe_numerics.numeric">boost::is_integer&lt;T&gt;::value
+            == true</link></entry>
 
-            <entry><para>The underlying integer type</para></entry>
+            <entry><para>The underlying intrinsic integer type</para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -52,53 +86,55 @@
     <title>Model of</title>
 
     <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+
+    <para>If the resulting type of the operation t op u is V, the resulting
+    type of the operations st op su, t op su and st op u will be
+    safe&lt;V&gt;;</para>
   </section>
 
   <section>
-    <title>Derived From</title>
+    <title>Valid Expressions</title>
 
-    <para><code><link
-    linkend="safe_numerics.safe_signed_range">safe_signed_range&lt;T&gt;</link></code>
-    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</para>
+    <para><informaltable>
+        <tgroup cols="3">
+          <colspec align="left" colwidth="1*"/>
 
-    <para><code><link
-    linkend="safe_numerics.safe_unsigned_range">safe_unsigned_range&lt;T&gt;</link></code>
-    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</para>
-  </section>
+          <colspec align="left" colwidth="2*"/>
 
-  <section>
-    <title>Notation</title>
+          <colspec align="left" colwidth="4*"/>
 
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left"/>
+          <thead>
+            <row>
+              <entry align="left">Parameter</entry>
 
-        <colspec align="left" colwidth="6*"/>
+              <entry align="left">Result</entry>
 
-        <thead>
-          <row>
-            <entry align="left">Symbol</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
 
-            <entry align="left">Description</entry>
-          </row>
-        </thead>
+          <tbody>
+            <row>
+              <entry><code>st op u</code></entry>
 
-        <tbody>
-          <row>
-            <entry><code>T</code></entry>
+              <entry><link linkend="safe_numerics.numeric">safe&lt;decltype(t
+              op u)&gt;</link></entry>
 
-            <entry>A type that models the <link
-            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
-          </row>
+              <entry><para>op is any valid binary operator for types T and
+              U</para></entry>
+            </row>
 
-          <row>
-            <entry>t</entry>
+            <row>
+              <entry><code>T * U</code></entry>
 
-            <entry>An object of type <code>T</code></entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
+              <entry><link linkend="safe_numerics.numeric">typeof(T *
+              U)</link></entry>
+
+              <entry><para>The underlying integer type</para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
   </section>
 
   <section>

@@ -58,6 +58,36 @@ bool test_subtract(
             return false;
         }
     }
+    boost::numeric::safe<T2> t2 = v2;
+    try{
+        result = t1 - t2;
+        if(expected_result == 'x'){
+            std::cout
+                << "failed to detect error in subtraction "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " ! = "<< av1 << " - " << av2
+                << std::endl;
+            try{
+                result = t1 - t2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
+    catch(std::range_error){
+        if(expected_result == '.'){
+            std::cout
+                << "erroneously detected error in subtraction "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " == "<< av1 << " - " << av2
+                << std::endl;
+            try{
+                result = t1 - t2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
     return true; // correct result
 }
 
@@ -89,18 +119,18 @@ const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ ".........x...x...........xxx.xxx",
-/*17*/ ".........x...x...........xxx.xxx",
-/*18*/ ".........x...x...........xxx.xxx",
+/*16*/ ".........................xxx.xxx",
+/*17*/ ".........................xxx.xxx",
+/*18*/ ".........................xxx.xxx",
 /*19*/ ".........................xxx.xxx",
-/*20*/ ".........x...x...........xxx.xxx",
-/*21*/ ".........x...x...........xxx.xxx",
-/*22*/ ".........x...x...........xxx.xxx",
+/*20*/ ".........................xxx.xxx",
+/*21*/ ".........................xxx.xxx",
+/*22*/ ".........................xxx.xxx",
 /*23*/ ".........................xxx.xxx",
 
-/*24*/ ".xxx.xxx.xxx.x...xxx.xxx.xxx.xxx",
-/*25*/ "..xx..xx..xx.x............xx.xxx",
-/*26*/ "..xx..xx..xx.x.............x.xxx",
+/*24*/ ".xxx.xxx.xxx.....xxx.xxx.xxx.xxx",
+/*25*/ "..xx..xx..xx..............xx.xxx",
+/*26*/ "..xx..xx..xx...............x.xxx",
 /*27*/ "..xx..xx..xx.................xxx",
 /*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*29*/ "..xx..xx..xx..xx..............xx",

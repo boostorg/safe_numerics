@@ -60,6 +60,37 @@ bool test_add(
         }
     }
 
+    boost::numeric::safe<T2> t2 = v2;
+    try{
+        result = t1 + t2;
+
+        if(expected_result == 'x'){
+            std::cout
+                << "failed to detect error in addition "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " ! = "<< av1 << " + " << av2
+                << std::endl;
+            try{
+                result = t1 + v2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
+    catch(std::range_error){
+        if(expected_result == '.'){
+            std::cout
+                << "erroneously detected error in addition "
+                << std::hex << result << "(" << std::dec << result << ")"
+                << " == "<< av1 << " + " << av2
+                << std::endl;
+            try{
+                result = t1 + t2;
+            }
+            catch(...){}
+            return false;
+        }
+    }
     return true; // correct result
 }
 
