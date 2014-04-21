@@ -60,15 +60,15 @@ struct safe : public detail::safe_integer_base<T>::type {
         detail::safe_integer_base<T>::type()
     {}
 
-    /*
     template<class U>
     safe(const U & u) :
         detail::safe_integer_base<T>::type(u)
     {}
-    */
+    /*
     safe(const T & t) :
         detail::safe_integer_base<T>::type(t)
     {}
+    */
 
 };
 

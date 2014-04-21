@@ -921,10 +921,8 @@ public:
     typedef typename detail::signed_stored_type<MIN, MAX>::type stored_type;
     template<class T>
     stored_type validate(const T & t) const {
-        const boost::intmax_t tx = t;
-        if(MAX < tx
-        || MIN > tx
-        )
+        if(safe_compare::less_than(t, MIN)
+        || safe_compare::greater_than(t, MAX))
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
@@ -982,8 +980,8 @@ public:
     typedef typename detail::unsigned_stored_type<MIN, MAX>::type stored_type;
     template<class T>
     stored_type validate(const T & t) const {
-        const boost::uintmax_t tx = t;
-        if(MAX < tx)
+        if(safe_compare::less_than(t, MIN)
+        || safe_compare::greater_than(t, MAX))
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }

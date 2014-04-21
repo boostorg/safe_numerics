@@ -6,6 +6,7 @@
 
 #include <exception>
 #include <cstdlib>   // EXIT_SUCCESS
+#include <iostream>
 
 #include <boost/mpl/print.hpp>
 
@@ -13,14 +14,13 @@
 #include "../include/safe_integer.hpp"
 
 bool test1(){
+    std::cout << "test1" << std::endl;
     boost::numeric::safe_signed_range<-64, 63> x, y, z;
     x = 1;
     y = 2;
     z = 3;
     z = x + y;
     z = x - y;
-    short int yi, zi;
-    zi = x;
     typedef boost::mpl::print<
         boost::numeric::addition_result_bits<
             boost::numeric::safe_signed_range<-64, 63>,
@@ -37,26 +37,28 @@ bool test1(){
             int
         >::type
     >::type t3;
-    zi = x + yi;
-    
-    bool success = false;
+
     try{
-        z = x + yi; // should trap here
+        short int yi, zi;
+        yi = y;
+        zi = x + yi;
     }
     catch(std::exception e){
-        success = true;
+        // none of the above should trap. Mark failure if they do
+        std::cout << e.what() << std::endl;
+        return false;
     }
-    return success;
+    return true;
 }
 
 bool test2(){
+    std::cout << "test2" << std::endl;
     boost::numeric::safe_unsigned_range<0, 64> x, y, z;
     x = 1;
     y = 2;
     z = 3;
 
-    bool success;
-    success = false;
+    bool success = false;
     try{
         z = x - y; // should trap here
     }
@@ -66,42 +68,47 @@ bool test2(){
     if(success == false)
         return false;
     
-    return success;
-    int yi, zi;
-    zi = x;
-    zi = x + yi;
-    success = false;
     try{
+        int yi = y;
         z = x + yi; // should trap here
     }
     catch(std::exception e){
-        success = true;
+        // none of the above should trap. Mark failure if they do
+        std::cout << e.what() << std::endl;
+        return false;
     }
-    return success;
+    return true;
 }
 
 bool test3(){
+    std::cout << "test3" << std::endl;
     boost::numeric::safe<int> x, y, z;
     x = 1;
     y = 2;
     z = 3;
-    z = x + y;
-    z = x - y;
-    int yi, zi;
-    zi = x;
-    zi = x + yi;
-    z = x + yi;
+    try{
+        z = x + y;
+        z = x - y;
+        int yi, zi;
+        zi = x + yi;
+        z = x + yi;
+    }
+    catch(std::exception e){
+        // none of the above should trap. Mark failure if they do
+        std::cout << e.what() << std::endl;
+        return false;
+    }
     return true;
 }
 
 bool test4(){
+    std::cout << "test4" << std::endl;
     boost::numeric::safe<unsigned int> x, y, z;
     x = 1;
     y = 2;
     z = 3;
     z = x + y;
-    bool success;
-    success = false;
+    bool success = false;
     try{
         z = x - y; // should trap here
     }
@@ -121,11 +128,13 @@ bool test4(){
 #include <boost/cstdint.hpp>
 
 bool test5(){
+    std::cout << "test5" << std::endl;
     boost::numeric::safe<boost::uint64_t> x, y, z;
     x = 1;
     y = 2;
     z = 3;
     z = x + y;
+    bool success = false;
     try{
         z = x - y; // should trap here
     }
