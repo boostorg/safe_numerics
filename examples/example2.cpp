@@ -1,11 +1,22 @@
-void example2(){
-    std::cout << "example 2 ";
-    std::cout << "(undetected overflow in data type)" << std::endl;
+#include <cassert>
+#include <stdexcept>
+#include <iostream>
+
+#include "../include/safe_integer.hpp"
+//#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout << "example 2:";
+    std::cout << "undetected overflow in data type" << std::endl;
     try{
         int x = INT_MAX;
         // the following silently produces an incorrect result
         ++x;
-        //std::cout << x << " != " << -1;
+        std::cout << x << " != " << INT_MAX << " + 1" << std::endl;
         detected_msg(false);
     }
     catch(...){
@@ -23,4 +34,5 @@ void example2(){
         std::cout << e.what();
         detected_msg(true);
     }
+    return 0;
 }

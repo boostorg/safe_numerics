@@ -143,44 +143,32 @@ endif()
 # enable_testing()
 
 message(STATUS "test_cast")
-add_executable( test_cast
-  ../test/test_cast.cpp
-)
+add_executable( test_cast ../test/test_cast.cpp )
 target_link_libraries( test_cast ${Boost_LIBRARIES} )
 add_test(NAME test_cast COMMAND test_cast)
 
 message(STATUS "test_add")
-add_executable( test_add
-  ../test/test_add.cpp 
-)
+add_executable( test_add ../test/test_add.cpp )
 target_link_libraries( test_add  ${Boost_LIBRARIES} )
 add_test(NAME test_add COMMAND test_add)
 
 message(STATUS "test_subtract")
-add_executable( test_subtract
-  ../test/test_subtract.cpp 
-)
+add_executable( test_subtract ../test/test_subtract.cpp )
 target_link_libraries( test_subtract  ${Boost_LIBRARIES} )
 add_test(NAME test_subtract COMMAND test_subtract)
 
 message(STATUS "test_multiply")
-add_executable( test_multiply
-  ../test/test_multiply.cpp 
-)
+add_executable( test_multiply ../test/test_multiply.cpp )
 target_link_libraries( test_multiply  ${Boost_LIBRARIES} )
 add_test(NAME test_multiply COMMAND test_multiply)
 
 message(STATUS "test_divide")
-add_executable( test_divide
-  ../test/test_divide.cpp 
-)
+add_executable( test_divide ../test/test_divide.cpp )
 target_link_libraries( test_divide  ${Boost_LIBRARIES} )
 add_test(NAME test_divide COMMAND test_divide)
 
 message(STATUS "test_modulus")
-add_executable( test_modulus 
-  ../test/test_modulus.cpp 
-)
+add_executable( test_modulus ../test/test_modulus.cpp )
 target_link_libraries( test_modulus ${Boost_LIBRARIES} )
 add_test(NAME test_modulus COMMAND test_modulus)
 
@@ -199,6 +187,27 @@ add_executable( test ../test/test.cpp)
 target_link_libraries( test  ${Boost_LIBRARIES} )
 add_test(NAME test COMMAND test)
 
+# examples
+message(STATUS "example1")
+add_executable( example1 ../examples/example1.cpp)
+target_link_libraries( example1  ${Boost_LIBRARIES} )
+add_test(NAME example1 COMMAND example1)
+
+message(STATUS "example2")
+add_executable( example2 ../examples/example2.cpp)
+target_link_libraries( example2 ${Boost_LIBRARIES} )
+add_test(NAME example2 COMMAND example2)
+
+message(STATUS "example3")
+add_executable( example3 ../examples/example3.cpp)
+target_link_libraries( example3  ${Boost_LIBRARIES} )
+add_test(NAME example3 COMMAND example3)
+
+message(STATUS "example4")
+add_executable( example4 ../examples/example4.cpp)
+target_link_libraries( example4  ${Boost_LIBRARIES} )
+add_test(NAME example4 COMMAND example4)
+
 # end test targets
 ####################
 
@@ -210,6 +219,12 @@ file(GLOB include_files
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp"
 )
 add_custom_target(include SOURCES ${include_files})
+
+file(GLOB include_concept_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../include/concept/*.hpp"
+)
+add_custom_target(include_concept_files SOURCES ${include_concept_files})
 
 # end headers in IDE
 ####################
