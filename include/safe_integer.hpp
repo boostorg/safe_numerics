@@ -25,61 +25,72 @@ namespace numeric {
 
 namespace detail{
 
-template<class T>
+template<
+    class T,
+    class PromotionPolicy
+>
 struct safe_integer_base {
     typedef typename boost::mpl::if_<
         boost::numeric::is_signed<T>,
         boost::numeric::safe_signed_range<
             static_cast<boost::intmax_t>(boost::integer_traits<T>::const_min),
-            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_max)
+            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_max),
+            PromotionPolicy
         >,
         boost::numeric::safe_unsigned_range<
             static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_min),
-            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_max)
+            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_max),
+            PromotionPolicy
         >
     >::type type;
 };
 
 } // detail
 
-template<class T>
-struct safe : public detail::safe_integer_base<T>::type {
-    typedef typename detail::safe_integer_base<T>::type base_type;
+} // numeric
+} // boost
 
-    // verify that std::numeric_limits has been specialized for this type
-    BOOST_STATIC_ASSERT_MSG(
-        std::numeric_limits<T>::is_specialized,
-        "std::numeric_limits<T> has not been specialized for this type"
-    );
-    // verify that T is an integer type
-    BOOST_STATIC_ASSERT_MSG(
-        std::numeric_limits<T>::is_integer,
-        "T is not an integer type"
-    );
+#include "boost/concept/assert.hpp"
+#include "concept/numeric.hpp"
+#include "native.hpp" // boost::promotion::native
+
+namespace boost {
+namespace numeric {
+
+template<
+    class T,
+    class PromotionPolicy = boost::numeric::promotion::native
+>
+struct safe : public detail::safe_integer_base<T, PromotionPolicy>::type {
+    typedef typename detail::safe_integer_base<T, PromotionPolicy>::type base_type;
+
+    BOOST_CONCEPT_ASSERT((Integer<T>));
+
     safe() :
-        detail::safe_integer_base<T>::type()
+        detail::safe_integer_base<T, PromotionPolicy>::type()
     {}
 
     template<class U>
     safe(const U & u) :
-        detail::safe_integer_base<T>::type(u)
+        detail::safe_integer_base<T, PromotionPolicy>::type(u)
     {}
     /*
     safe(const T & t) :
-        detail::safe_integer_base<T>::type(t)
+        detail::safe_integer_base<T, PromotionPolicy>::type(t)
     {}
     */
-
 };
 
 } // numeric
-
 } // boost
 
 namespace std {
 
-template<class T>
-class numeric_limits< boost::numeric::safe<T> > : public
+template<
+    class T,
+    class PromotionPolicy
+>
+class numeric_limits< boost::numeric::safe<T, PromotionPolicy> > : public
     numeric_limits<T>
 {
     typedef boost::numeric::safe<T> SI;

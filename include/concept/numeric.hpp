@@ -15,13 +15,23 @@
 #include <boost/limits.hpp>
 #include <boost/static_assert.hpp>
 
+namespace boost {
+namespace numeric {
+
 template<class T>
 struct Numeric {
     // if your program traps here, you need to create a
     // std::numeric_limits class for your type T.  see
     // see C++ standard 18.3.2.2
-    BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_specialized == true);
-    BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_bounded == true);
+    BOOST_STATIC_ASSERT_MSG(
+        std::numeric_limits<T>::is_specialized,
+        "std::numeric_limits<T> has not been specialized for this type"
+    );
+    // verify that T is an integer type
+    BOOST_STATIC_ASSERT_MSG(
+        std::numeric_limits<T>::is_integer,
+        "T is not an integer type"
+    );
 };
 
 template <class T>
@@ -29,5 +39,8 @@ class Integer : public Numeric<T> {
     // integer types must have the corresponding numeric trait.
     BOOST_STATIC_ASSERT(std::numeric_limits<T>::is_integer == true);
 };
+
+} // numeric
+} // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_NUMERIC_HPP

@@ -76,11 +76,20 @@ namespace detail {
 
 } //detail
 
-template<boost::intmax_t MIN, boost::intmax_t MAX>
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class PromotionPolicy
+>
 class safe_signed_range;
-template<boost::uintmax_t MIN, boost::uintmax_t MAX>
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class Promotion_Policy
+>
 class safe_unsigned_range;
-template<class Stored, class Derived>
+template<class Stored, class Derived, class Promotion_Policy>
 class safe_range_base;
 
 } // numeric
@@ -88,11 +97,11 @@ class safe_range_base;
 
 namespace std {
 
-template<boost::intmax_t MIN, boost::intmax_t MAX>
-class numeric_limits< boost::numeric::safe_signed_range<MIN, MAX> > : public
+template<boost::intmax_t MIN, boost::intmax_t MAX, class PromotionPolicy>
+class numeric_limits< boost::numeric::safe_signed_range<MIN, MAX, PromotionPolicy> > : public
     numeric_limits<int>
 {
-    typedef boost::numeric::safe_signed_range<MIN, MAX> T;
+    typedef boost::numeric::safe_signed_range<MIN, MAX, PromotionPolicy> T;
 public:
     BOOST_STATIC_CONSTEXPR T min() BOOST_NOEXCEPT { return T(MIN); }
     BOOST_STATIC_CONSTEXPR T max() BOOST_NOEXCEPT { return T(MAX); }
@@ -103,11 +112,11 @@ public:
     BOOST_STATIC_CONSTANT(int,max_digits10 = digits10);
 };
 
-template<boost::uintmax_t MIN, boost::uintmax_t MAX>
-class numeric_limits< boost::numeric::safe_unsigned_range<MIN, MAX> > : public
+template<boost::uintmax_t MIN, boost::uintmax_t MAX, class PromotionPolicy>
+class numeric_limits< boost::numeric::safe_unsigned_range<MIN, MAX, PromotionPolicy> > : public
     numeric_limits<unsigned int>
 {
-    typedef boost::numeric::safe_unsigned_range<MIN, MAX> T;
+    typedef boost::numeric::safe_unsigned_range<MIN, MAX, PromotionPolicy> T;
 public:
     BOOST_STATIC_CONSTEXPR T min() BOOST_NOEXCEPT { return T(MIN); }
     BOOST_STATIC_CONSTEXPR T max() BOOST_NOEXCEPT { return T(MAX); }
@@ -118,8 +127,8 @@ public:
     BOOST_STATIC_CONSTEXPR int max_digits10 = digits10;
 };
 
-template<class Stored, class Derived>
-class numeric_limits< boost::numeric::safe_range_base<Stored, Derived> > : public
+template<class Stored, class Derived, class PromotionPolicy>
+class numeric_limits< boost::numeric::safe_range_base<Stored, Derived, PromotionPolicy> > : public
     numeric_limits<Stored>
 {};
 

@@ -35,6 +35,8 @@
 #include <boost/mpl/sizeof.hpp>
 #include <boost/mpl/times.hpp>
 #include <boost/mpl/and.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/or.hpp>
 
 #include <boost/static_assert.hpp>
 
@@ -49,50 +51,75 @@
 namespace boost {
 namespace numeric {
 
-namespace detail {
-    ////////////////////////////////////////////////////
-    // layer 0 - detect overflows / alteration at the
-    // atomic operation level taking care to work around
-    // otherwise undetect alterations in integers due
-    // to machine architecture.  Note presumption of twos
-    // complement integer arithmetic
-
-    //////////////////////////
-    // addition implementation
+namespace checked {
     template<bool TS, bool US>
-    struct check_addition_overflow{};
+    struct addition;
 
     // both arguments unsigned
     template<>
-    struct check_addition_overflow<false, false> {
+    struct addition<false, false> {
+        template<class R, class T, class U>
+        static constexpr bool overflow(const R & r, const T & t, const U & u){
+            return boost::numeric::safe_compare::less_than(r, t)
+            || boost::numeric::safe_compare::less_than(r, u);
+        }
         template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        add(const T & t, const U & u) {
-            BOOST_AUTO_TPL(tmp, t + u);
-            if(boost::numeric::safe_compare::less_than(tmp, t)
-            || boost::numeric::safe_compare::less_than(tmp, u))
-                 overflow("safe range addition result overflow");
+        static constexpr bool addition_overflow(const T & t, const U & u){
+            return overflow(t + u, t, u);
+        }
+        template<class R, class T, class U>
+        static R add(const T & t, const U & u) {
+            R tmp = t + u;
+            if(overflow(tmp, t, u))
+                 boost::numeric::overflow("safe range addition result overflow");
             return tmp;
+        }
+    };
+    // both arguments signed
+    template<>
+    struct addition<true, true> {
+        template<class R, class T, class U>
+        static constexpr bool overflow(const R & r, const T & t, const U & u){
+            return boost::numeric::safe_compare::less_than(r, t)
+            || boost::numeric::safe_compare::less_than(r, u);
+        }
+        template<class T, class U>
+        static constexpr bool addition_overflow(const T & t, const U & u){
+            return overflow(t + u, t, u);
+        }
+        template<class R, class T, class U>
+        static R add(const T & t, const U & u) {
+            if(t > 0 && u > 0){
+                R tmp = t + u;
+                if(tmp < 0)
+                    boost::numeric::overflow("safe range addition result overflow");
+                return tmp;
+            }
+            if(t < 0 && u < 0){
+                R tmp = t + u;
+                if(tmp >= 0)
+                    boost::numeric::overflow("safe range addition result underflow");
+                return tmp;
+            }
+            return t + u;
         }
     };
     // T unsigned, U signed
     template<>
-    struct check_addition_overflow<false, true> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        add(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
+    struct addition<false, true> {
+        template<class R, class T, class U>
+        static R add(const T & t, const U & u){
+            if(boost::numeric::is_unsigned<R>::value){
                 if(u < 0)
                     overflow("safe range right operand value altered");
-                return check_addition_overflow<false, false>::add(
+                return addition<false, false>::add<R>(
                     t,
                     static_cast<typename boost::make_unsigned<T>::type>(u)
                 );
             }
             else{
                 if(u > 0){
-                    result_type tmp = t + u;
+                    R tmp = t + u;
                     if(tmp <= 0)
                         overflow("safe range addition result overflow");
                     return t + u;
@@ -103,53 +130,29 @@ namespace detail {
     };
     // T signed, U unsigned
     template<>
-    struct check_addition_overflow<true, false> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        add(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
-                if(t < 0)
-                    overflow("safe range left operand value altered");
-                return check_addition_overflow<false, false>::add(
-                    static_cast<typename boost::make_unsigned<T>::type>(t),
-                    u
-                );
-            }
-            else{
-                if(t > 0){
-                    result_type tmp = t + u;
-                    if(tmp < 0)
-                        overflow("safe range addition result overflow");
-                }
-            }
+    struct addition<true, false> {
+        template<class R, class T, class U>
+        static R add(const T & t, const U & u){
+            return addition<false, true>::add<R>(u, t);
+        }
+    };
 
-            BOOST_AUTO_TPL(tmp, t + u);
-            return tmp;
-        }
-    };
-    // both arguments signed
-    template<>
-    struct check_addition_overflow<true, true> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        add(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
-            if(t > 0 && u > 0){
-                result_type tmp = t + u;
-                if(tmp < 0)
-                    overflow("safe range addition result overflow");
-                return tmp;
-            }
-            if(t < 0 && u < 0){
-                result_type tmp = t + u;
-                if(tmp >= 0)
-                    overflow("safe range addition result underflow");
-                return tmp;
-            }
-            return t + u;
-        }
-    };
+    template<class R, class T, class U>
+    R add(const T & t, const U & u){
+        return addition<boost::is_unsigned<T>::value, boost::is_unsigned<U>::value>
+        ::template add<R>(
+            t, u
+        );
+    }
+}
+namespace detail {
+
+    ////////////////////////////////////////////////////
+    // layer 0 - detect overflows / alteration at the
+    // atomic operation level taking care to work around
+    // otherwise undetect alterations in integers due
+    // to machine architecture.  Note presumption of twos
+    // complement integer arithmetic
 
     /////////////////////////////
     // subtraction implementation
@@ -162,7 +165,7 @@ namespace detail {
         template<class T, class U>
         static BOOST_TYPEOF_TPL(T() + U())
         subtract(const T & t, const U & u){
-            auto tmp = t - u;
+            BOOST_AUTO_TPL(tmp, t - u);
             if(t > 0 && u < 0){
                 if(tmp < 0)
                     overflow("safe range subtraction result overflow");
@@ -376,11 +379,14 @@ namespace detail {
 
 }   // detail
 
+class safe_range_tag {};
+
 template<
     class Stored, 
-    class Derived
+    class Derived,
+    class PromotionPolicy
 >
-class safe_range_base {
+class safe_range_base : public safe_range_tag {
     Derived & 
     derived() {
         return static_cast<Derived &>(*this);
@@ -413,6 +419,8 @@ protected:
         m_t = static_cast<const Stored &>(t);
     }
     typedef Stored stored_type;
+    stored_type & get_stored_value();
+
 public:
     /////////////////////////////////////////////////////////////////
     // modification binary operators
@@ -526,45 +534,6 @@ public:
         return ! safe_compare::greater_than(m_t, rhs);
     }
 
-    /////////////////////////////////////////////////////////////////
-    // addition
-    // case 1 - no overflow possible
-
-    template<class T, class U>
-    struct no_addition_overflow_possible : public
-         boost::mpl::and_<
-            typename boost::mpl::greater<
-                typename boost::mpl::sizeof_< BOOST_TYPEOF_TPL(Stored() - U()) >,
-                typename boost::mpl::max<
-                    boost::mpl::sizeof_<U>,
-                    boost::mpl::sizeof_<Stored>
-                >::type
-            >,
-            boost::numeric::is_signed<BOOST_TYPEOF_TPL(Stored() - U())>
-        >
-    {};
-
-    template<class U>
-    typename boost::enable_if<
-        no_addition_overflow_possible<Stored, U>,
-        BOOST_TYPEOF_TPL(Stored() - U())
-    >::type
-    inline operator+(const U & rhs) const {
-        return m_t + rhs;
-    }
-
-    // case 2 - overflow possible - must be checked at run time
-    template<class U>
-    typename boost::disable_if<
-        no_addition_overflow_possible<Stored, U>,
-        BOOST_TYPEOF_TPL(Stored() - U())
-    >::type
-    inline operator+(const U & rhs) const {
-        return detail::check_addition_overflow<
-            boost::numeric::is_signed<Stored>::value,
-            boost::numeric::is_signed<U>::value
-        >::add(m_t, rhs);
-    }
     /////////////////////////////////////////////////////////////////
     // subtraction
 
@@ -715,6 +684,50 @@ public:
     }
 };
 
+template<class T, class U>
+struct addition_result {
+    typedef BOOST_TYPEOF_TPL(T() + U()) type;
+};
+
+template<class T>
+struct base_type {
+    typedef typename boost::mpl::if_<
+        typename boost::is_integral<T>,
+        T,
+        typename T::stored_type
+    >::type type;
+};
+
+template<class T>
+struct is_safe {
+    typedef boost::mpl::false_ type;
+};
+
+template<
+    class Stored, 
+    class Derived,
+    class PromotionPolicy
+>
+struct is_safe<safe_range_base<Stored, Derived, PromotionPolicy> > {
+    typedef boost::mpl::true_ type;
+};
+
+template<class T, class U>
+typename boost::enable_if<
+    boost::mpl::or_<
+        is_safe<T>,
+        is_safe<U>
+    >,
+    typename addition_result<T, U>::type
+>::type
+inline operator+(const T & t, const U & u){
+    typedef typename addition_result<T, U>::type type;
+    return checked::add<typename addition_result<T, U>::type>(
+        static_cast<const typename base_type<T>::type &>(t),
+        static_cast<const typename base_type<U>::type &>(u)
+    );
+}
+
 /////////////////////////////////////////////////////////////////
 // Note: the following global operators will be only found via 
 // argument dependent lookup.  So they won't conflict any
@@ -728,94 +741,98 @@ public:
 // binary operators
 
 // comparison operators
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-operator<(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+operator<(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs > lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator>(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator>(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs < lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator==(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator==(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs == lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator!=(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator!=(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs != rhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator>=(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator>=(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs <= lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator<=(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator<=(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return  rhs >= lhs;
 }
 
 // addition
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
-    boost::is_integral<T>,
-    BOOST_TYPEOF_TPL(T() + Stored())
+    boost::is_integral<T>, // native integer type
+    //BOOST_TYPEOF_TPL(T() + Stored())
+    typename PromotionPolicy::template addition_result<T, Stored>::type
 >::type
-inline operator+(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator+(
+    const T & lhs,
+    const safe_range_base<Stored, Derived, PromotionPolicy> & rhs
+){
     return rhs + lhs;
 }
 
 // subtraction
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
-    boost::is_integral<T>,
+    boost::is_integral<T>,  // native integer type
     BOOST_TYPEOF_TPL(T() - Stored())
 >::type
-inline operator-(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator-(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     BOOST_TYPEOF_TPL(T() - Stored()) tmp = rhs - lhs;
     return - tmp;
 }
 
 // multiplication
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     BOOST_TYPEOF_TPL(T() * Stored())
 >::type
-inline operator*(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator*(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs * lhs;
 }
 
 // division
 // special case - possible overflow
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     BOOST_TYPEOF_TPL(T() / Stored())
 >::type
-inline operator/(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator/(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     if(safe_compare::equal(0, rhs))
         throw std::domain_error("Divide by zero");
     return static_cast<
@@ -824,12 +841,12 @@ inline operator/(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
 }
 
 // modulus
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     BOOST_TYPEOF_TPL(T() % Stored())
 >::type
-inline operator%(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator%(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     if(safe_compare::equal(0, rhs))
         throw std::domain_error("Divide by zero");
     return static_cast<
@@ -838,28 +855,28 @@ inline operator%(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
 }
 
 // logical operators
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     typename multiply_result_type<T, Stored>::type
 >::type
-inline operator|(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator|(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs | lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     BOOST_TYPEOF_TPL(T() & Stored())
 >::type
-inline operator&(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator&(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs & lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
     boost::is_integral<T>,
     BOOST_TYPEOF_TPL(T() ^ Stored())
 >::type
-inline operator^(const T & lhs, const safe_range_base<Stored, Derived> & rhs) {
+inline operator^(const T & lhs, const safe_range_base<Stored, Derived, PromotionPolicy> & rhs) {
     return rhs ^ lhs;
 }
 
@@ -900,12 +917,14 @@ namespace detail {
 
 template<
     boost::intmax_t MIN,
-    boost::intmax_t MAX
+    boost::intmax_t MAX,
+    typename PromotionPolicy
 >
 class safe_signed_range : public
     safe_range_base<
         typename detail::signed_stored_type<MIN, MAX>::type, 
-        safe_signed_range<MIN, MAX> 
+        safe_signed_range<MIN, MAX, PromotionPolicy>,
+        PromotionPolicy
     > 
 {
     BOOST_STATIC_ASSERT_MSG(
@@ -915,7 +934,8 @@ class safe_signed_range : public
 public:
     typedef typename boost::numeric::safe_range_base<
         typename detail::signed_stored_type<MIN, MAX>::type, 
-        safe_signed_range<MIN, MAX> 
+        safe_signed_range<MIN, MAX, PromotionPolicy>,
+        PromotionPolicy
     > base;
 
     typedef typename detail::signed_stored_type<MIN, MAX>::type stored_type;
@@ -938,21 +958,26 @@ public:
 
 template<
     boost::intmax_t MIN,
-    boost::intmax_t MAX
+    boost::intmax_t MAX,
+    typename PromotionPolicy
 >
-std::ostream & operator<<(std::ostream & os, const safe_signed_range<MIN, MAX> & t){
-    return os << static_cast<const typename safe_signed_range<MIN, MAX>::stored_type &>(t);
+std::ostream & operator<<(
+    std::ostream & os,
+    const safe_signed_range<MIN, MAX, PromotionPolicy> & t
+){
+    return os << t.get_stored_value();
 }
 
 template<
     boost::intmax_t MIN,
-    boost::intmax_t MAX
+    boost::intmax_t MAX,
+    typename PromotionPolicy
 >
-std::istream & operator>>(std::istream & is, safe_signed_range<MIN, MAX> & t){
-    typename safe_signed_range<MIN, MAX>::stored_type tx;
-    is >> tx;
-    t = tx;
-    return is;
+std::istream & operator>>(
+    std::istream & is,
+    safe_signed_range<MIN, MAX, PromotionPolicy> & t
+){
+    return is >> t.get_stored_value();
 }
 
 /////////////////////////////////////////////////////////////////
@@ -960,13 +985,15 @@ std::istream & operator>>(std::istream & is, safe_signed_range<MIN, MAX> & t){
 
 template<
     boost::uintmax_t MIN,
-    boost::uintmax_t MAX
+    boost::uintmax_t MAX,
+    typename PromotionPolicy
 >
 class safe_unsigned_range : public
     safe_range_base<
-        typename detail::unsigned_stored_type<MIN, MAX>::type, 
-        safe_unsigned_range<MIN, MAX> 
-    > 
+        typename detail::unsigned_stored_type<MIN, MAX>::type,
+        safe_unsigned_range<MIN, MAX, PromotionPolicy>,
+        PromotionPolicy
+    >
 {
     BOOST_STATIC_ASSERT_MSG(
         MIN < MAX,
@@ -975,7 +1002,8 @@ class safe_unsigned_range : public
 public:
     typedef typename boost::numeric::safe_range_base<
         typename detail::unsigned_stored_type<MIN, MAX>::type, 
-        safe_unsigned_range<MIN, MAX> 
+        safe_unsigned_range<MIN, MAX, PromotionPolicy>,
+        PromotionPolicy
     > base;
     typedef typename detail::unsigned_stored_type<MIN, MAX>::type stored_type;
     template<class T>
@@ -995,21 +1023,26 @@ public:
 
 template<
     boost::uintmax_t MIN,
-    boost::uintmax_t MAX
+    boost::uintmax_t MAX,
+    typename PromotionPolicy
 >
-std::ostream & operator<<(std::ostream & os, const safe_unsigned_range<MIN, MAX> & t){
-    return os << static_cast<const typename safe_unsigned_range<MIN, MAX>::stored_type &>(t);
+std::ostream & operator<<(
+    std::ostream & os,
+    const safe_unsigned_range<MIN, MAX, PromotionPolicy> & t
+){
+    return os << t.get_stored_value();
 }
 
 template<
     boost::uintmax_t MIN,
-    boost::uintmax_t MAX
+    boost::uintmax_t MAX,
+    typename PromotionPolicy
 >
-std::istream & operator>>(std::istream & is, safe_unsigned_range<MIN, MAX> & t){
-    typename safe_unsigned_range<MIN, MAX>::stored_type tx;
-    is >> tx;
-    t = tx;
-    return is;
+std::istream & operator>>(
+    std::istream & is,
+    safe_unsigned_range<MIN, MAX, PromotionPolicy> & t
+){
+    return is >> t.get_stored_value();
 }
 
 } // numeric
