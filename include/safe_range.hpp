@@ -19,7 +19,9 @@
 
 #include <boost/limits.hpp>
 #include <boost/concept_check.hpp>
-#include <boost/integer.hpp>
+
+
+//#include <boost/integer.hpp>
 
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type_traits/is_same.hpp>
@@ -37,7 +39,9 @@
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
-
+#include <boost/mpl/not.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/void.hpp>
 #include <boost/static_assert.hpp>
 
 #include <ostream>
@@ -379,14 +383,12 @@ namespace detail {
 
 }   // detail
 
-class safe_range_tag {};
-
 template<
     class Stored, 
     class Derived,
-    class PromotionPolicy
+    class PromotionPolicyType
 >
-class safe_range_base : public safe_range_tag {
+class safe_range_base {
     Derived & 
     derived() {
         return static_cast<Derived &>(*this);
@@ -415,13 +417,15 @@ protected:
     {
         // verify that this is convertible to the storable type
         BOOST_STATIC_ASSERT(( boost::is_convertible<T, Stored>::value ));
-        validate(t);
-        m_t = static_cast<const Stored &>(t);
+        m_t = validate(t);
     }
-    typedef Stored stored_type;
-    stored_type & get_stored_value();
+    Stored & get_stored_value();
 
 public:
+    struct PromotionPolicy {
+        typedef PromotionPolicyType type;
+    };
+
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
@@ -679,47 +683,133 @@ public:
 
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
-    operator stored_type () const {
+    operator Stored () const {
         return m_t;
     }
 };
 
+#if 0
+template<class T, class U>
+struct get_policy {
+    // verify that at least one is a safe type
+    BOOST_STATIC_ASSERT((
+        boost::mpl::not_<
+            boost::mpl::and_<
+                boost::is_integral<T>,
+                boost::is_integral<U>
+            >
+        >::value
+    ));
+
+    typedef typename boost::mpl::if_<
+        boost::is_integral<T>,
+        U,
+        boost::mpl::void_
+    >::type safeu;
+
+    typedef typename boost::mpl::if_<
+        boost::is_integral<U>,
+        T,
+        boost::mpl::void_
+    >::type safet;
+
+    typedef typename boost::mpl::and_<
+        boost::mpl::not_<boost::is_integral<T> >,
+        boost::mpl::not_<boost::is_integral<U> >
+    >::type both_safe;
+
+    BOOST_STATIC_ASSERT((
+        boost::mpl::if_<
+            both_safe,
+            boost::is_same<
+                typename safet::PromotionPolicy::type,
+                typename safeu::PromotionPolicy::type
+            >,
+            boost::mpl::true_
+        >::type::value
+    ));
+
+    typedef typename boost::mpl::if_<
+        boost::is_integral<T>,
+        U,
+// else
+        T
+    >::type t1;
+    typedef typename t1::PromotionPolicy::type type;
+};
+#endif
+
+template<class T>
+struct get_policy_t : public
+    boost::mpl::eval_if<
+        boost::is_integral<T>,
+        boost::mpl::identity<boost::mpl::void_>,
+        typename T::PromotionPolicy
+    >
+{};
+
+template<class T, class U>
+struct get_policy {
+    // verify that at least one is a safe type
+    BOOST_STATIC_ASSERT((
+        boost::mpl::not_<
+            boost::mpl::and_<
+                boost::is_integral<T>,
+                boost::is_integral<U>
+            >
+        >::value
+    ));
+    typedef typename boost::mpl::if_<
+        boost::is_integral<T>,
+        get_policy_t<U>,
+        get_policy_t<T>
+    >::type::type type1;
+
+    typedef typename boost::mpl::if_<
+        boost::is_integral<U>,
+        get_policy_t<T>,
+        get_policy_t<U>
+    >::type::type type2;
+
+    // if both types are safe, the policies have to be the same!
+    BOOST_STATIC_ASSERT((
+        boost::mpl::or_<
+            typename boost::is_same<boost::mpl::void_, type1>::type,
+            typename boost::is_same<boost::mpl::void_, type2>::type,
+            typename boost::is_same<type1, type2>::type
+        >::value
+    ));
+
+    typedef typename boost::mpl::if_<
+        typename boost::mpl::not_<boost::is_same<boost::mpl::void_, type1> >,
+            type1,
+        boost::mpl::if_<
+        typename boost::mpl::not_<boost::is_same<boost::mpl::void_, type2> >,
+            type2,
+        boost::mpl::void_
+    > >::type type;
+
+    BOOST_STATIC_ASSERT((
+        boost::mpl::not_<boost::is_same<boost::mpl::void_, type> >::value
+    ));
+};
+
 template<class T, class U>
 struct addition_result {
-    typedef BOOST_TYPEOF_TPL(T() + U()) type;
+    typedef typename get_policy<T, U>::type policy;
+    typedef typename policy::template addition_result<T, U>::type type;
 };
 
 template<class T>
-struct base_type {
-    typedef typename boost::mpl::if_<
-        typename boost::is_integral<T>,
-        T,
-        typename T::stored_type
-    >::type type;
-};
-
-template<class T>
-struct is_safe {
-    typedef boost::mpl::false_ type;
-};
-
-template<
-    class Stored, 
-    class Derived,
-    class PromotionPolicy
->
-struct is_safe<safe_range_base<Stored, Derived, PromotionPolicy> > {
-    typedef boost::mpl::true_ type;
-};
+struct base_type : public boost::mpl::eval_if<
+        boost::is_integral<T>,
+        boost::mpl::identity<T>,
+        boost::mpl::identity<typename T::stored_type>
+    >
+{};
 
 template<class T, class U>
-typename boost::enable_if<
-    boost::mpl::or_<
-        is_safe<T>,
-        is_safe<U>
-    >,
-    typename addition_result<T, U>::type
->::type
+typename addition_result<T, U>::type
 inline operator+(const T & t, const U & u){
     typedef typename addition_result<T, U>::type type;
     return checked::add<typename addition_result<T, U>::type>(
@@ -911,6 +1001,13 @@ namespace detail {
         >::least type;
     };
 } // detail
+} // numeric
+} // boost
+
+#include "native.hpp" // boost::promotion::native
+
+namespace boost {
+namespace numeric {
 
 /////////////////////////////////////////////////////////////////
 // safe_signed_range
@@ -918,7 +1015,7 @@ namespace detail {
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    typename PromotionPolicy
+    typename PromotionPolicy = boost::numeric::promotion::native
 >
 class safe_signed_range : public
     safe_range_base<
@@ -986,7 +1083,7 @@ std::istream & operator>>(
 template<
     boost::uintmax_t MIN,
     boost::uintmax_t MAX,
-    typename PromotionPolicy
+    typename PromotionPolicy = boost::numeric::promotion::native
 >
 class safe_unsigned_range : public
     safe_range_base<

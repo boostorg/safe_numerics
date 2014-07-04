@@ -62,7 +62,7 @@ template<
     class PromotionPolicy = boost::numeric::promotion::native
 >
 struct safe : public detail::safe_integer_base<T, PromotionPolicy>::type {
-    typedef typename detail::safe_integer_base<T, PromotionPolicy>::type base_type;
+    //typedef typename detail::safe_integer_base<T, PromotionPolicy>::type base_type;
 
     BOOST_CONCEPT_ASSERT((Integer<T>));
 

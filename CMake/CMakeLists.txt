@@ -205,17 +205,17 @@ add_test(NAME test COMMAND test)
 ####################
 # add include headers to IDE
 
-file(GLOB include_files 
+file(GLOB include_files
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp"
 )
-add_custom_target(include SOURCES ${include_files})
 
 file(GLOB concept_include_files
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/concept/*.hpp"
 )
-add_custom_target(include SOURCES ${concept_include_files})
+
+add_custom_target(include SOURCES ${include_files} ${concept_include_files})
 
 # end headers in IDE
 ####################
