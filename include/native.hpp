@@ -31,7 +31,10 @@ struct native {
         typename U
     >
     struct addition_result {
-        typedef BOOST_TYPEOF_TPL(T() + U()) type;
+        typedef decltype(
+            typename boost::numeric::base_type<T>::type()
+          + typename boost::numeric::base_type<U>::type()
+        ) type;
     };
 };
 

@@ -13,22 +13,25 @@
 #include "../include/safe_range.hpp"
 #include "../include/safe_integer.hpp"
 
-//boost::mpl::print<boost::is_integral<int> >::type t1;
-//boost::mpl::print<boost::is_integral<int>::type >::type t2;
-
+#if 0
 typedef boost::numeric::safe_signed_range<-64, 63> X;
-//boost::mpl::print<boost::is_integral<X>::type >::type t3;
+//typedef boost::mpl::print<boost::numeric::get_policy<int, X>::type>::type t8 ;
+//typedef boost::mpl::print<boost::numeric::get_policy<X, X>::type>::type t9 ;
+//typedef boost::mpl::print<boost::numeric::get_policy<X, int>::type >::type t7 ;
+//typedef boost::mpl::print<boost::numeric::is_safe<int>::type>::type t10;
 
-//typedef boost::mpl::print<boost::numeric::get_policyx<X, int>::type >::type t6 ;
-//typedef boost::mpl::print<t6::PromotionPolicy::type>::type t7;
-
-typedef boost::mpl::print<boost::numeric::get_policy<int, X>::type >::type t8 ;
-typedef boost::mpl::print<boost::numeric::get_policy<X, X>::type >::type t9 ;
-typedef boost::mpl::print<boost::numeric::get_policy<X, int>::type >::type t7 ;
+typedef boost::mpl::print<boost::numeric::addition_result<int,X>::type>  t13;
+#endif
 
 #if 0
-boost::mpl::print<boost::numeric::get_policy<X, int>::type::PromotionPolicy >::type t4;
+typedef boost::numeric::safe_signed_range<-64, 63> X;
+typedef boost::mpl::print<boost::numeric::get_policy<short,X>::type>::type t12;
+typedef boost::mpl::print<boost::numeric::addition_result<short,X>::type
+> t11;
 
+#endif
+
+#if 1
 
 bool test1(){
     std::cout << "test1" << std::endl;

@@ -383,12 +383,14 @@ namespace detail {
 
 }   // detail
 
+struct safe_tag {};
+
 template<
     class Stored, 
     class Derived,
     class PromotionPolicyType
 >
-class safe_range_base {
+class safe_range_base : public safe_tag {
     Derived & 
     derived() {
         return static_cast<Derived &>(*this);
@@ -688,125 +690,92 @@ public:
     }
 };
 
-#if 0
+template<class T>
+struct is_safe : public
+    boost::is_convertible<T &, const boost::numeric::safe_tag &>
+{};
+
+template<class T>
+struct get_policy_t : public
+    T::PromotionPolicy
+{};
+
 template<class T, class U>
 struct get_policy {
     // verify that at least one is a safe type
     BOOST_STATIC_ASSERT((
-        boost::mpl::not_<
-            boost::mpl::and_<
-                boost::is_integral<T>,
-                boost::is_integral<U>
-            >
+        boost::mpl::or_<
+            is_safe<T>,
+            is_safe<U>
         >::value
     ));
 
     typedef typename boost::mpl::if_<
-        boost::is_integral<T>,
-        U,
-        boost::mpl::void_
-    >::type safeu;
+        is_safe<T>,
+        typename boost::numeric::get_policy_t<T>,
+        boost::mpl::identity<boost::mpl::void_>
+    >::type::type policy_t;
+
+    //typedef typename boost::mpl::print<policy_t>::type t0;
 
     typedef typename boost::mpl::if_<
-        boost::is_integral<U>,
-        T,
-        boost::mpl::void_
-    >::type safet;
+        is_safe<U>,
+        typename boost::numeric::get_policy_t<U>,
+        boost::mpl::identity<boost::mpl::void_>
+    >::type::type policy_u;
 
-    typedef typename boost::mpl::and_<
-        boost::mpl::not_<boost::is_integral<T> >,
-        boost::mpl::not_<boost::is_integral<U> >
-    >::type both_safe;
+    //typedef typename boost::mpl::print<policy_u>::type t1;
 
+    // if both types are safe, the policies have to be the same!
     BOOST_STATIC_ASSERT((
         boost::mpl::if_<
-            both_safe,
-            boost::is_same<
-                typename safet::PromotionPolicy::type,
-                typename safeu::PromotionPolicy::type
+            boost::mpl::and_<
+                is_safe<T>,
+                is_safe<U>
             >,
+            typename boost::is_same<policy_t, policy_u>,
             boost::mpl::true_
         >::type::value
     ));
 
     typedef typename boost::mpl::if_<
-        boost::is_integral<T>,
-        U,
-// else
-        T
-    >::type t1;
-    typedef typename t1::PromotionPolicy::type type;
-};
-#endif
+        is_safe<T>,
+        policy_t,
+    typename boost::mpl::if_<
+        is_safe<U>,
+        policy_u,
+    boost::mpl::void_
+    >::type >::type type;
 
-template<class T>
-struct get_policy_t : public
-    boost::mpl::eval_if<
-        boost::is_integral<T>,
-        boost::mpl::identity<boost::mpl::void_>,
-        typename T::PromotionPolicy
-    >
-{};
-
-template<class T, class U>
-struct get_policy {
-    // verify that at least one is a safe type
-    BOOST_STATIC_ASSERT((
-        boost::mpl::not_<
-            boost::mpl::and_<
-                boost::is_integral<T>,
-                boost::is_integral<U>
-            >
-        >::value
-    ));
-    typedef typename boost::mpl::if_<
-        boost::is_integral<T>,
-        get_policy_t<U>,
-        get_policy_t<T>
-    >::type::type type1;
-
-    typedef typename boost::mpl::if_<
-        boost::is_integral<U>,
-        get_policy_t<T>,
-        get_policy_t<U>
-    >::type::type type2;
-
-    // if both types are safe, the policies have to be the same!
-    BOOST_STATIC_ASSERT((
-        boost::mpl::or_<
-            typename boost::is_same<boost::mpl::void_, type1>::type,
-            typename boost::is_same<boost::mpl::void_, type2>::type,
-            typename boost::is_same<type1, type2>::type
-        >::value
-    ));
-
-    typedef typename boost::mpl::if_<
-        typename boost::mpl::not_<boost::is_same<boost::mpl::void_, type1> >,
-            type1,
-        boost::mpl::if_<
-        typename boost::mpl::not_<boost::is_same<boost::mpl::void_, type2> >,
-            type2,
-        boost::mpl::void_
-    > >::type type;
-
+    // quadriple check all of the above
     BOOST_STATIC_ASSERT((
         boost::mpl::not_<boost::is_same<boost::mpl::void_, type> >::value
     ));
+
+    // typedef typename boost::mpl::print<type>::type t2;
+};
+
+template<class T>
+struct safe_base_type {
+    typedef typename T::stored_type type;
+};
+
+template<class T>
+struct base_type {
+    typedef typename boost::mpl::if_<
+        is_safe<T>,
+        safe_base_type<T>,
+        boost::mpl::identity<T>
+    >::type tx;
+    typedef typename tx::type type;
 };
 
 template<class T, class U>
 struct addition_result {
     typedef typename get_policy<T, U>::type policy;
+    typedef typename boost::mpl::print<policy>::type t0;
     typedef typename policy::template addition_result<T, U>::type type;
 };
-
-template<class T>
-struct base_type : public boost::mpl::eval_if<
-        boost::is_integral<T>,
-        boost::mpl::identity<T>,
-        boost::mpl::identity<typename T::stored_type>
-    >
-{};
 
 template<class T, class U>
 typename addition_result<T, U>::type
@@ -880,6 +849,7 @@ inline operator<=(const T & lhs, const safe_range_base<Stored, Derived, Promotio
     return  rhs >= lhs;
 }
 
+#if 0
 // addition
 template<class T, class Stored, class Derived, class PromotionPolicy>
 typename boost::enable_if<
@@ -893,6 +863,7 @@ inline operator+(
 ){
     return rhs + lhs;
 }
+#endif
 
 // subtraction
 template<class T, class Stored, class Derived, class PromotionPolicy>
