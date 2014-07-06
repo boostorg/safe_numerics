@@ -142,6 +142,8 @@ endif()
 # necessary
 # enable_testing()
 
+# Rather than including a paragraph like the following for each test/example
+
 if(0)
 
 message(STATUS "test_cast")
@@ -149,80 +151,34 @@ add_executable( test_cast ../test/test_cast.cpp )
 target_link_libraries( test_cast ${Boost_LIBRARIES} )
 add_test(NAME test_cast COMMAND test_cast)
 
-message(STATUS "test_add")
-add_executable( test_add ../test/test_add.cpp )
-target_link_libraries( test_add  ${Boost_LIBRARIES} )
-add_test(NAME test_add COMMAND test_add)
-
-message(STATUS "test_subtract")
-add_executable( test_subtract ../test/test_subtract.cpp )
-target_link_libraries( test_subtract  ${Boost_LIBRARIES} )
-add_test(NAME test_subtract COMMAND test_subtract)
-
-message(STATUS "test_multiply")
-add_executable( test_multiply ../test/test_multiply.cpp )
-target_link_libraries( test_multiply  ${Boost_LIBRARIES} )
-add_test(NAME test_multiply COMMAND test_multiply)
-
-message(STATUS "test_divide")
-add_executable( test_divide ../test/test_divide.cpp )
-target_link_libraries( test_divide  ${Boost_LIBRARIES} )
-add_test(NAME test_divide COMMAND test_divide)
-
-message(STATUS "test_modulus")
-add_executable( test_modulus ../test/test_modulus.cpp )
-target_link_libraries( test_modulus ${Boost_LIBRARIES} )
-add_test(NAME test_modulus COMMAND test_modulus)
-
-message(STATUS "test_compare")
-add_executable( test_compare ../test/test_compare.cpp)
-target_link_libraries( test_compare  ${Boost_LIBRARIES} )
-add_test(NAME test_compare COMMAND test_compare)
-
-message(STATUS "test_conversion")
-add_executable( test_conversion ../test/test_conversion.cpp)
-target_link_libraries( test_conversion  ${Boost_LIBRARIES} )
-add_test(NAME test_conversion COMMAND test_conversion)
-
-message(STATUS "test")
-add_executable( test ../test/test.cpp)
-target_link_libraries( test  ${Boost_LIBRARIES} )
-add_test(NAME test COMMAND test)
-
-# examples
-message(STATUS "example1")
-add_executable( example1 ../examples/example1.cpp)
-target_link_libraries( example1  ${Boost_LIBRARIES} )
-add_test(NAME example1 COMMAND example1)
-
-message(STATUS "example2")
-add_executable( example2 ../examples/example2.cpp)
-target_link_libraries( example2 ${Boost_LIBRARIES} )
-add_test(NAME example2 COMMAND example2)
-
-message(STATUS "example3")
-add_executable( example3 ../examples/example3.cpp)
-target_link_libraries( example3  ${Boost_LIBRARIES} )
-add_test(NAME example3 COMMAND example3)
-
-message(STATUS "example4")
-add_executable( example4 ../examples/example4.cpp)
-target_link_libraries( example4  ${Boost_LIBRARIES} )
-add_test(NAME example4 COMMAND example4)
+# ...
 
 endif()
+
+# we just create an executable fore each *.cpp file in directories
+file(GLOB example_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
+)
+foreach(example_file_path ${example_files} )
+    get_filename_component(example_file_name ${example_file_path} NAME_WE)
+    message(STATUS "${example_file_name}")
+    add_executable( ${example_file_name} ../examples/${example_file_name}.cpp)
+    target_link_libraries( ${example_file_name}  ${Boost_LIBRARIES} )
+    add_test(NAME ${example_file_name} COMMAND ${example_file_name})
+endforeach(example_file_path)
 
 file(GLOB test_files
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../test/*.cpp"
 )
 foreach(test_file_path ${test_files} )
-    set(test_file_name get_filename_component( NAME ${test_file_path} ) )
-    message(STATUS "${test_file_path"})
-    add_executable( ${test_file_path} ../test/${test_file_path}.cpp)
-    target_link_libraries( ${test_file_path}  ${Boost_LIBRARIES} )
-    add_test(NAME${test_file_path} COMMAND ${test_file_path})
-endforeach(t)
+    get_filename_component(test_file_name ${test_file_path} NAME_WE)
+    message(STATUS "${test_file_name}")
+    add_executable( ${test_file_name} ../test/${test_file_name}.cpp)
+    target_link_libraries( ${test_file_name}  ${Boost_LIBRARIES} )
+    add_test(NAME${test_file_name} COMMAND ${test_file_name})
+endforeach(test_file_path)
 
 # end test targets
 ####################
