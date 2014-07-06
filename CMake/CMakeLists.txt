@@ -142,9 +142,12 @@ endif()
 # necessary
 # enable_testing()
 
-# Rather than including a paragraph like the following for each test/example
+####################
+# start generating test targets
 
 if(0)
+
+# Rather than including a paragraph like the following for each test/example
 
 message(STATUS "test_cast")
 add_executable( test_cast ../test/test_cast.cpp )
@@ -156,29 +159,19 @@ add_test(NAME test_cast COMMAND test_cast)
 endif()
 
 # we just create an executable fore each *.cpp file in directories
-file(GLOB example_files
+
+file(GLOB files
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
-)
-foreach(example_file_path ${example_files} )
-    get_filename_component(example_file_name ${example_file_path} NAME_WE)
-    message(STATUS "${example_file_name}")
-    add_executable( ${example_file_name} ../examples/${example_file_name}.cpp)
-    target_link_libraries( ${example_file_name}  ${Boost_LIBRARIES} )
-    add_test(NAME ${example_file_name} COMMAND ${example_file_name})
-endforeach(example_file_path)
-
-file(GLOB test_files
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../test/*.cpp"
 )
-foreach(test_file_path ${test_files} )
-    get_filename_component(test_file_name ${test_file_path} NAME_WE)
-    message(STATUS "${test_file_name}")
-    add_executable( ${test_file_name} ../test/${test_file_name}.cpp)
-    target_link_libraries( ${test_file_name}  ${Boost_LIBRARIES} )
-    add_test(NAME${test_file_name} COMMAND ${test_file_name})
-endforeach(test_file_path)
+foreach(file_path ${files} )
+    get_filename_component(file_name ${file_path} NAME_WE)
+    message(STATUS "${file_name}")
+    add_executable( ${file_name} ${file_path})
+    target_link_libraries( ${file_name}  ${Boost_LIBRARIES} )
+    add_test(NAME ${file_name} COMMAND ${file_name})
+endforeach(file_path)
 
 # end test targets
 ####################
