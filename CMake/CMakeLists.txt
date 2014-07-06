@@ -142,6 +142,8 @@ endif()
 # necessary
 # enable_testing()
 
+if(0)
+
 message(STATUS "test_cast")
 add_executable( test_cast
   ../test/test_cast.cpp
@@ -198,6 +200,20 @@ message(STATUS "test")
 add_executable( test ../test/test.cpp)
 target_link_libraries( test  ${Boost_LIBRARIES} )
 add_test(NAME test COMMAND test)
+
+endif()
+
+file(GLOB test_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/../test/*.cpp"
+)
+foreach(test_file_path ${test_files} )
+    set(test_file_name get_filename_component( NAME ${test_file_path} ) )
+    message(STATUS "${test_file_path"})
+    add_executable( ${test_file_path} ../test/${test_file_path}.cpp)
+    target_link_libraries( ${test_file_path}  ${Boost_LIBRARIES} )
+    add_test(NAME${test_file_path} COMMAND ${test_file_path})
+endforeach(t)
 
 # end test targets
 ####################

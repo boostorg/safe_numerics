@@ -34,7 +34,7 @@ struct native {
         typedef decltype(
             typename boost::numeric::base_type<T>::type()
           + typename boost::numeric::base_type<U>::type()
-        ) type;
+        ) native_result_type;
     };
 };
 
