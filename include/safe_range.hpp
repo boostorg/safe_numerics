@@ -780,10 +780,21 @@ struct addition_result {
 template<class T, class U>
 typename addition_result<T, U>::type
 inline operator+(const T & t, const U & u){
-    typedef typename addition_result<T, U>::type type;
-    return checked::add<typename addition_result<T, U>::type>(
-        static_cast<const typename base_type<T>::type &>(t),
-        static_cast<const typename base_type<U>::type &>(u)
+    // argument dependent lookup should guarentee that we only get here
+    // if one of the types is a safe type. Verify this here
+    BOOST_STATIC_ASSERT((boost::mpl::or_<
+            boost::numeric::is_safe<T>,
+            boost::numeric::is_safe<U>
+        >::value
+    ));
+    typedef typename addition_result<T, U>::type result_type;
+    typedef typename base_type<result_type>::type result_base_type;
+
+    return static_cast<result_type>(
+        checked::add<result_base_type>(
+            static_cast<const result_base_type &>(t),
+            static_cast<const result_base_type &>(u)
+        )
     );
 }
 
