@@ -12,92 +12,64 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/config.hpp> // BOOST_NOEXCEPT
-#include <boost/limits.hpp>
-#include <boost/integer_traits.hpp>
-#include <boost/mpl/if.hpp>
-
-#include "safe_range.hpp"
-#include "numeric.hpp"
+#include "safe_base.hpp"
+#include "policies.hpp"
+#include "native.hpp"
 
 namespace boost {
 namespace numeric {
 
-namespace detail{
+typedef policies<native, relaxed, throw_exception> default_policies;
 
 template<
     class T,
-    class PromotionPolicy
+    class P = default_policies
 >
-struct safe_integer_base {
-    typedef typename boost::mpl::if_<
-        boost::numeric::is_signed<T>,
-        boost::numeric::safe_signed_range<
-            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_min),
-            static_cast<boost::intmax_t>(boost::integer_traits<T>::const_max),
-            PromotionPolicy
-        >,
-        boost::numeric::safe_unsigned_range<
-            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_min),
-            static_cast<boost::uintmax_t>(boost::integer_traits<T>::const_max),
-            PromotionPolicy
-        >
-    >::type type;
-};
-
-} // detail
-
-} // numeric
-} // boost
-
-#include "boost/concept/assert.hpp"
-#include "concept/numeric.hpp"
-#include "native.hpp" // boost::promotion::native
-
-namespace boost {
-namespace numeric {
-
-template<
-    class T,
-    class PromotionPolicy = boost::numeric::promotion::native
->
-struct safe : public detail::safe_integer_base<T, PromotionPolicy>::type {
-    //typedef typename detail::safe_integer_base<T, PromotionPolicy>::type base_type;
-
+struct safe : public safe_base<T, safe<T, P> >{
     BOOST_CONCEPT_ASSERT((Integer<T>));
 
+    typedef T stored_type;
+    struct Policies {
+        typedef P type;
+    };
+
+    bool validate(const T & t) const {
+        return true;
+    }
+
+    typedef safe_base<T, safe<T, P> > base_type;
     safe() :
-        detail::safe_integer_base<T, PromotionPolicy>::type()
+        base_type()
     {}
 
     template<class U>
     safe(const U & u) :
-        detail::safe_integer_base<T, PromotionPolicy>::type(u)
-    {}
-    /*
-    safe(const T & t) :
-        detail::safe_integer_base<T, PromotionPolicy>::type(t)
-    {}
-    */
+        base_type()
+    {
+        // verify that
+    }
 };
 
 } // numeric
 } // boost
+
+#include <boost/integer_traits.hpp>
 
 namespace std {
 
 template<
     class T,
-    class PromotionPolicy
+    class P
 >
-class numeric_limits< boost::numeric::safe<T, PromotionPolicy> > : public
-    numeric_limits<T>
+class numeric_limits< boost::numeric::safe<T, P> >
+    : public numeric_limits<T>
 {
-    typedef boost::numeric::safe<T> SI;
+    typedef boost::numeric::safe<T, P> SI;
 public:
-    BOOST_STATIC_CONSTEXPR SI min() BOOST_NOEXCEPT { return numeric_limits<T>::min(); }
-    BOOST_STATIC_CONSTEXPR SI max() BOOST_NOEXCEPT { return numeric_limits<T>::max(); }
-    BOOST_STATIC_CONSTEXPR SI lowest() BOOST_NOEXCEPT { return numeric_limits<T>::min(); }
+    // these expressions are not constexpr until C++14 so re-implement them here
+    BOOST_STATIC_CONSTEXPR SI min() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min; }
+    BOOST_STATIC_CONSTEXPR SI max() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_max; }
+    BOOST_STATIC_CONSTEXPR SI lowest() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min;; }
 };
 
 } // std

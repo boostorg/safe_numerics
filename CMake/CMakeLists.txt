@@ -183,12 +183,13 @@ file(GLOB include_files
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp"
 )
+add_custom_target(include SOURCES ${include_files})
 
-file(GLOB include_concept_files
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+file(GLOB concept_include_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/concept/*.hpp"
 )
-add_custom_target(include_concept_files SOURCES ${include_concept_files})
+add_custom_target(concepts MAIN_DEPENDENCY include SOURCES ${include_files} ${concept_include_files})
 
 # end headers in IDE
 ####################
