@@ -38,40 +38,19 @@ struct safe : public safe_base<T, safe<T, P> >{
     }
 
     typedef safe_base<T, safe<T, P> > base_type;
-    safe() :
+    constexpr safe() :
         base_type()
     {}
 
     template<class U>
-    safe(const U & u) :
+    constexpr safe(const U & u) :
         base_type()
     {
-        // verify that
+        // TO DO verify that u can be converted to a T
     }
 };
 
 } // numeric
 } // boost
-
-#include <boost/integer_traits.hpp>
-
-namespace std {
-
-template<
-    class T,
-    class P
->
-class numeric_limits< boost::numeric::safe<T, P> >
-    : public numeric_limits<T>
-{
-    typedef boost::numeric::safe<T, P> SI;
-public:
-    // these expressions are not constexpr until C++14 so re-implement them here
-    BOOST_STATIC_CONSTEXPR SI min() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min; }
-    BOOST_STATIC_CONSTEXPR SI max() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_max; }
-    BOOST_STATIC_CONSTEXPR SI lowest() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min;; }
-};
-
-} // std
 
 #endif // BOOST_NUMERIC_SAFE_INTEGER_HPP

@@ -105,6 +105,15 @@ struct base_type {
     >::type type;
 };
 
+/////////////////////////////////////////////////////////////////
+// Note: the following global operators will be only found via 
+// argument dependent lookup.  So they won't conflict any
+// other global operators for types in namespaces other than
+// boost::numeric
+
+// These should catch things like U < safe_base<...> and implement them
+// as safe_base<...> >= U which should be handled above.
+
 template<class T, class U>
 struct addition_result {
     typedef typename get_common_policies<T, U>::type policies;
@@ -136,15 +145,6 @@ inline operator+(const T & t, const U & u){
     x.validate(z);
     return x;
 }
-
-/////////////////////////////////////////////////////////////////
-// Note: the following global operators will be only found via 
-// argument dependent lookup.  So they won't conflict any
-// other global operators for types in namespaces other than
-// boost::numeric
-
-// These should catch things like U < safe_base<...> and implement them
-// as safe_base<...> >= U which should be handled above.
 
 /////////////////////////////////////////////////////////////////
 // binary operators

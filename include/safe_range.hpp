@@ -20,7 +20,7 @@
 namespace boost {
 namespace numeric {
 
-typedef policies<native, relaxed, throw_exception> default_policies;
+typedef policies<boost::numeric::native, relaxed, throw_exception> default_policies;
 
 /////////////////////////////////////////////////////////////////
 // higher level types implemented in terms of safe_base
@@ -56,8 +56,6 @@ namespace detail {
 
 } // numeric
 } // boost
-
-#include "policies.hpp"
 
 namespace boost {
 namespace numeric {
@@ -98,12 +96,12 @@ public:
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
-    safe_signed_range() :
+    constexpr safe_signed_range() :
         base()
     {}
 
     template<class T>
-    safe_signed_range(const T & t) :
+    constexpr safe_signed_range(const T & t) :
         base(t)
     {}
 };
@@ -168,10 +166,10 @@ public:
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
-    safe_unsigned_range(){}
+    constexpr safe_unsigned_range(){}
 
     template<class T>
-    safe_unsigned_range(const T & t) :
+    constexpr safe_unsigned_range(const T & t) :
         base(t)
     {}
 };
@@ -202,55 +200,6 @@ std::istream & operator>>(
 
 } // numeric
 } // boost
-
-#include <boost/limits.hpp>
-
-namespace std {
-
-/////////////////////////////////////////////////////////////////
-// numeric limits for safe_(un)signed_range
-
-// numeric limits for safe_signed_range
-template<
-    boost::intmax_t MIN,
-    boost::intmax_t MAX,
-    class P
->
-class numeric_limits< boost::numeric::safe_signed_range<MIN, MAX, P> >
-    : public numeric_limits<int>
-{
-    typedef boost::numeric::safe_signed_range<MIN, MAX, P> T;
-public:
-    BOOST_STATIC_CONSTEXPR T min() BOOST_NOEXCEPT { return T(MIN); }
-    BOOST_STATIC_CONSTEXPR T max() BOOST_NOEXCEPT { return T(MAX); }
-    BOOST_STATIC_CONSTEXPR T lowest() BOOST_NOEXCEPT { return T(MIN); }
-
-    BOOST_STATIC_CONSTANT(int,digits = (boost::numeric::detail::log<MAX, 2>::value)); // in base 2
-    BOOST_STATIC_CONSTANT(int,digits10 = (boost::numeric::detail::log<MAX, 10>::value)); // in base 10
-    BOOST_STATIC_CONSTANT(int,max_digits10 = digits10);
-};
-
-// numeric limits for safe_unsigned_range
-template<
-    boost::uintmax_t MIN,
-    boost::uintmax_t MAX,
-    class P
->
-class numeric_limits< boost::numeric::safe_unsigned_range<MIN, MAX, P> >
-    : public numeric_limits<unsigned int>
-{
-    typedef boost::numeric::safe_unsigned_range<MIN, MAX, P> T;
-public:
-    BOOST_STATIC_CONSTEXPR T min() BOOST_NOEXCEPT { return T(MIN); }
-    BOOST_STATIC_CONSTEXPR T max() BOOST_NOEXCEPT { return T(MAX); }
-    BOOST_STATIC_CONSTEXPR T lowest() BOOST_NOEXCEPT { return T(MIN); }
-
-    BOOST_STATIC_CONSTEXPR int digits = boost::numeric::detail::ulog<MAX, 2>::value; // in base 2
-    BOOST_STATIC_CONSTEXPR int digits10 = boost::numeric::detail::ulog<MAX, 10>::value; // in base 10
-    BOOST_STATIC_CONSTEXPR int max_digits10 = digits10;
-};
-
-} // std
 
 
 #endif // BOOST_NUMERIC_SAFE_RANGE_HPP

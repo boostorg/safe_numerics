@@ -13,12 +13,16 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //#include <algorithm> // max, min
+#include <type_traits>
 
-#include <boost/limits.hpp>
-#include <boost/integer_traits.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/print.hpp>
 
-#include "safe_base_operations.hpp"
 #include "policies.hpp"
+#include "safe_base_operations.hpp"
+#include "limits.hpp"
+//#include "safe_integer.hpp"
+//#include "safe_range.hpp"
 
 // policy which creates results types equal to that of C++ promotions.
 // Using the policy will permit the program to build and run in release
@@ -28,26 +32,6 @@
 namespace boost {
 namespace numeric {
 
-template<
-    class T,
-    class P
->
-struct safe;
-
-template<
-    boost::intmax_t MIN,
-    boost::intmax_t MAX,
-    class P
->
-class safe_signed_range;
-
-template<
-    boost::uintmax_t MIN,
-    boost::uintmax_t MAX,
-    class P
->
-class safe_unsigned_range;
-
 struct native {
     template<
         typename T,
@@ -55,60 +39,83 @@ struct native {
     >
     struct addition_result {
         typedef decltype(
-            typename boost::numeric::base_type<T>::type()
-          + typename boost::numeric::base_type<U>::type()
+            typename base_type<T>::type()
+          + typename base_type<U>::type()
         ) result_base_type;
 
-        /*
-        template<class TX, class UX>
-        constexpr static const TX & max(const TX & a, const UX & b) {
-            return (a < b) ? b : a;
-        }
-        template<class TX, class UX>
-        constexpr static const TX & min(const TX & a, const UX & b) {
-            return (a < b) ? a : b;
-        }
-
         template<class TX>
-        constexpr static const TX min_value(){
+        constexpr static result_base_type min_value() {
             return std::numeric_limits<TX>::min();
         }
         template<class TX>
-        constexpr static const TX max_value(){
+        constexpr static result_base_type max_value() {
             return std::numeric_limits<TX>::max();
         }
-        typedef typename boost::mpl::if_<
-            boost::is_signed<result_base_type>,
-            boost::numeric::safe_signed_range<
-                max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
-                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+
+        constexpr static result_base_type max(
+            const result_base_type & a,
+            const result_base_type & b
+        ){
+            return (a < b) ? b : a;
+        }
+        constexpr static result_base_type min(
+            const result_base_type & a,
+            const result_base_type & b
+        ){
+            return (a < b) ? a : b;
+        }
+
+        constexpr static result_base_type sum(
+            const result_base_type & a,
+            const result_base_type & b
+        ){
+            return a + b;
+        }
+
+#if 0
+        static const boost::intmax_t x = min_value<T>();
+
+        const intmax_t y = std::numeric_limits<
+            boost::numeric::safe<
+                signed char,
+                boost::numeric::policies<
+                    boost::numeric::native,
+                    boost::numeric::relaxed, boost::numeric::throw_exception
+                >
+            >
+        >::min();
+
+
+        typedef typename boost::mpl::print<T>::type t0;
+        static constexpr int x = min_value<result_base_type>();
+        typedef typename boost::mpl::print<U>::type t1;
+        static constexpr int x1 = min_value<T>();
+        static constexpr int x2 = min_value<U>();
+        static constexpr int x3 = max_value<result_base_type>();
+        static constexpr int x4 = max_value<T>();
+        static constexpr int x5 = max_value<U>();
+
+#endif
+        static constexpr int x5 = max_value<U>();
+
+        typedef typename ::boost::mpl::if_<
+            std::is_signed<result_base_type>,
+            safe_signed_range<
+                max(
+                    min_value<result_base_type>(),
+                    min_value<T>() //min_value<T>() //sum(min_value<T>(), min_value<U>())
+                ),
+                200, // min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
                 native
             >,
-            boost::numeric::safe_unsigned_range<
+            safe_unsigned_range<
                 max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
                 min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
                 native
             >
         >::type type;
-        */
-        typedef boost::numeric::safe<result_base_type, native> type;
     };
 };
-
-#if  0
-struct automatic {
-    template<
-        typename T,
-        typename U
-    >
-    struct addition_result {
-        typedef boost::numeric::safe_unsigned_range<
-            std::numeric_limits<T>::min() + std::numeric_limits<U>::min(),
-            std::numeric_limits<T>::max() + std::numeric_limits<U>::max(),
-        > type;
-    };
-};
-#endif
 
 } // numeric
 } // boost

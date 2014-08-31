@@ -4,14 +4,107 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#if 1
+
+#include "limits.hpp"
+#include "safe_integer.hpp"
+
+const intmax_t x = std::numeric_limits<
+    boost::numeric::safe<
+        signed char,
+        boost::numeric::policies<
+            boost::numeric::native,
+            boost::numeric::relaxed, boost::numeric::throw_exception
+        >
+    >
+>::min();
+
+#endif
+
+#if 0
+#include "limits.hpp"
+#include <boost/mpl/print.hpp>
+
+template<
+    class T,
+    class P
+>
+struct safe;
+
+std::numeric_limits<int> ai0;
+
+namespace std {
+
+numeric_limits<int> ai2;
+
+template<class T>
+struct numeric_limits {
+    // no message here with numeric_limits<int> because it's already
+    // specialized in <limits>
+    typedef typename boost::mpl::print<T>::type t0;
+};
+
+template<class T, class P>
+struct std::numeric_limits <safe<T, P> > : public numeric_limits<T>{
+    typedef typename boost::mpl::print<T>::type t0;
+    typedef typename boost::mpl::print<P>::type t1;
+};
+
+numeric_limits<int> ai3;
+
+} // std
+#endif
+
+#if 0
+
+#include <limits>
+#include <boost/mpl/print.hpp>
+
+namespace std {
+template<class T> class numeric_limits;
+} // std
+
+template<class T>
+class std::numeric_limits {
+    typedef typename boost::mpl::print<T>::type t0;
+};
+
+std::numeric_limits<int> ai;
+
+#endif
+
+#if 0
+
+#include <limits>
+#include <boost/mpl/print.hpp>
+
+namespace std {
+
+template<class T>
+class numeric_limits {
+    typedef typename boost::mpl::print<T>::type t0;
+};
+
+} // std
+
+std::numeric_limits<int> ai;
+
+
+#endif
+
+#if 0
 #include <exception>
 #include <cstdlib>   // EXIT_SUCCESS
 #include <iostream>
 
 #include <boost/mpl/print.hpp>
 
-#include "../include/safe_range.hpp"
-#include "../include/safe_integer.hpp"
+//#include "../include/safe_range.hpp"
+//#include "../include/safe_integer.hpp"
+
+#include "limits.hpp"
+
+#endif
 
 #if 0
 typedef boost::numeric::safe_signed_range<-64, 63> X;
@@ -31,7 +124,7 @@ typedef boost::mpl::print<boost::numeric::addition_result<short,X>::type
 
 #endif
 
-#if 1
+#if 0
 
 bool test1(){
     std::cout << "test1" << std::endl;
