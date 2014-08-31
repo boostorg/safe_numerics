@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX&gt;">
+<link rel="prev" href="safe_signed_range.html" title="safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_tMAX&gt;">
 <link rel="next" href="functions.html" title="Functions">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,26 +26,49 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#id753980">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#id753999">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754085">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754099">Derived From</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754139">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754225">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754246">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754272">Notes</a></span></dt>
-<dt><span class="section"><a href="safe.html#id754284">See Also</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404421072">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404419200">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404410400">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404401264">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404398944">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404387424">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404385424">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404382672">Notes</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm412404381440">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753980"></a>Description</h4></div></div></div>
+<a name="idm412404421072"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T&gt;</code> can be used anywhere a type T is used.
     When T is used in operation which overflows, a exception is thrown</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753999"></a>Template Parameters</h4></div></div></div>
-<p></p>
+<a name="idm412404419200"></a>Notation</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Symbol</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">T, U, V</code></td>
+<td align="left">Types which model the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept</td>
+</tr>
+<tr>
+<td align="left">t, u, v</td>
+<td align="left">objects of types T and U respectively</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm412404410400"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -59,58 +82,60 @@
 </tr></thead>
 <tbody><tr>
 <td align="left"><code class="computeroutput">T</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></td>
-<td align="left"><p>The underlying integer type</p></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">boost::is_integer&lt;T&gt;::value
+            == true</a></td>
+<td align="left"><p>The underlying intrinsic integer type</p></td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754085"></a>Model of</h4></div></div></div>
+<a name="idm412404401264"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
+<p>If the resulting type of the operation t op u is V, the resulting
+    type of the operations st op su, t op su and st op u will be
+    safe&lt;V&gt;;</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754099"></a>Derived From</h4></div></div></div>
-<p><code class="computeroutput"><a class="link" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX&gt;">safe_signed_range&lt;T&gt;</a></code>
-    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</p>
-<p><code class="computeroutput"><a class="link" href="safe_unsigned_range.html" title="safe_unsigned_range&lt;MIN, MAX&gt;">safe_unsigned_range&lt;T&gt;</a></code>
-    (if std::numeric_limits&lt;T&gt;::is_signed == ftrue)</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="id754139"></a>Notation</h4></div></div></div>
+<a name="idm412404398944"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
+<col align="left">
 </colgroup>
 <thead><tr>
-<th align="left">Symbol</th>
+<th align="left">Parameter</th>
+<th align="left">Result</th>
 <th align="left">Description</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><code class="computeroutput">T</code></td>
-<td align="left">A type that models the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept</td>
+<td align="left"><code class="computeroutput">st op u</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">safe&lt;decltype(t
+              op u)&gt;</a></td>
+<td align="left"><p>op is any valid binary operator for types T and
+              U</p></td>
 </tr>
 <tr>
-<td align="left">t</td>
-<td align="left">An object of type <code class="computeroutput">T</code>
-</td>
+<td align="left"><code class="computeroutput">T * U</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">typeof(T *
+              U)</a></td>
+<td align="left"><p>The underlying integer type</p></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754225"></a>Header</h4></div></div></div>
+<a name="idm412404387424"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754246"></a>Example of use</h4></div></div></div>
+<a name="idm412404385424"></a>Example of use</h4></div></div></div>
 <p>The following program will emit an error message on a machine where
     int is only 16 bits but run without problem on a machine where int is 32
     bits.</p>
@@ -131,13 +156,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754272"></a>Notes</h4></div></div></div>
+<a name="idm412404382672"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754284"></a>See Also</h4></div></div></div>
+<a name="idm412404381440"></a>See Also</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>

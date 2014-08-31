@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
 <link rel="prev" href="types.html" title="Types">
-<link rel="next" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX&gt;">
+<link rel="next" href="safe_signed_range.html" title="safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_tMAX&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -26,23 +26,23 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;MIN, MAX&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753452">Description</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753471">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753587">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753704">Header</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753724">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#id753746">See Also</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412407630816">Description</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412407628864">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412404454992">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412404452224">Header</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412404450240">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm412404448752">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753452"></a>Description</h4></div></div></div>
+<a name="idm412407630816"></a>Description</h4></div></div></div>
 <p>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code class="computeroutput">std::out_of_range</code> exception for any operation which would
-    result in assigning an integer value outside of this range.</p>
+    result in assigning an integer value outside of this range. </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753471"></a>Template Parameters</h4></div></div></div>
+<a name="idm412407628864"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -75,18 +75,22 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753587"></a>Model of</h4></div></div></div>
+<a name="idm412404454992"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
+<p>The usage of this type in an arithmetic expression with another
+    unsigned type will result in another unsigned type fulfilling the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept. This will be the
+    smallest unsigned integer type of sufficient size to hold the result of
+    the operation. </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753704"></a>Header</h4></div></div></div>
+<a name="idm412404452224"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753724"></a>Example of use</h4></div></div></div>
+<a name="idm412404450240"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
@@ -95,12 +99,20 @@ void f(){
     i = 9;  // ok
     i *= 9; // throws out_of_range exception
     i = -1; // throws out_of_range exception
+
+    std::uint8_t j = 4;
+    auto k = i + j;
+        // since i can vary between 7 and 24 and j can vary between 0 and 255
+        // the smallest unsigned integer which can hold the result std::uint16_t
+        // j will be of type std::uint16_t 
+    
 }</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753746"></a>See Also</h4></div></div></div>
+<a name="idm412404448752"></a>See Also</h4></div></div></div>
 <p><code class="computeroutput">std::out_of_range</code></p>
+<p><code class="computeroutput">safe_signed_range</code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

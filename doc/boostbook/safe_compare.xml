@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_compare">
-  <title>safe_compare</title>
+  <title>safe_compare&lt;T, U&gt;</title>
 
   <section>
     <title>Synopsis</title>

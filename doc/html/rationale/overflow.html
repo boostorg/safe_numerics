@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../functions.html" title="Functions">
-<link rel="prev" href="../safe_compare.html" title="safe_compare">
+<link rel="prev" href="../safe_compare.html" title="safe_compare&lt;T, U&gt;">
 <link rel="next" href="../rationale.html" title="Rationale">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,22 +26,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.rationale.overflow"></a>overflow</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="../overflow.html#id754741">Synopsis</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#id754761">Description</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#id754796">Header</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#id754817">Example of use</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#id754831">See Also</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm412404334512">Synopsis</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm412404332368">Description</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm412404328608">Header</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm412404326400">Example of use</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm412404324496">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754741"></a>Synopsis</h4></div></div></div>
+<a name="idm412404334512"></a>Synopsis</h4></div></div></div>
 <p>This function is invoked by the library whenever it is not possible
     to produce a result for an arithmetic operation.</p>
 <pre class="programlisting">void overflow(char const * const msg);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754761"></a>Description</h4></div></div></div>
+<a name="idm412404332368"></a>Description</h4></div></div></div>
 <p>If evironment supports C++ exceptions, this function throws the
     exception .</p>
 <p>If the environment does not support C++ exceptions, the user should
@@ -55,13 +55,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754796"></a>Header</h4></div></div></div>
+<a name="idm412404328608"></a>Header</h4></div></div></div>
 <p><a href="../include/safe_numerics/overflow" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/overflow.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754817"></a>Example of use</h4></div></div></div>
+<a name="idm412404326400"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;cstdio&gt;
 
 void overflow(char const * const msg){
@@ -72,7 +72,7 @@ void overflow(char const * const msg){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id754831"></a>See Also</h4></div></div></div>
+<a name="idm412404324496"></a>See Also</h4></div></div></div>
 <p>See <a class="link" href="rationale/overflow.html" title="overflow">rationale</a> for more
     information on this function</p>
 </div>

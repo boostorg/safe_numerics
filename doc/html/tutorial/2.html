@@ -27,30 +27,44 @@
 <a name="safe_numerics.tutorial.2"></a>Problem:Undetected overflow</h3></div></div></div>
 <p>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</p>
-<pre class="programlisting">void example3(){
-    // problem: undetected overflow in data type
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+//#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 3: ";
+    std::cout &lt;&lt; "implicit conversions change data values" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
     try{
-        int x = INT_MAX;
+        int x = -1000;
         // the following silently produces an incorrect result
-        ++x;
-        //std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; -1;
+        char y = x;
         detected_msg(false);
     }
     catch(...){
         assert(false); // never arrive here
     }
-    // solution: replace int with safe&lt;int&gt;
+    // solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
     try{
         using namespace boost::numeric;
-        safe&lt;int&gt; x = INT_MAX;
-        // throws exception when result is past maximum possible 
-        ++x;
+        safe&lt;int&gt; x = -1000;
+        // throws exception when conversion change data value
+        safe&lt;char&gt; y = x;
         assert(false); // never arrive here
     }
     catch(std::range_error &amp; e){
-        std::cout &lt;&lt; e.what();
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
         detected_msg(true);
     }
+    return 0;
 }
 </pre>
 </div>

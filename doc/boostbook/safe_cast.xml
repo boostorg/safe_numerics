@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_cast">
-  <title>safe_cast</title>
+  <title>safe_cast&lt;T, U&gt;</title>
 
   <section>
     <title>Synopsis</title>

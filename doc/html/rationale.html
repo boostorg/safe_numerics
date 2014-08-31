@@ -26,15 +26,15 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale</h2></div></div></div>
 <div class="qandaset">
-<a name="id754861"></a><dl>
-<dt>1. <a href="rationale.html#id754866">Why does a binary operation on two
-          safe&lt;int&gt; values not necessarily return another
+<a name="idm412404321168"></a><dl>
+<dt>1. <a href="rationale.html#idm412404320672">Why does a binary operation on two
+          safe&lt;int&gt; values not return another
           safe type ?</a>
 </dt>
-<dt>2. <a href="rationale.html#id754917">Why is there no policy driven design for handling
+<dt>2. <a href="rationale.html#idm412404314976">Why is there no policy driven design for handling
           overflows</a>
 </dt>
-<dt>3. <a href="rationale.html#id754946">Why is Boost.Convert not used.</a>
+<dt>3. <a href="rationale.html#idm412404312016">Why is Boost.Convert not used.</a>
 </dt>
 </dl>
 <table border="0" width="100%" summary="Q and A Set">
@@ -43,10 +43,10 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754866"></a><a name="id754868"></a><p><b>1.</b></p>
+<a name="idm412404320672"></a><a name="idm412404320416"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does a binary operation on two
-          <code class="computeroutput">safe&lt;int&gt;</code> values not necessarily return another
+          <code class="computeroutput">safe&lt;int&gt;</code> values not return another
           <code class="computeroutput">safe</code> type ?</p></td>
 </tr>
 <tr class="answer">
@@ -54,7 +54,7 @@
 <td align="left" valign="top">
 <p>There are a number of</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
-<li class="listitem"><p>it was hard to implement.</p></li>
+<li class="listitem"><p>it was too hard to implement.</p></li>
 <li class="listitem"><p>it doesn't really seem necessary. We always do SOMETHING
               with result of the operation. This will result in an assignment
               or a conversion to some other type where the result will be
@@ -64,7 +64,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754917"></a><a name="id754920"></a><p><b>2.</b></p>
+<a name="idm412404314976"></a><a name="idm412404314720"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top">
 <p>Why is there no policy driven design for handling
@@ -78,7 +78,7 @@ unsigned int x = t1 - t2; // which policy should be invoked?</pre>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="id754946"></a><a name="id754948"></a><p><b>3.</b></p>
+<a name="idm412404312016"></a><a name="idm412404311760"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top">
 <p>Why is Boost.Convert not used.</p>
