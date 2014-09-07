@@ -26,30 +26,30 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_cast"></a>safe_cast&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_cast.html#idm412404378160">Synopsis</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404376544">Description</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404373872">Type requirements</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404364368">Preconditions</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404361616">Complexity</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404359952">Header</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm412404357856">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777774816">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777773360">Description</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777770912">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777761888">Preconditions</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777759456">Complexity</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777758304">Header</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm195777756320">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404378160"></a>Synopsis</h4></div></div></div>
+<a name="idm195777774816"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting">template&lt;class T, class U&gt;
 T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404376544"></a>Description</h4></div></div></div>
+<a name="idm195777773360"></a>Description</h4></div></div></div>
 <p>Converts one <a href="numeric_concept.xml" target="_top">Numeric</a> type
     to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if such a
     conversion is not possible without changing the value.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404373872"></a>Type requirements</h4></div></div></div>
+<a name="idm195777770912"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -73,28 +73,25 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404364368"></a>Preconditions</h4></div></div></div>
-<p>The value of u can be represented by the type <code class="computeroutput">T</code>. If
+<a name="idm195777761888"></a>Preconditions</h4></div></div></div>
+<p>The value of u must be representabl by the type <code class="computeroutput">T</code>. If
     this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
     thrown.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404361616"></a>Complexity</h4></div></div></div>
-<p>[Example:]</p>
-<p>O(N log(N)) comparisons (both average and worst-case), where N is
-    last - first. [2]</p>
+<a name="idm195777759456"></a>Complexity</h4></div></div></div>
+<p>Constant - O(0).</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404359952"></a>Header</h4></div></div></div>
+<a name="idm195777758304"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
     &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404357856"></a>Example of use</h4></div></div></div>
-<p>[A code fragment that illustrates how to use the function.]</p>
+<a name="idm195777756320"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 
 

@@ -26,23 +26,23 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;MIN, MAX&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412407630816">Description</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412407628864">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412404454992">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412404452224">Header</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412404450240">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm412404448752">See Also</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777871440">Description</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777869488">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777857616">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777854848">Header</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777852864">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm195777851376">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412407630816"></a>Description</h4></div></div></div>
+<a name="idm195777871440"></a>Description</h4></div></div></div>
 <p>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code class="computeroutput">std::out_of_range</code> exception for any operation which would
     result in assigning an integer value outside of this range. </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412407628864"></a>Template Parameters</h4></div></div></div>
+<a name="idm195777869488"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -75,7 +75,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404454992"></a>Model of</h4></div></div></div>
+<a name="idm195777857616"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 <p>The usage of this type in an arithmetic expression with another
     unsigned type will result in another unsigned type fulfilling the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept. This will be the
@@ -84,13 +84,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404452224"></a>Header</h4></div></div></div>
+<a name="idm195777854848"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404450240"></a>Example of use</h4></div></div></div>
+<a name="idm195777852864"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
@@ -110,7 +110,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404448752"></a>See Also</h4></div></div></div>
+<a name="idm195777851376"></a>See Also</h4></div></div></div>
 <p><code class="computeroutput">std::out_of_range</code></p>
 <p><code class="computeroutput">safe_signed_range</code></p>
 </div>

@@ -5,7 +5,8 @@
   <title>Tutorial</title>
 
   <section id="safe_numerics.tutorial.1">
-    <title>Problem:arithmetic operations can yield in correct results.</title>
+    <title>Problem: Arithmetic operations can yield in correct
+    results.</title>
 
     <para>When some operation results in a result which exceeds the capacity
     of a data variable to hold it, the result is undefined. This is called
@@ -25,7 +26,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.2">
-    <title>Problem:Undetected overflow</title>
+    <title>Problem: Undetected overflow</title>
 
     <para>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</para>
@@ -35,7 +36,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.3">
-    <title>Problem:Implicit conversions change data values</title>
+    <title>Problem: Implicit conversions change data values</title>
 
     <para>A simple assign or arithment expression will generally convert all
     the terms to the same type. Sometimes this can silently change values. For

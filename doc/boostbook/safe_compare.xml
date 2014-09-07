@@ -22,7 +22,7 @@ template&lt;class T, class U&gt;
 bool safe_compare::greater_than_equal(const T &amp; lhs, const U &amp; rhs);
 
 template&lt;class T, class U&gt;
-bool safe_compare::equa(const T &amp; lhs, const U &amp; rhs);
+bool safe_compare::equal(const T &amp; lhs, const U &amp; rhs);
 
 template&lt;class T, class U&gt;
 bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</programlisting>

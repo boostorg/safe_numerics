@@ -39,7 +39,13 @@
           <row>
             <entry>t, u, v</entry>
 
-            <entry>objects of types T and U respectively</entry>
+            <entry>objects of types T</entry>
+          </row>
+
+          <row>
+            <entry>st</entry>
+
+            <entry>object of type safe&lt;T&gt;</entry>
           </row>
         </tbody>
       </tgroup>
@@ -105,7 +111,7 @@
 
           <thead>
             <row>
-              <entry align="left">Parameter</entry>
+              <entry align="left">Expression</entry>
 
               <entry align="left">Result</entry>
 
@@ -120,8 +126,28 @@
               <entry><link linkend="safe_numerics.numeric">safe&lt;decltype(t
               op u)&gt;</link></entry>
 
-              <entry><para>op is any valid binary operator for types T and
-              U</para></entry>
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
+            </row>
+
+            <row>
+              <entry><code>t op su</code></entry>
+
+              <entry><link linkend="safe_numerics.numeric">safe&lt;decltype(t
+              op u)&gt;</link></entry>
+
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
+            </row>
+
+            <row>
+              <entry><code>st op su</code></entry>
+
+              <entry><link linkend="safe_numerics.numeric">safe&lt;decltype(t
+              op u)&gt;</link></entry>
+
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
             </row>
 
             <row>

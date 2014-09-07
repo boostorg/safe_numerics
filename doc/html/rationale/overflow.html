@@ -26,22 +26,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.rationale.overflow"></a>overflow</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="../overflow.html#idm412404334512">Synopsis</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#idm412404332368">Description</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#idm412404328608">Header</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#idm412404326400">Example of use</a></span></dt>
-<dt><span class="section"><a href="../overflow.html#idm412404324496">See Also</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm195777735056">Synopsis</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm195777733040">Description</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm195777729488">Header</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm195777727504">Example of use</a></span></dt>
+<dt><span class="section"><a href="../overflow.html#idm195777725728">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404334512"></a>Synopsis</h4></div></div></div>
+<a name="idm195777735056"></a>Synopsis</h4></div></div></div>
 <p>This function is invoked by the library whenever it is not possible
     to produce a result for an arithmetic operation.</p>
 <pre class="programlisting">void overflow(char const * const msg);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404332368"></a>Description</h4></div></div></div>
+<a name="idm195777733040"></a>Description</h4></div></div></div>
 <p>If evironment supports C++ exceptions, this function throws the
     exception .</p>
 <p>If the environment does not support C++ exceptions, the user should
@@ -55,13 +55,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404328608"></a>Header</h4></div></div></div>
+<a name="idm195777729488"></a>Header</h4></div></div></div>
 <p><a href="../include/safe_numerics/overflow" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/overflow.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404326400"></a>Example of use</h4></div></div></div>
+<a name="idm195777727504"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;cstdio&gt;
 
 void overflow(char const * const msg){
@@ -72,7 +72,7 @@ void overflow(char const * const msg){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404324496"></a>See Also</h4></div></div></div>
+<a name="idm195777725728"></a>See Also</h4></div></div></div>
 <p>See <a class="link" href="rationale/overflow.html" title="overflow">rationale</a> for more
     information on this function</p>
 </div>

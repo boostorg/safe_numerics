@@ -14,9 +14,9 @@ T safe_cast(const U &amp; u);</programlisting>
   <section>
     <title>Description</title>
 
-    <para>Converts one <ulink url="numeric_concept.xml">Numeric</ulink> type
-    to another. Throws an <code>std::out_of_range</code> exception if such a
-    conversion is not possible without changing the value.</para>
+    <para>Converts one <link linkend="safe_numerics.numeric">Numeric</link>
+    type to another. Throws an <code>std::out_of_range</code> exception if
+    such a conversion is not possible without changing the value.</para>
   </section>
 
   <section>
@@ -40,13 +40,15 @@ T safe_cast(const U &amp; u);</programlisting>
           <row>
             <entry><code>T</code></entry>
 
-            <entry><ulink url="numeric_concept.xml">Numeric</ulink></entry>
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
           </row>
 
           <row>
             <entry><code>U </code></entry>
 
-            <entry><ulink url="numeric_concept.xml">Numeric</ulink></entry>
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
           </row>
         </tbody>
       </tgroup>
@@ -56,7 +58,7 @@ T safe_cast(const U &amp; u);</programlisting>
   <section>
     <title>Preconditions</title>
 
-    <para>The value of u can be represented by the type <code>T</code>. If
+    <para>The value of u must be representabl by the type <code>T</code>. If
     this is not true, an <code>std::out_of_range</code> exception will be
     thrown.</para>
   </section>
@@ -64,10 +66,7 @@ T safe_cast(const U &amp; u);</programlisting>
   <section>
     <title>Complexity</title>
 
-    <para>[Example:]</para>
-
-    <para>O(N log(N)) comparisons (both average and worst-case), where N is
-    last - first. [2]</para>
+    <para>Constant - O(0).</para>
   </section>
 
   <section>
@@ -79,8 +78,6 @@ T safe_cast(const U &amp; u);</programlisting>
 
   <section>
     <title>Example of use</title>
-
-    <para>[A code fragment that illustrates how to use the function.]</para>
 
     <programlisting>#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 

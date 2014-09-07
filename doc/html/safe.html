@@ -26,25 +26,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#idm412404421072">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404419200">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404410400">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404401264">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404398944">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404387424">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404385424">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404382672">Notes</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm412404381440">See Also</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777823664">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777821792">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777811840">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777802704">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777800384">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777783808">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777781808">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777778960">Notes</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm195777777808">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404421072"></a>Description</h4></div></div></div>
+<a name="idm195777823664"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T&gt;</code> can be used anywhere a type T is used.
     When T is used in operation which overflows, a exception is thrown</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404419200"></a>Notation</h4></div></div></div>
+<a name="idm195777821792"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -61,14 +61,18 @@
 </tr>
 <tr>
 <td align="left">t, u, v</td>
-<td align="left">objects of types T and U respectively</td>
+<td align="left">objects of types T</td>
+</tr>
+<tr>
+<td align="left">st</td>
+<td align="left">object of type safe&lt;T&gt;</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404410400"></a>Template Parameters</h4></div></div></div>
+<a name="idm195777811840"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -90,7 +94,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404401264"></a>Model of</h4></div></div></div>
+<a name="idm195777802704"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 <p>If the resulting type of the operation t op u is V, the resulting
     type of the operations st op su, t op su and st op u will be
@@ -98,7 +102,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404398944"></a>Valid Expressions</h4></div></div></div>
+<a name="idm195777800384"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -106,7 +110,7 @@
 <col align="left">
 </colgroup>
 <thead><tr>
-<th align="left">Parameter</th>
+<th align="left">Expression</th>
 <th align="left">Result</th>
 <th align="left">Description</th>
 </tr></thead>
@@ -115,8 +119,22 @@
 <td align="left"><code class="computeroutput">st op u</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">safe&lt;decltype(t
               op u)&gt;</a></td>
-<td align="left"><p>op is any valid binary operator for types T and
-              U</p></td>
+<td align="left"><p>op is any valid binary operator for type
+              T</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">t op su</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">safe&lt;decltype(t
+              op u)&gt;</a></td>
+<td align="left"><p>op is any valid binary operator for type
+              T</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">st op su</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">safe&lt;decltype(t
+              op u)&gt;</a></td>
+<td align="left"><p>op is any valid binary operator for type
+              T</p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">T * U</code></td>
@@ -129,13 +147,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404387424"></a>Header</h4></div></div></div>
+<a name="idm195777783808"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404385424"></a>Example of use</h4></div></div></div>
+<a name="idm195777781808"></a>Example of use</h4></div></div></div>
 <p>The following program will emit an error message on a machine where
     int is only 16 bits but run without problem on a machine where int is 32
     bits.</p>
@@ -156,13 +174,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404382672"></a>Notes</h4></div></div></div>
+<a name="idm195777778960"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm412404381440"></a>See Also</h4></div></div></div>
+<a name="idm195777777808"></a>See Also</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
