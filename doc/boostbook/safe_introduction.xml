@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.introduction">
+  <title>Introduction</title>
+
+  <section id="safe_numerics.introduction.problem">
+    <title>Problem</title>
+
+    <para>Arithmetic operations in C++ are NOT guarenteed to yield a correct
+    mathematical result. This feature is inherited from the early days of C.
+    The behavior of <code>int</code>, <code>unsigned int</code> and others
+    were designed to map closely to the underlying hardware. Computer hardware
+    implements these types as a fixed number of bits. When the result of
+    arithmetic operations exceeds this number of bits, the result is undefined
+    and usually not what the programmer intended. It is incumbent up the C/C++
+    programmer to guarentee that this behavior does not result in incorrect
+    behavior of the program. There are no language facilities which do this.
+    They have to be explicitly addressed in the program code. This is
+    exceeding tedious and laborious for a programmer to do. Besides, adding
+    this code would introduce another source of errors.</para>
+  </section>
+
+  <section id="safe_numerics.introduction.solution">
+    <title>Solution</title>
+
+    <para>This library implements special versions of int, unsigned, etc.
+    which behave exactly like the original ones EXCEPT that the results of
+    these operations are checked to be sure any possible errors resulting from
+    undefined arithmetic behavior are trapped at compile time (if possible) or
+    at runtime.</para>
+
+    <para>In addition to eliminating undefined behavior from primitive integer
+    types, we define new data types <code>safe_signed_range&lt;MIN,
+    MAX&gt;</code> and <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which
+    will throw an exception if an attempt is made to store a result which is
+    outside the closed range [MIN, MAX].</para>
+  </section>
+
+  <section id="safe_numerics.introduction.requirements">
+    <title>Requirements</title>
+
+    <para>This library is is composed entirely of C++ Headers. I requires a
+    compiler compatible with the C++11 standard.</para>
+
+    <para>The following Boost Libraries must be installed in order to use this
+    library</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>mpl</para>
+        </listitem>
+
+        <listitem>
+          <para>integer</para>
+        </listitem>
+
+        <listitem>
+          <para>limits</para>
+        </listitem>
+
+        <listitem>
+          <para>config</para>
+        </listitem>
+
+        <listitem>
+          <para>concept checking</para>
+        </listitem>
+
+        <listitem>
+          <para>type traits</para>
+        </listitem>
+
+        <listitem>
+          <para>integer traits</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+</section>
