@@ -162,7 +162,7 @@ namespace detail {
         template<class T, class U>
         static BOOST_TYPEOF_TPL(T() + U())
         subtract(const T & t, const U & u){
-            auto tmp = t - u;
+            BOOST_AUTO_TPL(tmp, t - u);
             if(t > 0 && u < 0){
                 if(tmp < 0)
                     overflow("safe range subtraction result overflow");
