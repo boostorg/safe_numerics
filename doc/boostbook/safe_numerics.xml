@@ -19,7 +19,7 @@
     </copyright>
 
     <legalnotice>
-      <para><ulink url="???">Subject to Boost Software License</ulink></para>
+      <para><ulink url="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt">Subject to Boost Software License</ulink></para>
     </legalnotice>
 
     <librarypurpose>Safe integer operations</librarypurpose>

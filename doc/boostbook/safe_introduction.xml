@@ -4,7 +4,7 @@
 <section id="safe_numerics.introduction">
   <title>Introduction</title>
 
-  <section id="safe_numerics.introduction.problem">
+  <section>
     <title>Problem</title>
 
     <para>Arithmetic operations in C++ are NOT guarenteed to yield a correct
@@ -21,7 +21,7 @@
     this code would introduce another source of errors.</para>
   </section>
 
-  <section id="safe_numerics.introduction.solution">
+  <section>
     <title>Solution</title>
 
     <para>This library implements special versions of int, unsigned, etc.
@@ -37,7 +37,7 @@
     outside the closed range [MIN, MAX].</para>
   </section>
 
-  <section id="safe_numerics.introduction.requirements">
+  <section>
     <title>Requirements</title>
 
     <para>This library is is composed entirely of C++ Headers. I requires a

@@ -6,40 +6,216 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="introduction/requirements.html" title="Requirements">
-<link rel="next" href="tutorial/1.html" title="Problem: Arithmetic operations can yield in correct results.">
+<link rel="prev" href="introduction.html" title="Introduction">
+<link rel="next" href="notes.html" title="Notes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
 <td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
 <td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
+<td align="center"><a href="">Libraries</a></td>
 <td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
 <td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
 <td align="center"><a href="../../more/index.htm">More</a></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="introduction/requirements.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="tutorial/1.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="introduction.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.tutorial"></a>Tutorial</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="tutorial/1.html">Problem: Arithmetic operations can yield in correct
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.1">Problem: Arithmetic operations can yield in correct
     results.</a></span></dt>
-<dt><span class="section"><a href="tutorial/2.html">Problem: Undetected overflow</a></span></dt>
-<dt><span class="section"><a href="tutorial/3.html">Problem: Implicit conversions change data values</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.2">Problem: Undetected overflow</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.3">Problem: Implicit conversions change data values</a></span></dt>
 </dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.1"></a>Problem: Arithmetic operations can yield in correct
+    results.</h3></div></div></div>
+<p>When some operation results in a result which exceeds the capacity
+    of a data variable to hold it, the result is undefined. This is called
+    "overflow". Since word size can differ between machines, code which
+    produces correct results in one set of circumstances may fail when
+    re-compiled on a machine with different hardware. When this occurs, Most
+    C++ compilers will continue to execute with no indication that the results
+    are wrong. It is the programmer's responsabiity to ensure such undefined
+    behavior is avoided.</p>
+<p>This program demonstrates this problem. The solution is to replace
+    instances of <code class="computeroutput">char</code> type with <code class="computeroutput">safe&lt;char&gt;</code>
+    type.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+//#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 1:";
+    std::cout &lt;&lt; "undetected erroneous expression evaluation" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    try{
+        char x = 127;
+        char y = 2;
+        char z;
+        // this produces an invalid result !
+        z = x + y;
+        // it is the wrong result !!!
+        assert(z != 129);
+        // but assert fails to detect it since C++ implicitly
+        // converts variables to int before evaluating he expression!
+        assert(z != x + y);
+        std::cout &lt;&lt; static_cast&lt;int&gt;(z) &lt;&lt; " != " &lt;&lt; x + y &lt;&lt; std::endl;
+        detected_msg(false);
+    }
+    catch(...){
+        assert(false); // never arrive here
+    }
+    // solution: replace char with safe&lt;char&gt;
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
+    try{
+        using namespace boost::numeric;
+        safe&lt;char&gt; x = 127;
+        safe&lt;char&gt; y = 2;
+        safe&lt;char&gt; z;
+        // rather than producing and invalid result an exception is thrown
+        z = x + y;
+        assert(false); // never arrive here
+    }
+    catch(std::range_error &amp; e){
+        // which can catch here
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.2"></a>Problem: Undetected overflow</h3></div></div></div>
+<p>A variation of the above is when a value is incremented/decremented
+    beyond it's domain. This is a common problem with for loops.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+//#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 3: ";
+    std::cout &lt;&lt; "implicit conversions change data values" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    try{
+        int x = -1000;
+        // the following silently produces an incorrect result
+        char y = x;
+        detected_msg(false);
+    }
+    catch(...){
+        assert(false); // never arrive here
+    }
+    // solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
+    try{
+        using namespace boost::numeric;
+        safe&lt;int&gt; x = -1000;
+        // throws exception when conversion change data value
+        safe&lt;char&gt; y = x;
+        assert(false); // never arrive here
+    }
+    catch(std::range_error &amp; e){
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.3"></a>Problem: Implicit conversions change data values</h3></div></div></div>
+<p>A simple assign or arithment expression will generally convert all
+    the terms to the same type. Sometimes this can silently change values. For
+    example, when a signed data variable contains a negative type, assigning
+    to a unsigned type will be permitted by any C/C++ compiler but will be
+    treated as large unsigned value. Most modern compilers will emit a compile
+    time warning when this conversion is performed. The user may then decide
+    to change some data types or apply a <code class="computeroutput">static_cast</code>. This is
+    less than satisfactory for two reasons:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>It may be unwield to change all the types to signed or
+          unsigned.</p></li>
+<li class="listitem"><p>Litering one's program with <code class="computeroutput">static_cast</code><code class="computeroutput">
+          </code>makes it more difficult to read.</p></li>
+<li class="listitem"><p>We may believe that our signed type will never contain a
+          negative value. If we use a <code class="computeroutput">static_cast</code> to suppress the
+          warning, we'll fail to detect a program error when it is commited.
+          This is aways a risk with casts.</p></li>
+</ul></div>
+<p>This solution is the same as the above, Just replace instances of
+    the <code class="computeroutput">int </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+//#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 2:";
+    std::cout &lt;&lt; "undetected overflow in data type" &lt;&lt; std::endl;
+    try{
+        int x = INT_MAX;
+        // the following silently produces an incorrect result
+        ++x;
+        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
+        detected_msg(false);
+    }
+    catch(...){
+        assert(false); // never arrive here
+    }
+    // solution: replace int with safe&lt;int&gt;
+    try{
+        using namespace boost::numeric;
+        safe&lt;int&gt; x = INT_MAX;
+        // throws exception when result is past maximum possible 
+        ++x;
+        assert(false); // never arrive here
+    }
+    catch(std::range_error &amp; e){
+        std::cout &lt;&lt; e.what();
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="introduction/requirements.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="tutorial/1.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="introduction.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

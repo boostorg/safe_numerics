@@ -88,12 +88,17 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</programlist
     <programlisting>#include &lt;boost/numeric/safe_compare.hpp&gt;
 
 void f(){
-    int i = -1;
-    unsigned char i = 0x129;
+    unsigned char i = 129;
     unsigned int j = 1;
-    bool result;
-    result = j &lt; i; // incorrect result
-    result = safe_compare::less_than(j &lt; i); // correct result
+    assert(j &lt; i); // program traps because expression is false. But this is a surprise because 1 &lt; 129
+    assert( safe_compare::less_than(j,i)); // expression is true as we would expect
+}
+
+// safe_compare is used to implement comparison operators for safe types.  So we can do this:
+void g(){
+    safe&lt;unsigned char&gt; int i = 0x129;
+    safe&lt;int&gt; j = 1;
+    assert(j &lt; i); // program works as expected
 }</programlisting>
   </section>
 </section>
