@@ -26,13 +26,13 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="introduction.html#idm49717634736">Problem</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm49717631696">Solution</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm49717628576">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm449651883776">Problem</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm449651880544">Solution</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm449651877232">Requirements</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm49717634736"></a>Problem</h3></div></div></div>
+<a name="idm449651883776"></a>Problem</h3></div></div></div>
 <p>Arithmetic operations in C++ are NOT guarenteed to yield a correct
     mathematical result. This feature is inherited from the early days of C.
     The behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and others
@@ -48,7 +48,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm49717631696"></a>Solution</h3></div></div></div>
+<a name="idm449651880544"></a>Solution</h3></div></div></div>
 <p>This library implements special versions of int, unsigned, etc.
     which behave exactly like the original ones EXCEPT that the results of
     these operations are checked to be sure any possible errors resulting from
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm49717628576"></a>Requirements</h3></div></div></div>
+<a name="idm449651877232"></a>Requirements</h3></div></div></div>
 <p>This library is is composed entirely of C++ Headers. I requires a
     compiler compatible with the C++11 standard.</p>
 <p>The following Boost Libraries must be installed in order to use this

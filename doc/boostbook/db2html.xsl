@@ -3,38 +3,12 @@
 
 <xsl:import href="http://www.boost.org/tools/boostbook/xsl/html.xsl"/>
 
-<!-- The root of the Boost directory - not used here! -->
-<!-- <xsl:param name="boost.root" select="'file:///c:/BoostRelease/'"/> -->
-<!-- use boost directorys for css stylesheets and images, etc - again not used here -->
-<!-- <xsl:param name="boost.defaults" select="'Boost'"/> -->
-
-<!-- use the images inside of the html directory
-<xsl:param name="boost.graphics.root" select="images/" />
--->
-<!-- direct "libraries" to boost page
-<xsl:param name="boost.libraries">http://www.boost.org/doc/libs</xsl:param>
-<xsl:param name="boost.home_link">file:///index.html</xsl:param>
--->
-
+<!-- ************** HTML ************** -->
 <!-- use stylesheet inside of the html directory -->
 <xsl:param name="html.stylesheet" select="'boostbook.css'" />
 
 <!-- enable spirit type nav bar which is the current boost design -->
 <xsl:param name="nav.layout">horizontal</xsl:param>
-
-<!-- How far down we chunk nested sections, basically all of them: -->
-<xsl:param name="chunk.section.depth" select="1" />
-<!-- don't make first sections special - leave TOC in different file -->
-<xsl:param name="chunk.first.sections" select="1" />
-
-<!-- How far down sections get TOC's -->
-<xsl:param name = "toc.section.depth" select="1" />
-
-<!-- Max depth in each TOC: -->
-<xsl:param name = "toc.max.depth" select="3" />
-
-<!-- How far down we go with TOC's -->
-<xsl:param name="generate.section.toc.level" select="10" />
 
 <!-- remove "Chapter 1" from first page -->
 <xsl:param name="chapter.autolabel" select="0"/>
@@ -69,6 +43,22 @@ the "safe_numeric/" from the above example.
     </xsl:otherwise>
     </xsl:choose>
 </xsl:template>
+
+<!-- ************ Chunking ************ -->
+<!-- How far down we chunk nested sections, basically all of them: -->
+<xsl:param name="chunk.section.depth" select="1" />
+<!-- don't make first sections special - leave TOC in different file -->
+<xsl:param name="chunk.first.sections" select="1" />
+
+<!-- ******* Table of Contents ******** -->
+<!-- How far down sections get TOC's -->
+<xsl:param name = "toc.section.depth" select="3" />
+
+<!-- Max depth in each TOC: -->
+<xsl:param name = "toc.max.depth" select="3" />
+
+<!-- How far down we go with TOC's -->
+<xsl:param name="generate.section.toc.level" select="10" />
 
 </xsl:stylesheet>
 
