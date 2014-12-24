@@ -11,14 +11,9 @@
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
 <a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="functions.html"><img src="images/next.png" alt="Next"></a>
 </div>
@@ -36,14 +31,14 @@
 <a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;MIN, MAX&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893273536"></a>Description</h4></div></div></div>
+<a name="idm547762569616"></a>Description</h4></div></div></div>
 <p>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code class="computeroutput">std::out_of_range</code> exception for any operation which would
     result in assigning an integer value outside of this range. </p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893271584"></a>Template Parameters</h4></div></div></div>
+<a name="idm547762567664"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -76,7 +71,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893259712"></a>Model of</h4></div></div></div>
+<a name="idm547762555792"></a>Model of</h4></div></div></div>
 <p><a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a></p>
 <p>The usage of this type in an arithmetic expression with another
     unsigned type will result in another unsigned type fulfilling the <a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a> concept. This will be the
@@ -85,13 +80,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893256944"></a>Header</h4></div></div></div>
+<a name="idm547762553024"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893254960"></a>Example of use</h4></div></div></div>
+<a name="idm547762551040"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
@@ -111,7 +106,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893253472"></a>See Also</h4></div></div></div>
+<a name="idm547762549552"></a>See Also</h4></div></div></div>
 <p><code class="computeroutput">std::out_of_range</code></p>
 <p><code class="computeroutput">safe_signed_range</code></p>
 </div>
@@ -122,14 +117,14 @@ void f(){
   boost::intmax_tMAX&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893250176"></a>Description</h4></div></div></div>
+<a name="idm547762546256"></a>Description</h4></div></div></div>
 <p>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code class="computeroutput">std::out_of_range</code> exception for operation which would result
     in assigning an integer value outside of this range.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893248224"></a>Template Parameters</h4></div></div></div>
+<a name="idm547762544304"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -162,7 +157,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893236288"></a>Model of</h4></div></div></div>
+<a name="idm547762532368"></a>Model of</h4></div></div></div>
 <p><a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a></p>
 <p>The usage of this type in an arithmetic expression will result in
     another type fulfilling the <a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a> concept. </p>
@@ -170,13 +165,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893233232"></a>Header</h4></div></div></div>
+<a name="idm547762529312"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893231248"></a>Example of use</h4></div></div></div>
+<a name="idm547762527328"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
@@ -194,7 +189,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893228896"></a>See Also</h4></div></div></div>
+<a name="idm547762524976"></a>See Also</h4></div></div></div>
 <p><code class="computeroutput">std::out_of_range</code></p>
 <p><code class="computeroutput">safe_unsigned_range</code></p>
 </div>
@@ -204,13 +199,13 @@ void f(){
 <a name="safe_numerics.safe"></a>safe&lt;T&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893225760"></a>Description</h4></div></div></div>
+<a name="idm547762521840"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T&gt;</code> can be used anywhere a type T is used.
     When T is used in operation which overflows, a exception is thrown</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893223888"></a>Notation</h4></div></div></div>
+<a name="idm547762519968"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -238,7 +233,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893213936"></a>Template Parameters</h4></div></div></div>
+<a name="idm547762510016"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -260,7 +255,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893204800"></a>Model of</h4></div></div></div>
+<a name="idm547762500880"></a>Model of</h4></div></div></div>
 <p><a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a></p>
 <p>If the resulting type of the operation t op u is V, the resulting
     type of the operations st op su, t op su and st op u will be
@@ -268,7 +263,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893202480"></a>Valid Expressions</h4></div></div></div>
+<a name="idm547762498560"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -313,13 +308,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893185904"></a>Header</h4></div></div></div>
+<a name="idm547762481984"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893183904"></a>Example of use</h4></div></div></div>
+<a name="idm547762479984"></a>Example of use</h4></div></div></div>
 <p>The following program will emit an error message on a machine where
     int is only 16 bits but run without problem on a machine where int is 32
     bits.</p>
@@ -340,13 +335,13 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893181056"></a>Notes</h4></div></div></div>
+<a name="idm547762477136"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm465893179904"></a>See Also</h4></div></div></div>
+<a name="idm547762475984"></a>See Also</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
