@@ -28,13 +28,30 @@
     which behave exactly like the original ones EXCEPT that the results of
     these operations are checked to be sure any possible errors resulting from
     undefined arithmetic behavior are trapped at compile time (if possible) or
-    at runtime.</para>
+    at runtime. This will permit one to write arithmetic expressions without
+    resulting in an erroneous result. Instead, one and only one of the
+    following is guarenteed to occur.</para>
 
-    <para>In addition to eliminating undefined behavior from primitive integer
-    types, we define new data types <code>safe_signed_range&lt;MIN,
-    MAX&gt;</code> and <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which
-    will throw an exception if an attempt is made to store a result which is
-    outside the closed range [MIN, MAX].</para>
+    <para><itemizedlist>
+        <listitem>
+          <para>the expression will emit a compilation error.</para>
+        </listitem>
+
+        <listitem>
+          <para>the expression will invoke a runtime exception.</para>
+        </listitem>
+
+        <listitem>
+          <para>the expression will yield the correct mathematical
+          result</para>
+        </listitem>
+      </itemizedlist>In addition to eliminating undefined behavior from
+    primitive integer types, we define new data types
+    <code>safe_signed_range&lt;MIN, MAX&gt;</code> and
+    <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which will throw an
+    exception if an attempt is made to store a result which is outside the
+    closed range [MIN, MAX]. By using these types, on can guarentee correct
+    runtime behavior without the need for exception handling.</para>
   </section>
 
   <section>
@@ -75,5 +92,16 @@
           <para>integer traits</para>
         </listitem>
       </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Scope</title>
+
+    <para>This library currently applies only to built-in integer types.
+    Analogous issues arise for floating point types but they are not currently
+    addressed by this version of the library. User or Library defined types
+    such as arbitrary precision integers can also have this problem. Extension
+    of this library to these other types is not currently under
+    development</para>
   </section>
 </section>

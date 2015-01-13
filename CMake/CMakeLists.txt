@@ -1,6 +1,6 @@
 # CMake build control file for Serialization Library tests
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project("SafeIntegers")
 
@@ -12,9 +12,10 @@ message(STATUS "compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
   add_definitions( -ftemplate-depth=300 )
+  set (CMAKE_CXX_FLAGS "-std=c++11" )
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
   add_definitions( /wd4996 )
-elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+elseif( CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" )
   add_definitions( -ftemplate-depth=300 )
   # include the following if and only if you want to use c++11 features
   set (CMAKE_CXX_FLAGS "-std=c++11" )
@@ -138,8 +139,8 @@ set(CTEST_DROP_SITE_CDASH TRUE)
 
 endif()
 
-# the include above includes enable_testing() so the following line isn't
-# necessary
+# the "include (CTest)" above includes enable_testing() 
+# so the following line isn't necessary
 # enable_testing()
 
 message(STATUS "test_cast")
@@ -182,10 +183,10 @@ add_executable( test_conversion ../test/test_conversion.cpp)
 target_link_libraries( test_conversion  ${Boost_LIBRARIES} )
 add_test(NAME test_conversion COMMAND test_conversion)
 
-message(STATUS "test")
-add_executable( test ../test/test.cpp)
-target_link_libraries( test  ${Boost_LIBRARIES} )
-add_test(NAME test COMMAND test)
+message(STATUS "test0")
+add_executable( test0 ../test/test.cpp)
+target_link_libraries( test0  ${Boost_LIBRARIES} )
+add_test(NAME test0 COMMAND test)
 
 # examples
 message(STATUS "example1")
