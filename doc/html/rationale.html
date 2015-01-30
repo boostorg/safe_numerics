@@ -21,15 +21,21 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale</h2></div></div></div>
 <div class="qandaset">
-<a name="idm547762421456"></a><dl>
-<dt>1. <a href="rationale.html#idm547762420976">Why does a binary operation on two
+<a name="idm235809425888"></a><dl>
+<dt>1. <a href="rationale.html#idm235809425392">Why does a binary operation on two
           safe&lt;int&gt; values not return another
           safe type ?</a>
 </dt>
-<dt>2. <a href="rationale.html#idm547762415680">Why is there no policy driven design for handling
+<dt>2. <a href="rationale.html#idm235809419696">Why is there no policy driven design for handling
           overflows</a>
 </dt>
-<dt>3. <a href="rationale.html#idm547762412848">Why is Boost.Convert not used.</a>
+<dt>3. <a href="rationale.html#idm235809417728">Why is Boost.Convert not used.</a>
+</dt>
+<dt>4. <a href="rationale.html#idm235809416080"></a>
+</dt>
+<dt>5. <a href="rationale.html#idm235809415056"></a>
+</dt>
+<dt>6. <a href="rationale.html#idm235809414032"></a>
 </dt>
 </dl>
 <table border="0" width="100%" summary="Q and A Set">
@@ -38,7 +44,7 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm547762420976"></a><a name="idm547762420720"></a><p><b>1.</b></p>
+<a name="idm235809425392"></a><a name="idm235809425136"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does a binary operation on two
           <code class="computeroutput">safe&lt;int&gt;</code> values not return another
@@ -59,21 +65,21 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm547762415680"></a><a name="idm547762415424"></a><p><b>2.</b></p>
+<a name="idm235809419696"></a><a name="idm235809419440"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top">
 <p>Why is there no policy driven design for handling
           overflows</p>
-<p>The question was - to which type does one apply it to?
-          Consider the following example:</p>
-<pre class="programlisting">safe&lt;int, overflow_policy_1&gt; t1 = 2;
-safe&lt;int, overflow_policy_2&gt; t2 = 4;
-unsigned int x = t1 - t2; // which policy should be invoked?</pre>
+<p>This is planned for a future version of the library. However,
+          attempts to implement this idea have so far failed as it turns out
+          to more technically challanging than one would think. Rather than
+          wait for a future event that might never happen, it was decided to
+          release the library without this feature.</p>
 </td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm547762412848"></a><a name="idm547762412592"></a><p><b>3.</b></p>
+<a name="idm235809417728"></a><a name="idm235809417472"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top">
 <p>Why is Boost.Convert not used.</p>
@@ -81,13 +87,32 @@ unsigned int x = t1 - t2; // which policy should be invoked?</pre>
           documentation.</p>
 </td>
 </tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm235809416080"></a><a name="idm235809415824"></a><p><b>4.</b></p>
+</td>
+<td align="left" valign="top"><p></p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm235809415056"></a><a name="idm235809414800"></a><p><b>5.</b></p>
+</td>
+<td align="left" valign="top"><p></p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm235809414032"></a><a name="idm235809413776"></a><p><b>6.</b></p>
+</td>
+<td align="left" valign="top"><p></p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
+      to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

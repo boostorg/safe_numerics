@@ -201,7 +201,7 @@ namespace detail {
         template<class T, class U>
         static typename check_subtraction_result<T, U>::type
         subtract(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
+            typedef BOOST_TYPEOF_TPL(T() - U()) result_type;
             if(boost::numeric::is_unsigned<result_type>::value){
                 if(u < 0)
                     overflow("safe range left operand value altered");

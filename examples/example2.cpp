@@ -3,13 +3,13 @@
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
-//#include "../include/safe_compare.hpp"
 
 void detected_msg(bool detected){
     std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
 }
 
 int main(int argc, const char * argv[]){
+    // solution: undetected overflow in data type
     std::cout << "example 2:";
     std::cout << "undetected overflow in data type" << std::endl;
     try{
@@ -20,7 +20,7 @@ int main(int argc, const char * argv[]){
         detected_msg(false);
     }
     catch(...){
-        assert(false); // never arrive here
+        assert(false); // we never arrive here
     }
     // solution: replace int with safe<int>
     try{
@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]){
         safe<int> x = INT_MAX;
         // throws exception when result is past maximum possible 
         ++x;
-        assert(false); // never arrive here
+        assert(false); // we never arrive here
     }
     catch(std::range_error & e){
         std::cout << e.what();

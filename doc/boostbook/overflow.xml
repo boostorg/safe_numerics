@@ -16,13 +16,12 @@
   <section>
     <title>Description</title>
 
-    <para>If evironment supports C++ exceptions, this function throws the
+    <para>If environment supports C++ exceptions, this function throws the
     exception .</para>
 
     <para>If the environment does not support C++ exceptions, the user should
-    implement this function and expect it to be called when appropriate.
-    Otherwise, function is implemented by the library so that it throws the
-    standard library exception <code>std::out_of_range(msg)</code>.</para>
+    implement this function and expect it to be called when
+    appropriate.</para>
 
     <para><filename>boost/config.hpp </filename>defines BOOST_NO_EXCEPTIONS
     when the environment doesn't support exceptions. It is by checking for the

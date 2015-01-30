@@ -63,13 +63,16 @@ struct safe : public detail::safe_integer_base<T>::type {
     template<class U>
     safe(const U & u) :
         detail::safe_integer_base<T>::type(u)
-    {}
-    /*
+    {
+        // verify that T is an integer type
+        BOOST_STATIC_ASSERT_MSG(
+            std::numeric_limits<U>::is_integer,
+            "U is not an integer type"
+        );
+    }
     safe(const T & t) :
         detail::safe_integer_base<T>::type(t)
     {}
-    */
-
 };
 
 } // numeric

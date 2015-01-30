@@ -2,8 +2,8 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_signed_range">
-  <title>safe_signed_range&lt;boost::intmax_t MIN,
-  boost::intmax_tMAX&gt;</title>
+  <title>safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_t
+  MAX&gt;</title>
 
   <section>
     <title>Description</title>
@@ -11,6 +11,47 @@
     <para>This type holds a integer in the range [MIN, MAX]. It will throw a
     <code>std::out_of_range</code> exception for operation which would result
     in assigning an integer value outside of this range.</para>
+  </section>
+
+  <section>
+    <title>Notation</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Symbol</entry>
+
+            <entry align="left">Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T, U, V</code></entry>
+
+            <entry>Types which model the <link
+            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
+          </row>
+
+          <row>
+            <entry>t, u, v</entry>
+
+            <entry>objects of types T</entry>
+          </row>
+
+          <row>
+            <entry>ssr</entry>
+
+            <entry>object of type safe_unsigned_range</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
   </section>
 
   <section>
@@ -70,7 +111,7 @@
 
     <para>The usage of this type in an arithmetic expression will result in
     another type fulfilling the <link
-    linkend="safe_numerics.numeric">Numeric</link> concept. </para>
+    linkend="safe_numerics.numeric">Numeric</link> concept.</para>
 
     <para>Operations on safe_signed_range will result in the same</para>
   </section>

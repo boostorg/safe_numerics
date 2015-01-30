@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="index.html" title="Safe Numerics">
-<link rel="next" href="tutorial.html" title="Tutorial">
+<link rel="next" href="tutorial.html" title="Tutorial and Motivating Examples">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -21,43 +21,73 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="introduction.html#idm547762729184">Problem</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm547762726144">Solution</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm547762722832">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm235819215744">Problem</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm235819210016">Solution</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm235819203104">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm235819195456">Scope</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm547762729184"></a>Problem</h3></div></div></div>
+<a name="idm235819215744"></a>Problem</h3></div></div></div>
 <p>Arithmetic operations in C++ are NOT guarenteed to yield a correct
     mathematical result. This feature is inherited from the early days of C.
     The behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and others
     were designed to map closely to the underlying hardware. Computer hardware
     implements these types as a fixed number of bits. When the result of
-    arithmetic operations exceeds this number of bits, the result is undefined
-    and usually not what the programmer intended. It is incumbent up the C/C++
-    programmer to guarentee that this behavior does not result in incorrect
-    behavior of the program. There are no language facilities which do this.
-    They have to be explicitly addressed in the program code. This is
-    exceeding tedious and laborious for a programmer to do. Besides, adding
-    this code would introduce another source of errors.</p>
+    arithmetic operations exceeds this number of bits, the result will not be
+    arithmetically correct. The following example illustrates this
+    problem.</p>
+<pre class="programlisting">int f(int x, int y){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y;
+}
+</pre>
+<p>It is incumbent up the C/C++ programmer to guarentee that this
+    behavior does not result in incorrect or unexpected operation of the
+    program. There are no language facilities which do this. They have to be
+    explicitly addressed in the program code. There are a number of ways to do
+    this. See[<a class="citation" href="bibliography.html#idm235809403040"><span class="citation">INT32-C</span></a>]</p>
+<pre class="programlisting">int f(int x, int y){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y;
+}
+</pre>
+<p></p>
+<p>This is exceeding tedious and laborious for a programmer to do.
+    Besides, adding this code will introduce another source of potential
+    errors.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm547762726144"></a>Solution</h3></div></div></div>
+<a name="idm235819210016"></a>Solution</h3></div></div></div>
 <p>This library implements special versions of int, unsigned, etc.
     which behave exactly like the original ones EXCEPT that the results of
-    these operations are checked to be sure any possible errors resulting from
-    undefined arithmetic behavior are trapped at compile time (if possible) or
-    at runtime.</p>
-<p>In addition to eliminating undefined behavior from primitive integer
-    types, we define new data types <code class="computeroutput">safe_signed_range&lt;MIN,
-    MAX&gt;</code> and <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX&gt;</code> which
-    will throw an exception if an attempt is made to store a result which is
-    outside the closed range [MIN, MAX].</p>
+    these operations are guarenteed to be either arithmetically correct or
+    </p>
+<p></p>
+<p></p>
+<p> are checked to be sure any possible errors resulting from undefined
+    arithmetic behavior are trapped at compile time (if possible) or at
+    runtime. This will permit one to write arithmetic expressions without
+    resulting in an erroneous result. Instead, one and only one of the
+    following is guarenteed to occur.</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>the expression will emit a compilation error.</p></li>
+<li class="listitem"><p>the expression will invoke a runtime exception.</p></li>
+<li class="listitem"><p>the expression will yield the correct mathematical
+          result</p></li>
+</ul></div>
+<p>In addition to eliminating undefined behavior from
+    primitive integer types, we define new data types
+    <code class="computeroutput">safe_signed_range&lt;MIN, MAX&gt;</code> and
+    <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX&gt;</code> which will throw an
+    exception if an attempt is made to store a result which is outside the
+    closed range [MIN, MAX]. By using these types, on can guarentee correct
+    runtime behavior without the need for exception handling.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm547762722832"></a>Requirements</h3></div></div></div>
+<a name="idm235819203104"></a>Requirements</h3></div></div></div>
 <p>This library is is composed entirely of C++ Headers. I requires a
     compiler compatible with the C++11 standard.</p>
 <p>The following Boost Libraries must be installed in order to use this
@@ -72,10 +102,21 @@
 <li class="listitem"><p>integer traits</p></li>
 </ul></div>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm235819195456"></a>Scope</h3></div></div></div>
+<p>This library currently applies only to built-in integer types.
+    Analogous issues arise for floating point types but they are not currently
+    addressed by this version of the library. User or Library defined types
+    such as arbitrary precision integers can also have this problem. Extension
+    of this library to these other types is not currently under
+    development</p>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
+      to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

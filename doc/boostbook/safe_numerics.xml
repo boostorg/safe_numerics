@@ -5,7 +5,7 @@
          name="Safe Numerics">
   <title>Safe Numerics</title>
 
-  <libraryinfo>
+  <libraryinfo last-revision="January 29, 2015">
     <author>
       <firstname>Robert</firstname>
 
@@ -19,12 +19,14 @@
     </copyright>
 
     <legalnotice>
-      <para><ulink url="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt">Subject to Boost Software License</ulink></para>
+      <para><ulink
+      url="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
+      to Boost Software License</ulink></para>
     </legalnotice>
 
     <librarypurpose>Safe integer operations</librarypurpose>
 
-    <librarycategory name="???">Numerics</librarycategory>
+    <librarycategory>Numerics</librarycategory>
   </libraryinfo>
 
   <xi:include href="safe_introduction.xml" xpointer="element(/1)"
@@ -46,7 +48,7 @@
     <itemizedlist>
       <listitem>
         <para>It was a lot of code in one header - 6400 lines. Very unwieldy
-        to understand and modify.</para>
+        to understand, modify and maintain.</para>
       </listitem>
 
       <listitem>
@@ -68,15 +70,7 @@
       </listitem>
 
       <listitem>
-        <para>The package I downloaded didn't have a test suite</para>
-      </listitem>
-
-      <listitem>
-        <para>I believe the original <ulink
-        url="http://safeint.codeplex.com/releases/view/73792">SafeInt</ulink>
-        library is not easily found. MSVC 10 has this built in so I seems that
-        they've decided to make it less attractive to use on other
-        systems.</para>
+        <para>I could find not test suite for the library.</para>
       </listitem>
     </itemizedlist>
 
@@ -91,7 +85,7 @@
   </section>
 
   <section id="safe_numerics.concepts">
-    <title>Concepts</title>
+    <title>Type Requirements</title>
 
     <xi:include href="numeric_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
@@ -100,13 +94,13 @@
   <section id="safe_numerics.types">
     <title>Types</title>
 
+    <xi:include href="safe.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
     <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
     <xi:include href="safe_signed_range.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-    <xi:include href="safe.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
@@ -123,6 +117,13 @@
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
+  <section>
+    <title>Exception Safety</title>
+
+    <para>All operations in this library are exception safe and meet the
+    strong guarantee.</para>
+  </section>
+
   <section id="safe_numerics.rationale">
     <title>Rationale</title>
 
@@ -135,7 +136,7 @@
         </question>
 
         <answer>
-          <para>There are a number of</para>
+          <para>There are a number of reasons:</para>
 
           <itemizedlist>
             <listitem>
@@ -155,24 +156,129 @@
       <qandaentry>
         <question>
           <para>Why is there no policy driven design for handling
-          overflows</para>
-
-          <para>The question was - to which type does one apply it to?
-          Consider the following example:</para>
-
-          <para><programlisting>safe&lt;int, overflow_policy_1&gt; t1 = 2;
-safe&lt;int, overflow_policy_2&gt; t2 = 4;
-unsigned int x = t1 - t2; // which policy should be invoked?</programlisting></para>
+          overflows?</para>
         </question>
+
+        <answer>
+          <para>This is planned for a future version of the library. However,
+          attempts to implement this idea have so far failed as it turns out
+          to more technically challenging than one would think. Rather than
+          wait for a future event that might never happen, it was decided to
+          release the library without this feature.</para>
+        </answer>
       </qandaentry>
 
       <qandaentry>
         <question>
           <para>Why is Boost.Convert not used.</para>
+        </question>
 
+        <answer>
           <para>I couldn't figure out how to use it from the
           documentation.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why is the library named "safe ..." rather than something like
+          "checked ..." ?</para>
         </question>
+
+        <answer>
+          <para>I used "safe" in large part this is what has been used by
+          other similar libraries. Maybe a better word might have been
+          "correct" but that would raise similar concerns. I'm not inclined to
+          change this. I've tried to make it clear in the documentation what
+          the problem that the library addressed is</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Given that the library is called "numerics" why is floating
+          point arithmetic not addressed?</para>
+        </question>
+
+        <answer>
+          <para>Actually, I believe that this can/should be applied to any
+          type T which satisfies the type requirement "Numeric" type as
+          defined in the documentation. So there should be specializations
+          safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
+          etc. But the current version of the library only addresses integer
+          types. Hopefully the library will evolve to match the promise
+          implied by it's name.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Isn't putting a defensive check just before any potential UB,
+          is often considered a bad practice?</para>
+        </question>
+
+        <answer>
+          <para>By whom? Is leaving code which can produce incorrect results
+          better? Note that the documentation contains references to various
+          sources which recommend exactly this approach to mitigate the
+          problems created by this C/C++ behavior.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why are safe_compare and safe_cast included in the library?
+          The don't really fit with the "drop-in" replacement idea for
+          built-in types.</para>
+        </question>
+
+        <answer>
+          <para>They are part of the implementation of the library. I thought
+          they would be useful outside the formal context of the library so I
+          make access to them public.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>It looks like it presumes two's complement arithmetic at the
+          hardware level. So this library is not portable - correct? What
+          about other hardware architectures?</para>
+        </question>
+
+        <answer>
+          <para>Correct. Almost all hardware in current use two's complement
+          arithmetic. This library works all and only on all such machines.
+          For example, if one were to implement 48 bit integers with two's
+          complement arithmetic, the save .. versions could be used without
+          change. To support hardware which does not use two's complement
+          arithmetic, at least part of the library would have to be
+          re-implemented.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why do you specialize numeric_limits for "safe" types? Do you
+          need it? </para>
+        </question>
+
+        <answer>
+          <para>safe&lt;T&gt; behaves like a "number" just as int does. It has
+          max, min, etc Any code which uses numeric limits to test a type T
+          should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
+          replacement for T so it has to implement all the operations.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para/>
+        </question>
+
+        <answer>
+          <para/>
+        </answer>
       </qandaentry>
     </qandaset>
   </section>
@@ -183,49 +289,220 @@ unsigned int x = t1 - t2; // which policy should be invoked?</programlisting></p
     <para>This is the initial version.</para>
   </section>
 
-  <section id="safe_numerics.acknowledgements">
-    <title>Acknowledgements</title>
+  <section id="bibliography">
+    <title>Bibliography</title>
 
-    <para><ulink url="http://safeint.codeplex.com/releases/view/73792">David
-    LeBlanc's</ulink> is the author of <ulink
-    url="http://safeint.codeplex.com/releases/view/73792">SafeInt3</ulink>
-    library which motivated this work</para>
-  </section>
+    <biblioentry>
+      <author>
+        <surname>Robert C. Seacord</surname>
+      </author>
 
-  <section id="safe_numerics.references">
-    <title>References</title>
+      <title>
+        <ulink
+        url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">Secure
+        Coding in C and C++</ulink>
+      </title>
 
-    <orderedlist>
-      <listitem>
-        <para>David LeBlanc, <ulink url="http://safeint.codeplex.com">Codeplex
-        SafeInt Page</ulink></para>
-      </listitem>
+      <edition>2nd Edition</edition>
 
-      <listitem>
-        <para>Daniel Plakosh, <ulink
-        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
-        Integer Operations</ulink></para>
-      </listitem>
+      <publishername>Addison-Wesley Professional</publishername>
 
-      <listitem>
-        <para>Omer Katz, <ulink
-        url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
-        code proposal</ulink>, <ulink
-        url="https://svn.boost.org/trac/boost/wiki/LibrariesUnderConstruction">Boost.SafeInt</ulink></para>
-      </listitem>
+      <date>April 12, 2013</date>
 
-      <listitem>
-        <para>Software Engineering Institute, Carnegie Mellon, <ulink
+      <isbn>978-0321822130</isbn>
+
+      <abbrev>Seacord</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Robert C. Seacord</surname>
+      </author>
+
+      <title>
+        <ulink
         url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT32-C.
         Ensure that operations on signed integers do not result in
-        overflow</ulink></para>
-      </listitem>
+        overflow</ulink>
+      </title>
 
-      <listitem>
-        <para>Will Dietz, Peng Li,y John Regehr,y and Vikram Adve, <ulink
+      <publishername>
+        <ulink url="https://www.cert.org">Software Engineering Institute,
+        Carnegie Mellon University</ulink>
+      </publishername>
+
+      <date>August 17, 2014</date>
+
+      <abbrev>INT32-C</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Daniel Plakosh</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
+        Integer Operations</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://buildsecurityin.us-cert.gov">U.S. Department of
+        Homeland Security</ulink>
+      </publishername>
+
+      <date>May 10, 2013</date>
+
+      <abbrev>Plakosh</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Will Dietz</surname>
+      </author>
+
+      <author>
+        <surname>Peng Li</surname>
+      </author>
+
+      <author>
+        <surname>John Regehr</surname>
+      </author>
+
+      <author>
+        <surname>Vikram Adve</surname>
+      </author>
+
+      <title>
+        <ulink
         url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
-        Integer Overflow in C/C++</ulink></para>
-      </listitem>
-    </orderedlist>
+        Integer Overflow in C/C++</ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="http://dl.acm.org/citation.cfm?id=2337223&amp;picked=prox">Proceedings
+        of the 34th International Conference on Software Engineering (ICSE),
+        Zurich, Switzerland</ulink>
+      </publishername>
+
+      <date>June 2012</date>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Lawerence Crowl</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
+          Binary Fixed-Point Arithmetic</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
+        The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
+
+      <date>January 15, 2012</date>
+
+      <abbrev>Crowl</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Forum Posts</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
+          Binary Fixed-Point Arithmetic</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">ISO
+        C++ Standard Future Proposals</ulink>
+      </publishername>
+
+      <abbrev>Forum</abbrev>
+
+      <abstract>
+        <para>Posts of various authors regarding proposal to add safe integer
+        to C++ standard libraries</para>
+      </abstract>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>David LeBlanc</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://msdn.microsoft.com/en-us/library/ms972705.aspx">Integer
+        Handling with the C++ SafeInt Class</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://www.cert.org">Microsoft Developer Network</ulink>
+      </publishername>
+
+      <date>January 7, 2004</date>
+
+      <abbrev>LeBlanc</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>David LeBlanc</surname>
+      </author>
+
+      <title>
+        <ulink url="https://safeint.codeplex.com">SafeInt</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://www.cert.org">CodePlex</ulink>
+      </publishername>
+
+      <date>Dec 3, 2014</date>
+
+      <abbrev>LeBlanc</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Omer Katz</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
+          code proposal</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">Boost
+        Developer's List</ulink>
+      </publishername>
+
+      <abbrev>Katz</abbrev>
+
+      <abstract>
+        <para>Posts of various authors regarding a proposed SafeInt library
+        for boost</para>
+      </abstract>
+    </biblioentry>
   </section>
 </library>

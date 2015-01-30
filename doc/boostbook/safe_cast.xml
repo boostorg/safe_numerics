@@ -16,7 +16,9 @@ T safe_cast(const U &amp; u);</programlisting>
 
     <para>Converts one <link linkend="safe_numerics.numeric">Numeric</link>
     type to another. Throws an <code>std::out_of_range</code> exception if
-    such a conversion is not possible without changing the value.</para>
+    such a conversion is not possible without changing the value. This
+    function is part of the implementation of the safe numerics library. It's
+    been made publicly because it might be useful in related contexts.</para>
   </section>
 
   <section>
@@ -58,15 +60,9 @@ T safe_cast(const U &amp; u);</programlisting>
   <section>
     <title>Preconditions</title>
 
-    <para>The value of u must be representabl by the type <code>T</code>. If
+    <para>The value of u must be representable by the type <code>T</code>. If
     this is not true, an <code>std::out_of_range</code> exception will be
     thrown.</para>
-  </section>
-
-  <section>
-    <title>Complexity</title>
-
-    <para>Constant - O(0).</para>
   </section>
 
   <section>

@@ -30,20 +30,20 @@
 <a name="safe_numerics.safe_cast"></a>safe_cast&lt;T, U&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762472992"></a>Synopsis</h4></div></div></div>
+<a name="idm235809481872"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting">template&lt;class T, class U&gt;
 T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762471536"></a>Description</h4></div></div></div>
+<a name="idm235809480256"></a>Description</h4></div></div></div>
 <p>Converts one <a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a>
     type to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if
     such a conversion is not possible without changing the value.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762469088"></a>Type requirements</h4></div></div></div>
+<a name="idm235809477472"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -67,25 +67,25 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762460064"></a>Preconditions</h4></div></div></div>
+<a name="idm235809467712"></a>Preconditions</h4></div></div></div>
 <p>The value of u must be representabl by the type <code class="computeroutput">T</code>. If
     this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
     thrown.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762457632"></a>Complexity</h4></div></div></div>
+<a name="idm235809464976"></a>Complexity</h4></div></div></div>
 <p>Constant - O(0).</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762456480"></a>Header</h4></div></div></div>
+<a name="idm235809463776"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
     &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762454496"></a>Example of use</h4></div></div></div>
+<a name="idm235809461680"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 
 
@@ -106,7 +106,7 @@ void f(){
 <a name="safe_numerics.safe_compare"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762451344"></a>Synopsis</h4></div></div></div>
+<a name="idm235809458400"></a>Synopsis</h4></div></div></div>
 <p>safe_compare is several functions:.</p>
 <pre class="programlisting">template&lt;class T, class U&gt;
 bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
@@ -128,7 +128,7 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762449424"></a>Description</h4></div></div></div>
+<a name="idm235809456304"></a>Description</h4></div></div></div>
 <p>With normal comparison operators, comparison of unsigned types to
     signed types will be done by converting the unsigned type to a signed type
     before comparing. Unfortunately this is not always possible. Most C++
@@ -138,7 +138,7 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762447040"></a>Type requirements</h4></div></div></div>
+<a name="idm235809453904"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -162,13 +162,13 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762438272"></a>Header</h4></div></div></div>
+<a name="idm235809444352"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="filename">#include
     &lt;boost/numeric/safe_compare.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762436288"></a>Example of use</h4></div></div></div>
+<a name="idm235809442288"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_compare.hpp&gt;
 
 void f(){
@@ -191,14 +191,14 @@ void g(){
 <a name="safe_numerics.rationale.overflow"></a>overflow</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762433664"></a>Synopsis</h4></div></div></div>
+<a name="idm235809439216"></a>Synopsis</h4></div></div></div>
 <p>This function is invoked by the library whenever it is not possible
     to produce a result for an arithmetic operation.</p>
 <pre class="programlisting">void overflow(char const * const msg);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762431648"></a>Description</h4></div></div></div>
+<a name="idm235809437088"></a>Description</h4></div></div></div>
 <p>If evironment supports C++ exceptions, this function throws the
     exception .</p>
 <p>If the environment does not support C++ exceptions, the user should
@@ -212,13 +212,13 @@ void g(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762428096"></a>Header</h4></div></div></div>
+<a name="idm235809433328"></a>Header</h4></div></div></div>
 <p><a href="../include/safe_numerics/overflow" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/overflow.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762426112"></a>Example of use</h4></div></div></div>
+<a name="idm235809431120"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;cstdio&gt;
 
 void overflow(char const * const msg){
@@ -229,7 +229,7 @@ void overflow(char const * const msg){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm547762424336"></a>See Also</h4></div></div></div>
+<a name="idm235809429216"></a>See Also</h4></div></div></div>
 <p>See <a class="link" href="functions.html#safe_numerics.rationale.overflow" title="overflow">rationale</a> for more
     information on this function</p>
 </div>
@@ -237,7 +237,8 @@ void overflow(char const * const msg){
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
+      to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

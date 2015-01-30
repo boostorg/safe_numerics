@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Tutorial</title>
+<title>Tutorial and Motivating Examples</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
@@ -19,17 +19,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="safe_numerics.tutorial"></a>Tutorial</h2></div></div></div>
+<a name="safe_numerics.tutorial"></a>Tutorial and Motivating Examples</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.1">Problem: Arithmetic operations can yield in correct
-    results.</a></span></dt>
-<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.2">Problem: Undetected overflow</a></span></dt>
-<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.3">Problem: Implicit conversions change data values</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.1">Arithmetic operations can yield in correct results.</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.2">Undetected overflow</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.3">Undetected underflow</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.4">Implicit conversions change data values</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.5">Array index value can exceed array limits</a></span></dt>
+<dt><span class="section"><a href="tutorial.html#safe_numerics.tutorial.6">Checking of intialization values can be easily overlooked</a></span></dt>
 </dl></div>
+<p></p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.1"></a>Problem: Arithmetic operations can yield in correct
-    results.</h3></div></div></div>
+<a name="safe_numerics.tutorial.1"></a>Arithmetic operations can yield in correct results.</h3></div></div></div>
 <p>When some operation results in a result which exceeds the capacity
     of a data variable to hold it, the result is undefined. This is called
     "overflow". Since word size can differ between machines, code which
@@ -46,23 +48,22 @@
 #include &lt;iostream&gt;
 
 #include "../include/safe_integer.hpp"
-//#include "../include/safe_compare.hpp"
 
 void detected_msg(bool detected){
     std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
 }
 
 int main(int argc, const char * argv[]){
+    // problem: undetected erroneous expression evaluation
     std::cout &lt;&lt; "example 1:";
     std::cout &lt;&lt; "undetected erroneous expression evaluation" &lt;&lt; std::endl;
     std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
     try{
-        char x = 127;
-        char y = 2;
-        char z;
+        signed char x = 127;
+        signed char y = 2;
+        signed char z;
         // this produces an invalid result !
         z = x + y;
-        // it is the wrong result !!!
         assert(z != 129);
         // but assert fails to detect it since C++ implicitly
         // converts variables to int before evaluating he expression!
@@ -71,18 +72,18 @@ int main(int argc, const char * argv[]){
         detected_msg(false);
     }
     catch(...){
-        assert(false); // never arrive here
+        assert(false); // we never arrive here
     }
     // solution: replace char with safe&lt;char&gt;
     std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
     try{
         using namespace boost::numeric;
-        safe&lt;char&gt; x = 127;
-        safe&lt;char&gt; y = 2;
-        safe&lt;char&gt; z;
-        // rather than producing and invalid result an exception is thrown
+        safe&lt;signed char&gt; x = 127;
+        safe&lt;signed char&gt; y = 2;
+        safe&lt;signed char&gt; z;
+        // rather than producing an invalid result an exception is thrown
         z = x + y;
-        assert(false); // never arrive here
+        assert(false); // we never arrive here
     }
     catch(std::range_error &amp; e){
         // which can catch here
@@ -95,7 +96,7 @@ int main(int argc, const char * argv[]){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.2"></a>Problem: Undetected overflow</h3></div></div></div>
+<a name="safe_numerics.tutorial.2"></a>Undetected overflow</h3></div></div></div>
 <p>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</p>
 <pre class="programlisting">#include &lt;cassert&gt;
@@ -103,14 +104,131 @@ int main(int argc, const char * argv[]){
 #include &lt;iostream&gt;
 
 #include "../include/safe_integer.hpp"
-//#include "../include/safe_compare.hpp"
 
 void detected_msg(bool detected){
     std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
 }
 
 int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 3: ";
+    // solution: undetected overflow in data type
+    std::cout &lt;&lt; "example 2:";
+    std::cout &lt;&lt; "undetected overflow in data type" &lt;&lt; std::endl;
+    try{
+        int x = INT_MAX;
+        // the following silently produces an incorrect result
+        ++x;
+        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
+        detected_msg(false);
+    }
+    catch(...){
+        assert(false); // we never arrive here
+    }
+    // solution: replace int with safe&lt;int&gt;
+    try{
+        using namespace boost::numeric;
+        safe&lt;int&gt; x = INT_MAX;
+        // throws exception when result is past maximum possible 
+        ++x;
+        assert(false); // we never arrive here
+    }
+    catch(std::range_error &amp; e){
+        std::cout &lt;&lt; e.what();
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.3"></a>Undetected underflow</h3></div></div></div>
+<p>A variation of the above is when a value is incremented/decremented
+    beyond it's domain. This is a common problem with for loops.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+#include "../include/safe_compare.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 3:";
+    std::cout &lt;&lt; "undetected underflow in data type" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    try{
+        unsigned int x = 0;
+        // the following silently produces an incorrect result
+        --x;
+        // because C/C++ implicitly converts mis-matched arguments to int
+        // suggests that the operation is correct
+        assert(x == -1);
+        // even though it's not !!!
+
+        // however, safe_compare does detect the error
+        assert(! boost::numeric::safe_compare::equal(x, -1));
+        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; -1;
+        detected_msg(false);
+    }
+    catch(...){
+        assert(false); // never arrive here
+    }
+    // solution: replace unsigned int with safe&lt;unsigned int&gt;
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
+    try{
+        using namespace boost::numeric;
+        safe&lt;unsigned int&gt; x = 0;
+        // decrement unsigned to less than zero throws exception
+        --x;
+        assert(false); // never arrive here
+    }
+    catch(std::range_error &amp; e){
+        std::cout &lt;&lt; e.what();
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.4"></a>Implicit conversions change data values</h3></div></div></div>
+<p>A simple assign or arithment expression will generally convert all
+    the terms to the same type. Sometimes this can silently change values. For
+    example, when a signed data variable contains a negative type, assigning
+    to a unsigned type will be permitted by any C/C++ compiler but will be
+    treated as large unsigned value. Most modern compilers will emit a compile
+    time warning when this conversion is performed. The user may then decide
+    to change some data types or apply a <code class="computeroutput">static_cast</code>. This is
+    less than satisfactory for two reasons:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>It may be unwield to change all the types to signed or
+          unsigned.</p></li>
+<li class="listitem"><p>Litering one's program with <code class="computeroutput">static_cast</code><code class="computeroutput">
+          </code>makes it more difficult to read.</p></li>
+<li class="listitem"><p>We may believe that our signed type will never contain a
+          negative value. If we use a <code class="computeroutput">static_cast</code> to suppress the
+          warning, we'll fail to detect a program error when it is commited.
+          This is aways a risk with casts.</p></li>
+</ul></div>
+<p>This solution is the same as the above, Just replace instances of
+    the <code class="computeroutput">int </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    // problem: implicit conversions change data values
+    std::cout &lt;&lt; "example 4: ";
     std::cout &lt;&lt; "implicit conversions change data values" &lt;&lt; std::endl;
     std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
     try{
@@ -141,71 +259,118 @@ int main(int argc, const char * argv[]){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.3"></a>Problem: Implicit conversions change data values</h3></div></div></div>
-<p>A simple assign or arithment expression will generally convert all
-    the terms to the same type. Sometimes this can silently change values. For
-    example, when a signed data variable contains a negative type, assigning
-    to a unsigned type will be permitted by any C/C++ compiler but will be
-    treated as large unsigned value. Most modern compilers will emit a compile
-    time warning when this conversion is performed. The user may then decide
-    to change some data types or apply a <code class="computeroutput">static_cast</code>. This is
-    less than satisfactory for two reasons:</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
-<li class="listitem"><p>It may be unwield to change all the types to signed or
-          unsigned.</p></li>
-<li class="listitem"><p>Litering one's program with <code class="computeroutput">static_cast</code><code class="computeroutput">
-          </code>makes it more difficult to read.</p></li>
-<li class="listitem"><p>We may believe that our signed type will never contain a
-          negative value. If we use a <code class="computeroutput">static_cast</code> to suppress the
-          warning, we'll fail to detect a program error when it is commited.
-          This is aways a risk with casts.</p></li>
-</ul></div>
-<p>This solution is the same as the above, Just replace instances of
-    the <code class="computeroutput">int </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+<a name="safe_numerics.tutorial.5"></a>Array index value can exceed array limits</h3></div></div></div>
+<p>Using an intrinsice C++ array, it's very easy to exceed array
+    limits. This can fail to be detected when it occurs and create bugs which
+    are hard to find. There are several ways to address this, but one of the
+    simplest would be to use safe_unsigned_range;</p>
 <pre class="programlisting">#include &lt;cassert&gt;
 #include &lt;stdexcept&gt;
 #include &lt;iostream&gt;
 
-#include "../include/safe_integer.hpp"
-//#include "../include/safe_compare.hpp"
+#include "../include/safe_range.hpp"
 
 void detected_msg(bool detected){
     std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
 }
 
 int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 2:";
-    std::cout &lt;&lt; "undetected overflow in data type" &lt;&lt; std::endl;
+    // problem: array index values can exceed array bounds
+    std::cout &lt;&lt; "example 5: ";
+    std::cout &lt;&lt; "array index values can exceed array bounds" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    int i_array[37];
+
     try{
-        int x = INT_MAX;
-        // the following silently produces an incorrect result
-        ++x;
-        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
+        unsigned int i_index = 43;
+        // the following corrupts memory.
+        // This may or may not be detected at run time.
+        i_array[i_index] = 84;
         detected_msg(false);
     }
     catch(...){
         assert(false); // never arrive here
     }
-    // solution: replace int with safe&lt;int&gt;
+    // solution: replace unsigned array index with safe_unsigned_range
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
     try{
         using namespace boost::numeric;
-        safe&lt;int&gt; x = INT_MAX;
-        // throws exception when result is past maximum possible 
-        ++x;
-        assert(false); // never arrive here
+        safe_unsigned_range&lt;0, sizeof(i_array)/sizeof(int) - 1&gt; i_index;
+        i_index = 36; // this works fine
+        i_array[i_index] = 84;
+        i_index = 37; // throw exception here!
+        i_array[i_index] = 84; // so we never arrive here
+        assert(false);
     }
     catch(std::range_error &amp; e){
-        std::cout &lt;&lt; e.what();
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
         detected_msg(true);
     }
     return 0;
 }
 </pre>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.6"></a>Checking of intialization values can be easily overlooked</h3></div></div></div>
+<p>It's way too easy to overlook the checking of parameters received
+    from outside the current program.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+
+void detected_msg(bool detected){
+    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
+}
+
+int main(int argc, const char * argv[]){
+    // problem: checking of externally produced value can be overlooked
+    std::cout &lt;&lt; "example 6: ";
+    std::cout &lt;&lt; "checking of externally produced value can be overlooked" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+
+    try{
+        int x, y, z;
+        std::cin &gt;&gt; x &gt;&gt; y; // get integer values from the user
+        z = x + y;
+        std::cout &lt;&lt; z;  // display sum of the values
+    }
+    catch(...){
+        assert(false); // never arrive here
+    }
+    // solution: asign externally retrieved values to safe equivalents
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
+    try{
+        using namespace boost::numeric;
+        safe&lt;int&gt; x, y, z;
+        std::cin &gt;&gt; x &gt;&gt; y; // get integer values from the user
+        try{
+            z = x + y;
+            //std::cout &lt;&lt; z &lt;&lt; std::endl;  // display sum of the values
+        }
+        catch(...){
+            std::cout &lt;&lt; "sum exceeds capacity of this computer" &lt;&lt; std::endl;
+        }
+        assert(false);
+    }
+    catch(std::range_error &amp; e){
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+        detected_msg(true);
+    }
+    return 0;
+}
+</pre>
+<p>Without
+    safe integer, one will have to insert new code every time an integer
+    variable is retrieved. This is a tedious and error prone procedure.</p>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
+      to Boost Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
