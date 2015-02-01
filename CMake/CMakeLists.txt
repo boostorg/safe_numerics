@@ -106,16 +106,6 @@ include_directories("../include" "${Boost_INCLUDE_DIRS}")
 link_directories("${Boost_LIBRARY_DIRS}")
 
 ###########################
-# library builds
-
-# header library only - nothing to be built
-#
-# add_library(library_name ../src/sources1.cpp  …)
-
-# end library build
-###########################
-
-###########################
 # testing and submitting test results to the test dashboard
 
 include (CTest)
@@ -136,11 +126,15 @@ set(CTEST_DROP_SITE_CDASH TRUE)
 
 endif()
 
-function(<name> [arg1 [arg2 [arg3 ...]]])
-  COMMAND1(ARGS ...)
-  COMMAND2(ARGS ...)
-  ...
-endfunction(<name>)
+###########################
+# library builds
+
+# header library only - nothing to be built
+#
+# add_library(library_name ../src/sources1.cpp  …)
+
+# end library build
+###########################
 
 ###########################
 # test targets
@@ -159,6 +153,7 @@ foreach(file_path ${test_list})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_path})
   target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
 # end test targets
@@ -177,6 +172,7 @@ foreach(file_path ${example_list})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_path})
   target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
 # end examples targets

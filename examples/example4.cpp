@@ -13,15 +13,12 @@ int main(int argc, const char * argv[]){
     std::cout << "example 4: ";
     std::cout << "implicit conversions change data values" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
-    try{
-        int x = -1000;
-        // the following silently produces an incorrect result
-        char y = x;
-        detected_msg(false);
-    }
-    catch(...){
-        assert(false); // never arrive here
-    }
+
+    int x = -1000;
+    // the following silently produces an incorrect result
+    char y = x;
+    detected_msg(false);
+
     // solution: replace int with safe<int> and char with safe<char>
     std::cout << "Using safe numerics" << std::endl;
     try{

@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="types.html" title="Types">
-<link rel="next" href="rationale.html" title="Rationale">
+<link rel="next" href="exception_safety.html" title="Exception Safety">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,7 +15,7 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="rationale.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_safety.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -30,20 +30,22 @@
 <a name="safe_numerics.safe_cast"></a>safe_cast&lt;T, U&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809481872"></a>Synopsis</h4></div></div></div>
+<a name="idm222577225680"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting">template&lt;class T, class U&gt;
 T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809480256"></a>Description</h4></div></div></div>
+<a name="idm222577224224"></a>Description</h4></div></div></div>
 <p>Converts one <a class="link" href="concepts.html#safe_numerics.numeric" title="Numeric&lt;T&gt;">Numeric</a>
     type to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if
-    such a conversion is not possible without changing the value.</p>
+    such a conversion is not possible without changing the value. This
+    function is part of the implementation of the safe numerics library. It's
+    been made publicly because it might be useful in related contexts.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809477472"></a>Type requirements</h4></div></div></div>
+<a name="idm222577221616"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -67,25 +69,20 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809467712"></a>Preconditions</h4></div></div></div>
-<p>The value of u must be representabl by the type <code class="computeroutput">T</code>. If
+<a name="idm222577212592"></a>Preconditions</h4></div></div></div>
+<p>The value of u must be representable by the type <code class="computeroutput">T</code>. If
     this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
     thrown.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809464976"></a>Complexity</h4></div></div></div>
-<p>Constant - O(0).</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809463776"></a>Header</h4></div></div></div>
+<a name="idm222577210160"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
     &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809461680"></a>Example of use</h4></div></div></div>
+<a name="idm222577208176"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 
 
@@ -106,7 +103,7 @@ void f(){
 <a name="safe_numerics.safe_compare"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809458400"></a>Synopsis</h4></div></div></div>
+<a name="idm222577205024"></a>Synopsis</h4></div></div></div>
 <p>safe_compare is several functions:.</p>
 <pre class="programlisting">template&lt;class T, class U&gt;
 bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
@@ -128,17 +125,19 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809456304"></a>Description</h4></div></div></div>
+<a name="idm222577203104"></a>Description</h4></div></div></div>
 <p>With normal comparison operators, comparison of unsigned types to
     signed types will be done by converting the unsigned type to a signed type
     before comparing. Unfortunately this is not always possible. Most C++
     compilers will emit an warning message when this is possible but won't
-    check that an error is made in the conversion. This function guarentees a
-    correct result regardless of the types of the arguments.</p>
+    check that an error is made in the conversion. This function guarantees a
+    correct result regardless of the types of the arguments. It's used in the
+    implementation of the safe numerics library. It has been made publicly
+    accessible in because it might be useful in other contexts.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809453904"></a>Type requirements</h4></div></div></div>
+<a name="idm222577200576"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -162,13 +161,13 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809444352"></a>Header</h4></div></div></div>
+<a name="idm222577191808"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="filename">#include
     &lt;boost/numeric/safe_compare.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809442288"></a>Example of use</h4></div></div></div>
+<a name="idm222577189824"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_compare.hpp&gt;
 
 void f(){
@@ -191,20 +190,19 @@ void g(){
 <a name="safe_numerics.rationale.overflow"></a>overflow</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809439216"></a>Synopsis</h4></div></div></div>
+<a name="idm222577187200"></a>Synopsis</h4></div></div></div>
 <p>This function is invoked by the library whenever it is not possible
     to produce a result for an arithmetic operation.</p>
 <pre class="programlisting">void overflow(char const * const msg);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809437088"></a>Description</h4></div></div></div>
-<p>If evironment supports C++ exceptions, this function throws the
+<a name="idm222577185184"></a>Description</h4></div></div></div>
+<p>If environment supports C++ exceptions, this function throws the
     exception .</p>
 <p>If the environment does not support C++ exceptions, the user should
-    implement this function and expect it to be called when appropriate.
-    Otherwise, function is implemented by the library so that it throws the
-    standard library exception <code class="computeroutput">std::out_of_range(msg)</code>.</p>
+    implement this function and expect it to be called when
+    appropriate.</p>
 <p><code class="filename">boost/config.hpp </code>defines BOOST_NO_EXCEPTIONS
     when the environment doesn't support exceptions. It is by checking for the
     definition of this macro that the system determines whether or not
@@ -212,13 +210,13 @@ void g(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809433328"></a>Header</h4></div></div></div>
+<a name="idm222577182320"></a>Header</h4></div></div></div>
 <p><a href="../include/safe_numerics/overflow" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/overflow.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809431120"></a>Example of use</h4></div></div></div>
+<a name="idm222577180336"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;cstdio&gt;
 
 void overflow(char const * const msg){
@@ -229,7 +227,7 @@ void overflow(char const * const msg){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809429216"></a>See Also</h4></div></div></div>
+<a name="idm222577178560"></a>See Also</h4></div></div></div>
 <p>See <a class="link" href="functions.html#safe_numerics.rationale.overflow" title="overflow">rationale</a> for more
     information on this function</p>
 </div>
@@ -243,7 +241,7 @@ void overflow(char const * const msg){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="rationale.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_safety.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

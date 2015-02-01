@@ -13,22 +13,19 @@ int main(int argc, const char * argv[]){
     std::cout << "example 1:";
     std::cout << "undetected erroneous expression evaluation" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
-    try{
-        signed char x = 127;
-        signed char y = 2;
-        signed char z;
-        // this produces an invalid result !
-        z = x + y;
-        assert(z != 129);
-        // but assert fails to detect it since C++ implicitly
-        // converts variables to int before evaluating he expression!
-        assert(z != x + y);
-        std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
-        detected_msg(false);
-    }
-    catch(...){
-        assert(false); // we never arrive here
-    }
+
+    signed char x = 127;
+    signed char y = 2;
+    signed char z;
+    // this produces an invalid result !
+    z = x + y;
+    assert(z != 129); // compiler may emit warning here
+    // but assert fails to detect it since C++ implicitly
+    // converts variables to int before evaluating he expression!
+    assert(z != x + y);
+    std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
+    detected_msg(false);
+    
     // solution: replace char with safe<char>
     std::cout << "Using safe numerics" << std::endl;
     try{

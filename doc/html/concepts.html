@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Concepts</title>
+<title>Type Requirements</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
@@ -19,14 +19,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="safe_numerics.concepts"></a>Concepts</h2></div></div></div>
+<a name="safe_numerics.concepts"></a>Type Requirements</h2></div></div></div>
 <div class="toc"><dl><dt><span class="section"><a href="concepts.html#safe_numerics.numeric">Numeric&lt;T&gt;</a></span></dt></dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235819154928"></a>Description</h4></div></div></div>
+<a name="idm222577473968"></a>Description</h4></div></div></div>
 <p>A type is Numeric if it has the properties of a number.</p>
 <p>More specifically, a type T is Numeric if there exists
     specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt;</code>. See the
@@ -34,16 +34,16 @@
     library includes such specializations for all the primitive numeric types.
     Note that this concept is distinct from the C++ standard library type
     traits <code class="computeroutput">is_integral</code> and <code class="computeroutput">is_arithmetic</code>. These
-    latter fullfill the requirement of the concept Numeric. But there are
-    types T which fullfill this concept for which
-    <code class="computeroutput">is_arithmetic&lt;T&gt;::value == false</code>. For example see
+    latter fulfill the requirement of the concept Numeric. But there are types
+    T which fulfill this concept for which <code class="computeroutput">is_arithmetic&lt;T&gt;::value
+    == false</code>. For example see
     <code class="computeroutput">safe_signed_integer&lt;int&gt;</code>.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235819149712"></a>Notation</h4></div></div></div>
+<a name="idm222577468736"></a>Notation</h4></div></div></div>
 <div class="table">
-<a name="idm235819149072"></a><p class="title"><b>Table&#160;1.&#160;Notation</b></p>
+<a name="idm222577468096"></a><p class="title"><b>Table&#160;1.&#160;Notation</b></p>
 <div class="table-contents"><table class="table" summary="Notation">
 <colgroup>
 <col align="left">
@@ -65,9 +65,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235819141792"></a>Associated Types</h4></div></div></div>
+<a name="idm222577460816"></a>Associated Types</h4></div></div></div>
 <div class="table">
-<a name="idm235819141152"></a><p class="title"><b>Table&#160;2.&#160;Associated Types</b></p>
+<a name="idm222577460176"></a><p class="title"><b>Table&#160;2.&#160;Associated Types</b></p>
 <div class="table-contents"><table class="table" summary="Associated Types">
 <colgroup>
 <col align="left">
@@ -76,7 +76,7 @@
 <tbody><tr>
 <td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;</code></td>
 <td align="left">The numeric_limits class template provides a C++ program
-            with information about various properties of the implementation&#8217;s
+            with information about various properties of the implementation's
             representation of the arithmetic types. See C++ standard
             18.3.2.2.</td>
 </tr></tbody>
@@ -86,13 +86,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235819135968"></a>Valid Expressions</h4></div></div></div>
+<a name="idm222577455360"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid.</p>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="table">
-<a name="idm235819133952"></a><p class="title"><b>Table&#160;3.&#160;General</b></p>
+<a name="idm222577453344"></a><p class="title"><b>Table&#160;3.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -122,7 +122,7 @@
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="idm235819124480"></a><p class="title"><b>Table&#160;4.&#160;Unary Operators</b></p>
+<a name="idm222577443744"></a><p class="title"><b>Table&#160;4.&#160;Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -158,12 +158,12 @@
 <tr>
 <td align="left"><code class="computeroutput">--t</code></td>
 <td align="left">T</td>
-<td align="left">predecrement</td>
+<td align="left">pre decrement</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">++t</code></td>
 <td align="left">T</td>
-<td align="left">preincrement</td>
+<td align="left">pre increment</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">~</code></td>
@@ -174,7 +174,7 @@
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="idm235819105696"></a><p class="title"><b>Table&#160;5.&#160;Binary Operators</b></p>
+<a name="idm222577424960"></a><p class="title"><b>Table&#160;5.&#160;Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -220,7 +220,7 @@
 <tr>
 <td align="left"><code class="computeroutput">t &gt;&gt; u</code></td>
 <td align="left">T</td>
-<td align="left">shift t right by ubits</td>
+<td align="left">shift t right by u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &lt; u</code></td>
@@ -240,7 +240,8 @@
 <tr>
 <td align="left"><code class="computeroutput">t &gt;= u</code></td>
 <td align="left">bool</td>
-<td align="left">true if t greathan or equal to u, false otherwise</td>
+<td align="left">true if t greater than or equal to u, false
+            otherwise</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t == u</code></td>
@@ -330,13 +331,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809592096"></a>Header</h4></div></div></div>
+<a name="idm222577365888"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm235809589872"></a>Models</h4></div></div></div>
+<a name="idm222577363888"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></p>
 <p>The definition of this concept</p>

@@ -117,7 +117,7 @@
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
-  <section>
+  <section id="safe_numerics.exception_safety">
     <title>Exception Safety</title>
 
     <para>All operations in this library are exception safe and meet the
@@ -260,7 +260,7 @@
       <qandaentry>
         <question>
           <para>Why do you specialize numeric_limits for "safe" types? Do you
-          need it? </para>
+          need it?</para>
         </question>
 
         <answer>
@@ -283,13 +283,51 @@
     </qandaset>
   </section>
 
+  <section id="safe_numerics.pending_issues">
+    <title>Pending Issues</title>
+
+    <para>The library is under development. There are a number of issues still
+    pending.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The library is currently limited to integers.</para>
+      </listitem>
+
+      <listitem>
+        <para>Conversions to safe integer types from floating point types is
+        not checked.</para>
+      </listitem>
+
+      <listitem>
+        <para>Stream input of safe integer types is not checked. Note that
+        standard library stream conversion functions such as
+        <code>strtoi</code> etc. DO check for valid input and throw the
+        exception <code>std::out_of_range</code> if the string cannot be
+        converted to the specified integer type. In other words,
+        <code>strtoi</code> aready contains the exact functionality that
+        <code>safe&lt;int&gt;</code> provides.</para>
+      </listitem>
+
+      <listitem>
+        <para>There is currently no convenient way to override the overflow
+        function.</para>
+      </listitem>
+
+      <listitem>
+        <para>Expressions with safe integer types don't return safe integer
+        types.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
   <section id="safe_numerics.change_log">
     <title>Change Log</title>
 
     <para>This is the initial version.</para>
   </section>
 
-  <section id="bibliography">
+  <section id="safe_numerics.bibliography">
     <title>Bibliography</title>
 
     <biblioentry>

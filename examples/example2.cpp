@@ -12,16 +12,13 @@ int main(int argc, const char * argv[]){
     // solution: undetected overflow in data type
     std::cout << "example 2:";
     std::cout << "undetected overflow in data type" << std::endl;
-    try{
-        int x = INT_MAX;
-        // the following silently produces an incorrect result
-        ++x;
-        std::cout << x << " != " << INT_MAX << " + 1" << std::endl;
-        detected_msg(false);
-    }
-    catch(...){
-        assert(false); // we never arrive here
-    }
+
+    int x = INT_MAX;
+    // the following silently produces an incorrect result
+    ++x;
+    std::cout << x << " != " << INT_MAX << " + 1" << std::endl;
+    detected_msg(false);
+
     // solution: replace int with safe<int>
     try{
         using namespace boost::numeric;

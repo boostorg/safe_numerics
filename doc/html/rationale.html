@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="functions.html" title="Functions">
-<link rel="next" href="change_log.html" title="Change Log">
+<link rel="prev" href="exception_safety.html" title="Exception Safety">
+<link rel="next" href="pending_issues.html" title="Pending Issues">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,27 +15,43 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="functions.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="change_log.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale</h2></div></div></div>
 <div class="qandaset">
-<a name="idm235809425888"></a><dl>
-<dt>1. <a href="rationale.html#idm235809425392">Why does a binary operation on two
+<a name="idm222577174208"></a><dl>
+<dt>1. <a href="rationale.html#idm222577173728">Why does a binary operation on two
           safe&lt;int&gt; values not return another
           safe type ?</a>
 </dt>
-<dt>2. <a href="rationale.html#idm235809419696">Why is there no policy driven design for handling
-          overflows</a>
+<dt>2. <a href="rationale.html#idm222577168432">Why is there no policy driven design for handling
+          overflows?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm235809417728">Why is Boost.Convert not used.</a>
+<dt>3. <a href="rationale.html#idm222577166080">Why is Boost.Convert not used.</a>
 </dt>
-<dt>4. <a href="rationale.html#idm235809416080"></a>
+<dt>4. <a href="rationale.html#idm222577164080">Why is the library named "safe ..." rather than something like
+          "checked ..." ?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm235809415056"></a>
+<dt>5. <a href="rationale.html#idm222577161712">Given that the library is called "numerics" why is floating
+          point arithmetic not addressed?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm235809414032"></a>
+<dt>6. <a href="rationale.html#idm222577159392">Isn't putting a defensive check just before any potential UB,
+          is often considered a bad practice?</a>
+</dt>
+<dt>7. <a href="rationale.html#idm222577157088">Why are safe_compare and safe_cast included in the library?
+          The don't really fit with the "drop-in" replacement idea for
+          built-in types.</a>
+</dt>
+<dt>8. <a href="rationale.html#idm222577154816">It looks like it presumes two's complement arithmetic at the
+          hardware level. So this library is not portable - correct? What
+          about other hardware architectures?</a>
+</dt>
+<dt>9. <a href="rationale.html#idm222577152240">Why do you specialize numeric_limits for "safe" types? Do you
+          need it?</a>
+</dt>
+<dt>10. <a href="rationale.html#idm222577150000"></a>
 </dt>
 </dl>
 <table border="0" width="100%" summary="Q and A Set">
@@ -44,7 +60,7 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm235809425392"></a><a name="idm235809425136"></a><p><b>1.</b></p>
+<a name="idm222577173728"></a><a name="idm222577173472"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does a binary operation on two
           <code class="computeroutput">safe&lt;int&gt;</code> values not return another
@@ -53,7 +69,7 @@
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top">
-<p>There are a number of</p>
+<p>There are a number of reasons:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>it was too hard to implement.</p></li>
 <li class="listitem"><p>it doesn't really seem necessary. We always do SOMETHING
@@ -65,44 +81,130 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm235809419696"></a><a name="idm235809419440"></a><p><b>2.</b></p>
+<a name="idm222577168432"></a><a name="idm222577168176"></a><p><b>2.</b></p>
 </td>
-<td align="left" valign="top">
-<p>Why is there no policy driven design for handling
-          overflows</p>
-<p>This is planned for a future version of the library. However,
+<td align="left" valign="top"><p>Why is there no policy driven design for handling
+          overflows?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>This is planned for a future version of the library. However,
           attempts to implement this idea have so far failed as it turns out
-          to more technically challanging than one would think. Rather than
+          to more technically challenging than one would think. Rather than
           wait for a future event that might never happen, it was decided to
-          release the library without this feature.</p>
-</td>
+          release the library without this feature.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm235809417728"></a><a name="idm235809417472"></a><p><b>3.</b></p>
+<a name="idm222577166080"></a><a name="idm222577165824"></a><p><b>3.</b></p>
 </td>
-<td align="left" valign="top">
-<p>Why is Boost.Convert not used.</p>
-<p>I couldn't figure out how to use it from the
-          documentation.</p>
-</td>
+<td align="left" valign="top"><p>Why is Boost.Convert not used.</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>I couldn't figure out how to use it from the
+          documentation.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm235809416080"></a><a name="idm235809415824"></a><p><b>4.</b></p>
+<a name="idm222577164080"></a><a name="idm222577163824"></a><p><b>4.</b></p>
+</td>
+<td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
+          "checked ..." ?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>I used "safe" in large part this is what has been used by
+          other similar libraries. Maybe a better word might have been
+          "correct" but that would raise similar concerns. I'm not inclined to
+          change this. I've tried to make it clear in the documentation what
+          the problem that the library addressed is</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577161712"></a><a name="idm222577161456"></a><p><b>5.</b></p>
+</td>
+<td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
+          point arithmetic not addressed?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>Actually, I believe that this can/should be applied to any
+          type T which satisfies the type requirement "Numeric" type as
+          defined in the documentation. So there should be specializations
+          safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
+          etc. But the current version of the library only addresses integer
+          types. Hopefully the library will evolve to match the promise
+          implied by it's name.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577159392"></a><a name="idm222577159136"></a><p><b>6.</b></p>
+</td>
+<td align="left" valign="top"><p>Isn't putting a defensive check just before any potential UB,
+          is often considered a bad practice?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>By whom? Is leaving code which can produce incorrect results
+          better? Note that the documentation contains references to various
+          sources which recommend exactly this approach to mitigate the
+          problems created by this C/C++ behavior.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577157088"></a><a name="idm222577156832"></a><p><b>7.</b></p>
+</td>
+<td align="left" valign="top"><p>Why are safe_compare and safe_cast included in the library?
+          The don't really fit with the "drop-in" replacement idea for
+          built-in types.</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>They are part of the implementation of the library. I thought
+          they would be useful outside the formal context of the library so I
+          make access to them public.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577154816"></a><a name="idm222577154560"></a><p><b>8.</b></p>
+</td>
+<td align="left" valign="top"><p>It looks like it presumes two's complement arithmetic at the
+          hardware level. So this library is not portable - correct? What
+          about other hardware architectures?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>Correct. Almost all hardware in current use two's complement
+          arithmetic. This library works all and only on all such machines.
+          For example, if one were to implement 48 bit integers with two's
+          complement arithmetic, the save .. versions could be used without
+          change. To support hardware which does not use two's complement
+          arithmetic, at least part of the library would have to be
+          re-implemented.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577152240"></a><a name="idm222577151984"></a><p><b>9.</b></p>
+</td>
+<td align="left" valign="top"><p>Why do you specialize numeric_limits for "safe" types? Do you
+          need it?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>safe&lt;T&gt; behaves like a "number" just as int does. It has
+          max, min, etc Any code which uses numeric limits to test a type T
+          should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
+          replacement for T so it has to implement all the operations.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm222577150000"></a><a name="idm222577149744"></a><p><b>10.</b></p>
 </td>
 <td align="left" valign="top"><p></p></td>
 </tr>
-<tr class="question">
-<td align="left" valign="top">
-<a name="idm235809415056"></a><a name="idm235809414800"></a><p><b>5.</b></p>
-</td>
-<td align="left" valign="top"><p></p></td>
-</tr>
-<tr class="question">
-<td align="left" valign="top">
-<a name="idm235809414032"></a><a name="idm235809413776"></a><p><b>6.</b></p>
-</td>
+<tr class="answer">
+<td align="left" valign="top"></td>
 <td align="left" valign="top"><p></p></td>
 </tr>
 </tbody>
@@ -117,7 +219,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="functions.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="change_log.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>
