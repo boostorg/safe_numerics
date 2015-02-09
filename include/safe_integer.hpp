@@ -44,7 +44,7 @@ struct safe : public safe_base<T, safe<T, P> >{
 
     template<class U>
     constexpr safe(const U & u) :
-        base_type()
+        base_type(u)
     {
         // TO DO verify that u can be converted to a T
     }

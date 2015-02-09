@@ -72,48 +72,25 @@ struct native {
             return a + b;
         }
 
-#if 0
-        static const boost::intmax_t x = min_value<T>();
+        typedef safe<result_base_type, native> type;
 
-        const intmax_t y = std::numeric_limits<
-            boost::numeric::safe<
-                signed char,
-                boost::numeric::policies<
-                    boost::numeric::native,
-                    boost::numeric::relaxed, boost::numeric::throw_exception
-                >
-            >
-        >::min();
-
-
-        typedef typename boost::mpl::print<T>::type t0;
-        static constexpr int x = min_value<result_base_type>();
-        typedef typename boost::mpl::print<U>::type t1;
-        static constexpr int x1 = min_value<T>();
-        static constexpr int x2 = min_value<U>();
-        static constexpr int x3 = max_value<result_base_type>();
-        static constexpr int x4 = max_value<T>();
-        static constexpr int x5 = max_value<U>();
-
-#endif
-        static constexpr int x5 = max_value<U>();
-
+        // someday maybe we can replace this with
+        /*
         typedef typename ::boost::mpl::if_<
             std::is_signed<result_base_type>,
             safe_signed_range<
-                max(
-                    min_value<result_base_type>(),
-                    min_value<T>() //min_value<T>() //sum(min_value<T>(), min_value<U>())
-                ),
-                200, // min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+            typedef safe_unsigned_range<
+                min_value<T>() + min_value<U>(),
+                max_value<T>() + max_value<U>(),
                 native
             >,
             safe_unsigned_range<
-                max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
-                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+                min_value<T>() + min_value<U>(),
+                max_value<T>() + max_value<U>(),
                 native
             >
         >::type type;
+        */
     };
 };
 

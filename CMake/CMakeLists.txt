@@ -1,6 +1,6 @@
 # CMake build control file for Serialization Library tests
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project("SafeIntegers")
 
@@ -12,9 +12,10 @@ message(STATUS "compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
   add_definitions( -ftemplate-depth=300 )
+  set (CMAKE_CXX_FLAGS "-std=c++11" )
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
   add_definitions( /wd4996 )
-elseif( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+elseif( CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" )
   add_definitions( -ftemplate-depth=300 )
   # include the following if and only if you want to use c++11 features
   set (CMAKE_CXX_FLAGS "-std=c++11" )
@@ -105,28 +106,15 @@ include_directories("../include" "${Boost_INCLUDE_DIRS}")
 link_directories("${Boost_LIBRARY_DIRS}")
 
 ###########################
-# library builds
-
-# header library only - nothing to be built
-#
-# add_library(library_name ../src/sources1.cpp  …)
-
-# end library build
-###########################
-
-###########################
-# testing and submitting test results
+# testing and submitting test results to the test dashboard
 
 include (CTest)
 
 if(0)
 
-## This file should be placed in the root directory of your project.
-## Then modify the CMakeLists.txt file in the root directory of your
-## project to incorporate the testing dashboard.
-## # The following are required to uses Dart and the Cdash dashboard
-##   ENABLE_TESTING()
-##   INCLUDE(CTest)
+## Create a file named CTestConfig.cmake adjacent to the current file.
+## This new file should contain the following:
+
 set(CTEST_PROJECT_NAME "Safe Numerics")
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 
@@ -138,58 +126,72 @@ set(CTEST_DROP_SITE_CDASH TRUE)
 
 endif()
 
-# the include above includes enable_testing() so the following line isn't
-# necessary
+###########################
+# library builds
+
+# header library only - nothing to be built
+#
+# add_library(library_name ../src/sources1.cpp  …)
+
+# end library build
+###########################
+
+###########################
+# test targets
+
+# the "include (CTest)" above includes enable_testing() 
+# so the following line isn't necessary
 # enable_testing()
 
-####################
-# start generating test targets
-
-if(0)
-
-# Rather than including a paragraph like the following for each test/example
-
-message(STATUS "test_cast")
-add_executable( test_cast ../test/test_cast.cpp )
-target_link_libraries( test_cast ${Boost_LIBRARIES} )
-add_test(NAME test_cast COMMAND test_cast)
-
-# ...
-
-endif()
-
-# we just create an executable fore each *.cpp file in directories
-
-file(GLOB files
+file(GLOB test_list
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
-  "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/../test/*.cpp"
 )
-foreach(file_path ${files} )
-    get_filename_component(file_name ${file_path} NAME_WE)
-    message(STATUS "${file_name}")
-    add_executable( ${file_name} ${file_path})
-    target_link_libraries( ${file_name}  ${Boost_LIBRARIES} )
-    add_test(NAME ${file_name} COMMAND ${file_name})
+foreach(file_path ${test_list})
+  string(REPLACE "../test/" "" file_name ${file_path})
+  string(REPLACE ".cpp" "" base_name ${file_name})
+  message(STATUS ${base_name})
+  add_executable(${base_name} ${file_path})
+  target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
 # end test targets
 ####################
 
+###########################
+# examples
+
+file(GLOB example_list
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
+)
+foreach(file_path ${example_list})
+  string(REPLACE "../examples/" "" file_name ${file_path})
+  string(REPLACE ".cpp" "" base_name ${file_name})
+  message(STATUS ${base_name})
+  add_executable(${base_name} ${file_path})
+  target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  add_test(NAME ${base_name} COMMAND ${base_name})
+endforeach(file_path)
+
+# end examples targets
+####################
+
 ####################
 # add include headers to IDE
 
-file(GLOB include_files
+file(GLOB include_files 
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp"
 )
 add_custom_target(include SOURCES ${include_files})
 
-file(GLOB concept_include_files
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+file(GLOB include_concept_files
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/../include/concept/*.hpp"
 )
-add_custom_target(concepts MAIN_DEPENDENCY include SOURCES ${include_files} ${concept_include_files})
+add_custom_target(include_concept_files SOURCES ${include_concept_files})
 
 # end headers in IDE
 ####################

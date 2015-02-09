@@ -27,7 +27,7 @@ bool test_add(
         << std::endl;
 
     boost::numeric::safe<T1> t1 = v1;
-    BOOST_TYPEOF_TPL(T1() + T2()) result;
+    BOOST_TYPEOF_TPL(boost::numeric::safe<T1>() + T2()) result;
 
     try{
         result = t1 + v2;
