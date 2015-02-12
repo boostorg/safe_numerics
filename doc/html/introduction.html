@@ -21,23 +21,26 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="introduction.html#idm350483937664">Problem</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm350483930992">Solution</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm350483923424">Summary</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm350483919488">Requirements</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm350483911856">Scope</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm198181270288">Problem</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm198181264704">Solution</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm198181257120">Summary</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm198181253184">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm198181245552">Scope</a></span></dt>
 </dl></div>
+<p>Arithmetic operations in C/C++ are NOT guaranteed to yield a correct
+  mathematical result. This feature is inherited from the early days of C. The
+  behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and other primitive
+  types was designed to map closely to the underlying hardware rather than to
+  guarantee correction arithmetic. The purpose of this library is to provide
+  drop-in replacements for these types which trap those cases where C/C++
+  expressions produce results which are not arithmetically correct.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm350483937664"></a>Problem</h3></div></div></div>
-<p>Arithmetic operations in C++ are NOT guaranteed to yield a correct
-    mathematical result. This feature is inherited from the early days of C.
-    The behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and others
-    were designed to map closely to the underlying hardware. Computer hardware
-    implements these types as a fixed number of bits. When the result of
-    arithmetic operations exceeds this number of bits, the result will not be
-    arithmetically correct. The following example illustrates this
-    problem.</p>
+<a name="idm198181270288"></a>Problem</h3></div></div></div>
+<p>Modern computer hardware implements these types as a fixed number of
+    bits. When the result of arithmetic operations exceeds this number of
+    bits, the result will not be arithmetically correct. The following example
+    illustrates this problem.</p>
 <pre class="programlisting">int f(int x, int y){
     // this returns an invalid result for some legal values of x and y !
     return x + y;
@@ -47,7 +50,7 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See[<a class="citation" href="bibliography.html#idm350483532848"><span class="citation">INT32-C</span></a>] seems to recommend the following
+    this. See[<a class="citation" href="bibliography.html#idm198180851248"><span class="citation">INT32-C</span></a>] seems to recommend the following
     approach.</p>
 <pre class="programlisting">int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
@@ -71,7 +74,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm350483930992"></a>Solution</h3></div></div></div>
+<a name="idm198181264704"></a>Solution</h3></div></div></div>
 <p>This library implements special versions of int, unsigned, etc.
     which behave exactly like the original ones EXCEPT that the results of
     these operations are guaranteed to be either arithmetically correct or
@@ -103,9 +106,9 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm350483923424"></a>Summary</h3></div></div></div>
+<a name="idm198181257120"></a>Summary</h3></div></div></div>
 <p>Using techniques of C++ including overloading, template
-    metaprogramming, and others, this library implements special versions of
+    multiprogramming, and others, this library implements special versions of
     int, unsigned, etc. named <code class="computeroutput">safe&lt;int&gt;</code>,
     <code class="computeroutput">safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
     original ones EXCEPT that expressions involving these types are checked to
@@ -125,7 +128,7 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm350483919488"></a>Requirements</h3></div></div></div>
+<a name="idm198181253184"></a>Requirements</h3></div></div></div>
 <p>This library is composed entirely of C++ Headers. I requires a
     compiler compatible with the C++11 standard.</p>
 <p>The following Boost Libraries must be installed in order to use this
@@ -142,7 +145,7 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm350483911856"></a>Scope</h3></div></div></div>
+<a name="idm198181245552"></a>Scope</h3></div></div></div>
 <p>This library currently applies only to built-in integer types.
     Analogous issues arise for floating point types but they are not currently
     addressed by this version of the library. User or Library defined types
@@ -154,8 +157,8 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
-      to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

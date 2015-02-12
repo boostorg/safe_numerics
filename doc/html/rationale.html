@@ -21,37 +21,37 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale</h2></div></div></div>
 <div class="qandaset">
-<a name="idm350483573984"></a><dl>
-<dt>1. <a href="rationale.html#idm350483573504">Why does a binary operation on two
+<a name="idm198180908688"></a><dl>
+<dt>1. <a href="rationale.html#idm198180908208">Why does a binary operation on two
           safe&lt;int&gt; values not return another
           safe type ?</a>
 </dt>
-<dt>2. <a href="rationale.html#idm350483568208">Why is there no policy driven design for handling
+<dt>2. <a href="rationale.html#idm198180902912">Why is there no policy driven design for handling
           overflows?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm350483565856">Why is Boost.Convert not used.</a>
+<dt>3. <a href="rationale.html#idm198180900560">Why is Boost.Convert not used.</a>
 </dt>
-<dt>4. <a href="rationale.html#idm350483563856">Why is the library named "safe ..." rather than something like
+<dt>4. <a href="rationale.html#idm198180898560">Why is the library named "safe ..." rather than something like
           "checked ..." ?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm350483561488">Given that the library is called "numerics" why is floating
+<dt>5. <a href="rationale.html#idm198180896192">Given that the library is called "numerics" why is floating
           point arithmetic not addressed?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm350483559168">Isn't putting a defensive check just before any potential UB,
+<dt>6. <a href="rationale.html#idm198180893872">Isn't putting a defensive check just before any potential UB,
           is often considered a bad practice?</a>
 </dt>
-<dt>7. <a href="rationale.html#idm350483556864">Why are safe_compare and safe_cast included in the library?
+<dt>7. <a href="rationale.html#idm198180891568">Why are safe_compare and safe_cast included in the library?
           The don't really fit with the "drop-in" replacement idea for
           built-in types.</a>
 </dt>
-<dt>8. <a href="rationale.html#idm350483554592">It looks like it presumes two's complement arithmetic at the
+<dt>8. <a href="rationale.html#idm198180889296">It looks like it presumes two's complement arithmetic at the
           hardware level. So this library is not portable - correct? What
           about other hardware architectures?</a>
 </dt>
-<dt>9. <a href="rationale.html#idm350483552016">Why do you specialize numeric_limits for "safe" types? Do you
+<dt>9. <a href="rationale.html#idm198180886720">Why do you specialize numeric_limits for "safe" types? Do you
           need it?</a>
 </dt>
-<dt>10. <a href="rationale.html#idm350483549776"></a>
+<dt>10. <a href="rationale.html#idm198180884480"></a>
 </dt>
 </dl>
 <table border="0" width="100%" summary="Q and A Set">
@@ -60,7 +60,7 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483573504"></a><a name="idm350483573248"></a><p><b>1.</b></p>
+<a name="idm198180908208"></a><a name="idm198180907952"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does a binary operation on two
           <code class="computeroutput">safe&lt;int&gt;</code> values not return another
@@ -81,7 +81,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483568208"></a><a name="idm350483567952"></a><p><b>2.</b></p>
+<a name="idm198180902912"></a><a name="idm198180902656"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is there no policy driven design for handling
           overflows?</p></td>
@@ -96,7 +96,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483565856"></a><a name="idm350483565600"></a><p><b>3.</b></p>
+<a name="idm198180900560"></a><a name="idm198180900304"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is Boost.Convert not used.</p></td>
 </tr>
@@ -107,7 +107,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483563856"></a><a name="idm350483563600"></a><p><b>4.</b></p>
+<a name="idm198180898560"></a><a name="idm198180898304"></a><p><b>4.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
           "checked ..." ?</p></td>
@@ -122,7 +122,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483561488"></a><a name="idm350483561232"></a><p><b>5.</b></p>
+<a name="idm198180896192"></a><a name="idm198180895936"></a><p><b>5.</b></p>
 </td>
 <td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
           point arithmetic not addressed?</p></td>
@@ -139,7 +139,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483559168"></a><a name="idm350483558912"></a><p><b>6.</b></p>
+<a name="idm198180893872"></a><a name="idm198180893616"></a><p><b>6.</b></p>
 </td>
 <td align="left" valign="top"><p>Isn't putting a defensive check just before any potential UB,
           is often considered a bad practice?</p></td>
@@ -153,7 +153,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483556864"></a><a name="idm350483556608"></a><p><b>7.</b></p>
+<a name="idm198180891568"></a><a name="idm198180891312"></a><p><b>7.</b></p>
 </td>
 <td align="left" valign="top"><p>Why are safe_compare and safe_cast included in the library?
           The don't really fit with the "drop-in" replacement idea for
@@ -167,7 +167,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483554592"></a><a name="idm350483554336"></a><p><b>8.</b></p>
+<a name="idm198180889296"></a><a name="idm198180889040"></a><p><b>8.</b></p>
 </td>
 <td align="left" valign="top"><p>It looks like it presumes two's complement arithmetic at the
           hardware level. So this library is not portable - correct? What
@@ -185,7 +185,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483552016"></a><a name="idm350483551760"></a><p><b>9.</b></p>
+<a name="idm198180886720"></a><a name="idm198180886464"></a><p><b>9.</b></p>
 </td>
 <td align="left" valign="top"><p>Why do you specialize numeric_limits for "safe" types? Do you
           need it?</p></td>
@@ -199,7 +199,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm350483549776"></a><a name="idm350483549520"></a><p><b>10.</b></p>
+<a name="idm198180884480"></a><a name="idm198180884224"></a><p><b>10.</b></p>
 </td>
 <td align="left" valign="top"><p></p></td>
 </tr>
@@ -213,8 +213,8 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">http://www.boost.org/LICENSE_1_0.txt"&gt;Subject
-      to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
