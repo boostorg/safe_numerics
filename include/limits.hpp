@@ -14,7 +14,6 @@
 
 #include <limits>
 #include <cstdint> // intmax_t, uintmax_t
-#include <boost/integer_traits.hpp>
 #include <boost/mpl/print.hpp>
 
 namespace boost {
@@ -43,31 +42,10 @@ struct safe;
 } // numeric
 } // boost
 
-// the following is necessary because we need numeric_limits to be
-// constexpr - but this won't be available until C++14.  So make our
-// namespace which implements these.  When C++14 comes around, we can
-// just eliminate everything but the "using namespace std"
-//namespace limits {
-
-namespace X {
-    template<class T>
-    class numeric_limits : public std::numeric_limits<T> {};
-}
-
 namespace std {
 
-// until C++14
-template<class T>
-class numeric_limits
-    : public X::numeric_limits<T>
-{
-            typedef typename boost::mpl::print<T>::type t0;
-public:
-    // these expressions are not constexpr until C++14 so re-implement them here
-    BOOST_STATIC_CONSTEXPR T min() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min; }
-    BOOST_STATIC_CONSTEXPR T max() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_max; }
-    // BOOST_STATIC_CONSTEXPR SI lowest() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min;; }
-};
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe<int> etc.
 
 template<
     class T,
@@ -77,12 +55,11 @@ class numeric_limits< boost::numeric::safe<T, P> >
     : public numeric_limits<T>
 {
     typedef boost::numeric::safe<T, P> SI;
-            typedef typename boost::mpl::print<T>::type t0;
+    typedef typename boost::mpl::print<T>::type t0;
 public:
     // these expressions are not constexpr until C++14 so re-implement them here
-    BOOST_STATIC_CONSTEXPR SI min() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min; }
-    BOOST_STATIC_CONSTEXPR SI max() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_max; }
-    // BOOST_STATIC_CONSTEXPR SI lowest() BOOST_NOEXCEPT { return boost::integer_traits<T>::const_min;; }
+    constexpr static SI min() noexcept { return std::numeric_limits<SI>::min(); }
+    constexpr static SI max() noexcept { return std::numeric_limits<SI>::max(); }
 };
 
 /////////////////////////////////////////////////////////////////
@@ -95,21 +72,15 @@ template<
     class P
 >
 class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P> >
-    : public numeric_limits<int>
+    : public boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> >
 {
-    typedef boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
+    typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
     typedef typename boost::mpl::print<SSR>::type t0;
 public:
-    BOOST_STATIC_CONSTEXPR SSR min() BOOST_NOEXCEPT { return SSR(MIN); }
-    BOOST_STATIC_CONSTEXPR SSR max() BOOST_NOEXCEPT { return SSR(MAX); }
-    // BOOST_STATIC_CONSTEXPR SSR lowest() BOOST_NOEXCEPT { return SSR(MIN); }
-
-    // BOOST_STATIC_CONSTANT(int,digits = (boost::numeric::detail::log<MAX, 2>::value)); // in base 2
-    // BOOST_STATIC_CONSTANT(int,digits10 = (boost::numeric::detail::log<MAX, 10>::value)); // in base 10
-    // BOOST_STATIC_CONSTANT(int,max_digits10 = digits10);
+    constexpr static SSR min() noexcept { return SSR(MIN); }
+    constexpr static SSR max() noexcept { return SSR(MAX); }
 };
 
-// until C++14
 /////////////////////////////////////////////////////////////////
 // numeric limits for safe_unsigned_range
 template<
@@ -118,22 +89,14 @@ template<
     class P
 >
 class numeric_limits<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
-    : public numeric_limits<unsigned int>
+    : public boost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
 {
-    typedef boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
-            typedef typename boost::mpl::print<SUR>::type t0;
+    typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
+    typedef typename boost::mpl::print<SUR>::type t0;
 public:
-    BOOST_STATIC_CONSTEXPR SUR min() BOOST_NOEXCEPT { return SUR(MIN); }
-    BOOST_STATIC_CONSTEXPR SUR max() BOOST_NOEXCEPT { return SUR(MAX); }
-    // BOOST_STATIC_CONSTEXPR SUR lowest() BOOST_NOEXCEPT { return SUR(MIN); }
-
-    // BOOST_STATIC_CONSTEXPR int digits = boost::numeric::detail::ulog<MAX, 2>::value; // in base 2
-    // BOOST_STATIC_CONSTEXPR int digits10 = boost::numeric::detail::ulog<MAX, 10>::value; // in base 10
-    // BOOST_STATIC_CONSTEXPR int max_digits10 = digits10;
+    constexpr static SUR min() noexcept { return SUR(MIN); }
+    constexpr static SUR max() noexcept { return SUR(MAX); }
 };
-
-// until C++14
-/////////////////////////////////////////////////////////////////
 
 } // std
 #endif // BOOST_NUMERIC_LIMITS_HPP

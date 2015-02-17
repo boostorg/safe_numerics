@@ -16,14 +16,15 @@
 #include "numeric.hpp"
 #include "safe_base.hpp"
 #include "native.hpp"
+#include "policies.hpp"
 
-namespace boost {
-namespace numeric {
-
-typedef policies<boost::numeric::native, relaxed, throw_exception> default_policies;
+typedef boost::numeric::policies<boost::numeric::native, boost::numeric::throw_exception> default_policies;
 
 /////////////////////////////////////////////////////////////////
 // higher level types implemented in terms of safe_base
+
+namespace boost {
+namespace numeric {
 
 namespace detail {
     template<
@@ -57,16 +58,16 @@ namespace detail {
 } // numeric
 } // boost
 
-namespace boost {
-namespace numeric {
-
 /////////////////////////////////////////////////////////////////
 // safe_signed_range
+
+namespace boost {
+namespace numeric {
 
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    class P = boost::numeric::default_policies
+    class P = default_policies
 >
 class safe_signed_range : public
     safe_base<
@@ -130,8 +131,36 @@ std::istream & operator>>(
     return is >> t.get_stored_value();
 }
 
+} // numeric
+} // boost
+
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe_signed_range
+
+namespace std {
+
+template<
+    intmax_t MIN,
+    intmax_t MAX,
+    class P
+>
+class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P> >
+    : public boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> >
+{
+    typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
+    typedef typename boost::mpl::print<SSR>::type t0;
+public:
+    constexpr static SSR min() noexcept { return SSR(MIN); }
+    constexpr static SSR max() noexcept { return SSR(MAX); }
+};
+
+} // std
+
 /////////////////////////////////////////////////////////////////
 // safe_unsigned_range
+
+namespace boost {
+namespace numeric {
 
 template<
     boost::uintmax_t MIN,
@@ -201,5 +230,24 @@ std::istream & operator>>(
 } // numeric
 } // boost
 
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe_unsigned_range
+namespace std {
 
+template<
+    std::uintmax_t MIN,
+    std::uintmax_t MAX,
+    class P
+>
+class numeric_limits<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
+    : public boost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
+{
+    typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
+    typedef typename boost::mpl::print<SUR>::type t0;
+public:
+    constexpr static SUR min() noexcept { return SUR(MIN); }
+    constexpr static SUR max() noexcept { return SUR(MAX); }
+};
+
+} // std
 #endif // BOOST_NUMERIC_SAFE_RANGE_HPP

@@ -6,7 +6,6 @@
 
 #if 1
 
-#include "limits.hpp"
 #include "safe_integer.hpp"
 
 const intmax_t x = std::numeric_limits<
@@ -22,7 +21,6 @@ const intmax_t x = std::numeric_limits<
 #endif
 
 #if 0
-#include "limits.hpp"
 #include <boost/mpl/print.hpp>
 
 template<
@@ -98,11 +96,6 @@ std::numeric_limits<int> ai;
 #include <iostream>
 
 #include <boost/mpl/print.hpp>
-
-//#include "../include/safe_range.hpp"
-//#include "../include/safe_integer.hpp"
-
-#include "limits.hpp"
 
 #endif
 

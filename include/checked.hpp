@@ -117,8 +117,8 @@ namespace checked {
     template<class R, class T, class U>
     R add(const T & t, const U & u){
         return detail::addition<
-            boost::is_unsigned<T>::value,
-            boost::is_unsigned<U>::value
+            boost::is_signed<T>::value,
+            boost::is_signed<U>::value
         >::template add<R>(
             t, u
         );

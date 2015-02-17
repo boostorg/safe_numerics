@@ -18,15 +18,11 @@
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/utility/enable_if.hpp>
 //#include <boost/mpl/print.hpp>
 
 namespace boost {
 namespace numeric {
-
-template<class T>
-struct is_safe : public
-    boost::is_convertible<T &, const boost::numeric::safe_tag &>
-{};
 
 template<class T>
 struct get_policies {
@@ -41,7 +37,7 @@ struct get_common_policies {
         boost::mpl::or_<
             is_safe<T>,
             is_safe<U>
-        >::value
+        >::type::value
     ));
 
     typedef typename boost::mpl::eval_if<
@@ -91,20 +87,6 @@ struct get_common_policies {
     // typedef typename boost::mpl::print<type>::type t2;
 };
 
-template<class T>
-struct safe_base_type {
-    typedef typename T::stored_type type;
-};
-
-template<class T>
-struct base_type {
-    typedef typename boost::mpl::eval_if<
-        is_safe<T>,
-        safe_base_type<T>,
-        boost::mpl::identity<T>
-    >::type type;
-};
-
 /////////////////////////////////////////////////////////////////
 // Note: the following global operators will be only found via 
 // argument dependent lookup.  So they won't conflict any
@@ -116,15 +98,20 @@ struct base_type {
 
 template<class T, class U>
 struct addition_result {
-    typedef typename get_common_policies<T, U>::type policies;
-    typedef typename get_promotion_policy<policies>::type policy;
-//    typedef typename get_policy<T, U>::type policy;
-    typedef typename policy::template addition_result<T, U>::type type;
+    typedef typename get_common_policies<T, U>::type P;
+    typedef typename get_promotion_policy<P>::type promotion_policy;
+    typedef typename promotion_policy::template addition_result<T, U, P>::type type;
 };
 
 template<class T, class U>
-typename addition_result<T, U>::type
-inline operator+(const T & t, const U & u){
+typename boost::enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    typename addition_result<T, U>::type
+>::type
+inline constexpr operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // if one of the types is a safe type. Verify this here
     BOOST_STATIC_ASSERT((boost::mpl::or_<
@@ -135,15 +122,11 @@ inline operator+(const T & t, const U & u){
     typedef typename addition_result<T, U>::type result_type;
     typedef typename base_type<result_type>::type result_base_type;
 
-    result_base_type z =
+    return
         checked::add<result_base_type >(
             static_cast<const typename base_type<T>::type &>(t),
             static_cast<const typename base_type<U>::type &>(u)
         );
-
-    result_type x = z;
-    //x.validate(z);
-    return x;
 }
 
 /////////////////////////////////////////////////////////////////

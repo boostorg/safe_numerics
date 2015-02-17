@@ -15,9 +15,9 @@
     library includes such specializations for all the primitive numeric types.
     Note that this concept is distinct from the C++ standard library type
     traits <code>is_integral</code> and <code>is_arithmetic</code>. These
-    latter fullfill the requirement of the concept Numeric. But there are
-    types T which fullfill this concept for which
-    <code>is_arithmetic&lt;T&gt;::value == false</code>. For example see
+    latter fulfill the requirement of the concept Numeric. But there are types
+    T which fulfill this concept for which <code>is_arithmetic&lt;T&gt;::value
+    == false</code>. For example see
     <code>safe_signed_integer&lt;int&gt;</code>.</para>
   </section>
 
@@ -65,7 +65,7 @@
             <entry><code>std::numeric_limits&lt;T&gt;</code></entry>
 
             <entry>The numeric_limits class template provides a C++ program
-            with information about various properties of the implementation’s
+            with information about various properties of the implementation's
             representation of the arithmetic types. See C++ standard
             18.3.2.2.</entry>
           </row>
@@ -180,7 +180,7 @@
 
             <entry>T</entry>
 
-            <entry>predecrement</entry>
+            <entry>pre decrement</entry>
           </row>
 
           <row>
@@ -188,7 +188,7 @@
 
             <entry>T</entry>
 
-            <entry>preincrement</entry>
+            <entry>pre increment</entry>
           </row>
 
           <row>
@@ -276,7 +276,7 @@
 
             <entry>T</entry>
 
-            <entry>shift t right by ubits</entry>
+            <entry>shift t right by u bits</entry>
           </row>
 
           <row>
@@ -308,7 +308,8 @@
 
             <entry>bool</entry>
 
-            <entry>true if t greathan or equal to u, false otherwise</entry>
+            <entry>true if t greater than or equal to u, false
+            otherwise</entry>
           </row>
 
           <row>
@@ -456,5 +457,7 @@
 
     <para><code>int, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></para>
+
+    <para>The definition of this concept</para>
   </section>
 </section>

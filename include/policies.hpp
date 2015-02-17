@@ -13,57 +13,69 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <stdexcept>
+#include <type_traits>
 #include <boost/config.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 
 namespace boost {
 namespace numeric {
 
-// compile time trap handling.  Not that some static asserts are
-// never disabled.
-enum compiletime_trap {
-    strict,     // static assert on all possible runtime overflows
-    relaxed,    // overflows can occur at runtime and maybe trapped.
-};
-
 // run time trap handlers
+
+// this would emulate the normal C/C++ behavior of permitting overflows
+// and the like.
 struct ignore_exception {
     void operator()(const std::exception & e) const {}
 };
 
+// If an exceptional condition is detected at runtime throw the exception.
 struct throw_exception {
     void operator()(const std::exception & e) const {
         throw e;
     }
 };
 
-struct policies_tag {};
-template<class P, enum compiletime_trap CT, class E>
-struct policies : public policies_tag {
-    typedef P t_p;
-    typedef E t_e;
-    const enum compiletime_trap m_ct = CT;
+// example - if you don't want exceptions thrown, used an exception
+// policy like this one. Substitute you're own implementation to taste
+template<class F>
+struct no_exception_support {
+    static F m_f;
+    void operator()(const std::exception & e) {
+        m_f();
+    }
 };
 
-template<class T>
+// use this policy to trap at compile time any operation which
+// would otherwise trap at runtime.  Hence expressions such as i/j
+// will trap at compile time unless j can be guarenteed to not be zero.
+typedef void no_exception_permitted;
+
+// policies structure
+// note: if there's no exception policy then any operation which
+// could result in a runtime exception will trap during compile
+// time.  For example i = i / j will not be permited because we
+// can't know at compiler time that j can never be zero
+
+struct policies_tag {};
+template<class P, class E = throw_exception>
+struct policies : public policies_tag {
+    typedef P t_p; // promotion policy
+    typedef E t_e; // exception policy
+};
+
+template<class P>
 struct is_policies : public
-    boost::is_convertible<T, boost::numeric::policies_tag>
+    std::is_convertible<P, boost::numeric::policies_tag>
 {};
 
-template<class T>
+template<class P>
 struct get_promotion_policy {
-    BOOST_STATIC_ASSERT((boost::numeric::is_policies<T>::value));
-    typedef typename T::t_p type;
+    static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
+    typedef typename P::t_p type;
 };
-template<class T>
+template<class P>
 struct get_error_policy {
-    BOOST_STATIC_ASSERT((boost::numeric::is_policies<T>::value));
-    typedef typename T::t_e type;
-};
-template<class T>
-enum compiletime_trap get_compile_time_trap_policy() {
-    BOOST_STATIC_ASSERT((boost::numeric::is_policies<T>::value));
-    return T::m_ct;
+    static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
+    typedef typename P::t_e type;
 };
 
 } // namespace numeric

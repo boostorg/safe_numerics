@@ -39,7 +39,19 @@
           <row>
             <entry>t, u, v</entry>
 
-            <entry>objects of types T and U respectively</entry>
+            <entry>objects of types T</entry>
+          </row>
+
+          <row>
+            <entry>st</entry>
+
+            <entry>object of type safe&lt;T&gt;</entry>
+          </row>
+
+          <row>
+            <entry>su</entry>
+
+            <entry>object of type safe&lt;U&gt;</entry>
           </row>
         </tbody>
       </tgroup>
@@ -86,10 +98,6 @@
     <title>Model of</title>
 
     <para><link linkend="safe_numerics.numeric">Numeric</link></para>
-
-    <para>If the resulting type of the operation t op u is V, the resulting
-    type of the operations st op su, t op su and st op u will be
-    safe&lt;V&gt;;</para>
   </section>
 
   <section>
@@ -105,9 +113,9 @@
 
           <thead>
             <row>
-              <entry align="left">Parameter</entry>
+              <entry align="left">Expression</entry>
 
-              <entry align="left">Result</entry>
+              <entry align="left">Result Type</entry>
 
               <entry>Description</entry>
             </row>
@@ -117,20 +125,41 @@
             <row>
               <entry><code>st op u</code></entry>
 
-              <entry><link linkend="safe_numerics.numeric">safe&lt;decltype(t
-              op u)&gt;</link></entry>
+              <entry><link linkend="safe_numerics.numeric">typeof(t op
+              u)</link></entry>
 
-              <entry><para>op is any valid binary operator for types T and
-              U</para></entry>
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
             </row>
 
             <row>
-              <entry><code>T * U</code></entry>
+              <entry><code>t op su</code></entry>
 
-              <entry><link linkend="safe_numerics.numeric">typeof(T *
-              U)</link></entry>
+              <entry><link linkend="safe_numerics.numeric">typeof(t op
+              u)</link></entry>
 
-              <entry><para>The underlying integer type</para></entry>
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
+            </row>
+
+            <row>
+              <entry><code>st op su</code></entry>
+
+              <entry><link linkend="safe_numerics.numeric">typeof(t op
+              u)</link></entry>
+
+              <entry><para>op is any valid binary operator for type
+              T</para></entry>
+            </row>
+
+            <row>
+              <entry><code>st(t)</code></entry>
+
+              <entry><link
+              linkend="safe_numerics.numeric">safe&lt;T&gt;</link></entry>
+
+              <entry><para>construct a instance of safe&lt;T&gt; from
+              t</para></entry>
             </row>
           </tbody>
         </tgroup>

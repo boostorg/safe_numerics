@@ -12,14 +12,16 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "safe_base.hpp"
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/or.hpp>
+#include "safe_base_operations.hpp"
 #include "policies.hpp"
 #include "native.hpp"
 
+typedef boost::numeric::policies<boost::numeric::native, boost::numeric::throw_exception> default_policies;
+
 namespace boost {
 namespace numeric {
-
-typedef policies<native, relaxed, throw_exception> default_policies;
 
 template<
     class T,
@@ -52,5 +54,26 @@ struct safe : public safe_base<T, safe<T, P> >{
 
 } // numeric
 } // boost
+
+namespace std {
+
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe<int> etc.
+
+template<
+    class T,
+    class P
+>
+class numeric_limits< boost::numeric::safe<T, P> >
+    : public numeric_limits<T>
+{
+    typedef boost::numeric::safe<T, P> SI;
+public:
+    // these expressions are not constexpr until C++14 so re-implement them here
+    constexpr static SI min() noexcept { return std::numeric_limits<SI>::min(); }
+    constexpr static SI max() noexcept { return std::numeric_limits<SI>::max(); }
+};
+
+} // std
 
 #endif // BOOST_NUMERIC_SAFE_INTEGER_HPP

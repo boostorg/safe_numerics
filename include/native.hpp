@@ -12,17 +12,12 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-//#include <algorithm> // max, min
 #include <type_traits>
+#include <limits>
 
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/print.hpp>
-
-#include "policies.hpp"
-#include "safe_base_operations.hpp"
-#include "limits.hpp"
-//#include "safe_integer.hpp"
-//#include "safe_range.hpp"
 
 // policy which creates results types equal to that of C++ promotions.
 // Using the policy will permit the program to build and run in release
@@ -32,15 +27,39 @@
 namespace boost {
 namespace numeric {
 
+// forward declaration
+/*
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class P // policies
+>
+class safe_signed_range;
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P // default_policies
+>
+class safe_unsigned_range;
+*/
+template<
+    class B,
+    class P
+>
+struct safe;
+
 struct native {
     template<
         typename T,
-        typename U
+        typename U,
+        typename P
     >
     struct addition_result {
+
         typedef decltype(
-            typename base_type<T>::type()
-          + typename base_type<U>::type()
+            typename boost::numeric::base_type<T>::type()
+          + typename boost::numeric::base_type<U>::type()
         ) result_base_type;
 
         template<class TX>
@@ -66,28 +85,29 @@ struct native {
         }
 
         constexpr static result_base_type sum(
-            const result_base_type & a,
-            const result_base_type & b
+            const result_base_type &a,
+            const result_base_type &b
         ){
             return a + b;
         }
 
-        typedef safe<result_base_type, native> type;
-
         // someday maybe we can replace this with
+        typedef safe<result_base_type, P> type;
         /*
-        typedef typename ::boost::mpl::if_<
-            std::is_signed<result_base_type>,
+        typedef typename ::boost::mpl::if_c<
+            std::numeric_limits<result_base_type>::is_signed,
             safe_signed_range<
-            typedef safe_unsigned_range<
-                min_value<T>() + min_value<U>(),
-                max_value<T>() + max_value<U>(),
-                native
+                max(
+                    min_value<result_base_type>(),
+                    sum(min_value<T>(), min_value<U>())
+                ),
+                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+                P
             >,
             safe_unsigned_range<
-                min_value<T>() + min_value<U>(),
-                max_value<T>() + max_value<U>(),
-                native
+                max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
+                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+                P
             >
         >::type type;
         */

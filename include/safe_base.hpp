@@ -15,9 +15,12 @@
 #include "checked.hpp"
 #include "safe_compare.hpp"
 
-#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/and.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/type_traits/is_convertible.hpp>
+#include <boost/utility/enable_if.hpp>
 
 #include <boost/mpl/sizeof.hpp>
 
@@ -331,7 +334,28 @@ public:
     operator Stored () const {
         return m_t;
     }
+    typedef Stored stored_type;
 };
+
+template<class T>
+struct is_safe : public
+    boost::is_base_of<boost::numeric::safe_tag, T>
+{};
+
+template<class T>
+struct safe_base_type {
+    typedef typename T::stored_type type;
+};
+
+template<class T>
+struct base_type : public
+    boost::mpl::eval_if<
+        is_safe<T>,
+        safe_base_type<T>,
+        boost::mpl::identity<T>
+    >
+{};
+
 
 } // numeric
 } // boost
