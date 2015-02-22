@@ -11,10 +11,6 @@
 
 #include "../include/checked.hpp"
 
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
 template<class T1, class T2>
 bool test_add(
     T1 v1,
@@ -28,7 +24,7 @@ bool test_add(
         << av1 << " + " << av2
         << std::endl;
 
-    typedef BOOST_TYPEOF_TPL(T1() + T1()) result_type;
+    typedef decltype(T1() + T1()) result_type;
     result_type result;
 
     try{

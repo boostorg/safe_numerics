@@ -28,7 +28,6 @@ namespace boost {
 namespace numeric {
 
 // forward declaration
-/*
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
@@ -42,7 +41,7 @@ template<
     class P // default_policies
 >
 class safe_unsigned_range;
-*/
+
 template<
     class B,
     class P
@@ -56,61 +55,21 @@ struct native {
         typename P
     >
     struct addition_result {
-
-        typedef decltype(
-            typename boost::numeric::base_type<T>::type()
-          + typename boost::numeric::base_type<U>::type()
-        ) result_base_type;
-
-        template<class TX>
-        constexpr static result_base_type min_value() {
-            return std::numeric_limits<TX>::min();
-        }
-        template<class TX>
-        constexpr static result_base_type max_value() {
-            return std::numeric_limits<TX>::max();
-        }
-
-        constexpr static result_base_type max(
-            const result_base_type & a,
-            const result_base_type & b
-        ){
-            return (a < b) ? b : a;
-        }
-        constexpr static result_base_type min(
-            const result_base_type & a,
-            const result_base_type & b
-        ){
-            return (a < b) ? a : b;
-        }
-
-        constexpr static result_base_type sum(
-            const result_base_type &a,
-            const result_base_type &b
-        ){
-            return a + b;
-        }
-
-        // someday maybe we can replace this with
+        typedef typename boost::numeric::base_type<T>::type base_type_t;
+        typedef typename boost::numeric::base_type<U>::type base_type_u;
+        typedef decltype(base_type_t() + base_type_u()) result_base_type;
         typedef safe<result_base_type, P> type;
-        /*
-        typedef typename ::boost::mpl::if_c<
-            std::numeric_limits<result_base_type>::is_signed,
-            safe_signed_range<
-                max(
-                    min_value<result_base_type>(),
-                    sum(min_value<T>(), min_value<U>())
-                ),
-                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
-                P
-            >,
-            safe_unsigned_range<
-                max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
-                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
-                P
-            >
-        >::type type;
-        */
+    };
+    template<
+        typename T,
+        typename U,
+        typename P
+    >
+    struct subtraction_result {
+        typedef typename boost::numeric::base_type<T>::type base_type_t;
+        typedef typename boost::numeric::base_type<U>::type base_type_u;
+        typedef decltype(base_type_t() - base_type_u()) result_base_type;
+        typedef safe<result_base_type, P> type;
     };
 };
 

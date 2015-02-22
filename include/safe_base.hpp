@@ -12,14 +12,13 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "checked.hpp"
+#include <type_traits> // is_base_of, is_convertible
+
 #include "safe_compare.hpp"
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <boost/mpl/sizeof.hpp>
@@ -61,7 +60,10 @@ protected:
     safe_base(const T & t)
     {
         // verify that this is convertible to the storable type
-        BOOST_STATIC_ASSERT(( boost::is_convertible<T, Stored>::value ));
+        static_assert(
+            std::is_convertible<T, Stored>::value,
+            "verify that constructor argument is convertible to the storable type"
+        );
         validate(t);
         m_t = t;
     }
@@ -157,7 +159,7 @@ public:
     }
 
     /////////////////////////////////////////////////////////////////
-    // comparison operators
+    // binary comparison operators
     template<class U>
     bool operator<(const U & rhs) const {
         return boost::numeric::safe_compare::less_than(m_t, rhs);
@@ -185,18 +187,18 @@ public:
 
     /////////////////////////////////////////////////////////////////
     // subtraction
-
+/*
     template<class T, class U>
     struct no_subtraction_overflow_possible : public
         boost::mpl::and_<
             typename boost::mpl::greater<
-                typename boost::mpl::sizeof_< BOOST_TYPEOF_TPL(Stored() - U()) >,
+                typename boost::mpl::sizeof_< decltype(Stored() - U()) >,
                 typename boost::mpl::max<
                     boost::mpl::sizeof_<U>,
                     boost::mpl::sizeof_<Stored>
                 >::type
             >,
-            boost::numeric::is_signed<BOOST_TYPEOF_TPL(Stored() - U())>
+            boost::numeric::is_signed<decltype(Stored() - U())>
         >
     {};
 
@@ -223,13 +225,14 @@ public:
         return detail::check_subtraction_overflow<
             boost::numeric::is_signed<Stored>::value,
             boost::numeric::is_signed<U>::value
-        >::subtract(m_t, boost::numeric::safe_cast<BOOST_TYPEOF_TPL(Stored() - U())>(rhs));
+        >::subtract(m_t, boost::numeric::safe_cast<decltype(Stored() - U())>(rhs));
     }
+
     /////////////////////////////////////////////////////////////////
     // multiplication
 
     template<class U>
-    BOOST_TYPEOF_TPL(U() * Stored())
+    decltype(U() * Stored())
     inline operator*(const U & rhs) const {
         return detail::check_multiplication_overflow(m_t, rhs);
     }
@@ -237,7 +240,7 @@ public:
     /////////////////////////////////////////////////////////////////
     // division
     template<class U>
-    BOOST_TYPEOF_TPL(U() / Stored())
+    decltype(U() / Stored())
     inline operator/(const U & rhs) const {
         return detail::check_division_overflow(m_t, rhs);
     }
@@ -245,7 +248,7 @@ public:
     /////////////////////////////////////////////////////////////////
     // modulus
     template<class U>
-    BOOST_TYPEOF_TPL(Stored() % U())
+    decltype(Stored() % U())
     inline operator%(const U & rhs) const {
         if(0 == rhs)
             throw std::domain_error("Divide by zero");
@@ -255,30 +258,30 @@ public:
     /////////////////////////////////////////////////////////////////
     // logical operators
     template<class U>
-    BOOST_TYPEOF_TPL(Stored() | U())
+    decltype(Stored() | U())
     inline operator|(const U & rhs) const {
         // verify that U is an integer type
-        BOOST_STATIC_ASSERT_MSG(
+        static_assert(
             std::numeric_limits<U>::is_integer,
             "right hand side is not an integer type"
         );
         return m_t | rhs;
     }
     template<class U>
-    BOOST_TYPEOF_TPL(Stored() & U())
+    decltype(Stored() & U())
     inline operator&(const U & rhs) const {
         // verify that U is an integer type
-        BOOST_STATIC_ASSERT_MSG(
+        static_assert(
             std::numeric_limits<U>::is_integer,
             "right hand side is not an integer type"
         );
         return m_t & rhs;
     }
     template<class U>
-    BOOST_TYPEOF_TPL(Stored() ^ U())
+    decltype(Stored() ^ U())
     inline operator^(const U & rhs) const {
         // verify that U is an integer type
-        BOOST_STATIC_ASSERT_MSG(
+        static_assert(
             std::numeric_limits<U>::is_integer,
             "right hand side is not an integer type"
         );
@@ -287,13 +290,13 @@ public:
     template<class U>
     Stored inline operator>>(const U & rhs) const {
         // verify that U is an integer type
-        BOOST_STATIC_ASSERT_MSG(
+        static_assert(
             std::numeric_limits<U>::is_integer,
             "right hand side is not an integer type"
         );
         if(m_t < 0)
             boost::numeric::overflow("right shift of negative number undefined");
-        typedef BOOST_TYPEOF_TPL(Stored() >> U()) result_type;
+        typedef decltype(Stored() >> U()) result_type;
         if(rhs > boost::numeric::bits<Stored>::value)
             boost::numeric::overflow("conversion of negative value to unsigned");
 
@@ -302,30 +305,34 @@ public:
     template<class U>
     Stored inline operator<<(const U & rhs) const {
         // verify that U is an integer type
-        BOOST_STATIC_ASSERT_MSG(
+        static_assert(
             std::numeric_limits<U>::is_integer,
             "right hand side is not an integer type"
         );
         if(m_t < 0)
             boost::numeric::overflow("right shift of negative number undefined");
-        typedef BOOST_TYPEOF_TPL(Stored() >> U()) result_type;
+        typedef decltype(Stored() >> U()) result_type;
         if(rhs > boost::numeric::bits<Stored>::value)
             boost::numeric::overflow("conversion of negative value to unsigned");
         return m_t << rhs;
     }
 
+*/
     ////////////////////////////////
     // unary negation implementation
     Stored
     operator-(){
-        // this makes no sense for unsigned types
-        BOOST_STATIC_ASSERT((boost::numeric::is_signed<Stored>::value));
+        //
+        static_assert(
+            boost::numeric::is_signed<Stored>::value,
+            "unary negation yields incorrect results for unsigned types"
+        );
         // the most common situation would be doing something like
         // boost::uint8_t x = -128;
         // ...
         // --x;
         if(boost::integer_traits<Stored>::const_max == m_t)
-            boost::numeric::overflow("safe range unary negation overflow");
+            Derived::Policies::get_promotion_policy::overflow_error("safe range unary negation overflow");
         return -m_t;
     }
 
@@ -335,11 +342,12 @@ public:
         return m_t;
     }
     typedef Stored stored_type;
+    typedef Stored derived_type;
 };
 
 template<class T>
 struct is_safe : public
-    boost::is_base_of<boost::numeric::safe_tag, T>
+    std::is_base_of<boost::numeric::safe_tag, T>
 {};
 
 template<class T>
@@ -356,6 +364,14 @@ struct base_type : public
     >
 {};
 
+template<class T>
+struct get_policies {
+    static_assert(
+        is_safe<T>::value,
+        "Policies only defined for safe types"
+    );
+    typedef typename T::Policies type;
+};
 
 } // numeric
 } // boost

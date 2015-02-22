@@ -14,7 +14,7 @@
 
 #include <limits>
 #include <cstdint> // intmax_t, uintmax_t
-#include <boost/mpl/print.hpp>
+// #include <boost/mpl/print.hpp>
 
 namespace boost {
 namespace numeric {
@@ -55,7 +55,7 @@ class numeric_limits< boost::numeric::safe<T, P> >
     : public numeric_limits<T>
 {
     typedef boost::numeric::safe<T, P> SI;
-    typedef typename boost::mpl::print<T>::type t0;
+    // typedef typename boost::mpl::print<T>::type t0;
 public:
     // these expressions are not constexpr until C++14 so re-implement them here
     constexpr static SI min() noexcept { return std::numeric_limits<SI>::min(); }

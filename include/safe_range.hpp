@@ -75,7 +75,7 @@ class safe_signed_range : public
         safe_signed_range<MIN, MAX, P>
     >
 {
-    BOOST_STATIC_ASSERT_MSG(
+    static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );
@@ -173,7 +173,7 @@ class safe_unsigned_range : public
         safe_unsigned_range<MIN, MAX, P>
     >
 {
-    BOOST_STATIC_ASSERT_MSG(
+    static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );

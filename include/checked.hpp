@@ -12,16 +12,11 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// contains operations for doing checked aritmetic on native
+// contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 
-#include "overflow.hpp"
 #include "safe_compare.hpp"
 #include "safe_cast.hpp"
-
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
 
 namespace boost {
 namespace numeric {
@@ -35,46 +30,40 @@ namespace checked {
     template<>
     struct addition<false, false> {
         template<class R, class T, class U>
-        static constexpr bool overflow(const R & r, const T & t, const U & u){
-            return boost::numeric::safe_compare::less_than(r, t)
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
+            return
+               boost::numeric::safe_compare::less_than(r, t)
             || boost::numeric::safe_compare::less_than(r, u);
         }
-        template<class T, class U>
-        static constexpr bool addition_overflow(const T & t, const U & u){
-            return overflow(t + u, t, u);
-        }
-        template<class R, class T, class U>
+        template<class R, class P, class T, class U>
         static R add(const T & t, const U & u) {
             R tmp = t + u;
             if(overflow(tmp, t, u))
-                 boost::numeric::overflow("safe range addition result overflow");
+                 P::overflow_error("safe range addition result overflow");
             return tmp;
         }
     };
+
     // both arguments signed
     template<>
     struct addition<true, true> {
         template<class R, class T, class U>
-        static constexpr bool overflow(const R & r, const T & t, const U & u){
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
             return boost::numeric::safe_compare::less_than(r, t)
             || boost::numeric::safe_compare::less_than(r, u);
         }
-        template<class T, class U>
-        static constexpr bool addition_overflow(const T & t, const U & u){
-            return overflow(t + u, t, u);
-        }
-        template<class R, class T, class U>
+        template<class R, class P, class T, class U>
         static R add(const T & t, const U & u) {
             if(t > 0 && u > 0){
                 R tmp = t + u;
                 if(tmp < 0)
-                    boost::numeric::overflow("safe range addition result overflow");
+                    P::overflow_error("safe range addition result overflow");
                 return tmp;
             }
             if(t < 0 && u < 0){
                 R tmp = t + u;
                 if(tmp >= 0)
-                    boost::numeric::overflow("safe range addition result underflow");
+                    P::overflow_error("safe range addition result underflow");
                 return tmp;
             }
             return t + u;
@@ -83,12 +72,12 @@ namespace checked {
     // T unsigned, U signed
     template<>
     struct addition<false, true> {
-        template<class R, class T, class U>
+        template<class R, class P, class T, class U>
         static R add(const T & t, const U & u){
             if(boost::numeric::is_unsigned<R>::value){
                 if(u < 0)
-                    overflow("safe range right operand value altered");
-                return addition<false, false>::add<R>(
+                    P::overflow_error("safe range unsigned operand value altered");
+                return addition<false, false>::add<R, P>(
                     t,
                     static_cast<typename boost::make_unsigned<T>::type>(u)
                 );
@@ -97,7 +86,7 @@ namespace checked {
                 if(u > 0){
                     R tmp = t + u;
                     if(tmp <= 0)
-                        overflow("safe range addition result overflow");
+                        P::overflow_error("safe range addition result overflow");
                     return t + u;
                 }
             }
@@ -107,25 +96,22 @@ namespace checked {
     // T signed, U unsigned
     template<>
     struct addition<true, false> {
-        template<class R, class T, class U>
+        template<class R, class P, class T, class U>
         static R add(const T & t, const U & u){
-            return addition<false, true>::add<R>(u, t);
+            return addition<false, true>::add<R, P>(u, t);
         }
     };
     } // detail
 
-    template<class R, class T, class U>
-    R add(const T & t, const U & u){
+    template<class R, class P, class T, class U>
+    constexpr R add(const T & t, const U & u){
         return detail::addition<
             boost::is_signed<T>::value,
             boost::is_signed<U>::value
-        >::template add<R>(
-            t, u
-        );
+        >::template add<R, P, T, U>(t, u);
     }
-} // checked
 
-namespace detail {
+    namespace detail {
 
     ////////////////////////////////////////////////////
     // layer 0 - detect overflows / alteration at the
@@ -137,50 +123,53 @@ namespace detail {
     /////////////////////////////
     // subtraction implementation
     template<bool TS, bool US>
-    struct check_subtraction_overflow{};
+    struct subtraction;
 
-    // both arguments signed
+    // both arguments unsigned
     template<>
-    struct check_subtraction_overflow<true, true> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        subtract(const T & t, const U & u){
-            BOOST_AUTO_TPL(tmp, t - u);
-            if(t > 0 && u < 0){
-                if(tmp < 0)
-                    overflow("safe range subtraction result overflow");
-            }
-            if(t < 0 && u > 0)
-                if(tmp >= 0){
-                    overflow("safe range subtraction result underflow");
-            }
+    struct subtraction<false, false> {
+        template<class R, class T, class U>
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
+            return safe_compare::less_than(t, u);
+        }
+        template<class R, class P, class T, class U>
+        static R subtract(const T & t, const U & u) {
+            R tmp = t - u;
+            if(overflow(tmp, t, u))
+                P::overflow_error("safe range subtraction unsigned difference less than zero");
             return tmp;
         }
     };
-    // both arguments unsigned
+    // both arguments signed
     template<>
-    struct check_subtraction_overflow<false, false> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        subtract(const T & t, const U & u) {
-            if(safe_compare::less_than(t, u))
-                overflow("safe range subtraction unsigned difference less than zero");
-            return t - u;
+    struct subtraction<true, true> {
+        template<class R, class T, class U>
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
+            return (t > 0 && u < 0 && r < 0) ||(t < 0 && u > 0 && r >= 0);
+        }
+        template<class R, class P, class T, class U>
+        static R subtract(const T & t, const U & u){
+            R tmp = t - u;
+            if(overflow(tmp, t, u))
+                P::overflow_error("safe range subtraction result overflow");
+            return tmp;
         }
     };
     // T unsigned, U signed
     template<>
-    struct check_subtraction_overflow<false, true> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        subtract(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
+    struct subtraction<false, true> {
+        template<class R, class T, class U>
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
+            return u < 0 || u >= t;
+        }
+        template<class R, class P, class T, class U>
+        static R subtract(const T & t, const U & u){
+            if(boost::numeric::is_unsigned<R>::value){
                 if(u < 0)
-                    overflow("safe range left operand value altered");
+                    P::overflow_error("safe range left operand value altered");
                 // u >= 0
                 if(u > t)
-                    overflow("unsigned result is negative");
+                    P::overflow_error("unsigned result is negative");
            }
            // result is signed
            return t - u;
@@ -188,32 +177,47 @@ namespace detail {
     };
     // T signed, U unsigned
     template<>
-    struct check_subtraction_overflow<true, false> {
-        template<class T, class U>
-        static BOOST_TYPEOF_TPL(T() + U())
-        subtract(const T & t, const U & u){
-            typedef BOOST_TYPEOF_TPL(T() + U()) result_type;
-            if(boost::numeric::is_unsigned<result_type>::value){
-                return check_subtraction_overflow<false, false>::subtract(
-                    safe_cast<result_type>(t),
-                    safe_cast<result_type>(u)
+    struct subtraction<true, false> {
+        template<class R, class T, class U>
+        constexpr static bool overflow(const R & r, const T & t, const U & u){
+            return u < 0 || u >= t;
+        }
+        template<class R, class P, class T, class U>
+        static R subtract(const T & t, const U & u){
+            if(boost::numeric::is_unsigned<R>::value){
+                return subtraction<false, false>::subtract<R, P>(
+                    safe_cast<R>(t),
+                    safe_cast<R>(u)
                 );
             }
             // result is signed
-            return check_subtraction_overflow<true, true>::subtract(
+            return subtraction<true, true>::subtract<R, P>(
                 t,
-                safe_cast<result_type>(u)
+                safe_cast<R>(u)
             );
         }
     };
+/*
+*/
+    } // detail
+
+    template<class R, class P, class T, class U>
+    R subtract(const T & t, const U & u){
+        return detail::subtraction<
+            boost::is_signed<T>::value,
+            boost::is_signed<U>::value
+        >::template subtract<R, P, T, U>(t, u);
+    }
+
+    namespace detail {
 
     ////////////////////////////////
     // multiplication implementation
 
     template<class T, class U>
-    BOOST_TYPEOF_TPL(T() * U())
+    decltype(T() * U())
     check_multiplication_overflow(const T & t, const U & u){
-        typedef BOOST_TYPEOF_TPL(T() * U()) result_type;
+        typedef decltype(T() * U()) result_type;
         char const * const msg = "safe range multiplication overflow";
         // presume that size of uintmax_t and intmax_t are the same
         typedef bits<boost::uintmax_t> available_bits;
@@ -309,7 +313,7 @@ namespace detail {
         return t * u;
     }
     template<class T, class U>
-    BOOST_TYPEOF_TPL(T() / U())
+    decltype(T() / U())
     check_division_overflow(const T & t, const U & u){
         if(0 == u)
             overflow("divide by zero");
@@ -333,7 +337,7 @@ namespace detail {
         return t / u;
     }
     template<class T, class U>
-    BOOST_TYPEOF_TPL(T() / U())
+    decltype(T() / U())
     check_modulus_overflow(const T & t, const U & u){
         if(0 == u)
             overflow("modulus divide by zero");
@@ -359,7 +363,7 @@ namespace detail {
 
 }   // detail
 
-
+} // checked
 } // numeric
 } // boost
 

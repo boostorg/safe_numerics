@@ -15,15 +15,16 @@
 // policy which creates results types equal to that of C++ promotions.
 // Using the policy will permit the program to build and run in release
 // mode which is identical to that in debug mode except for the fact
-// that errors aren't trapped. 
+// that errors aren't trapped.
+
+// note: not currently used and likely not necessary.  We're using
+// decltype(T() op U()) to determine "usual arithmetic conversions"
 
 #include <boost/integer.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
 
 #include <boost/integer_traits.hpp>
-#include <boost/static_assert.hpp>
-
 #include "promotion.hpp"
 
 namespace boost {
@@ -38,7 +39,7 @@ struct standard_promotion {
     // rank is (more or less) proportional to size of operand
     template<class T1>
     struct rank {
-        BOOST_STATIC_CONSTANT(int, value =
+        constexpr int value =
             boost::integer_traits<T1>::digits 
             + boost::integer_traits<T1>::is_signed
         );
@@ -114,7 +115,7 @@ struct cpp {
     >
     struct add_result {
         typedef typename standard_promotion<T, U>::type type;
-        BOOST_STATIC_CONSTANT(bool, underflow =
+        constexpr bool underflow =
             (promotion::sum_underflow<
                 T,
                 U,
@@ -124,7 +125,7 @@ struct cpp {
                 (boost::integer_traits<type>::const_min)
             >::value)
         );
-        BOOST_STATIC_CONSTANT(bool, overflow =
+        constexpr bool overflow =
             (promotion::sum_overflow<
                 T,
                 U,
@@ -134,12 +135,12 @@ struct cpp {
                 (boost::integer_traits<type>::const_max)
             >::value)
         );
-        BOOST_STATIC_CONSTANT(type, min = (underflow ?
+        constexpr type min = (underflow ?
             (boost::integer_traits<type>::const_min)
             :
             TMin + UMin
         ));
-        BOOST_STATIC_CONSTANT(type, max = (overflow ?
+        constexpr type max = (overflow ?
             (boost::integer_traits<type>::const_max)
             :
             TMax + UMax 

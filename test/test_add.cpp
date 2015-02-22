@@ -10,10 +10,6 @@
 
 #include "../include/safe_integer.hpp"
 
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
 template<class T1, class T2>
 bool test_add(
     T1 v1,
@@ -28,10 +24,15 @@ bool test_add(
         << std::endl;
 
     boost::numeric::safe<T1> t1 = v1;
-    BOOST_TYPEOF_TPL(boost::numeric::safe<T1>() + T2()) result;
+    decltype(boost::numeric::safe<T1>() + T2()) result;
 
     try{
         result = t1 + v2;
+
+        static_assert(
+            boost::numeric::is_safe<decltype(t1 + v2)>::value,
+            "Expression failed to return safe type"
+        );
 
         if(expected_result == 'x'){
             std::cout
@@ -46,7 +47,7 @@ bool test_add(
             return false;
         }
     }
-    catch(std::range_error){
+    catch(std::exception & e){
         if(expected_result == '.'){
             std::cout
                 << "erroneously detected error in addition "
@@ -65,6 +66,11 @@ bool test_add(
     try{
         result = t1 + t2;
 
+        static_assert(
+            boost::numeric::is_safe<decltype(t1 + t2)>::value,
+            "Expression failed to return safe type"
+        );
+
         if(expected_result == 'x'){
             std::cout
                 << "failed to detect error in addition "
@@ -78,7 +84,7 @@ bool test_add(
             return false;
         }
     }
-    catch(std::range_error){
+    catch(std::exception & e){
         if(expected_result == '.'){
             std::cout
                 << "erroneously detected error in addition "

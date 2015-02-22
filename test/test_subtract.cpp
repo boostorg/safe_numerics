@@ -31,6 +31,10 @@ bool test_subtract(
 
     try{
         result = t1 - v2;
+        static_assert(
+            boost::numeric::is_safe<decltype(t1 + v2)>::value,
+            "Expression failed to return safe type"
+        );
         if(expected_result == 'x'){
             std::cout
                 << "failed to detect error in subtraction "
@@ -44,7 +48,7 @@ bool test_subtract(
             return false;
         }
     }
-    catch(std::range_error){
+    catch(std::exception & e){
         if(expected_result == '.'){
             std::cout
                 << "erroneously detected error in subtraction "
@@ -61,6 +65,10 @@ bool test_subtract(
     boost::numeric::safe<T2> t2 = v2;
     try{
         result = t1 - t2;
+        static_assert(
+            boost::numeric::is_safe<decltype(t1 + v2)>::value,
+            "Expression failed to return safe type"
+        );
         if(expected_result == 'x'){
             std::cout
                 << "failed to detect error in subtraction "
@@ -74,7 +82,7 @@ bool test_subtract(
             return false;
         }
     }
-    catch(std::range_error){
+    catch(std::exception & e){
         if(expected_result == '.'){
             std::cout
                 << "erroneously detected error in subtraction "

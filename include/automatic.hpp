@@ -12,10 +12,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
 // policy which creates results types equal to that of C++ promotions.
 // Using the policy will permit the program to build and run in release
 // mode which is identical to that in debug mode except for the fact
@@ -35,6 +31,53 @@ struct automatic {
             std::numeric_limits<T>::min() + std::numeric_limits<U>::min(),
             std::numeric_limits<T>::max() + std::numeric_limits<U>::max(),
         > type;
+        template<class TX>
+        constexpr static result_base_type min_value() {
+            return std::numeric_limits<TX>::min();
+        }
+        template<class TX>
+        constexpr static result_base_type max_value() {
+            return std::numeric_limits<TX>::max();
+        }
+
+        constexpr static result_base_type max(
+            const result_base_type a,
+            const result_base_type b
+        ){
+            return (a < b) ? b : a;
+        }
+        constexpr static result_base_type min(
+            const result_base_type  a,
+            const result_base_type  b
+        ){
+            return (a < b) ? a : b;
+        }
+
+        constexpr static result_base_type sum(
+            const result_base_type a,
+            const result_base_type b
+        ){
+            return a + b;
+        }
+
+         /*
+        typedef typename ::boost::mpl::if_c<
+            std::numeric_limits<result_base_type>::is_signed,
+            safe_signed_range<
+                max(
+                    min_value<result_base_type>(),
+                    sum(min_value<T>(), min_value<U>())
+                ),
+                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+                P
+            >,
+            safe_unsigned_range<
+                max(min_value<result_base_type>(), min_value<T>() + min_value<U>()),
+                min(max_value<result_base_type>(), max_value<T>() + max_value<U>()),
+                P
+            >
+        >::type type;
+        */
     };
 };
 

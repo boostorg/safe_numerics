@@ -6,15 +6,17 @@
 # pragma once
 #endif
 
-//  Copyright (c) 2012 Robert Ramey
+//  Copyright (c) 2015 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <stdexcept>
-#include <type_traits>
+#include <type_traits> // is_base_of, is_void
 #include <boost/config.hpp>
+
+#include "concept/exception_policy.hpp"
 
 namespace boost {
 namespace numeric {
@@ -24,30 +26,62 @@ namespace numeric {
 // this would emulate the normal C/C++ behavior of permitting overflows
 // and the like.
 struct ignore_exception {
-    void operator()(const std::exception & e) const {}
+    static void overflow_error(const char * message) {}
+    static void underflow_error(const char * message) {}
+    static void range_error(const char * message) {}
 };
+BOOST_CONCEPT_ASSERT((ExceptionPolicy<ignore_exception>));
 
 // If an exceptional condition is detected at runtime throw the exception.
 struct throw_exception {
-    void operator()(const std::exception & e) const {
-        throw e;
+    static void overflow_error(const char * message) {
+        throw std::overflow_error(message);
+    }
+    static void underflow_error(const char * message) {
+        throw std::underflow_error(message);
+    }
+    static void range_error(const char * message) {
+        throw std::domain_error(message);
     }
 };
+BOOST_CONCEPT_ASSERT((ExceptionPolicy<throw_exception>));
 
 // example - if you don't want exceptions thrown, used an exception
-// policy like this one. Substitute you're own implementation to taste
-template<class F>
+// policy like this one.
+template<void (*F)(const char *), void (*G)(const char *), void (*H)(const char *)>
 struct no_exception_support {
-    static F m_f;
-    void operator()(const std::exception & e) {
-        m_f();
+    static void overflow(const char * message) {
+        F(message);
+    }
+    static void underflow(const char * message) {
+        G(message);
+    }
+    static void range_error(const char * message) {
+        H(message);
     }
 };
+//BOOST_CONCEPT_ASSERT((ExceptionPolicy<no_exception_support<F, G, H>>));
 
 // use this policy to trap at compile time any operation which
 // would otherwise trap at runtime.  Hence expressions such as i/j
-// will trap at compile time unless j can be guarenteed to not be zero.
-typedef void no_exception_permitted;
+// will trap at compile time unless j can be guaranteed to not be zero.
+
+// If an exceptional condition is detected at runtime throw the exception.
+struct trap_exception {
+    template<class T>
+    static void overflow(const T &) {
+        static_assert(std::is_void<T>::value, "operation prohibited");
+    }
+    template<class T>
+    static void underflow(const T &) {
+        static_assert(std::is_void<T>::value, "operation prohibited");
+    }
+    template<class T>
+    static void range_error(const T &) {
+        static_assert(std::is_void<T>::value, "operation prohibited");
+    }
+};
+//BOOST_CONCEPT_ASSERT((ExceptionPolicy<trap_exception>));
 
 // policies structure
 // note: if there's no exception policy then any operation which
@@ -64,7 +98,7 @@ struct policies : public policies_tag {
 
 template<class P>
 struct is_policies : public
-    std::is_convertible<P, boost::numeric::policies_tag>
+    std::is_base_of<boost::numeric::policies_tag, P>
 {};
 
 template<class P>
@@ -73,7 +107,7 @@ struct get_promotion_policy {
     typedef typename P::t_p type;
 };
 template<class P>
-struct get_error_policy {
+struct get_exception_policy {
     static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
     typedef typename P::t_e type;
 };
