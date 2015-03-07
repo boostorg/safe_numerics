@@ -27,19 +27,15 @@ template<
     class T,
     class P = default_policies
 >
-struct safe : public safe_base<T, safe<T, P> >{
+struct safe : public safe_base<T, safe<T, P>, P>{
     BOOST_CONCEPT_ASSERT((Integer<T>));
 
-    typedef T stored_type;
-    struct Policies {
-        typedef P type;
-    };
+    typedef safe_base<T, safe<T, P>, P > base_type;
 
     bool validate(const T & t) const {
         return true;
     }
 
-    typedef safe_base<T, safe<T, P> > base_type;
     constexpr safe() :
         base_type()
     {}
@@ -47,9 +43,7 @@ struct safe : public safe_base<T, safe<T, P> >{
     template<class U>
     constexpr safe(const U & u) :
         base_type(u)
-    {
-        // TO DO verify that u can be converted to a T
-    }
+    {}
 };
 
 } // numeric

@@ -20,8 +20,8 @@ namespace numeric {
 
 template<class T>
 struct ExceptionPolicy {
+    const char * message;
     BOOST_CONCEPT_USAGE(ExceptionPolicy){
-        char const * message;
         T::overflow_error(message);
         T::underflow_error(message);
         T::range_error(message);

@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <stdexcept>
-#include <type_traits> // is_base_of, is_void
+#include <type_traits> // is_base_of, is_same
 #include <boost/config.hpp>
 
 #include "concept/exception_policy.hpp"
@@ -69,16 +69,16 @@ struct no_exception_support {
 // If an exceptional condition is detected at runtime throw the exception.
 struct trap_exception {
     template<class T>
-    static void overflow(const T &) {
-        static_assert(std::is_void<T>::value, "operation prohibited");
+    static void overflow(const T *) {
+        static_assert(std::is_void<T>::value, "overflow_error");
     }
     template<class T>
-    static void underflow(const T &) {
-        static_assert(std::is_void<T>::value, "operation prohibited");
+    static void underflow(const T *) {
+        static_assert(std::is_void<T>::value, "underflow_error");
     }
     template<class T>
-    static void range_error(const T &) {
-        static_assert(std::is_void<T>::value, "operation prohibited");
+    static void range_error(const T * &) {
+        static_assert(std::is_void<T>::value, "range_error");
     }
 };
 //BOOST_CONCEPT_ASSERT((ExceptionPolicy<trap_exception>));

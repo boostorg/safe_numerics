@@ -15,102 +15,175 @@
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 
-#include "safe_compare.hpp"
-#include "safe_cast.hpp"
+#include <limits>
+#include <utility>
+
+//#include "safe_compare.hpp"
+//#include "safe_cast.hpp"
+#include "checked_result.hpp"
 
 namespace boost {
 namespace numeric {
 namespace checked {
 
     namespace detail {
-    template<bool TS, bool US>
+    
+    template<bool RS, bool TS, bool US>
     struct addition;
 
     // both arguments unsigned
     template<>
-    struct addition<false, false> {
+    struct addition<false, false, false> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
             return
-               boost::numeric::safe_compare::less_than(r, t)
-            || boost::numeric::safe_compare::less_than(r, u);
+                r < t || r < u ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
         }
-        template<class R, class P, class T, class U>
-        static R add(const T & t, const U & u) {
-            R tmp = t + u;
-            if(overflow(tmp, t, u))
-                 P::overflow_error("safe range addition result overflow");
-            return tmp;
+    };
+    template<>
+    struct addition<true, false, false> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
+            return
+                r < 0 ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
         }
     };
 
     // both arguments signed
     template<>
-    struct addition<true, true> {
+    struct addition<false, true, true> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
-            return boost::numeric::safe_compare::less_than(r, t)
-            || boost::numeric::safe_compare::less_than(r, u);
-        }
-        template<class R, class P, class T, class U>
-        static R add(const T & t, const U & u) {
-            if(t > 0 && u > 0){
-                R tmp = t + u;
-                if(tmp < 0)
-                    P::overflow_error("safe range addition result overflow");
-                return tmp;
-            }
-            if(t < 0 && u < 0){
-                R tmp = t + u;
-                if(tmp >= 0)
-                    P::overflow_error("safe range addition result underflow");
-                return tmp;
-            }
-            return t + u;
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
+            return
+                (t > 0 && u > 0 && (r < t || r < u))
+                || (t < 0 && u < 0 && (r > t || r > u))  ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
         }
     };
+    template<>
+    struct addition<true, true, true> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
+            return
+                (t > 0 && u > 0 && r < 0)
+                || (t < 0 && u < 0 && r >= 0)  ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
+        }
+    };
+
+
     // T unsigned, U signed
     template<>
-    struct addition<false, true> {
-        template<class R, class P, class T, class U>
-        static R add(const T & t, const U & u){
-            if(boost::numeric::is_unsigned<R>::value){
-                if(u < 0)
-                    P::overflow_error("safe range unsigned operand value altered");
-                return addition<false, false>::add<R, P>(
-                    t,
-                    static_cast<typename boost::make_unsigned<T>::type>(u)
-                );
+    struct addition<false, false, true> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u){
+            return
+                (u > 0) ?
+                    addition<false, false, false>::add(
+                        std::move(r),
+                        t,
+                        static_cast<typename std::make_unsigned<U>::type >(u)
+                    )
+                :
+                (r > t) ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
             }
-            else{
-                if(u > 0){
-                    R tmp = t + u;
-                    if(tmp <= 0)
-                        P::overflow_error("safe range addition result overflow");
-                    return t + u;
-                }
-            }
-            return t + u;
+    };
+    template<>
+    struct addition<true, false, true> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u){
+            return
+                (u > 0) && (r < 0) ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(r)
+                ;
         }
     };
+
     // T signed, U unsigned
     template<>
-    struct addition<true, false> {
-        template<class R, class P, class T, class U>
-        static R add(const T & t, const U & u){
-            return addition<false, true>::add<R, P>(u, t);
+    struct addition<false, true, false> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
+            return addition<false, false, true>::add<R>(std::move(r), u, t);
         }
     };
-    } // detail
+    template<>
+    struct addition<true, true, false> {
+        template<class R, class T, class U>
+        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
+            return addition<true, false, true>::add<R>(std::move(r), u, t);
+        }
+    };
 
-    template<class R, class P, class T, class U>
-    constexpr R add(const T & t, const U & u){
-        return detail::addition<
-            boost::is_signed<T>::value,
-            boost::is_signed<U>::value
-        >::template add<R, P, T, U>(t, u);
+    } // namespace detail
+
+    template<class R, class T, class U>
+    constexpr checked_result<R> add(const T & t, const U & u){
+        static_assert(
+            std::is_same<decltype(t + u), R>::value,
+            "invalid result type"
+        );
+        return
+            (std::numeric_limits<R>::min()
+            <= std::numeric_limits<T>::min() + std::numeric_limits<U>::min())
+            &&
+            (std::numeric_limits<R>::max()
+            >= std::numeric_limits<T>::max() + std::numeric_limits<U>::max())
+            ?
+                detail::addition<
+                    std::numeric_limits<R>::is_signed,
+                    std::numeric_limits<T>::is_signed,
+                    std::numeric_limits<U>::is_signed
+                >::template add(t + u, t, u)
+            :
+                checked_result<R>(t + u)
+            ;
     }
 
+
+
+
+
+
+/*
     namespace detail {
 
     ////////////////////////////////////////////////////
@@ -197,8 +270,7 @@ namespace checked {
             );
         }
     };
-/*
-*/
+
     } // detail
 
     template<class R, class P, class T, class U>
@@ -360,9 +432,8 @@ namespace checked {
         // t signed, u unsigned
         return t % u;
     }
-
 }   // detail
-
+*/
 } // checked
 } // numeric
 } // boost

@@ -15,13 +15,14 @@
 #include "safe_base.hpp"
 #include "policies.hpp"
 #include "checked.hpp"
+#include "checked_result.hpp"
 
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
 //#include <boost/type_traits/is_convertible.hpp>
-//#include <boost/utility/enable_if.hpp>
-//#include <boost/mpl/print.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/print.hpp>
 #include <type_traits> // is_convertable, enable_if
 
 namespace boost {
@@ -33,21 +34,20 @@ struct get_common_policies {
         boost::mpl::or_<
             is_safe<T>,
             is_safe<U>
-        >::type::value,
+        >::value,
         "at least one type must be a safe type"
     );
-
     typedef typename boost::mpl::eval_if<
         is_safe<T>,
         get_policies<T>,
         boost::mpl::identity<boost::mpl::void_>
-    >::type::type policies_t;
+    >::type policies_t;
 
     typedef typename boost::mpl::eval_if<
         is_safe<U>,
         get_policies<U>,
         boost::mpl::identity<boost::mpl::void_>
-    >::type::type policies_u;
+    >::type policies_u;
 
     // if both types are safe, the policies have to be the same!
     static_assert(
@@ -99,14 +99,14 @@ struct addition_result {
 };
 
 template<class T, class U>
-typename boost::enable_if<
+typename std::enable_if<
     boost::mpl::or_<
         boost::numeric::is_safe<T>,
         boost::numeric::is_safe<U>
-    >,
+    >::value,
     typename addition_result<T, U>::type
 >::type
-inline constexpr operator+(const T & t, const U & u){
+inline operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     static_assert(
@@ -118,15 +118,63 @@ inline constexpr operator+(const T & t, const U & u){
     );
     typedef addition_result<T, U> ar;
     typedef typename ar::type result_type;
+
     typedef typename base_type<result_type>::type result_base_type;
     typedef typename ar::exception_policy exception_policy;
-    return
-        checked::add<result_base_type, exception_policy>(
-            static_cast<const typename base_type<T>::type &>(t),
-            static_cast<const typename base_type<U>::type &>(u)
-        );
+    typedef typename checked_result<result_base_type>::exception_type exception_type;
+
+    checked_result<result_base_type> r = checked::add<result_base_type>(
+        base_value(t),
+        base_value(u)
+    );
+
+    exception_type e = r;
+    switch(e){
+    case checked_result<result_base_type>::exception_type::overflow_error:
+        exception_policy::overflow_error(r);
+        break;
+    case checked_result<result_base_type>::exception_type::underflow_error:
+        exception_policy::underflow_error(r);
+        break;
+    case checked_result<result_base_type>::exception_type::range_error:
+        exception_policy::range_error(r);
+        break;
+    case checked_result<result_base_type>::exception_type::no_exception:
+        break;
+    }
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+    return static_cast<result_type>(r);
 }
 
+template<class T>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value,
+    std::ostream &
+>::type
+operator<<(
+    std::ostream & os,
+    const T & t
+){
+    return os << t.get_stored_value();
+}
+
+template<class T>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value,
+    std::ostream &
+>::type
+operator>>(
+    std::istream & is,
+    T & t
+){
+    return is >> t.get_stored_value();
+    t.validate();
+}
+
+/*
 /////////////////////////////////////////////////////////////////
 // subtraction
 template<class T, class U>
@@ -165,75 +213,75 @@ inline constexpr operator-(const T & t, const U & u){
             static_cast<const typename base_type<U>::type &>(u)
         );
 }
-
+*/
 // comparison operators
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-operator<(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+operator<(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs > lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator>(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator>(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs < lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator==(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator==(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs == lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator!=(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator!=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs != rhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator>=(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator>=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs <= lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     bool
 >::type
-inline operator<=(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator<=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return  rhs >= lhs;
 }
 
 // multiplication
-template<class T, class Stored, class Derived, class PromotionPolicy>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     decltype(T() * Stored())
 >::type
-inline operator*(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator*(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs * lhs;
 }
 
 // division
 // special case - possible overflow
-template<class T, class Stored, class Derived, class PromotionPolicy>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     decltype(T() / Stored())
 >::type
-inline operator/(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator/(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     if(safe_compare::equal(0, rhs))
         throw std::domain_error("Divide by zero");
     return static_cast<
@@ -242,12 +290,12 @@ inline operator/(const T & lhs, const safe_base<Stored, Derived> & rhs) {
 }
 
 // modulus
-template<class T, class Stored, class Derived, class PromotionPolicy>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     decltype(T() % Stored())
 >::type
-inline operator%(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator%(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     if(safe_compare::equal(0, rhs))
         throw std::domain_error("Divide by zero");
     return static_cast<
@@ -256,28 +304,28 @@ inline operator%(const T & lhs, const safe_base<Stored, Derived> & rhs) {
 }
 
 // logical operators
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     typename multiply_result_type<T, Stored>::type
 >::type
-inline operator|(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator|(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs | lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     decltype(T() & Stored())
 >::type
-inline operator&(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator&(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs & lhs;
 }
-template<class T, class Stored, class Derived>
+template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
     decltype(T() ^ Stored())
 >::type
-inline operator^(const T & lhs, const safe_base<Stored, Derived> & rhs) {
+inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs ^ lhs;
 }
 

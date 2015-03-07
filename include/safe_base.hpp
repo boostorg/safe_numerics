@@ -12,9 +12,10 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <type_traits> // is_base_of, is_convertible
+#include <type_traits> // is_base_of, is_convertible, remove_reference
 
 #include "safe_compare.hpp"
+#include "policies.hpp"
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -29,10 +30,11 @@ namespace numeric {
 struct safe_tag {};
 
 template<
-    class Stored, 
-    class Derived
+    class Stored,
+    class Derived,
+    class Policies
 >
-class safe_base : public safe_tag {
+class safe_base : private safe_tag {
     Derived & 
     derived() {
         return static_cast<Derived &>(*this);
@@ -40,10 +42,6 @@ class safe_base : public safe_tag {
     const Derived & 
     derived() const {
         return static_cast<const Derived &>(*this);
-    }
-    template<class T>
-    bool validate(const T & t) const {
-        return derived().validate(t);
     }
     Stored m_t;
 protected:
@@ -57,25 +55,59 @@ protected:
         m_t(t.m_t)
     {}
     template<class T>
-    safe_base(const T & t)
-    {
+    safe_base(const T & t){
         // verify that this is convertible to the storable type
         static_assert(
             std::is_convertible<T, Stored>::value,
             "verify that constructor argument is convertible to the storable type"
         );
-        validate(t);
+        if(! derived().validate(t)){
+            get_exception_policy<Policies>::type::range_error(
+                "Invalid value passed to constructor "
+            );
+        }
         m_t = t;
     }
-    Stored & get_stored_value();
 
 public:
+    // used to implement stream i/o operators
+    Stored & get_stored_value(){
+        return m_t;
+    }
+    const Stored & get_stored_value() const {
+        return m_t;
+    }
+
+    bool validate() const {
+        if(! derived().validate(m_t)){
+            get_exception_policy<Policies>::type::range_error(
+                "Invalid value passed on assignment"
+            );
+        }
+    }
+
+    template<class T>
+    bool validate(const T & rhs){
+        static_assert(
+            std::is_convertible<T, Derived>::value,
+            "Not convertible to this save type"
+        );
+        if(! derived().validate(rhs)){
+            get_exception_policy<Policies>::type::range_error(
+                "Invalid value passed on assignment"
+            );
+        }
+    }
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
     Derived & operator=(const T & rhs){
-        validate(rhs);
+        if(! derived().validate(rhs)){
+            get_exception_policy<Policies>::type::range_error(
+                "Invalid value passed on assignment"
+            );
+        }
         m_t = rhs;
         return derived();
     }
@@ -132,30 +164,50 @@ public:
     }
     // unary operators
     Derived operator++(){
+        // this checks for overflow
         *this = *this + 1;
         return derived();
     }
     Derived operator--(){
+        // this checks for overflow
         *this = *this - 1;
         return derived();
     }
-    Derived operator++(int){
-        Derived rvalue = *this;
-        m_t = validate(*this + 1);
-        return rvalue;
+    Derived operator++(int){ // post increment
+        Stored t = m_t;
+        if(! derived().validate(*this + 1)){
+            get_exception_policy<Policies>::type::overflow_error(
+                "Overflow on increment"
+            );
+        }
+        ++t;
+        return derived();
     }
-    Derived & operator--(int){
-        Derived rvalue = *this;
-        m_t = validate(*this - 1);
-        return rvalue;
+    Derived & operator--(int){ // post decrement
+        Stored t = m_t;
+        if(! derived().validate(*this - 1)){
+            get_exception_policy<Policies>::type::overflow_error(
+                "Overflow on increment"
+            );
+        }
+        --t;
+        return derived();
     }
-    Derived operator-() const {
-        return validate(
-            check_unary_negation_overflow(m_t)
+    Derived operator-() const { // unary minus
+        static_assert(
+            boost::numeric::is_signed<Stored>::value,
+            "Application of unary minus to unsigned value is an error"
         );
+        *this = 0 - *this; // this will check for overflow
+        return derived();
     }
     Derived operator~() const {
-        return validate(~m_t);
+        static_assert(
+            boost::numeric::is_signed<Stored>::value,
+            "Bitwise inversion of unsigned value is an error"
+        );
+        validate(~m_t);
+        return derived();
     }
 
     /////////////////////////////////////////////////////////////////
@@ -318,33 +370,25 @@ public:
     }
 
 */
-    ////////////////////////////////
-    // unary negation implementation
-    Stored
-    operator-(){
-        //
-        static_assert(
-            boost::numeric::is_signed<Stored>::value,
-            "unary negation yields incorrect results for unsigned types"
-        );
-        // the most common situation would be doing something like
-        // boost::uint8_t x = -128;
-        // ...
-        // --x;
-        if(boost::integer_traits<Stored>::const_max == m_t)
-            Derived::Policies::get_promotion_policy::overflow_error("safe range unary negation overflow");
-        return -m_t;
-    }
-
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
-    operator Stored () const {
+    explicit operator Stored () const {
         return m_t;
     }
+
     typedef Stored stored_type;
-    typedef Stored derived_type;
+    typedef Policies policies_type;
+    //typedef Stored derived_type;
 };
 
+} // numeric
+} // boost
+
+#include <type_traits>
+#include <boost/mpl/print.hpp>
+
+namespace boost {
+namespace numeric {
 template<class T>
 struct is_safe : public
     std::is_base_of<boost::numeric::safe_tag, T>
@@ -355,6 +399,7 @@ struct safe_base_type {
     typedef typename T::stored_type type;
 };
 
+// invoke using base_type::type
 template<class T>
 struct base_type : public
     boost::mpl::eval_if<
@@ -364,16 +409,48 @@ struct base_type : public
     >
 {};
 
+namespace detail {
+    template<class T>
+    struct safe_type {
+        static_assert(
+            is_safe<T>::value,
+            "Should be safe type here!"
+        );
+        static const typename base_type<T>::type & get_stored_value(T & t){
+            return t.get_stored_value();
+        }
+    };
+    template<class T>
+    struct other_type {
+        static typename base_type<T>::type & get_stored_value(T & t){
+            return t;
+        }
+    };
+} // detail
+
+template<class T>
+const typename base_type<T>::type & base_value(T & t){
+    typedef typename boost::mpl::if_<
+        is_safe<T>,
+        detail::safe_type<T>,
+        detail::other_type<T>
+    >::type invoke_operator;
+    return invoke_operator::get_stored_value(t);
+}
+
 template<class T>
 struct get_policies {
     static_assert(
         is_safe<T>::value,
         "Policies only defined for safe types"
     );
-    typedef typename T::Policies type;
+    typedef typename T::policies_type type;
 };
 
 } // numeric
 } // boost
+
+
+
 
 #endif // BOOST_NUMERIC_SAFE_BASE_HPP

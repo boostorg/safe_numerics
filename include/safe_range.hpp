@@ -71,8 +71,9 @@ template<
 >
 class safe_signed_range : public
     safe_base<
-        typename detail::signed_stored_type<MIN, MAX>::type, 
-        safe_signed_range<MIN, MAX, P>
+        typename detail::signed_stored_type<MIN, MAX>::type,
+        safe_signed_range<MIN, MAX, P>,
+        P
     >
 {
     static_assert(
@@ -85,11 +86,6 @@ class safe_signed_range : public
     > base;
 
 public:
-    typedef typename detail::signed_stored_type<MIN, MAX>::type stored_type;
-    struct Policies {
-        typedef P type;
-    };
-
     template<class T>
     stored_type validate(const T & t) const {
         if(safe_compare::less_than(t, MIN)
@@ -170,7 +166,8 @@ template<
 class safe_unsigned_range : public
     safe_base<
         typename detail::unsigned_stored_type<MIN, MAX>::type,
-        safe_unsigned_range<MIN, MAX, P>
+        safe_unsigned_range<MIN, MAX, P>,
+        P
     >
 {
     static_assert(
@@ -179,15 +176,13 @@ class safe_unsigned_range : public
     );
     typedef typename boost::numeric::safe_base<
         typename detail::unsigned_stored_type<MIN, MAX>::type, 
-        safe_unsigned_range<MIN, MAX, P>
+        safe_unsigned_range<MIN, MAX, P>,
+        P
     > base;
 
 public:
-    typedef typename detail::unsigned_stored_type<MIN, MAX>::type stored_type;
+//    typedef typename detail::unsigned_stored_type<MIN, MAX>::type stored_type;
 
-    struct Policies {
-        typedef P type;
-    };
     template<class T>
     stored_type validate(const T & t) const {
         if(safe_compare::less_than(t, MIN)
@@ -202,30 +197,6 @@ public:
         base(t)
     {}
 };
-
-template<
-    boost::uintmax_t MIN,
-    boost::uintmax_t MAX,
-    class P
->
-std::ostream & operator<<(
-    std::ostream & os,
-    const safe_unsigned_range<MIN, MAX, P> & t
-){
-    return os << t.get_stored_value();
-}
-
-template<
-    boost::uintmax_t MIN,
-    boost::uintmax_t MAX,
-    class P
->
-std::istream & operator>>(
-    std::istream & is,
-    safe_unsigned_range<MIN, MAX, P> & t
-){
-    return is >> t.get_stored_value();
-}
 
 } // numeric
 } // boost

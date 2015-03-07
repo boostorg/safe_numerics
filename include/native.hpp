@@ -56,7 +56,9 @@ struct native {
     >
     struct addition_result {
         typedef typename boost::numeric::base_type<T>::type base_type_t;
+//        typename boost::mpl::print<base_type_t>::type p_base_type_t;
         typedef typename boost::numeric::base_type<U>::type base_type_u;
+//        typename boost::mpl::print<base_type_u>::type p_base_type_u;
         typedef decltype(base_type_t() + base_type_u()) result_base_type;
         typedef safe<result_base_type, P> type;
     };

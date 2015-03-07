@@ -7,8 +7,10 @@
 #include <iostream>
 #include <cassert>
 #include <iostream>
+#include <type_traits>
 
 #include "../include/safe_integer.hpp"
+#include <boost/mpl/print.hpp>
 
 template<class T1, class T2>
 bool test_add(
@@ -23,79 +25,90 @@ bool test_add(
         << av1 << " + " << av2
         << std::endl;
 
-    boost::numeric::safe<T1> t1 = v1;
-    decltype(boost::numeric::safe<T1>() + T2()) result;
 
-    try{
-        result = t1 + v2;
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 + v2)> result;
+
+        try{
+            result = t1 + v2;
+            if(expected_result == 'x'){
+                try{
+                    std::cout
+                        << "failed to detect error in addition "
+                        << std::hex << result << "(" << std::dec << result << ")"
+                        << " ! = "<< av1 << " + " << av2
+                        << std::endl;
+                    t1 + v2;
+                }
+                catch(...){}
+                return false;
+            }
+        }
+        catch(std::exception & e){
+            if(expected_result == '.'){
+                try{
+                    std::cout
+                        << "erroneously detected error in addition "
+                        << std::hex << result << "(" << std::dec << result << ")"
+                        << " == "<< av1 << " + " << av2
+                        << std::endl;
+                    t1 + v2;
+                }
+                catch(...){}
+                return false;
+            }
+        }
+    }
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        boost::numeric::safe<T2> t2 = v2;
+
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 + v2)> result;
 
         static_assert(
-            boost::numeric::is_safe<decltype(t1 + v2)>::value,
-            "Expression failed to return safe type"
+            std::is_same<
+                boost::numeric::safe<decltype(v1 + v2)>,
+                decltype(t1 + t2)
+            >::value,
+            "unexpected result type"
         );
 
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = t1 + v2;
-            }
-            catch(...){}
-            return false;
-        }
-    }
-    catch(std::exception & e){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = t1 + v2;
-            }
-            catch(...){}
-            return false;
-        }
-    }
+        try{
+            result = t1 + t2;
 
-    boost::numeric::safe<T2> t2 = v2;
-    try{
-        result = t1 + t2;
-
-        static_assert(
-            boost::numeric::is_safe<decltype(t1 + t2)>::value,
-            "Expression failed to return safe type"
-        );
-
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = t1 + v2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 + t2)>::value,
+                "Expression failed to return safe type"
+            );
+            if(expected_result == 'x'){
+                std::cout
+                    << "failed to detect error in addition "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " + " << av2
+                    << std::endl;
+                try{
+                    t1 +t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
-    }
-    catch(std::exception & e){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = t1 + t2;
+        catch(std::exception & e){
+            if(expected_result == '.'){
+                std::cout
+                    << "erroneously detected error in addition "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " + " << av2
+                    << std::endl;
+                try{
+                    t1 + t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
     }
     return true; // correct result
@@ -105,29 +118,31 @@ bool test_add(
 #include "test_values.hpp"
 
 const char *test_addition_result[VALUE_ARRAY_SIZE] = {
-//      0       0       0       0
+//      0       1       2       3
 //      01234567012345670123456701234567
+//      0         1         2         3
 //      01234567890123456789012345678901
 /* 0*/ ".........x...x.............x...x",
 /* 1*/ ".........x...x.............x...x",
-/* 2*/ "..........x...x.........xxxxxxxx",
-/* 3*/ "..........x...x.........xxxxxxxx",
+/* 2*/ "..........x...x.........x...x...",
+/* 3*/ "..........x...x.................",
 /* 4*/ ".........x...x.............x...x",
 /* 5*/ ".........x...x.............x...x",
-/* 6*/ "..........x...x.........xxxxxxxx",
-/* 7*/ "..........x...x.........xxxxxxxx",
+/* 6*/ "..........x...x.........x...x...",
+/* 7*/ "..........x...x.................",
 
 /* 8*/ ".........x...x.............x...x",
 /* 9*/ "xx..xx..xx...x..xxxxxxxx...x...x",
-/*10*/ "..xx..xx..xx..x.........xxxxxxxx",
-/*11*/ "..........x...x.........xxxxxxxx",
+/*10*/ "..xx..xx..xx..x.........xx..x...",
+/*11*/ "..........x...x.................",
 /*12*/ ".............x.................x",
 /*13*/ "xx..xx..xx..xx..xxxxxxxxxxxx...x",
-/*14*/ "..xx..xx..xx..xx............xxxx",
-/*15*/ "..............x.............xxxx",
+/*14*/ "..xx..xx..xx..xx............xx..",
+/*15*/ "..............x.................",
 
-//      0       0       0       0
+//      0       1       2       3
 //      01234567012345670123456701234567
+//      0         1         2         3
 //      01234567890123456789012345678901
 /*16*/ ".........x...x.............x...x",
 /*17*/ ".........x...x.............x...x",
@@ -138,14 +153,14 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /*22*/ ".........x...x.............x...x",
 /*23*/ ".........x...x.............x...x",
 
-/*24*/ "..xx..xx..xx.x.............x...x",
-/*25*/ "..xx..xx..xx.x.............x...x",
-/*26*/ "..xx..xx..xx.x............xx...x",
-/*27*/ "xxxxxxxxxxxx.x..xxxxxxxxxxxx...x",
-/*28*/ "..xx..xx..xx..xx...............x",
-/*29*/ "..xx..xx..xx..xx...............x",
-/*30*/ "..xx..xx..xx..xx..............xx",
-/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+/*24*/ "..x...x...x..x.............x...x",
+/*25*/ "..........x..x.............x...x",
+/*26*/ ".............x............xx...x",
+/*27*/ "xx..xx..xx...x..xxxxxxxxxxxx...x",
+/*28*/ "..x...x...x...x................x",
+/*29*/ "..............x................x",
+/*30*/ "..............................xx",
+/*31*/ "xx..xx..xx..xx..xxxxxxxxxxxxxxxx"
 };
 
 #define TEST_IMPL(v1, v2, result) \
@@ -172,8 +187,10 @@ int main(int argc, char * argv[]){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
         for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            assert(test_addition_result[i][j] == test_addition_result[j][i]);
-
+            if(test_addition_result[i][j] != test_addition_result[j][i]){
+                std::cout << i << ',' << j << std::endl;
+                return 1;
+            }
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     return ! rval ;
