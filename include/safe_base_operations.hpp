@@ -12,6 +12,9 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <limits>
+#include <type_traits> // is_convertible, enable_if
+
 #include "safe_base.hpp"
 #include "policies.hpp"
 #include "checked.hpp"
@@ -20,10 +23,8 @@
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
-//#include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/print.hpp>
-#include <type_traits> // is_convertable, enable_if
 
 namespace boost {
 namespace numeric {
@@ -118,6 +119,23 @@ inline operator+(const T & t, const U & u){
     );
     typedef addition_result<T, U> ar;
     typedef typename ar::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+    // filter out case were overflow cannot occur
+
+
+    constexpr checked_result<result_base_type> maxx = checked::add<result_base_type>(
+        base_value(std::numeric_limits<T>::max()),
+        base_value(std::numeric_limits<U>::max())
+    );
+    constexpr checked_result<result_base_type> minx = checked::add<result_base_type>(
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<U>::min())
+    );
 
     typedef typename base_type<result_type>::type result_base_type;
     typedef typename ar::exception_policy exception_policy;
@@ -128,24 +146,10 @@ inline operator+(const T & t, const U & u){
         base_value(u)
     );
 
-    exception_type e = r;
-    switch(e){
-    case checked_result<result_base_type>::exception_type::overflow_error:
-        exception_policy::overflow_error(r);
-        break;
-    case checked_result<result_base_type>::exception_type::underflow_error:
-        exception_policy::underflow_error(r);
-        break;
-    case checked_result<result_base_type>::exception_type::range_error:
-        exception_policy::range_error(r);
-        break;
-    case checked_result<result_base_type>::exception_type::no_exception:
-        break;
-    }
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
+    typedef typename ar::exception_policy exception_policy;
+    typedef typename checked_result<result_base_type>::exception_type exception_type;
+    r.template dispatch<exception_policy>();
+    
     return static_cast<result_type>(r);
 }
 

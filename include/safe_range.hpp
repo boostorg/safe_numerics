@@ -76,6 +76,9 @@ class safe_signed_range : public
         P
     >
 {
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
+        typename get_exception_policy<P>::type
+    >));
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
@@ -170,6 +173,9 @@ class safe_unsigned_range : public
         P
     >
 {
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
+        typename get_exception_policy<P>::type
+    >));
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"

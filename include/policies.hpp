@@ -30,7 +30,6 @@ struct ignore_exception {
     static void underflow_error(const char * message) {}
     static void range_error(const char * message) {}
 };
-BOOST_CONCEPT_ASSERT((ExceptionPolicy<ignore_exception>));
 
 // If an exceptional condition is detected at runtime throw the exception.
 struct throw_exception {
@@ -44,7 +43,6 @@ struct throw_exception {
         throw std::domain_error(message);
     }
 };
-BOOST_CONCEPT_ASSERT((ExceptionPolicy<throw_exception>));
 
 // example - if you don't want exceptions thrown, used an exception
 // policy like this one.
@@ -60,7 +58,6 @@ struct no_exception_support {
         H(message);
     }
 };
-//BOOST_CONCEPT_ASSERT((ExceptionPolicy<no_exception_support<F, G, H>>));
 
 // use this policy to trap at compile time any operation which
 // would otherwise trap at runtime.  Hence expressions such as i/j
@@ -81,7 +78,6 @@ struct trap_exception {
         static_assert(std::is_void<T>::value, "range_error");
     }
 };
-//BOOST_CONCEPT_ASSERT((ExceptionPolicy<trap_exception>));
 
 // policies structure
 // note: if there's no exception policy then any operation which

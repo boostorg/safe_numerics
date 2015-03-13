@@ -15,18 +15,23 @@ namespace boost {
 namespace numeric {
 
 // poor man's variant which supports constexpr
-template<typename R>
-struct checked_result {
+struct checked_result_base {
     enum class exception_type {
         no_exception,
         overflow_error,
         underflow_error,
         range_error
-    } m_e;
+    };
+};
+
+template<typename R>
+struct checked_result : public checked_result_base {
+    exception_type m_e;
     union {
         R m_r;
         const char * m_msg;
     };
+    // constructors
     constexpr explicit checked_result(const R & r) :
         m_e(exception_type::no_exception),
         m_r(r)
@@ -35,7 +40,9 @@ struct checked_result {
         m_e(e),
         m_msg(msg)
     {}
-    constexpr checked_result(const checked_result && r) :
+    // copy constructor
+    /*
+    constexpr checked_result(checked_result && r) :
         m_e(r.m_e),
         m_r(r.m_r)
     {}
@@ -43,6 +50,8 @@ struct checked_result {
         m_e(r.m_e),
         m_r(r.m_r)
     {}
+    */
+    // accesors
     constexpr operator R() const {
         return m_r;
     }
@@ -55,19 +64,21 @@ struct checked_result {
 
     template<class EP>
     void
-    dispatch(const EP & ep) const {
+    dispatch() const {
         BOOST_CONCEPT_ASSERT((ExceptionPolicy<EP>));
         switch(m_e){
         case exception_type::overflow_error:
-            ep.overflow_error(m_msg);
+            EP::overflow_error(m_msg);
             break;
         case checked_result<R>::exception_type::underflow_error:
-            ep.underflow_error(m_msg);
+            EP::underflow_error(m_msg);
             break;
         case checked_result<R>::exception_type::range_error:
-            ep.range_error(m_msg);
+            EP::range_error(m_msg);
             break;
         case checked_result<R>::exception_type::no_exception:
+            break;
+        default:
             break;
         }
     }

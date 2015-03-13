@@ -12,6 +12,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <limits>
+
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/or.hpp>
 #include "safe_base_operations.hpp"
@@ -29,10 +31,15 @@ template<
 >
 struct safe : public safe_base<T, safe<T, P>, P>{
     BOOST_CONCEPT_ASSERT((Integer<T>));
-
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
+        typename get_exception_policy<P>::type
+    >));
     typedef safe_base<T, safe<T, P>, P > base_type;
 
-    bool validate(const T & t) const {
+    constexpr bool validate(const T & t) const {
+        return true;
+    }
+    constexpr bool validate(T && t) const {
         return true;
     }
 
@@ -40,6 +47,9 @@ struct safe : public safe_base<T, safe<T, P>, P>{
         base_type()
     {}
 
+    //constexpr safe(safe && s) :
+    //    base_type()
+    //{}
     template<class U>
     constexpr safe(const U & u) :
         base_type(u)
@@ -64,8 +74,8 @@ class numeric_limits< boost::numeric::safe<T, P> >
     typedef boost::numeric::safe<T, P> SI;
 public:
     // these expressions are not constexpr until C++14 so re-implement them here
-    constexpr static SI min() noexcept { return std::numeric_limits<SI>::min(); }
-    constexpr static SI max() noexcept { return std::numeric_limits<SI>::max(); }
+    constexpr static SI min() noexcept { return std::numeric_limits<T>::min(); }
+    constexpr static SI max() noexcept { return std::numeric_limits<T>::max(); }
 };
 
 } // std

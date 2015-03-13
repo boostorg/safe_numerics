@@ -17,6 +17,7 @@
 
 #include <limits>
 #include <utility>
+#include <type_traits> // is_convertible
 
 //#include "safe_compare.hpp"
 //#include "safe_cast.hpp"
@@ -158,7 +159,7 @@ namespace checked {
     template<class R, class T, class U>
     constexpr checked_result<R> add(const T & t, const U & u){
         static_assert(
-            std::is_same<decltype(t + u), R>::value,
+            std::is_convertible<decltype(t + u), R>::value,
             "invalid result type"
         );
         return
@@ -168,19 +169,17 @@ namespace checked {
             (std::numeric_limits<R>::max()
             >= std::numeric_limits<T>::max() + std::numeric_limits<U>::max())
             ?
+                // we have to perform he checked addition
                 detail::addition<
                     std::numeric_limits<R>::is_signed,
                     std::numeric_limits<T>::is_signed,
                     std::numeric_limits<U>::is_signed
                 >::template add(t + u, t, u)
             :
+                // othersize we can just return the result
                 checked_result<R>(t + u)
             ;
     }
-
-
-
-
 
 
 /*

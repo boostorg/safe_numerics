@@ -35,11 +35,7 @@ template<
     class Policies
 >
 class safe_base : private safe_tag {
-    Derived & 
-    derived() {
-        return static_cast<Derived &>(*this);
-    }
-    const Derived & 
+    constexpr const Derived &
     derived() const {
         return static_cast<const Derived &>(*this);
     }
@@ -48,56 +44,60 @@ protected:
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    safe_base() {}
+    constexpr safe_base() {}
 
     // copy constructor 
-    safe_base(const safe_base & t) :
+    constexpr safe_base(const safe_base & t) :
         m_t(t.m_t)
     {}
     template<class T>
-    safe_base(const T & t){
+    constexpr safe_base(T & t) :
+        m_t(t)
+    {
         // verify that this is convertible to the storable type
         static_assert(
             std::is_convertible<T, Stored>::value,
-            "verify that constructor argument is convertible to the storable type"
+            "Constructor argument is convertible to the storable type"
         );
         if(! derived().validate(t)){
             get_exception_policy<Policies>::type::range_error(
-                "Invalid value passed to constructor "
+                "Invalid value"
             );
         }
-        m_t = t;
     }
+
+    /*
+    template<class T>
+    constexpr safe_base(const T & t) :
+        m_t(t)
+    {
+        // verify that this is convertible to the storable type
+        static_assert(
+            std::is_convertible<T, Stored>::value,
+            "constructor argument is convertible to the storable type"
+        );
+        trap_error(derived().validate(t));
+    }
+    */
+
 
 public:
     // used to implement stream i/o operators
-    Stored & get_stored_value(){
+    Stored & get_stored_value() {
         return m_t;
     }
-    const Stored & get_stored_value() const {
+    constexpr const Stored & get_stored_value() const {
         return m_t;
     }
 
     bool validate() const {
         if(! derived().validate(m_t)){
             get_exception_policy<Policies>::type::range_error(
-                "Invalid value passed on assignment"
+                "Invalid value"
             );
         }
     }
 
-    template<class T>
-    bool validate(const T & rhs){
-        static_assert(
-            std::is_convertible<T, Derived>::value,
-            "Not convertible to this save type"
-        );
-        if(! derived().validate(rhs)){
-            get_exception_policy<Policies>::type::range_error(
-                "Invalid value passed on assignment"
-            );
-        }
-    }
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
@@ -416,20 +416,30 @@ namespace detail {
             is_safe<T>::value,
             "Should be safe type here!"
         );
-        static const typename base_type<T>::type & get_stored_value(T & t){
+        static constexpr const typename base_type<T>::type & get_stored_value(const T & t){
             return t.get_stored_value();
         }
     };
     template<class T>
     struct other_type {
-        static typename base_type<T>::type & get_stored_value(T & t){
+        static constexpr typename base_type<T>::type & get_stored_value(const T & t){
             return t;
         }
     };
 } // detail
 
 template<class T>
-const typename base_type<T>::type & base_value(T & t){
+constexpr const typename base_type<T>::type & base_value(const T & t) {
+    typedef typename boost::mpl::if_<
+        is_safe<T>,
+        detail::safe_type<T>,
+        detail::other_type<T>
+    >::type invoke_operator;
+    return invoke_operator::get_stored_value(t);
+}
+
+template<class T>
+constexpr const typename base_type<T>::type & base_value(T && t) {
     typedef typename boost::mpl::if_<
         is_safe<T>,
         detail::safe_type<T>,
