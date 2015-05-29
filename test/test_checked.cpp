@@ -9,9 +9,6 @@
 #include <iostream>
 #include <cassert>
 
-// don't use constexpr so we can debug
-#define SAFE_NUMERIC_CONSTEXPR constexpr
-
 #include "../include/checked_result.hpp"
 #include "../include/checked.hpp"
 
@@ -77,6 +74,10 @@ bool test_add(
 
 #include "test.hpp"
 #include "test_values.hpp"
+
+// note: same test matrix as used in test_add.  Here we test all combinations
+// safe and unsafe integers.  in test_checked we test all combinations of
+// integer primitives
 
 const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0

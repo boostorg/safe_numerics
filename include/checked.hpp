@@ -15,8 +15,9 @@
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 
+#include <limits>
+
 #include <boost/utility/enable_if.hpp>
-//#include <limits>
 //#include <utility>
 #include <type_traits> // make_unsigned
 
@@ -111,7 +112,7 @@ namespace checked {
                         "addition overflow"
                     )
                 :
-                    checked_result<R>(t + u)
+                    checked_result<R>(static_cast<R>(t) + static_cast<R>(u))
         ;
     }
 
@@ -137,7 +138,7 @@ namespace checked {
                         "addition overflow"
                     )
                 :
-                    checked_result<R>(t + u)
+                    checked_result<R>(static_cast<R>(t) + static_cast<R>(u))
         ;
     }
 

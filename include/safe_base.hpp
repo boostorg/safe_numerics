@@ -19,6 +19,9 @@
 #include <boost/mpl/and.hpp>
 #include <boost/utility/enable_if.hpp>
 
+// don't use constexpr so we can debug
+#define SAFE_NUMERIC_CONSTEXPR constexpr
+
 #include "safe_compare.hpp"
 #include "policies.hpp"
 
