@@ -14,13 +14,13 @@
 
 #include <type_traits> // is_base_of, is_convertible, remove_reference
 
-#include "safe_compare.hpp"
-#include "policies.hpp"
-
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/utility/enable_if.hpp>
+
+#include "safe_compare.hpp"
+#include "policies.hpp"
 
 #include <boost/mpl/sizeof.hpp>
 
@@ -35,7 +35,7 @@ template<
     class Policies
 >
 class safe_base : private safe_tag {
-    constexpr const Derived &
+    SAFE_NUMERIC_CONSTEXPR const Derived &
     derived() const {
         return static_cast<const Derived &>(*this);
     }
@@ -44,14 +44,14 @@ protected:
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    constexpr safe_base() {}
+    SAFE_NUMERIC_CONSTEXPR safe_base() {}
 
     // copy constructor 
-    constexpr safe_base(const safe_base & t) :
+    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
         m_t(t.m_t)
     {}
     template<class T>
-    constexpr safe_base(T & t) :
+    SAFE_NUMERIC_CONSTEXPR safe_base(T & t) :
         m_t(t)
     {
         // verify that this is convertible to the storable type
@@ -66,27 +66,13 @@ protected:
         }
     }
 
-    /*
-    template<class T>
-    constexpr safe_base(const T & t) :
-        m_t(t)
-    {
-        // verify that this is convertible to the storable type
-        static_assert(
-            std::is_convertible<T, Stored>::value,
-            "constructor argument is convertible to the storable type"
-        );
-        trap_error(derived().validate(t));
-    }
-    */
-
 
 public:
     // used to implement stream i/o operators
     Stored & get_stored_value() {
         return m_t;
     }
-    constexpr const Stored & get_stored_value() const {
+    SAFE_NUMERIC_CONSTEXPR const Stored & get_stored_value() const {
         return m_t;
     }
 
@@ -396,7 +382,11 @@ struct is_safe : public
 
 template<class T>
 struct safe_base_type {
-    typedef typename T::stored_type type;
+    typedef typename boost::mpl::if_<
+        typename std::is_const<T>,
+        const typename T::stored_type,
+        typename T::stored_type
+    >::type type;
 };
 
 // invoke using base_type::type
@@ -416,20 +406,21 @@ namespace detail {
             is_safe<T>::value,
             "Should be safe type here!"
         );
-        static constexpr const typename base_type<T>::type & get_stored_value(const T & t){
+        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
             return t.get_stored_value();
         }
     };
     template<class T>
     struct other_type {
-        static constexpr typename base_type<T>::type & get_stored_value(const T & t){
+        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
             return t;
         }
     };
 } // detail
 
+
 template<class T>
-constexpr const typename base_type<T>::type & base_value(const T & t) {
+SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T &  t) {
     typedef typename boost::mpl::if_<
         is_safe<T>,
         detail::safe_type<T>,
@@ -438,8 +429,9 @@ constexpr const typename base_type<T>::type & base_value(const T & t) {
     return invoke_operator::get_stored_value(t);
 }
 
+
 template<class T>
-constexpr const typename base_type<T>::type & base_value(T && t) {
+SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(T && t) {
     typedef typename boost::mpl::if_<
         is_safe<T>,
         detail::safe_type<T>,

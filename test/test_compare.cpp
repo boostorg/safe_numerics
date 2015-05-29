@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <cassert>
+#include <typeinfo>
+#include <cxxabi.h> 
 
 #include "../include/safe_integer.hpp"
 #include "../include/safe_compare.hpp"
@@ -15,11 +17,26 @@
 #include <boost/typeof/typeof.hpp>
 
 template<class T1, class T2>
+void print_argument_types(
+    T1 v1,
+    T2 v2
+){
+    const std::type_info & ti1 = typeid(v1);
+    const std::type_info & ti2 = typeid(v2);
+    int status;
+
+    std::cout
+        << abi::__cxa_demangle(ti1.name(),0,0,&status) << ','
+        << abi::__cxa_demangle(ti2.name(),0,0,&status) << ',';
+}
+
+template<class T1, class T2>
 bool test_compare_detail(
     T1 v1,
     T2 v2,
     char expected_result
 ){
+    print_argument_types(v1, v2);
     if('=' == expected_result){
         if(! boost::numeric::safe_compare::equal(v1, v2))
             return false;
@@ -137,8 +154,12 @@ const char *test_compare_result[VALUE_ARRAY_SIZE] = {
     );
 /**/
 
+void break_check(unsigned int i, unsigned int j){
+    std::cout << i << ',' << j << ',';
+}
+
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    break_check(value_index1, value_index2);       \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \

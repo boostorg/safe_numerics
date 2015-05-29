@@ -9,57 +9,61 @@
 #ifndef BOOST_NUMERIC_CHECKED_CHECKED_RESULT
 #define BOOST_NUMERIC_CHECKED_CHECKED_RESULT
 
+#include <ostream>
 #include "policies.hpp"
 
 namespace boost {
 namespace numeric {
 
-// poor man's variant which supports constexpr
-struct checked_result_base {
+template<typename R>
+struct checked_result {
+// poor man's variant which supports SAFE_NUMERIC_CONSTEXPR
     enum class exception_type {
         no_exception,
         overflow_error,
         underflow_error,
         range_error
     };
-};
-
-template<typename R>
-struct checked_result : public checked_result_base {
     exception_type m_e;
     union {
         R m_r;
         const char * m_msg;
     };
     // constructors
-    constexpr explicit checked_result(const R & r) :
+    SAFE_NUMERIC_CONSTEXPR explicit checked_result(const R & r) :
         m_e(exception_type::no_exception),
         m_r(r)
     {}
-    constexpr explicit checked_result(exception_type e, const char * msg) :
+    SAFE_NUMERIC_CONSTEXPR explicit checked_result(exception_type e, const char * msg) :
         m_e(e),
         m_msg(msg)
     {}
     // copy constructor
     /*
-    constexpr checked_result(checked_result && r) :
+    SAFE_NUMERIC_CONSTEXPR checked_result(checked_result && r) :
         m_e(r.m_e),
         m_r(r.m_r)
     {}
-    constexpr checked_result(const checked_result & r) :
+    SAFE_NUMERIC_CONSTEXPR checked_result(const checked_result & r) :
         m_e(r.m_e),
         m_r(r.m_r)
     {}
     */
     // accesors
-    constexpr operator R() const {
+    SAFE_NUMERIC_CONSTEXPR operator R() const {
         return m_r;
     }
-    constexpr operator exception_type () const {
+    SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
         return m_e;
     }
-    constexpr operator const char *() const {
+    SAFE_NUMERIC_CONSTEXPR operator const char *() const {
         return m_msg;
+    }
+    SAFE_NUMERIC_CONSTEXPR bool operator==(const exception_type & et) const {
+        return m_e == et;
+    }
+    SAFE_NUMERIC_CONSTEXPR bool operator!=(const exception_type & et) const {
+        return m_e != et;
     }
 
     template<class EP>
@@ -86,5 +90,15 @@ struct checked_result : public checked_result_base {
 
 } // numeric
 } // boost
+
+template<typename R>
+std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<R> & r){
+    if(r == boost::numeric::checked_result<R>::exception_type::no_exception)
+        os << static_cast<R>(r);
+    else
+        os << static_cast<const char *>(r);
+    return os;
+}
+
 
 #endif  // BOOST_NUMERIC_CHECKED_CHECKED_RESULT

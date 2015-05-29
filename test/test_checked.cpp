@@ -9,6 +9,10 @@
 #include <iostream>
 #include <cassert>
 
+// don't use constexpr so we can debug
+#define SAFE_NUMERIC_CONSTEXPR constexpr
+
+#include "../include/checked_result.hpp"
 #include "../include/checked.hpp"
 
 template<class T1, class T2>
@@ -24,38 +28,48 @@ bool test_add(
         << av1 << " + " << av2
         << std::endl;
 
-    typedef decltype(T1() + T1()) result_type;
-    result_type result;
+    typedef decltype(T1() + T2()) result_type;
 
-    try{
-        result = boost::numeric::checked::add<result_type, T1, T2>(v1, v2);
+    boost::numeric::checked_result<result_type> result
+        = boost::numeric::checked::add<result_type>(
+            std::numeric_limits<result_type>::min(),
+            std::numeric_limits<result_type>::max(),
+            v1,
+            v2
+        );
 
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = boost::numeric::checked::add<result_type>(v1, v2);
-            }
-            catch(...){}
-            return false;
-        }
+    if(result == boost::numeric::checked_result<result_type>::exception_type::no_exception
+    && expected_result == 'x'){
+        std::cout
+            << "failed to detect error in addition "
+            << std::hex << result << "(" << std::dec << result << ")"
+            << " != "<< av1 << " + " << av2
+            << std::endl;
+        boost::numeric::checked_result<result_type> result
+            = boost::numeric::checked::add<result_type>(
+                std::numeric_limits<result_type>::min(),
+                std::numeric_limits<result_type>::max(),
+                v1,
+                v2
+            );
+        return false;
     }
-    catch(std::range_error){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in addition "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " + " << av2
-                << std::endl;
-            try{
-                result = boost::numeric::checked::add<result_type>(v1, v2);
-            }
-            catch(...){}
-            return false;
-        }
+    else
+    if(result != boost::numeric::checked_result<result_type>::exception_type::no_exception
+    && expected_result == '.'){
+        std::cout
+            << "erroneously detected error "
+            << std::hex << result <<  av1 << " + " << av2
+            << std::endl;
+        boost::numeric::checked_result<result_type> result
+            = boost::numeric::checked::add<result_type>(
+                std::numeric_limits<result_type>::min(),
+                std::numeric_limits<result_type>::max(),
+                v1,
+                v2
+            );
+
+        return false;
     }
 
     return true; // correct result

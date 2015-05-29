@@ -32,28 +32,28 @@ struct automatic {
             std::numeric_limits<T>::max() + std::numeric_limits<U>::max(),
         > type;
         template<class TX>
-        constexpr static result_base_type min_value() {
+        SAFE_NUMERIC_CONSTEXPR static result_base_type min_value() {
             return std::numeric_limits<TX>::min();
         }
         template<class TX>
-        constexpr static result_base_type max_value() {
+        SAFE_NUMERIC_CONSTEXPR static result_base_type max_value() {
             return std::numeric_limits<TX>::max();
         }
 
-        constexpr static result_base_type max(
+        SAFE_NUMERIC_CONSTEXPR static result_base_type max(
             const result_base_type a,
             const result_base_type b
         ){
             return (a < b) ? b : a;
         }
-        constexpr static result_base_type min(
+        SAFE_NUMERIC_CONSTEXPR static result_base_type min(
             const result_base_type  a,
             const result_base_type  b
         ){
             return (a < b) ? a : b;
         }
 
-        constexpr static result_base_type sum(
+        SAFE_NUMERIC_CONSTEXPR static result_base_type sum(
             const result_base_type a,
             const result_base_type b
         ){

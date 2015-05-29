@@ -96,12 +96,12 @@ public:
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
-    constexpr safe_signed_range() :
+    SAFE_NUMERIC_CONSTEXPR safe_signed_range() :
         base()
     {}
 
     template<class T>
-    constexpr safe_signed_range(const T & t) :
+    SAFE_NUMERIC_CONSTEXPR safe_signed_range(const T & t) :
         base(t)
     {}
 };
@@ -149,8 +149,8 @@ class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P> >
     typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
     typedef typename boost::mpl::print<SSR>::type t0;
 public:
-    constexpr static SSR min() noexcept { return SSR(MIN); }
-    constexpr static SSR max() noexcept { return SSR(MAX); }
+    SAFE_NUMERIC_CONSTEXPR static SSR min() noexcept { return SSR(MIN); }
+    SAFE_NUMERIC_CONSTEXPR static SSR max() noexcept { return SSR(MAX); }
 };
 
 } // std
@@ -196,10 +196,10 @@ public:
             overflow("safe range out of range");
         return static_cast<stored_type>(t);
     }
-    constexpr safe_unsigned_range(){}
+    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range(){}
 
     template<class T>
-    constexpr safe_unsigned_range(const T & t) :
+    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range(const T & t) :
         base(t)
     {}
 };
@@ -222,8 +222,8 @@ class numeric_limits<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
     typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
     typedef typename boost::mpl::print<SUR>::type t0;
 public:
-    constexpr static SUR min() noexcept { return SUR(MIN); }
-    constexpr static SUR max() noexcept { return SUR(MAX); }
+    SAFE_NUMERIC_CONSTEXPR static SUR min() noexcept { return SUR(MIN); }
+    SAFE_NUMERIC_CONSTEXPR static SUR max() noexcept { return SUR(MAX); }
 };
 
 } // std

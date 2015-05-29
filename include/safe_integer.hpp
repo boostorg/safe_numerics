@@ -36,22 +36,22 @@ struct safe : public safe_base<T, safe<T, P>, P>{
     >));
     typedef safe_base<T, safe<T, P>, P > base_type;
 
-    constexpr bool validate(const T & t) const {
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return true;
     }
-    constexpr bool validate(T && t) const {
+    SAFE_NUMERIC_CONSTEXPR bool validate(T && t) const {
         return true;
     }
 
-    constexpr safe() :
+    SAFE_NUMERIC_CONSTEXPR safe() :
         base_type()
     {}
 
-    //constexpr safe(safe && s) :
+    //SAFE_NUMERIC_CONSTEXPR safe(safe && s) :
     //    base_type()
     //{}
     template<class U>
-    constexpr safe(const U & u) :
+    SAFE_NUMERIC_CONSTEXPR safe(const U & u) :
         base_type(u)
     {}
 };
@@ -73,9 +73,9 @@ class numeric_limits< boost::numeric::safe<T, P> >
 {
     typedef boost::numeric::safe<T, P> SI;
 public:
-    // these expressions are not constexpr until C++14 so re-implement them here
-    constexpr static SI min() noexcept { return std::numeric_limits<T>::min(); }
-    constexpr static SI max() noexcept { return std::numeric_limits<T>::max(); }
+    // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
+    SAFE_NUMERIC_CONSTEXPR static SI min() noexcept { return std::numeric_limits<T>::min(); }
+    SAFE_NUMERIC_CONSTEXPR static SI max() noexcept { return std::numeric_limits<T>::max(); }
 };
 
 } // std

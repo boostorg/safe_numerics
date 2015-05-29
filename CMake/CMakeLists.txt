@@ -1,4 +1,4 @@
-# CMake build control file for Serialization Library tests
+# CMake build control file for safe numerics Library tests
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -75,7 +75,7 @@ endif()
 # Project settings
 #
 
-find_package(Boost REQUIRED COMPONENTS )
+find_package(Boost REQUIRED COMPONENTS unit_test )
 
 if(Boost_FOUND)
   set(Boost_USE_MULTITHREADED ON)

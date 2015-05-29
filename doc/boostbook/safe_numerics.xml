@@ -19,8 +19,10 @@
     </copyright>
 
     <legalnotice>
-      <para><ulink url="http://www.boost.org/LICENSE_1_0.txt">Subject to Boost
-      Software License</ulink></para>
+      <para>
+        <ulink url="http://www.boost.org/LICENSE_1_0.txt">Subject to Boost
+        Software License</ulink>
+      </para>
     </legalnotice>
 
     <librarypurpose>Safe integer operations</librarypurpose>
@@ -358,7 +360,28 @@
 
       <title>
         <ulink
-        url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT32-C.
+        url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT30-C.
+        Ensure that operations on unsigned integers do not wrap</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://www.cert.org">Software Engineering Institute,
+        Carnegie Mellon University</ulink>
+      </publishername>
+
+      <date>August 17, 2014</date>
+
+      <abbrev>INT32-C</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Robert C. Seacord</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://www.securecoding.cert.org/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow">INT32-C.
         Ensure that operations on signed integers do not result in
         overflow</ulink>
       </title>

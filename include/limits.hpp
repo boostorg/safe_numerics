@@ -57,9 +57,9 @@ class numeric_limits< boost::numeric::safe<T, P> >
     typedef boost::numeric::safe<T, P> SI;
     // typedef typename boost::mpl::print<T>::type t0;
 public:
-    // these expressions are not constexpr until C++14 so re-implement them here
-    constexpr static SI min() noexcept { return std::numeric_limits<SI>::min(); }
-    constexpr static SI max() noexcept { return std::numeric_limits<SI>::max(); }
+    // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
+    SAFE_NUMERIC_CONSTEXPR static SI min() noexcept { return std::numeric_limits<SI>::min(); }
+    SAFE_NUMERIC_CONSTEXPR static SI max() noexcept { return std::numeric_limits<SI>::max(); }
 };
 
 /////////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P> >
     typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
     typedef typename boost::mpl::print<SSR>::type t0;
 public:
-    constexpr static SSR min() noexcept { return SSR(MIN); }
-    constexpr static SSR max() noexcept { return SSR(MAX); }
+    SAFE_NUMERIC_CONSTEXPR static SSR min() noexcept { return SSR(MIN); }
+    SAFE_NUMERIC_CONSTEXPR static SSR max() noexcept { return SSR(MAX); }
 };
 
 /////////////////////////////////////////////////////////////////
@@ -94,8 +94,8 @@ class numeric_limits<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
     typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
     typedef typename boost::mpl::print<SUR>::type t0;
 public:
-    constexpr static SUR min() noexcept { return SUR(MIN); }
-    constexpr static SUR max() noexcept { return SUR(MAX); }
+    SAFE_NUMERIC_CONSTEXPR static SUR min() noexcept { return SUR(MIN); }
+    SAFE_NUMERIC_CONSTEXPR static SUR max() noexcept { return SUR(MAX); }
 };
 
 } // std

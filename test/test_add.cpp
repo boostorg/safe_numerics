@@ -10,7 +10,6 @@
 #include <type_traits>
 
 #include "../include/safe_integer.hpp"
-#include <boost/mpl/print.hpp>
 
 template<class T1, class T2>
 bool test_add(
@@ -24,8 +23,6 @@ bool test_add(
         << "testing  "
         << av1 << " + " << av2
         << std::endl;
-
-
     {
         boost::numeric::safe<T1> t1 = v1;
         // presuming native policy

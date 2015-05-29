@@ -39,7 +39,7 @@ struct standard_promotion {
     // rank is (more or less) proportional to size of operand
     template<class T1>
     struct rank {
-        constexpr int value =
+        SAFE_NUMERIC_CONSTEXPR int value =
             boost::integer_traits<T1>::digits 
             + boost::integer_traits<T1>::is_signed
         );
@@ -115,7 +115,7 @@ struct cpp {
     >
     struct add_result {
         typedef typename standard_promotion<T, U>::type type;
-        constexpr bool underflow =
+        SAFE_NUMERIC_CONSTEXPR bool underflow =
             (promotion::sum_underflow<
                 T,
                 U,
@@ -125,7 +125,7 @@ struct cpp {
                 (boost::integer_traits<type>::const_min)
             >::value)
         );
-        constexpr bool overflow =
+        SAFE_NUMERIC_CONSTEXPR bool overflow =
             (promotion::sum_overflow<
                 T,
                 U,
@@ -135,12 +135,12 @@ struct cpp {
                 (boost::integer_traits<type>::const_max)
             >::value)
         );
-        constexpr type min = (underflow ?
+        SAFE_NUMERIC_CONSTEXPR type min = (underflow ?
             (boost::integer_traits<type>::const_min)
             :
             TMin + UMin
         ));
-        constexpr type max = (overflow ?
+        SAFE_NUMERIC_CONSTEXPR type max = (overflow ?
             (boost::integer_traits<type>::const_max)
             :
             TMax + UMax 

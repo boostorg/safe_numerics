@@ -15,12 +15,14 @@
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 
-#include <limits>
-#include <utility>
-#include <type_traits> // is_convertible
+#include <boost/utility/enable_if.hpp>
+//#include <limits>
+//#include <utility>
+#include <type_traits> // make_unsigned
 
 //#include "safe_compare.hpp"
 //#include "safe_cast.hpp"
+#include "safe_base.hpp"
 #include "checked_result.hpp"
 
 namespace boost {
@@ -28,159 +30,176 @@ namespace numeric {
 namespace checked {
 
     namespace detail {
-    
-    template<bool RS, bool TS, bool US>
-    struct addition;
+
+    template<class R, class T>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R>
+    cast(
+        const T & t
+    ){
+        return
+        std::is_signed<R>::value ?
+            std::is_signed<T>::value ?
+                t > std::numeric_limits<R>::max() ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted signed value too large"
+                    )
+                :
+                t < std::numeric_limits<R>::min() ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted signed value too small"
+                    )
+                :
+                    checked_result<R>(t)
+            : // T is unsigned
+                t > std::numeric_limits<R>::max() ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted unsigned value too large"
+                    )
+                :
+                    checked_result<R>(t)
+        : // std::is_unsigned<R>::value
+            std::is_unsigned<T>::value ?
+                t > std::numeric_limits<R>::max() ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted unsigned value too large"
+                    )
+                :
+                    checked_result<R>(t)
+            : // T is signed
+                t < 0 ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted negative value to unsigned"
+                    )
+                :
+                t > std::numeric_limits<R>::max() ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::range_error,
+                        "converted signed value too large"
+                    )
+                :
+                    checked_result<R>(t)
+        ;
+    }
 
     // both arguments unsigned
-    template<>
-    struct addition<false, false, false> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return
-                r < t || r < u ?
+    template<class R>
+    typename boost::enable_if<
+        typename std::is_unsigned<R>,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR add(
+        const R & minr,
+        const R & maxr,
+        const checked_result<R> t,
+        const checked_result<R> u
+    ) {
+        return
+            t != checked_result<R>::exception_type::no_exception ?
+                t
+            :
+            u != checked_result<R>::exception_type::no_exception ?
+                u
+            :
+                maxr - u < t ?
                     checked_result<R>(
                         checked_result<R>::exception_type::overflow_error,
                         "addition overflow"
                     )
                 :
-                    checked_result<R>(r)
-                ;
-        }
-    };
-    template<>
-    struct addition<true, false, false> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return
-                r < 0 ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(r)
-                ;
-        }
-    };
+                    checked_result<R>(t + u)
+        ;
+    }
 
-    // both arguments signed
-    template<>
-    struct addition<false, true, true> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return
-                (t > 0 && u > 0 && (r < t || r < u))
-                || (t < 0 && u < 0 && (r > t || r > u))  ?
+    template<class R>
+    typename boost::enable_if<
+        typename std::is_signed<R>,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR add(
+        const R & minr,
+        const R & maxr,
+        const checked_result<R> t,
+        const checked_result<R> u
+    ) {
+        return
+            t != checked_result<R>::exception_type::no_exception ?
+                t
+            :
+                ((u > 0) && (t > (maxr - u)))
+                || ((u < 0) && (t < (minr - u))) ?
                     checked_result<R>(
                         checked_result<R>::exception_type::overflow_error,
                         "addition overflow"
                     )
                 :
-                    checked_result<R>(r)
-                ;
-        }
-    };
-    template<>
-    struct addition<true, true, true> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return
-                (t > 0 && u > 0 && r < 0)
-                || (t < 0 && u < 0 && r >= 0)  ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(r)
-                ;
-        }
-    };
-
-
-    // T unsigned, U signed
-    template<>
-    struct addition<false, false, true> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u){
-            return
-                (u > 0) ?
-                    addition<false, false, false>::add(
-                        std::move(r),
-                        t,
-                        static_cast<typename std::make_unsigned<U>::type >(u)
-                    )
-                :
-                (r > t) ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(r)
-                ;
-            }
-    };
-    template<>
-    struct addition<true, false, true> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u){
-            return
-                (u > 0) && (r < 0) ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(r)
-                ;
-        }
-    };
-
-    // T signed, U unsigned
-    template<>
-    struct addition<false, true, false> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return addition<false, false, true>::add<R>(std::move(r), u, t);
-        }
-    };
-    template<>
-    struct addition<true, true, false> {
-        template<class R, class T, class U>
-        static constexpr checked_result<R> add(const R && r, const T & t, const U & u) {
-            return addition<true, false, true>::add<R>(std::move(r), u, t);
-        }
-    };
+                    checked_result<R>(t + u)
+        ;
+    }
 
     } // namespace detail
 
     template<class R, class T, class U>
-    constexpr checked_result<R> add(const T & t, const U & u){
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
+        const R & minr,
+        const R & maxr,
+        const T & t,
+        const U & u
+    ) {
+        return detail::add<R>(
+            minr,
+            maxr,
+            detail::cast<R>(t),
+            detail::cast<R>(u)
+        );
+    }
+
+/*
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
+        const R & minr,
+        const R & maxr,
+        const T & t,
+        const U & u
+    ){
+        static_assert(
+            std::is_convertible<decltype(t + u), R>::value,
+            "invalid result type"
+        );
+        // is t convertible to r without change
+        return
+            // we have to perform he checked addition
+            detail::addition<
+                std::numeric_limits<T>::is_signed,
+                std::numeric_limits<U>::is_signed
+            >::template add(minr, maxr, t, u)
+        ;
+    }
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
+        const R maxr,
+        const R minr,
+        const T t,
+        const U u
+    ){
         static_assert(
             std::is_convertible<decltype(t + u), R>::value,
             "invalid result type"
         );
         return
-            (std::numeric_limits<R>::min()
-            <= std::numeric_limits<T>::min() + std::numeric_limits<U>::min())
-            &&
-            (std::numeric_limits<R>::max()
-            >= std::numeric_limits<T>::max() + std::numeric_limits<U>::max())
-            ?
-                // we have to perform he checked addition
-                detail::addition<
-                    std::numeric_limits<R>::is_signed,
-                    std::numeric_limits<T>::is_signed,
-                    std::numeric_limits<U>::is_signed
-                >::template add(t + u, t, u)
-            :
-                // othersize we can just return the result
-                checked_result<R>(t + u)
-            ;
+            // we have to perform he checked addition
+            detail::addition<
+                std::numeric_limits<R>::is_signed,
+                std::numeric_limits<T>::is_signed,
+                std::numeric_limits<U>::is_signed
+            >::template add(minr, maxr, t, u)
+        ;
     }
-
+*/
 
 /*
     namespace detail {
@@ -201,7 +220,7 @@ namespace checked {
     template<>
     struct subtraction<false, false> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
+        SAFE_NUMERIC_CONSTEXPR static bool overflow(const R & r, const T & t, const U & u){
             return safe_compare::less_than(t, u);
         }
         template<class R, class P, class T, class U>
@@ -216,7 +235,7 @@ namespace checked {
     template<>
     struct subtraction<true, true> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
+        SAFE_NUMERIC_CONSTEXPR static bool overflow(const R & r, const T & t, const U & u){
             return (t > 0 && u < 0 && r < 0) ||(t < 0 && u > 0 && r >= 0);
         }
         template<class R, class P, class T, class U>
@@ -231,7 +250,7 @@ namespace checked {
     template<>
     struct subtraction<false, true> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
+        SAFE_NUMERIC_CONSTEXPR static bool overflow(const R & r, const T & t, const U & u){
             return u < 0 || u >= t;
         }
         template<class R, class P, class T, class U>
@@ -251,7 +270,7 @@ namespace checked {
     template<>
     struct subtraction<true, false> {
         template<class R, class T, class U>
-        constexpr static bool overflow(const R & r, const T & t, const U & u){
+        SAFE_NUMERIC_CONSTEXPR static bool overflow(const R & r, const T & t, const U & u){
             return u < 0 || u >= t;
         }
         template<class R, class P, class T, class U>

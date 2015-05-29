@@ -13,6 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
+//#include <limits.h>
 #include <type_traits> // is_convertible, enable_if
 
 #include "safe_base.hpp"
@@ -99,6 +100,11 @@ struct addition_result {
     typedef typename promotion_policy::template addition_result<T, U, P>::type type;
 };
 
+template<long long V>
+struct print {
+    static SAFE_NUMERIC_CONSTEXPR char value() { return V + 256; }
+};
+
 template<class T, class U>
 typename std::enable_if<
     boost::mpl::or_<
@@ -125,30 +131,47 @@ inline operator+(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
+
     // filter out case were overflow cannot occur
 
+    /*
+    print<base_value(std::numeric_limits<result_type>::min())>();
+    print<base_value(std::numeric_limits<result_type>::max())>();
+    print<base_value(std::numeric_limits<T>::max())>();
+    print<base_value(std::numeric_limits<U>::max())>();
+    */
 
-    constexpr checked_result<result_base_type> maxx = checked::add<result_base_type>(
+    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> maxx = checked::add(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
         base_value(std::numeric_limits<T>::max()),
         base_value(std::numeric_limits<U>::max())
     );
-    constexpr checked_result<result_base_type> minx = checked::add<result_base_type>(
+
+    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> minx = checked::add(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<U>::min())
     );
 
-    typedef typename base_type<result_type>::type result_base_type;
-    typedef typename ar::exception_policy exception_policy;
     typedef typename checked_result<result_base_type>::exception_type exception_type;
 
-    checked_result<result_base_type> r = checked::add<result_base_type>(
+    // if no over/under flow possible
+    if(maxx == exception_type::no_exception
+    && minx == exception_type::no_exception)
+        // just do simple addition of base values
+        return result_type(base_value(t) + base_value(u));
+
+    // otherwise do the addition checking for overflow
+    checked_result<result_base_type> r = checked::add(
+        base_value(std::numeric_limits<result_base_type>::min()),
+        base_value(std::numeric_limits<result_base_type>::max()),
         base_value(t),
         base_value(u)
     );
 
-    typedef typename ar::exception_policy exception_policy;
-    typedef typename checked_result<result_base_type>::exception_type exception_type;
-    r.template dispatch<exception_policy>();
+    r.template dispatch<typename ar::exception_policy>();
     
     return static_cast<result_type>(r);
 }
@@ -197,7 +220,7 @@ typename boost::enable_if<
     >,
     typename subtraction_result<T, U>::type
 >::type
-inline constexpr operator-(const T & t, const U & u){
+inline SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     static_assert(
