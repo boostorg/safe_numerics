@@ -12,19 +12,18 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "boost/concept/assert.hpp"
 #include "boost/concept/usage.hpp"
 
 namespace boost {
 namespace numeric {
 
-template<class T>
+template<class EP>
 struct ExceptionPolicy {
     const char * message;
     BOOST_CONCEPT_USAGE(ExceptionPolicy){
-        T::overflow_error(message);
-        T::underflow_error(message);
-        T::range_error(message);
+        EP::overflow_error(message);
+        EP::underflow_error(message);
+        EP::range_error(message);
     }
 };
 

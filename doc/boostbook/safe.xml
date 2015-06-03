@@ -125,8 +125,8 @@
             <row>
               <entry><code>st op u</code></entry>
 
-              <entry><link linkend="safe_numerics.numeric">typeof(t op
-              u)</link></entry>
+              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
+              u)&gt;</link></entry>
 
               <entry><para>op is any valid binary operator for type
               T</para></entry>
@@ -135,8 +135,8 @@
             <row>
               <entry><code>t op su</code></entry>
 
-              <entry><link linkend="safe_numerics.numeric">typeof(t op
-              u)</link></entry>
+              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
+              u)&gt;</link></entry>
 
               <entry><para>op is any valid binary operator for type
               T</para></entry>
@@ -145,8 +145,8 @@
             <row>
               <entry><code>st op su</code></entry>
 
-              <entry><link linkend="safe_numerics.numeric">typeof(t op
-              u)</link></entry>
+              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
+              u)&gt;</link></entry>
 
               <entry><para>op is any valid binary operator for type
               T</para></entry>

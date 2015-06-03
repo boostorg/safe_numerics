@@ -61,7 +61,7 @@ struct automatic {
         }
 
          /*
-        typedef typename ::boost::mpl::if_c<
+        typedef typename boost::mpl::if_c<
             std::numeric_limits<result_base_type>::is_signed,
             safe_signed_range<
                 max(

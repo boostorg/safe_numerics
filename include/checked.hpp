@@ -18,11 +18,7 @@
 #include <limits>
 
 #include <boost/utility/enable_if.hpp>
-//#include <utility>
 #include <type_traits> // make_unsigned
-
-//#include "safe_compare.hpp"
-//#include "safe_cast.hpp"
 #include "safe_base.hpp"
 #include "checked_result.hpp"
 
@@ -158,49 +154,6 @@ namespace checked {
             detail::cast<R>(u)
         );
     }
-
-/*
-    template<class R, class T, class U>
-    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
-        const R & minr,
-        const R & maxr,
-        const T & t,
-        const U & u
-    ){
-        static_assert(
-            std::is_convertible<decltype(t + u), R>::value,
-            "invalid result type"
-        );
-        // is t convertible to r without change
-        return
-            // we have to perform he checked addition
-            detail::addition<
-                std::numeric_limits<T>::is_signed,
-                std::numeric_limits<U>::is_signed
-            >::template add(minr, maxr, t, u)
-        ;
-    }
-    template<class R, class T, class U>
-    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
-        const R maxr,
-        const R minr,
-        const T t,
-        const U u
-    ){
-        static_assert(
-            std::is_convertible<decltype(t + u), R>::value,
-            "invalid result type"
-        );
-        return
-            // we have to perform he checked addition
-            detail::addition<
-                std::numeric_limits<R>::is_signed,
-                std::numeric_limits<T>::is_signed,
-                std::numeric_limits<U>::is_signed
-            >::template add(minr, maxr, t, u)
-        ;
-    }
-*/
 
 /*
     namespace detail {

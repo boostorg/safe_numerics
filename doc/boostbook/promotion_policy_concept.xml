@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.numeric">
+  <title>PromotionPolicy&lt;PP&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>In C++, arithmetic operations result in types which may or may not
+    be the same as the constituent types. For example, A promotion policy
+    determines the type of the result of an arithmetic operation.</para>
+
+    <para>A type is a ExceptionPolicy if it has functions for handling
+    exceptional events that occur in the course of safe numeric
+    operations.</para>
+  </section>
+
+  <section>
+    <title>Notation</title>
+
+    <table colsep="0" frame="all" rowsep="0">
+      <title>Notation</title>
+
+      <tgroup cols="2" colsep="1" rowsep="1">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <tbody>
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry>A type that is a model of a promotion policy</entry>
+          </row>
+
+          <row>
+            <entry><code>P</code></entry>
+
+            <entry>A type that is a model of a promotion policy</entry>
+          </row>
+
+          <row>
+            <entry><code>T, U, V</code></entry>
+
+            <entry>A type that is a model of the Numeric concept</entry>
+          </row>
+
+          <row>
+            <entry><code>t, u, v</code></entry>
+
+            <entry>An object of type modeling Numeric</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
+
+  <section>
+    <title>Associated Types</title>
+
+    <table>
+      <title>Associated Types</title>
+
+      <tgroup cols="2">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <tbody>
+          <row>
+            <entry><code>P</code></entry>
+
+            <entry>typedef boost::numeric::policies&lt;
+            boost::numeric::native, boost::numeric::throw_exception &gt;
+            default_policies; </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
+
+  <section>
+    <title>Valid Expressions</title>
+
+    <para>In addition to the expressions defined in <ulink
+    url="http://www.sgi.com/tech/stl/Assignable.html">Assignable</ulink> the
+    following expressions must be valid.</para>
+
+    <para>Any operations which result in integers which cannot be represented
+    as some Numeric type will throw an exception.<table>
+        <title>General</title>
+
+        <tgroup cols="2">
+          <colspec align="left"/>
+
+          <colspec align="left"/>
+
+          <thead>
+            <row>
+              <entry align="left">Expression</entry>
+
+              <entry>Return Value</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><code>PP::addition_result&lt;T, U,
+              P&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::subtraction_result&lt;T, U,
+              P&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink
+    url="../../include/concept/promotion_policy.hpp"><code>#include
+    &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></ulink></para>
+  </section>
+
+  <section>
+    <title>Models</title>
+
+    <para>The library contains a number of pre-made promotion policies:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>boost::numeric::native</para>
+
+        <para>Use the normal C/C++ expression type promotion rules. This are
+        quite complex</para>
+      </listitem>
+
+      <listitem>
+        <para>boost::numeric::automatic</para>
+
+        <para>If an exceptional condition is detected at runtime throw the
+        exception. safe types use this exception policy as the default if no
+        other one is specified.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>These can also be found in the directory <ulink
+    url="../../include/concept/exception_policy.hpp"><code>#include
+    &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;</code></ulink>.</para>
+  </section>
+</section>

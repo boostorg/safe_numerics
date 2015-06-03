@@ -13,6 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <type_traits> // is_base_of, is_convertible, remove_reference
+#include <limits>
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -24,8 +25,6 @@
 
 #include "safe_compare.hpp"
 #include "policies.hpp"
-
-#include <boost/mpl/sizeof.hpp>
 
 namespace boost {
 namespace numeric {
@@ -69,7 +68,6 @@ protected:
         }
     }
 
-
 public:
     // used to implement stream i/o operators
     Stored & get_stored_value() {
@@ -86,7 +84,6 @@ public:
             );
         }
     }
-
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
@@ -184,7 +181,7 @@ public:
     }
     Derived operator-() const { // unary minus
         static_assert(
-            boost::numeric::is_signed<Stored>::value,
+            std::numeric_limits<Stored>::is_signed,
             "Application of unary minus to unsigned value is an error"
         );
         *this = 0 - *this; // this will check for overflow
@@ -192,7 +189,7 @@ public:
     }
     Derived operator~() const {
         static_assert(
-            boost::numeric::is_signed<Stored>::value,
+            std::numeric_limits<Stored>::is_signed,
             "Bitwise inversion of unsigned value is an error"
         );
         validate(~m_t);
@@ -226,9 +223,9 @@ public:
         return ! boost::numeric::safe_compare::greater_than(m_t, rhs);
     }
 
+/*
     /////////////////////////////////////////////////////////////////
     // subtraction
-/*
     template<class T, class U>
     struct no_subtraction_overflow_possible : public
         boost::mpl::and_<
@@ -373,11 +370,9 @@ public:
 } // numeric
 } // boost
 
-#include <type_traits>
-#include <boost/mpl/print.hpp>
-
 namespace boost {
 namespace numeric {
+
 template<class T>
 struct is_safe : public
     std::is_base_of<boost::numeric::safe_tag, T>
@@ -421,7 +416,6 @@ namespace detail {
     };
 } // detail
 
-
 template<class T>
 SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T &  t) {
     typedef typename boost::mpl::if_<
@@ -431,7 +425,6 @@ SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T & 
     >::type invoke_operator;
     return invoke_operator::get_stored_value(t);
 }
-
 
 template<class T>
 SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(T && t) {
@@ -454,8 +447,5 @@ struct get_policies {
 
 } // numeric
 } // boost
-
-
-
 
 #endif // BOOST_NUMERIC_SAFE_BASE_HPP

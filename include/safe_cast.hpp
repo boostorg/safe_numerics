@@ -12,15 +12,11 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/limits.hpp>
-#include <boost/integer.hpp>
-#include <boost/mpl/min_max.hpp>
 #include <boost/mpl/plus.hpp>
 #include <boost/mpl/less.hpp>
 #include <boost/mpl/greater.hpp>
 
-#include "numeric.hpp"
-#include "overflow.hpp"
+//#include "overflow.hpp"
 #include "safe_compare.hpp"
 
 namespace boost {
@@ -28,12 +24,12 @@ namespace numeric {
 
 template<class T, class U>
 T safe_cast(const U & u) {
-    if(boost::numeric::is_unsigned<T>::value)
+    if(std::numeric_limits<T>::is_unsigned)
         if(u < 0)
             overflow("casting alters value");
-    if(safe_compare::greater_than(u, boost::integer_traits<T>::const_max))
+    if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
         overflow("safe range overflow");
-    if(safe_compare::less_than(u, boost::integer_traits<T>::const_min))
+    if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
         overflow("safe range underflow");
     return static_cast<T>(u);
 }

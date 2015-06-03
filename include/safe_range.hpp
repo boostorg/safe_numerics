@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/integer.hpp>
-#include "numeric.hpp"
+//#include "numeric.hpp"
 #include "safe_base.hpp"
 #include "native.hpp"
 #include "policies.hpp"

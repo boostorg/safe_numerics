@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.numeric">
+  <title>ExceptionPolicy&lt;EP&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>The exception policy specifies what is to occur when a safe
+    operation cannot return a valid arithmetic result. A type is an
+    ExceptionPolicy if it has functions for handling exceptional events that
+    occur in the course of safe numeric operations.</para>
+  </section>
+
+  <section>
+    <title>Notation</title>
+
+    <table colsep="0" frame="all" rowsep="0">
+      <title>Notation</title>
+
+      <tgroup cols="2" colsep="1" rowsep="1">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <tbody>
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry>A type that is a model of the ExceptionPollicy
+            Concept</entry>
+          </row>
+
+          <row>
+            <entry>message</entry>
+
+            <entry>A const char * which refers to a text message about the
+            cause </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
+
+  <section>
+    <title>Valid Expressions</title>
+
+    <para>Any operations which result in integers which cannot be represented
+    as some Numeric type will throw an exception.<table>
+        <title>General</title>
+
+        <tgroup cols="2">
+          <colspec align="left"/>
+
+          <colspec align="left"/>
+
+          <thead>
+            <row>
+              <entry align="left">Expression</entry>
+
+              <entry>Return Value</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry><code>EP::overflow_error(const char *
+              message)</code></entry>
+
+              <entry>void</entry>
+            </row>
+
+            <row>
+              <entry><code>EP::underflow_error(const char *
+              message)</code></entry>
+
+              <entry>void</entry>
+            </row>
+
+            <row>
+              <entry><code>EP::range_error(const char *
+              message)</code></entry>
+
+              <entry>void</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink
+    url="../../include/concept/exception_policy.hpp"><code>#include
+    &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;
+    </code></ulink></para>
+  </section>
+
+  <section>
+    <title>Models</title>
+
+    <para>The library contains a number of pre-made exception policies:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>boost::numeric::ignore_exception</para>
+
+        <para>Emulate the normal C/C++ behavior of permitting overflows,
+        underflows etc.</para>
+      </listitem>
+
+      <listitem>
+        <para>boost::numeric::throw_exception</para>
+
+        <para>If an exceptional condition is detected at runtime throw the
+        exception. safe types use this exception policy as the default if no
+        other one is specified.</para>
+      </listitem>
+
+      <listitem>
+        <para>template&lt;void (*F)(const char *), void (*G)(const char *),
+        void (*H)(const char *)&gt;</para>
+
+        <para>boost::numeric::no_exception_support</para>
+
+        <para>If you want to specify specific behavior for particular
+        exception types, use this policy. The most likely situation is where
+        you don't have exception support and you want to trap "exceptions" by
+        calling your own special functions.</para>
+      </listitem>
+
+      <listitem>
+        <para>boost::numeric::trap_exception</para>
+
+        <para>Use this policy to trap at compile time any operation which
+        would otherwise trap at runtime. Hence expressions such as i/j will
+        trap at compile time unless j can be guaranteed to not be zero.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>These can also be found in the directory <ulink
+    url="../../include/concept/exception_policy.hpp"><code>#include
+    &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;</code></ulink>.
+    </para>
+  </section>
+</section>

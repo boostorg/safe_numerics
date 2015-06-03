@@ -19,8 +19,13 @@
 #include "safe_base_operations.hpp"
 #include "policies.hpp"
 #include "native.hpp"
+#include "concept/numeric.hpp"
+#include "boost/concept/assert.hpp"
 
-typedef boost::numeric::policies<boost::numeric::native, boost::numeric::throw_exception> default_policies;
+typedef boost::numeric::policies<
+    boost::numeric::native,
+    boost::numeric::throw_exception
+> default_policies;
 
 namespace boost {
 namespace numeric {
@@ -30,8 +35,8 @@ template<
     class P = default_policies
 >
 struct safe : public safe_base<T, safe<T, P>, P>{
-    BOOST_CONCEPT_ASSERT((Integer<T>));
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
+    BOOST_CONCEPT_ASSERT((boost::numeric::Integer<T>));
+    BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<
         typename get_exception_policy<P>::type
     >));
     typedef safe_base<T, safe<T, P>, P > base_type;
@@ -68,8 +73,8 @@ template<
     class T,
     class P
 >
-class numeric_limits< boost::numeric::safe<T, P> >
-    : public numeric_limits<T>
+class numeric_limits<boost::numeric::safe<T, P> >
+    : public std::numeric_limits<T>
 {
     typedef boost::numeric::safe<T, P> SI;
 public:

@@ -12,28 +12,24 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/limits.hpp>
-#include <boost/integer.hpp>
+#include <type_traits>
+#include <limits>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
 
-#include "numeric.hpp"
+//#include "numeric.hpp"
+//#include "concept/numeric.hpp"
+//#include "boost/concept/assert.hpp"
 
 namespace boost {
 namespace numeric {
 namespace safe_compare {
     namespace detail {
-        // note make_unsigned needs more research.  We use the one
-        // from boost type_traits.  BUT boost type_traits only handles
-        // C primitives.  What we really want is something which works
-        // for any type T such that std::numeric_limits<T>::is_signed is true.
         template<typename T>
         struct make_unsigned {
             typedef typename boost::mpl::if_<
-                boost::is_integral<T>,
-                typename boost::make_unsigned<T>,
+                typename std::numeric_limits<T>::is_signed,
+                typename std::make_unsigned<T>,
                 typename boost::mpl::identity<T>
             >::type::type type;
         };
@@ -77,8 +73,8 @@ namespace safe_compare {
     template<class T, class U>
     bool less_than(const T & lhs, const U & rhs) {
         return detail::less_than<
-            boost::numeric::is_signed<T>::value,
-            boost::numeric::is_signed<U>::value
+            std::numeric_limits<T>::is_signed,
+            std::numeric_limits<T>::is_signed
         >::template invoke(lhs, rhs);
     }
 
@@ -128,8 +124,8 @@ namespace safe_compare {
     template<class T, class U>
     bool greater_than(const T & lhs, const U & rhs) {
         return detail::greater_than<
-            boost::numeric::is_signed<T>::value,
-            boost::numeric::is_signed<U>::value
+            std::numeric_limits<T>::is_signed,
+            std::numeric_limits<T>::is_signed
         >::template invoke(lhs, rhs);
     }
 

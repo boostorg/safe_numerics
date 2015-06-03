@@ -6,7 +6,6 @@
 
 #include <iostream>
 #include <cassert>
-#include <iostream>
 #include <type_traits>
 
 #include "../include/safe_integer.hpp"

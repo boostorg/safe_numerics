@@ -1,34 +1,30 @@
-#ifndef BOOST_NUMERIC_NATIVE_HPP
-#define BOOST_NUMERIC_NATIVE_HPP
+#ifndef BOOST_NUMERIC_CONCEPT_PROMOTION_POLICY_HPP
+#define BOOST_NUMERIC_CONCEPT_PROMOTION_POLICY_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
-//  Copyright (c) 2012 Robert Ramey
+//  Copyright (c) 2015 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <type_traits>
-#include <limits>
+#include "boost/concept/usage.hpp"
 
-// policy which creates results types and values equal to that of C++ promotions.
-// When used in conjunction with a desired exception policy, traps errors but
-// does not otherwise alter the results produced by the program using it.
 namespace boost {
 namespace numeric {
 
-// forward declaration - safe type
-template<
-    class BaseType,
-    class PolicyPair
->
-struct safe;
-
-struct native {
+template<class PP>
+struct PromotionPolicy {
+    const char * message;
+    BOOST_CONCEPT_USAGE(PromotionPolicy){
+        EP::overflow_error(message);
+        EP::underflow_error(message);
+        EP::range_error(message);
+    }
     template<
         typename T,
         typename U,
@@ -56,4 +52,4 @@ struct native {
 } // numeric
 } // boost
 
-#endif // BOOST_NUMERIC_NATIVE_HPP
+#endif // BOOST_NUMERIC_CONCEPT_EXCEPTION_POLICY_HPP

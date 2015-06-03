@@ -13,7 +13,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-//#include <limits.h>
 #include <type_traits> // is_convertible, enable_if
 
 #include "safe_base.hpp"
@@ -25,7 +24,6 @@
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/utility/enable_if.hpp>
-#include <boost/mpl/print.hpp>
 
 namespace boost {
 namespace numeric {
@@ -33,7 +31,7 @@ namespace numeric {
 template<class T, class U>
 struct get_common_policies {
     static_assert(
-        boost::mpl::or_<
+        mpl::or_<
             is_safe<T>,
             is_safe<U>
         >::value,
@@ -58,7 +56,7 @@ struct get_common_policies {
                 is_safe<T>,
                 is_safe<U>
             >,
-            typename boost::is_same<policies_t, policies_u>,
+            typename std::is_same<policies_t, policies_u>,
             boost::mpl::true_
         >::type::value,
         "if both types are safe, the policies have to be the same!"
@@ -100,11 +98,6 @@ struct addition_result {
     typedef typename promotion_policy::template addition_result<T, U, P>::type type;
 };
 
-template<long long V>
-struct print {
-    static SAFE_NUMERIC_CONSTEXPR char value() { return V + 256; }
-};
-
 template<class T, class U>
 typename std::enable_if<
     boost::mpl::or_<
@@ -133,13 +126,6 @@ inline operator+(const T & t, const U & u){
     typedef typename base_type<result_type>::type result_base_type;
 
     // filter out case were overflow cannot occur
-
-    /*
-    print<base_value(std::numeric_limits<result_type>::min())>();
-    print<base_value(std::numeric_limits<result_type>::max())>();
-    print<base_value(std::numeric_limits<T>::max())>();
-    print<base_value(std::numeric_limits<U>::max())>();
-    */
 
     SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> maxx = checked::add(
         base_value(std::numeric_limits<result_type>::min()),
@@ -240,7 +226,6 @@ inline SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
             static_cast<const typename base_type<U>::type &>(u)
         );
 }
-*/
 // comparison operators
 template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
@@ -355,6 +340,7 @@ typename boost::enable_if<
 inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs ^ lhs;
 }
+*/
 
 } // numeric
 } // boost
