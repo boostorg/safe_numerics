@@ -1,0 +1,201 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>PromotionPolicy&lt;PP&gt;</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="concepts.html" title="Type Requirements">
+<link rel="prev" href="numeric.html" title="Numeric&lt;T&gt;">
+<link rel="next" href="exception_polcy.html" title="ExceptionPolicy&lt;EP&gt;">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="numeric.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_polcy.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="promotion_policy.html#idm141062617760">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm141062614320">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm141062604896">Associated Types</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm141062599600">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm141062590656">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm141062588624">Models</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062617760"></a>Description</h4></div></div></div>
+<p>In C++, arithmetic operations result in types which may or may not
+    be the same as the constituent types. For example, A promotion policy
+    determines the type of the result of an arithmetic operation. For example,
+    in the following code</p>
+<pre class="programlisting">int x;
+char y;
+auto z = x + y</pre>
+<p>the type of <code class="computeroutput">z</code> will be an
+    <code class="computeroutput">int</code>. This is a consequence for the standard rules for type
+    promotion for C/C++ arithmetic. A key feature of library permits one to
+    specify his own type promotion rules via a PromotionPolicy class.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062614320"></a>Notation</h4></div></div></div>
+<div class="table">
+<a name="idm141062613680"></a><p class="title"><b>Table&#160;6.&#160;Notation</b></p>
+<div class="table-contents"><table class="table" summary="Notation">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left">A type that full fills the requirements of a
+            PromotionPollicy</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">T, U, V</code></td>
+<td align="left">A type that is a model of the Numeric concept</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">t, u, v</code></td>
+<td align="left">An object of type modeling Numeric</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<br class="table-break">
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062604896"></a>Associated Types</h4></div></div></div>
+<div class="table">
+<a name="idm141062604256"></a><p class="title"><b>Table&#160;7.&#160;Associated Types</b></p>
+<div class="table-contents"><table class="table" summary="Associated Types">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<tbody><tr>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left">A type that full fills the requirements of an
+            ExceptionPollicy</td>
+</tr></tbody>
+</table></div>
+</div>
+<br class="table-break">
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062599600"></a>Valid Expressions</h4></div></div></div>
+<p>Any operations which result in integers which cannot be represented
+    as some Numeric type will throw an exception.</p>
+<div class="table">
+<a name="idm141062598576"></a><p class="title"><b>Table&#160;8.&#160;Valid Expressions</b></p>
+<div class="table-contents"><table class="table" summary="Valid Expressions">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Expression</th>
+<th align="left">Return Value</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">PP::addition_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::subtraction_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p><br class="table-break"></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062590656"></a>Header</h4></div></div></div>
+<p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
+    &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
+    </code></a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm141062588624"></a>Models</h4></div></div></div>
+<p>The library contains a number of pre-made promotion policies:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem">
+<p><code class="computeroutput">boost::numeric::native</code></p>
+<p>Use the normal C/C++ expression type promotion rules.
+        </p>
+<pre class="programlisting">int x;
+char y;
+auto z = x + y; // could result in overflow
+safe&lt;int&gt; sx;
+auto sz = sx + y; // includes code which traps overflows at runtime</pre>
+<p>The type of sz will be safe&lt; type of z &gt;.</p>
+<p>This policy is found in the header file <a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
+        &lt;safe_numerics/include/native.hpp&gt;</code></a></p>
+</li>
+<li class="listitem">
+<p><code class="computeroutput">boost::numeric::automatic</code></p>
+<p>Use optimizing expression type promotion rules. These rules
+        replace the normal C/C++ type promotion rules with other rules which
+        are designed to result in more efficient computations. Expression
+        types are promoted to the smallest type which can be guaranteed to
+        hold the result without overflow. If there is no such type, the result
+        will be checked for overflow. Consider the following
+        example:</p>
+<pre class="programlisting">int x;
+char y;
+auto z = x + y; // could result in overflow
+safe&lt;int&gt; sx;
+auto sz = sx + y; // promotes expression type to a safe&lt;long int&gt; which requires no result checking
+is guaranteed not to overflow.
+
+safe_unsigned_range&lt;1, 4&gt; a;
+safe_unsigned_range&lt;2, 4&gt; b;
+auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</pre>
+<p>Type sz will be a SafeNumeric type which is guaranteed to hold
+        he result of x + y. In this case that will be a long int (or perhaps a
+        long ong) depending upon the compiler and machine architecture. In
+        this case, there will be no need for any special checking on the
+        result and there can be no overflow.</p>
+<p>Type of c will be a signed caracter as that type can be
+        guarenteed to hold the sum so no overflow checking is done.</p>
+<p>This policy is found in the header file <a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
+        &lt;safe_numerics/include/automatic.hpp&gt;</code></a></p>
+</li>
+</ul></div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+        Software License</a>
+      </p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="numeric.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_polcy.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

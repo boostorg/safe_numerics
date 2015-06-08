@@ -5,9 +5,9 @@
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
-<link rel="up" href="concepts.html" title="Concepts">
-<link rel="prev" href="concepts.html" title="Concepts">
-<link rel="next" href="types.html" title="Types">
+<link rel="up" href="concepts.html" title="Type Requirements">
+<link rel="prev" href="concepts.html" title="Type Requirements">
+<link rel="next" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -20,22 +20,22 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="types.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="numeric.html#id699580">Description</a></span></dt>
-<dt><span class="section"><a href="numeric.html#id741994">Notation</a></span></dt>
-<dt><span class="section"><a href="numeric.html#id742071">Associated Types</a></span></dt>
-<dt><span class="section"><a href="numeric.html#id742130">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="numeric.html#id753392">Header</a></span></dt>
-<dt><span class="section"><a href="numeric.html#id753413">Models</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141063795776">Description</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141063790544">Notation</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141063782624">Associated Types</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141063777168">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141062622864">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm141062620864">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id699580"></a>Description</h4></div></div></div>
+<a name="idm141063795776"></a>Description</h4></div></div></div>
 <p>A type is Numeric if it has the properties of a number.</p>
 <p>More specifically, a type T is Numeric if there exists
     specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt;</code>. See the
@@ -43,16 +43,16 @@
     library includes such specializations for all the primitive numeric types.
     Note that this concept is distinct from the C++ standard library type
     traits <code class="computeroutput">is_integral</code> and <code class="computeroutput">is_arithmetic</code>. These
-    latter fullfill the requirement of the concept Numeric. But there are
-    types T which fullfill this concept for which
-    <code class="computeroutput">is_arithmetic&lt;T&gt;::value == false</code>. For example see
+    latter fulfill the requirement of the concept Numeric. But there are types
+    T which fulfill this concept for which <code class="computeroutput">is_arithmetic&lt;T&gt;::value
+    == false</code>. For example see
     <code class="computeroutput">safe_signed_integer&lt;int&gt;</code>.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id741994"></a>Notation</h4></div></div></div>
+<a name="idm141063790544"></a>Notation</h4></div></div></div>
 <div class="table">
-<a name="id742000"></a><p class="title"><b>Table&#160;1.&#160;Notation</b></p>
+<a name="idm141063789904"></a><p class="title"><b>Table&#160;1.&#160;Notation</b></p>
 <div class="table-contents"><table class="table" summary="Notation">
 <colgroup>
 <col align="left">
@@ -74,9 +74,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id742071"></a>Associated Types</h4></div></div></div>
+<a name="idm141063782624"></a>Associated Types</h4></div></div></div>
 <div class="table">
-<a name="id742077"></a><p class="title"><b>Table&#160;2.&#160;Associated Types</b></p>
+<a name="idm141063781984"></a><p class="title"><b>Table&#160;2.&#160;Associated Types</b></p>
 <div class="table-contents"><table class="table" summary="Associated Types">
 <colgroup>
 <col align="left">
@@ -85,7 +85,7 @@
 <tbody><tr>
 <td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;</code></td>
 <td align="left">The numeric_limits class template provides a C++ program
-            with information about various properties of the implementation&#8217;s
+            with information about various properties of the implementation's
             representation of the arithmetic types. See C++ standard
             18.3.2.2.</td>
 </tr></tbody>
@@ -95,13 +95,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id742130"></a>Valid Expressions</h4></div></div></div>
+<a name="idm141063777168"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid.</p>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="table">
-<a name="id742150"></a><p class="title"><b>Table&#160;3.&#160;General</b></p>
+<a name="idm141063775152"></a><p class="title"><b>Table&#160;3.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -131,7 +131,7 @@
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="id742245"></a><p class="title"><b>Table&#160;4.&#160;Unary Operators</b></p>
+<a name="idm141063765552"></a><p class="title"><b>Table&#160;4.&#160;Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -167,12 +167,12 @@
 <tr>
 <td align="left"><code class="computeroutput">--t</code></td>
 <td align="left">T</td>
-<td align="left">predecrement</td>
+<td align="left">pre decrement</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">++t</code></td>
 <td align="left">T</td>
-<td align="left">preincrement</td>
+<td align="left">pre increment</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">~</code></td>
@@ -183,7 +183,7 @@
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="id697780"></a><p class="title"><b>Table&#160;5.&#160;Binary Operators</b></p>
+<a name="idm141063746768"></a><p class="title"><b>Table&#160;5.&#160;Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -199,12 +199,12 @@
 <tr>
 <td align="left"><code class="computeroutput">t - u</code></td>
 <td align="left">V</td>
-<td align="left">Invert sign</td>
+<td align="left">subtract u from t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t + u</code></td>
 <td align="left">V</td>
-<td align="left">unary plus - a no op</td>
+<td align="left">add u to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t * u</code></td>
@@ -229,7 +229,7 @@
 <tr>
 <td align="left"><code class="computeroutput">t &gt;&gt; u</code></td>
 <td align="left">T</td>
-<td align="left">shift t right by ubits</td>
+<td align="left">shift t right by u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &lt; u</code></td>
@@ -249,7 +249,8 @@
 <tr>
 <td align="left"><code class="computeroutput">t &gt;= u</code></td>
 <td align="left">bool</td>
-<td align="left">true if t greathan or equal to u, false otherwise</td>
+<td align="left">true if t greater than or equal to u, false
+            otherwise</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t == u</code></td>
@@ -339,25 +340,29 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753392"></a>Header</h4></div></div></div>
+<a name="idm141062622864"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="id753413"></a>Models</h4></div></div></div>
+<a name="idm141062620864"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></p>
+<p>The definition of this concept</p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="???" target="_top">Subject to Boost Software License</a></p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+        Software License</a>
+      </p>
 </div></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="types.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

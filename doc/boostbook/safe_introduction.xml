@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.introduction">
+  <title>Introduction</title>
+
+  <section id="safe_numerics.introduction.problem">
+    <title>Problem</title>
+
+    <para>Arithmetic operations in C++ are NOT guaranteed to yield a correct
+    mathematical result. This feature is inherited from the early days of C.
+    The behavior of <code>int</code>, <code>unsigned int</code> and others
+    were designed to map closely to the underlying hardware. Computer hardware
+    implements these types as a fixed number of bits. When the result of
+    arithmetic operations exceeds this number of bits, the result will not be
+    arithmetically correct. The following example illustrates this
+    problem.</para>
+
+    <programlisting>int f(int x, int y){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y;
+}
+</programlisting>
+
+    <para>It is incumbent up the C/C++ programmer to guarantee that this
+    behavior does not result in incorrect or unexpected operation of the
+    program. There are no language facilities which do this. They have to be
+    explicitly addressed in the program code. There are a number of ways to do
+    this. See<citation>INT32-C</citation> seems to recommend the following
+    approach.</para>
+
+    <programlisting>int f(int x, int y){
+  if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
+  || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - x)))) {
+    /* Handle error */
+  }
+  return x + y;
+}
+</programlisting>
+
+    <para>This will indeed trap the error. However, it would be tedious and
+    laborious for a programmer to do alter his code to do. Altering code in
+    this way for all arithmetic operations would likely render the code
+    unreadable and add another source of potential programming errors. This
+    approach is clearly not functional when the expression is even a little
+    more complex as is shown in the following example.</para>
+
+    <programlisting>int f(int x, int y, int z){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y * z;
+}
+</programlisting>
+  </section>
+
+  <section id="safe_numerics.introduction.solution">
+    <title>Solution</title>
+
+    <para>This library implements special versions of int, unsigned, etc.
+    which behave exactly like the original ones EXCEPT that the results of
+    these operations are guaranteed to be either arithmetically correct or
+    invoke an error. Using this library, the above would be rendered
+    as:</para>
+
+    <programlisting>#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
+
+int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
+  return x + y; // throw exception if correct result cannot be returned
+}
+</programlisting>
+
+    <para>The addition expression is checked at runtime or (if possible)
+    compile time to trap any possible errors resulting from incorrect
+    arithmetic behavior. This will permit one to write arithmetic expressions
+    that cannot produce an erroneous result. Instead, one and only one of the
+    following is guaranteed to occur.</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>the expression will emit a compilation error.</para>
+        </listitem>
+
+        <listitem>
+          <para>the expression will invoke a runtime exception.</para>
+        </listitem>
+
+        <listitem>
+          <para>the expression will yield the correct mathematical
+          result</para>
+        </listitem>
+      </itemizedlist>In addition to eliminating undefined behavior from
+    primitive integer types, we define new data types
+    <code>safe_signed_range&lt;MIN, MAX&gt;</code> and
+    <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which will throw an
+    exception if an attempt is made to store a result which is outside the
+    closed range [MIN, MAX].</para>
+  </section>
+
+  <section id="safe_numerics.introduction.summary">
+    <title>Summary</title>
+
+    <para>Using techniques of C++ including overloading, template
+    metaprogramming, and others, this library implements special versions of
+    int, unsigned, etc. named <code>safe&lt;int&gt;</code>,
+    <code>safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
+    original ones EXCEPT that expressions involving these types are checked to
+    guarantee any possible arithmetic errors are trapped at compile time (if
+    possible) or at runtime. Since these types are meant to be "drop-in"
+    replacements - they function in all other ways the same as the built-in
+    types they are meant to replace. So things which are legal - such as
+    assigning an signed to unsigned value are not trapped at compile time - as
+    they are legal C/C++ code - but rather checked at runtime to trap the case
+    where this (legal) operation would lead to an arithmetically incorrect
+    result.</para>
+
+    <para>Note that the library addresses arithmetical errors generated by
+    straightforward C/C++ expressions. Some of these arithmetic errors are
+    defined as conforming to C/C++ standard while others are not. So it's
+    misleading to characterize this library as addressing undefined behavior
+    of C/C++ numeric expressions.</para>
+  </section>
+
+  <section id="safe_numerics.introduction.requirements">
+    <title>Requirements</title>
+
+    <para>This library is composed entirely of C++ Headers. I requires a
+    compiler compatible with the C++11 standard.</para>
+
+    <para>The following Boost Libraries must be installed in order to use this
+    library</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>mpl</para>
+        </listitem>
+
+        <listitem>
+          <para>integer</para>
+        </listitem>
+
+        <listitem>
+          <para>limits</para>
+        </listitem>
+
+        <listitem>
+          <para>config</para>
+        </listitem>
+
+        <listitem>
+          <para>concept checking</para>
+        </listitem>
+
+        <listitem>
+          <para>type traits</para>
+        </listitem>
+
+        <listitem>
+          <para>integer traits</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section id="safe_numerics.introduction.scope">
+    <title>Scope</title>
+
+    <para>This library currently applies only to built-in integer types.
+    Analogous issues arise for floating point types but they are not currently
+    addressed by this version of the library. User or Library defined types
+    such as arbitrary precision integers can also have this problem. Extension
+    of this library to these other types is not currently under development
+    but may be addressed in the future. This is one reason why the library
+    name is "safe numeric" rather than "safe integer" library.</para>
+  </section>
+</section>

@@ -27,43 +27,62 @@
 </h3></div></div>
 <div><p class="copyright">Copyright &#169; 2012 Robert Ramey</p></div>
 <div><div class="legalnotice">
-<a name="id698095"></a><p><a href="???" target="_top">Subject to Boost Software License</a></p>
+<a name="idm141063863344"></a><p>
+        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+        Software License</a>
+      </p>
 </div></div>
 </div></div>
 <div class="toc">
 <p><b>Table of Contents</b></p>
 <dl>
 <dt><span class="section"><a href="introduction.html">Introduction</a></span></dt>
-<dt><span class="section"><a href="tutorial.html">Tutorial</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="tutorial/1.html">Problem:arithmetic operations can yield in correct results.</a></span></dt>
-<dt><span class="section"><a href="tutorial/2.html">Problem:Undetected overflow</a></span></dt>
-<dt><span class="section"><a href="tutorial/3.html">Problem:Implicit conversions change data values</a></span></dt>
+<dt><span class="section"><a href="introduction/problem.html">Problem</a></span></dt>
+<dt><span class="section"><a href="introduction/solution.html">Solution</a></span></dt>
+<dt><span class="section"><a href="introduction/summary.html">Summary</a></span></dt>
+<dt><span class="section"><a href="introduction/requirements.html">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction/scope.html">Scope</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="tutorial.html">Tutorial and Motivating Examples</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="tutorial/1.html">Arithmetic operations can yield incorrect results.</a></span></dt>
+<dt><span class="section"><a href="tutorial/2.html">Undetected overflow</a></span></dt>
+<dt><span class="section"><a href="tutorial/3.html">Undetected underflow</a></span></dt>
+<dt><span class="section"><a href="tutorial/4.html">Implicit conversions change data values</a></span></dt>
+<dt><span class="section"><a href="tutorial/5.html">Array index value can exceed array limits</a></span></dt>
+<dt><span class="section"><a href="tutorial/6.html">Checking of initialization values can be easily overlooked</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="notes.html">Notes</a></span></dt>
-<dt><span class="section"><a href="concepts.html">Concepts</a></span></dt>
-<dd><dl><dt><span class="section"><a href="numeric.html">Numeric&lt;T&gt;</a></span></dt></dl></dd>
+<dt><span class="section"><a href="concepts.html">Type Requirements</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="numeric.html">Numeric&lt;T&gt;</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html">PromotionPolicy&lt;PP&gt;</a></span></dt>
+<dt><span class="section"><a href="exception_polcy.html">ExceptionPolicy&lt;EP&gt;</a></span></dt>
+</dl></dd>
 <dt><span class="section"><a href="types.html">Types</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html">safe_unsigned_range&lt;MIN, MAX&gt;</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html">safe_signed_range&lt;MIN, MAX&gt;</a></span></dt>
 <dt><span class="section"><a href="safe.html">safe&lt;T&gt;</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html">safe_unsigned_range&lt;boost::uintmax_t MIN, boost::uintmax_t
+  MAX&gt;</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html">safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_t
+  MAX&gt;</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="functions.html">Functions</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="safe_cast.html">safe_cast</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html">safe_compare</a></span></dt>
-<dt><span class="section"><a href="rationale/overflow.html">overflow</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html">safe_cast&lt;T, U&gt;</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html">safe_compare&lt;T, U&gt;</a></span></dt>
 </dl></dd>
+<dt><span class="section"><a href="exception_safety.html">Exception Safety</a></span></dt>
 <dt><span class="section"><a href="rationale.html">Rationale</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html">Pending Issues</a></span></dt>
 <dt><span class="section"><a href="change_log.html">Change Log</a></span></dt>
-<dt><span class="section"><a href="acknowledgements.html">Acknowledgements</a></span></dt>
-<dt><span class="section"><a href="references.html">References</a></span></dt>
+<dt><span class="section"><a href="bibliography.html">Bibliography</a></span></dt>
 </dl>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
-<td align="left"><p><small>Last revised:  ,  at  </small></p></td>
+<td align="left"><p><small>Last revised: $Date</small></p></td>
 <td align="right"><div class="copyright-footer"></div></td>
 </tr></table>
 <hr>

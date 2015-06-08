@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.numeric">
+<section id="safe_numerics.exception_polcy">
   <title>ExceptionPolicy&lt;EP&gt;</title>
 
   <section>
@@ -139,8 +139,7 @@
 
         <para>Use this policy to trap at compile time any operation which
         would otherwise trap at runtime. Hence expressions such as i/j will
-        trap at compile time unless j can be guaranteed to not be zero.
-        </para>
+        trap at compile time unless j can be guaranteed to not be zero.</para>
       </listitem>
     </itemizedlist>
   </section>
