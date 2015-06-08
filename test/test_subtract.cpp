@@ -25,75 +25,84 @@ bool test_subtract(
         << "testing  "
         << av1 << " - " << av2
         << std::endl;
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 - v2)> result;
 
-    boost::numeric::safe<T1> t1 = v1;
-    BOOST_TYPEOF_TPL(T1() - T2()) result;
+        try{
+            result = t1 - v2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 + v2)>::value,
+                "Expression failed to return safe type"
+            );
+            if(expected_result == 'x'){
+                std::cout
+                    << "failed to detect error in subtraction "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " - " << av2
+                    << std::endl;
+                try{
+                    result = t1 - v2;
+                }
+                catch(...){}
+                return false;
+            }
+        }
+        catch(std::exception & e){
+            if(expected_result == '.'){
+                std::cout
+                    << "erroneously detected error in subtraction "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " - " << av2
+                    << std::endl;
+                try{
+                    result = t1 - v2;
+                }
+                catch(...){}
+                return false;
+            }
+        }
+    }
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        boost::numeric::safe<T2> t2 = v2;
 
-    try{
-        result = t1 - v2;
-        static_assert(
-            boost::numeric::is_safe<decltype(t1 + v2)>::value,
-            "Expression failed to return safe type"
-        );
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in subtraction "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " - " << av2
-                << std::endl;
-            try{
-                result = t1 - v2;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 + v2)> result;
+
+        try{
+            result = t1 - t2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 + v2)>::value,
+                "Expression failed to return safe type"
+            );
+            if(expected_result == 'x'){
+                std::cout
+                    << "failed to detect error in subtraction "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " - " << av2
+                    << std::endl;
+                try{
+                    result = t1 - t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
-    }
-    catch(std::exception & e){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in subtraction "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " - " << av2
-                << std::endl;
-            try{
-                result = t1 - v2;
+        catch(std::exception & e){
+            if(expected_result == '.'){
+                std::cout
+                    << "erroneously detected error in subtraction "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " - " << av2
+                    << std::endl;
+                try{
+                    result = t1 - t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
-        }
-    }
-    boost::numeric::safe<T2> t2 = v2;
-    try{
-        result = t1 - t2;
-        static_assert(
-            boost::numeric::is_safe<decltype(t1 + v2)>::value,
-            "Expression failed to return safe type"
-        );
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in subtraction "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " - " << av2
-                << std::endl;
-            try{
-                result = t1 - t2;
-            }
-            catch(...){}
-            return false;
-        }
-    }
-    catch(std::exception & e){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in subtraction "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " - " << av2
-                << std::endl;
-            try{
-                result = t1 - t2;
-            }
-            catch(...){}
-            return false;
         }
     }
     return true; // correct result
@@ -127,19 +136,19 @@ const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ ".........................xxx.xxx",
-/*17*/ ".........................xxx.xxx",
-/*18*/ ".........................xxx.xxx",
-/*19*/ ".........................xxx.xxx",
-/*20*/ ".........................xxx.xxx",
-/*21*/ ".........................xxx.xxx",
-/*22*/ ".........................xxx.xxx",
-/*23*/ ".........................xxx.xxx",
+/*16*/ "..........x...x..........xxx.xxx",
+/*17*/ "..........x...x..........xxx.xxx",
+/*18*/ "..........x...x..........xxx.xxx",
+/*19*/ "..........x...x..........xxx.xxx",
+/*20*/ "..........x...x..........xxx.xxx",
+/*21*/ "..........x...x..........xxx.xxx",
+/*22*/ "..........x...x..........xxx.xxx",
+/*23*/ "..........x...x..........xxx.xxx",
 
-/*24*/ ".xxx.xxx.xxx.....xxx.xxx.xxx.xxx",
-/*25*/ "..xx..xx..xx..............xx.xxx",
-/*26*/ "..xx..xx..xx...............x.xxx",
-/*27*/ "..xx..xx..xx.................xxx",
+/*24*/ ".xxx.xxx.xxx..x..xxx.xxx.xxx.xxx",
+/*25*/ "..xx..xx..xx..x...........xx.xxx",
+/*26*/ "..xx..xx..xx..x............x.xxx",
+/*27*/ "..xx..xx..xx..x..............xxx",
 /*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*29*/ "..xx..xx..xx..xx..............xx",
 /*30*/ "..xx..xx..xx..xx...............x",

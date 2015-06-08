@@ -14,7 +14,7 @@
 
 #include <type_traits>
 #include <limits>
-
+#include "concept/promotion_policy.hpp"
 // policy which creates results types and values equal to that of C++ promotions.
 // When used in conjunction with a desired exception policy, traps errors but
 // does not otherwise alter the results produced by the program using it.
@@ -24,7 +24,8 @@ namespace numeric {
 // forward declaration - safe type
 template<
     class BaseType,
-    class PolicyPair
+    class PromotionPolicy,
+    class ExceptionPolicy
 >
 struct safe;
 
@@ -32,24 +33,26 @@ struct native {
     template<
         typename T,
         typename U,
-        typename P
+        typename P,
+        typename E
     >
     struct addition_result {
         typedef typename boost::numeric::base_type<T>::type base_type_t;
         typedef typename boost::numeric::base_type<U>::type base_type_u;
         typedef decltype(base_type_t() + base_type_u()) result_base_type;
-        typedef safe<result_base_type, P> type;
+        typedef safe<result_base_type, P, E> type;
     };
     template<
         typename T,
         typename U,
-        typename P
+        typename P,
+        typename E
     >
     struct subtraction_result {
         typedef typename boost::numeric::base_type<T>::type base_type_t;
         typedef typename boost::numeric::base_type<U>::type base_type_u;
         typedef decltype(base_type_t() - base_type_u()) result_base_type;
-        typedef safe<result_base_type, P> type;
+        typedef safe<result_base_type, P, E> type;
     };
 };
 

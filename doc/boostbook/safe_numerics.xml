@@ -90,6 +90,12 @@
 
     <xi:include href="numeric_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="promotion_policy_concept.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="exception_policy_concept.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
   <section id="safe_numerics.types">
@@ -368,7 +374,7 @@
 
       <date>August 17, 2014</date>
 
-      <abbrev>INT32-C</abbrev>
+      <abbrev>INT30-C</abbrev>
     </biblioentry>
 
     <biblioentry>

@@ -12,34 +12,28 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <limits>
-
-#include <boost/utility/enable_if.hpp>
-#include <boost/mpl/or.hpp>
+#include "safe_base.hpp"
 #include "safe_base_operations.hpp"
-#include "policies.hpp"
-#include "native.hpp"
 #include "concept/numeric.hpp"
-#include "boost/concept/assert.hpp"
+#include "exception_policies.hpp"
+#include "native.hpp"
 
-typedef boost::numeric::policies<
-    boost::numeric::native,
-    boost::numeric::throw_exception
-> default_policies;
+#include "boost/concept/assert.hpp"
 
 namespace boost {
 namespace numeric {
 
 template<
     class T,
-    class P = default_policies
+    class P = boost::numeric::native,
+    class E = boost::numeric::throw_exception
 >
-struct safe : public safe_base<T, safe<T, P>, P>{
+struct safe : public safe_base<T, safe<T, P, E>, P, E>{
     BOOST_CONCEPT_ASSERT((boost::numeric::Integer<T>));
-    BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<
-        typename get_exception_policy<P>::type
-    >));
-    typedef safe_base<T, safe<T, P>, P > base_type;
+    BOOST_CONCEPT_ASSERT((boost::numeric::PromotionPolicy<P>));
+    BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<E>));
+
+    typedef safe_base<T, safe<T, P, E>, P, E > base_type;
 
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return true;
@@ -64,19 +58,23 @@ struct safe : public safe_base<T, safe<T, P>, P>{
 } // numeric
 } // boost
 
-namespace std {
 
 /////////////////////////////////////////////////////////////////
 // numeric limits for safe<int> etc.
 
+#include <limits>
+
+namespace std {
+
 template<
     class T,
-    class P
+    class P,
+    class E
 >
-class numeric_limits<boost::numeric::safe<T, P> >
+class numeric_limits<boost::numeric::safe<T, P, E> >
     : public std::numeric_limits<T>
 {
-    typedef boost::numeric::safe<T, P> SI;
+    typedef boost::numeric::safe<T, P, E> SI;
 public:
     // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
     SAFE_NUMERIC_CONSTEXPR static SI min() noexcept { return std::numeric_limits<T>::min(); }

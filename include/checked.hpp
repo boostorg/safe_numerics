@@ -25,6 +25,12 @@
 namespace boost {
 namespace numeric {
 namespace checked {
+    ////////////////////////////////////////////////////
+    // layer 0 - detect overflows / alteration at the
+    // atomic operation level taking care to work around
+    // otherwise undetect alterations in integers due
+    // to machine architecture.  Note presumption of twos
+    // complement integer arithmetic
 
     namespace detail {
 
@@ -83,7 +89,10 @@ namespace checked {
         ;
     }
 
-    // both arguments unsigned
+    ////////////////////////////////////////////////////
+    // safe addition on primitive types
+
+    // result unsigned
     template<class R>
     typename boost::enable_if<
         typename std::is_unsigned<R>,
@@ -92,26 +101,21 @@ namespace checked {
     SAFE_NUMERIC_CONSTEXPR add(
         const R & minr,
         const R & maxr,
-        const checked_result<R> t,
-        const checked_result<R> u
+        const R t,
+        const R u
     ) {
         return
-            t != checked_result<R>::exception_type::no_exception ?
-                t
+            maxr - u < t ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::overflow_error,
+                    "addition overflow"
+                )
             :
-            u != checked_result<R>::exception_type::no_exception ?
-                u
-            :
-                maxr - u < t ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(static_cast<R>(t) + static_cast<R>(u))
+                checked_result<R>(t + u)
         ;
     }
 
+    // result signed
     template<class R>
     typename boost::enable_if<
         typename std::is_signed<R>,
@@ -120,21 +124,18 @@ namespace checked {
     SAFE_NUMERIC_CONSTEXPR add(
         const R & minr,
         const R & maxr,
-        const checked_result<R> t,
-        const checked_result<R> u
+        const R t,
+        const R u
     ) {
         return
-            t != checked_result<R>::exception_type::no_exception ?
-                t
+            ((u > 0) && (t > (maxr - u)))
+            || ((u < 0) && (t < (minr - u))) ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::overflow_error,
+                    "addition overflow"
+                )
             :
-                ((u > 0) && (t > (maxr - u)))
-                || ((u < 0) && (t < (minr - u))) ?
-                    checked_result<R>(
-                        checked_result<R>::exception_type::overflow_error,
-                        "addition overflow"
-                    )
-                :
-                    checked_result<R>(static_cast<R>(t) + static_cast<R>(u))
+                checked_result<R>(t + u)
         ;
     }
 
@@ -147,24 +148,91 @@ namespace checked {
         const T & t,
         const U & u
     ) {
-        return detail::add<R>(
-            minr,
-            maxr,
-            detail::cast<R>(t),
-            detail::cast<R>(u)
-        );
+        return
+            detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(t)
+            :
+            detail::cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(u)
+            :
+                detail::add<R>(minr, maxr, t, u)
+        ;
+    }
+
+    ////////////////////////////////////////////////////
+    // safe subtraction on primitive types
+    namespace detail {
+
+    // result unsigned
+    template<class R>
+    typename boost::enable_if<
+        typename std::is_unsigned<R>,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR subtract(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ) {
+        // INT30-C
+        return
+            t < u ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::overflow_error,
+                    "subtraction overflow"
+                )
+            :
+                checked_result<R>(t - u)
+        ;
+    }
+
+    // result signed
+    template<class R>
+    typename boost::enable_if<
+        typename std::is_signed<R>,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR subtract(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ) { // INT32-C
+        return
+            ((u > 0) && (t < (minr + u)))
+            || ((u < 0) && (t > (maxr + u))) ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::overflow_error,
+                    "subtraction overflow"
+                )
+            :
+                checked_result<R>(t - u)
+        ;
+    }
+
+    } // namespace detail
+
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> subtract(
+        const R & minr,
+        const R & maxr,
+        const T & t,
+        const U & u
+    ) {
+        return
+            detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(t)
+            :
+            detail::cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(u)
+            :
+                detail::subtract<R>(minr, maxr, t, u)
+        ;
     }
 
 /*
     namespace detail {
-
-    ////////////////////////////////////////////////////
-    // layer 0 - detect overflows / alteration at the
-    // atomic operation level taking care to work around
-    // otherwise undetect alterations in integers due
-    // to machine architecture.  Note presumption of twos
-    // complement integer arithmetic
-
     /////////////////////////////
     // subtraction implementation
     template<bool TS, bool US>

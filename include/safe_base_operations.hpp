@@ -13,41 +13,52 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_convertible, enable_if
+#include <type_traits> // is_convertible, is_same, enable_if
 
 #include "safe_base.hpp"
-#include "policies.hpp"
 #include "checked.hpp"
 #include "checked_result.hpp"
 
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/mpl/identity.hpp>
 #include <boost/utility/enable_if.hpp>
+
+#include <boost/static_assert.hpp>
 
 namespace boost {
 namespace numeric {
 
 template<class T, class U>
-struct get_common_policies {
+struct common_policies {
     static_assert(
-        mpl::or_<
+        boost::mpl::or_<
             is_safe<T>,
             is_safe<U>
         >::value,
         "at least one type must be a safe type"
     );
-    typedef typename boost::mpl::eval_if<
-        is_safe<T>,
-        get_policies<T>,
-        boost::mpl::identity<boost::mpl::void_>
-    >::type policies_t;
 
-    typedef typename boost::mpl::eval_if<
-        is_safe<U>,
-        get_policies<U>,
-        boost::mpl::identity<boost::mpl::void_>
-    >::type policies_u;
+    template<typename Z>
+    struct get_promotion_policy {
+        static_assert(
+            boost::numeric::is_safe<Z>::value,
+            "only safe types have promotion policies"
+        );
+        typedef typename Z::PromotionPolicy type;
+    };
+
+    template<typename Z>
+    struct get_exception_policy {
+        static_assert(
+            is_safe<Z>::value,
+            "only safe types have exceptions policies"
+        );
+        typedef typename Z::ExceptionPolicy type;
+    };
 
     // if both types are safe, the policies have to be the same!
     static_assert(
@@ -56,24 +67,73 @@ struct get_common_policies {
                 is_safe<T>,
                 is_safe<U>
             >,
-            typename std::is_same<policies_t, policies_u>,
+            boost::mpl::and_<
+                std::is_same<
+                    typename boost::mpl::eval_if<
+                        is_safe<T>,
+                        get_promotion_policy<T>,
+                        boost::mpl::identity<void>
+                    >::type,
+                    typename boost::mpl::eval_if<
+                        is_safe<U>,
+                        get_promotion_policy<U>,
+                        boost::mpl::identity<void>
+                    >::type
+                >,
+                std::is_same<
+                    typename boost::mpl::eval_if<
+                        is_safe<T>,
+                        get_exception_policy<T>,
+                        boost::mpl::identity<void>
+                    >::type,
+                    typename boost::mpl::eval_if<
+                        is_safe<U>,
+                        get_exception_policy<U>,
+                        boost::mpl::identity<void>
+                    >::type
+                >
+            >,
             boost::mpl::true_
         >::type::value,
         "if both types are safe, the policies have to be the same!"
     );
 
+    // note: first attempt at the above fails - but I still can't figure out
+    // why!!! I would think that the eval_if would inhibit evalution of it's
+    // arguments which precipitates static assert inside of get_promotion_policy
+    // if both types are safe, the policies have to be the same!
+    /*
+    static_assert(
+        boost::mpl::eval_if<
+            boost::mpl::and_<
+                is_safe<T>,
+                is_safe<U>
+            >,
+            std::is_same<
+                typename get_promotion_policy<T>::type,
+                typename get_promotion_policy<U>::type
+            >,
+            boost::mpl::identity<boost::mpl::true_>
+        >::type::value,
+        "if both types are safe, the policies have to be the same!"
+    );
+    */
+
     // now we've verified that there is no conflict between policies
     // return the one from the first safe type
     typedef typename boost::mpl::if_<
         is_safe<T>,
-        policies_t,
+        T,
     typename boost::mpl::if_<
         is_safe<U>,
-        policies_u,
+        U,
     //
         boost::mpl::void_
-    >::type
-    >::type type;
+    >
+    >::type safe_type;
+
+    typedef typename get_promotion_policy<safe_type>::type promotion_policy;
+    typedef typename get_exception_policy<safe_type>::type exception_policy;
 };
 
 /////////////////////////////////////////////////////////////////
@@ -92,30 +152,26 @@ struct get_common_policies {
 
 template<class T, class U>
 struct addition_result {
-    typedef typename get_common_policies<T, U>::type P;
-    typedef typename get_promotion_policy<P>::type promotion_policy;
-    typedef typename get_exception_policy<P>::type exception_policy;
-    typedef typename promotion_policy::template addition_result<T, U, P>::type type;
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template addition_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
 };
 
 template<class T, class U>
-typename std::enable_if<
+typename boost::lazy_enable_if<
     boost::mpl::or_<
         boost::numeric::is_safe<T>,
         boost::numeric::is_safe<U>
-    >::value,
-    typename addition_result<T, U>::type
+    >,
+    addition_result<T, U>
 >::type
 inline operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
-    static_assert(
-        boost::mpl::or_<
-            boost::numeric::is_safe<T>,
-            boost::numeric::is_safe<U>
-        >::value,
-        "Neither type is a safe type"
-    );
     typedef addition_result<T, U> ar;
     typedef typename ar::type result_type;
     static_assert(
@@ -157,35 +213,81 @@ inline operator+(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::exception_policy>();
+    r.template dispatch<typename ar::P::exception_policy>();
     
     return static_cast<result_type>(r);
 }
 
-template<class T>
-typename std::enable_if<
-    boost::numeric::is_safe<T>::value,
-    std::ostream &
+/////////////////////////////////////////////////////////////////
+// subtraction
+template<class T, class U>
+struct subtraction_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template subtraction_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    subtraction_result<T, U>
 >::type
-operator<<(
-    std::ostream & os,
-    const T & t
-){
-    return os << t.get_stored_value();
+inline operator-(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef subtraction_result<T, U> ar;
+    typedef typename ar::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+
+    // filter out case were overflow cannot occur
+
+    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> maxx = checked::subtract(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
+        base_value(std::numeric_limits<T>::max()),
+        base_value(std::numeric_limits<U>::min())
+    );
+
+    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> minx = checked::subtract(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<U>::max())
+    );
+
+    typedef typename checked_result<result_base_type>::exception_type exception_type;
+
+    // if no over/under flow possible
+    if(maxx == exception_type::no_exception
+    && minx == exception_type::no_exception)
+        // just do simple subtraction of base values
+        return result_type(base_value(t) - base_value(u));
+
+    // otherwise do the subtraction checking for overflow
+    checked_result<result_base_type> r = checked::subtract(
+        base_value(std::numeric_limits<result_base_type>::min()),
+        base_value(std::numeric_limits<result_base_type>::max()),
+        base_value(t),
+        base_value(u)
+    );
+
+    r.template dispatch<typename ar::P::exception_policy>();
+    
+    return static_cast<result_type>(r);
 }
 
-template<class T>
-typename std::enable_if<
-    boost::numeric::is_safe<T>::value,
-    std::ostream &
->::type
-operator>>(
-    std::istream & is,
-    T & t
-){
-    return is >> t.get_stored_value();
-    t.validate();
-}
 
 /*
 /////////////////////////////////////////////////////////////////
@@ -342,6 +444,31 @@ inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs
 }
 */
 
+
+template<class T>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value,
+    std::ostream &
+>::type
+operator<<(
+    std::ostream & os,
+    const T & t
+){
+    return os << t.get_stored_value();
+}
+
+template<class T>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value,
+    std::ostream &
+>::type
+operator>>(
+    std::istream & is,
+    T & t
+){
+    return is >> t.get_stored_value();
+    t.validate();
+}
 } // numeric
 } // boost
 

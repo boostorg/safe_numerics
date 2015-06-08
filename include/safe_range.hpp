@@ -12,13 +12,14 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/integer.hpp>
+//#include <boost/integer.hpp>
 //#include "numeric.hpp"
 #include "safe_base.hpp"
+#include "safe_base_operations.hpp"
 #include "native.hpp"
-#include "policies.hpp"
-
-typedef boost::numeric::policies<boost::numeric::native, boost::numeric::throw_exception> default_policies;
+//#include "concept/numeric.hpp"
+#include "exception_policies.hpp"
+#include "native.hpp"
 
 /////////////////////////////////////////////////////////////////
 // higher level types implemented in terms of safe_base
@@ -67,25 +68,26 @@ namespace numeric {
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    class P = default_policies
+    class P = boost::numeric::native
+    class E = dboost::numeric::throw_exception
 >
 class safe_signed_range : public
     safe_base<
         typename detail::signed_stored_type<MIN, MAX>::type,
-        safe_signed_range<MIN, MAX, P>,
-        P
+        safe_signed_range<MIN, MAX, P, E>,
+        P,
+        E
     >
 {
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
-        typename get_exception_policy<P>::type
-    >));
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );
     typedef typename boost::numeric::safe_base<
         typename detail::signed_stored_type<MIN, MAX>::type, 
-        safe_signed_range<MIN, MAX, P>
+        safe_signed_range<MIN, MAX, P, E>
     > base;
 
 public:
@@ -109,11 +111,12 @@ public:
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    class P
+    class P,
+    class E
 >
 std::ostream & operator<<(
     std::ostream & os,
-    const safe_signed_range<MIN, MAX, P> & t
+    const safe_signed_range<MIN, MAX, P, E> & t
 ){
     return os << t.get_stored_value();
 }
@@ -121,11 +124,12 @@ std::ostream & operator<<(
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    class P
+    class P,
+    class E
 >
 std::istream & operator>>(
     std::istream & is,
-    safe_signed_range<MIN, MAX, P> & t
+    safe_signed_range<MIN, MAX, P, E> & t
 ){
     return is >> t.get_stored_value();
 }
@@ -136,17 +140,20 @@ std::istream & operator>>(
 /////////////////////////////////////////////////////////////////
 // numeric limits for safe_signed_range
 
+#include <limits>
+
 namespace std {
 
 template<
     intmax_t MIN,
     intmax_t MAX,
-    class P
+    class P,
+    class E
 >
-class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P> >
-    : public boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> >
+class numeric_limits<boost::numeric::safe_signed_range<MIN, MAX, P, E> >
+    : public boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P, E> >
 {
-    typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P> SSR;
+    typedef  boost::numeric::base_type<boost::numeric::safe_signed_range<MIN, MAX, P, E> SSR;
     typedef typename boost::mpl::print<SSR>::type t0;
 public:
     SAFE_NUMERIC_CONSTEXPR static SSR min() noexcept { return SSR(MIN); }
@@ -164,26 +171,28 @@ namespace numeric {
 template<
     boost::uintmax_t MIN,
     boost::uintmax_t MAX,
-    class P = boost::numeric::default_policies
+    class P = boost::numeric::native
+    class E = dboost::numeric::throw_exception
 >
 class safe_unsigned_range : public
     safe_base<
         typename detail::unsigned_stored_type<MIN, MAX>::type,
-        safe_unsigned_range<MIN, MAX, P>,
-        P
+        safe_unsigned_range<MIN, MAX, P, E>,
+        P,
+        E
     >
 {
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<
-        typename get_exception_policy<P>::type
-    >));
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<E>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );
     typedef typename boost::numeric::safe_base<
         typename detail::unsigned_stored_type<MIN, MAX>::type, 
-        safe_unsigned_range<MIN, MAX, P>,
-        P
+        safe_unsigned_range<MIN, MAX, P, E>,
+        P,
+        E
     > base;
 
 public:
@@ -214,12 +223,13 @@ namespace std {
 template<
     std::uintmax_t MIN,
     std::uintmax_t MAX,
-    class P
+    class P,
+    class E
 >
 class numeric_limits<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
-    : public boost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> >
+    : public boost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P, E> >
 {
-    typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P> SUR;
+    typedefboost::numeric::base_type<boost::numeric::safe_unsigned_range<MIN, MAX, P, E> SUR;
     typedef typename boost::mpl::print<SUR>::type t0;
 public:
     SAFE_NUMERIC_CONSTEXPR static SUR min() noexcept { return SUR(MIN); }

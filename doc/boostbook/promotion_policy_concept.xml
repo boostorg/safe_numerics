@@ -9,11 +9,13 @@
 
     <para>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. For example, A promotion policy
-    determines the type of the result of an arithmetic operation.</para>
-
-    <para>A type is a ExceptionPolicy if it has functions for handling
-    exceptional events that occur in the course of safe numeric
-    operations.</para>
+    determines the type of the result of an arithmetic operation. For example,
+    in the following code<programlisting>int x;
+char y;
+auto z = x + y</programlisting>the type of <code>z</code> will be an
+    <code>int</code>. This is a consequence for the standard rules for type
+    promotion for C/C++ arithmetic. A key feature of library permits one to
+    specify his own type promotion rules via a PromotionPolicy class.</para>
   </section>
 
   <section>
@@ -31,13 +33,8 @@
           <row>
             <entry><code>PP</code></entry>
 
-            <entry>A type that is a model of a promotion policy</entry>
-          </row>
-
-          <row>
-            <entry><code>P</code></entry>
-
-            <entry>A type that is a model of a promotion policy</entry>
+            <entry>A type that full fills the requirements of a
+            PromotionPollicy</entry>
           </row>
 
           <row>
@@ -69,11 +66,10 @@
 
         <tbody>
           <row>
-            <entry><code>P</code></entry>
+            <entry><code>EP</code></entry>
 
-            <entry>typedef boost::numeric::policies&lt;
-            boost::numeric::native, boost::numeric::throw_exception &gt;
-            default_policies; </entry>
+            <entry>A type that full fills the requirements of an
+            ExceptionPollicy</entry>
           </row>
         </tbody>
       </tgroup>
@@ -83,13 +79,9 @@
   <section>
     <title>Valid Expressions</title>
 
-    <para>In addition to the expressions defined in <ulink
-    url="http://www.sgi.com/tech/stl/Assignable.html">Assignable</ulink> the
-    following expressions must be valid.</para>
-
     <para>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.<table>
-        <title>General</title>
+        <title>Valid Expressions</title>
 
         <tgroup cols="2">
           <colspec align="left"/>
@@ -106,15 +98,15 @@
 
           <tbody>
             <row>
-              <entry><code>PP::addition_result&lt;T, U,
-              P&gt;::type</code></entry>
+              <entry><code>PP::addition_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::subtraction_result&lt;T, U,
-              P&gt;::type</code></entry>
+              <entry><code>PP::subtraction_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
@@ -128,7 +120,8 @@
 
     <para><ulink
     url="../../include/concept/promotion_policy.hpp"><code>#include
-    &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></ulink></para>
+    &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
+    </code></ulink></para>
   </section>
 
   <section>
@@ -138,23 +131,55 @@
 
     <itemizedlist>
       <listitem>
-        <para>boost::numeric::native</para>
+        <para><code>boost::numeric::native</code></para>
 
-        <para>Use the normal C/C++ expression type promotion rules. This are
-        quite complex</para>
+        <para>Use the normal C/C++ expression type promotion rules.
+        <programlisting>int x;
+char y;
+auto z = x + y; // could result in overflow
+safe&lt;int&gt; sx;
+auto sz = sx + y; // includes code which traps overflows at runtime</programlisting></para>
+
+        <para>The type of sz will be safe&lt; type of z &gt;.</para>
+
+        <para>This policy is found in the header file <ulink
+        url="../../include/concept/promotion_policy.hpp"><code>#include
+        &lt;safe_numerics/include/native.hpp&gt;</code></ulink></para>
       </listitem>
 
       <listitem>
-        <para>boost::numeric::automatic</para>
+        <para><code>boost::numeric::automatic</code></para>
 
-        <para>If an exceptional condition is detected at runtime throw the
-        exception. safe types use this exception policy as the default if no
-        other one is specified.</para>
+        <para>Use optimizing expression type promotion rules. These rules
+        replace the normal C/C++ type promotion rules with other rules which
+        are designed to result in more efficient computations. Expression
+        types are promoted to the smallest type which can be guaranteed to
+        hold the result without overflow. If there is no such type, the result
+        will be checked for overflow. Consider the following
+        example:<programlisting>int x;
+char y;
+auto z = x + y; // could result in overflow
+safe&lt;int&gt; sx;
+auto sz = sx + y; // promotes expression type to a safe&lt;long int&gt; which requires no result checking
+is guaranteed not to overflow.
+
+safe_unsigned_range&lt;1, 4&gt; a;
+safe_unsigned_range&lt;2, 4&gt; b;
+auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</programlisting></para>
+
+        <para>Type sz will be a SafeNumeric type which is guaranteed to hold
+        he result of x + y. In this case that will be a long int (or perhaps a
+        long ong) depending upon the compiler and machine architecture. In
+        this case, there will be no need for any special checking on the
+        result and there can be no overflow.</para>
+
+        <para>Type of c will be a signed caracter as that type can be
+        guarenteed to hold the sum so no overflow checking is done.</para>
+
+        <para>This policy is found in the header file <ulink
+        url="../../include/concept/promotion_policy.hpp"><code>#include
+        &lt;safe_numerics/include/automatic.hpp&gt;</code></ulink></para>
       </listitem>
     </itemizedlist>
-
-    <para>These can also be found in the directory <ulink
-    url="../../include/concept/exception_policy.hpp"><code>#include
-    &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;</code></ulink>.</para>
   </section>
 </section>

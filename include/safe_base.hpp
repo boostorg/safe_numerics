@@ -17,14 +17,16 @@
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/utility/enable_if.hpp>
+
+//#include <boost/mpl/and.hpp>
+//#include <boost/utility/enable_if.hpp>
 
 // don't use constexpr so we can debug
 #define SAFE_NUMERIC_CONSTEXPR constexpr
 
 #include "safe_compare.hpp"
-#include "policies.hpp"
 
 namespace boost {
 namespace numeric {
@@ -34,7 +36,8 @@ struct safe_tag {};
 template<
     class Stored,
     class Derived,
-    class Policies
+    class P, // promotion policy
+    class E  // exception policy
 >
 class safe_base : private safe_tag {
     SAFE_NUMERIC_CONSTEXPR const Derived &
@@ -62,7 +65,7 @@ protected:
             "Constructor argument is convertible to the storable type"
         );
         if(! derived().validate(t)){
-            get_exception_policy<Policies>::type::range_error(
+            ExceptionPolicy::range_error(
                 "Invalid value"
             );
         }
@@ -79,7 +82,7 @@ public:
 
     bool validate() const {
         if(! derived().validate(m_t)){
-            get_exception_policy<Policies>::type::range_error(
+            ExceptionPolicy::range_error(
                 "Invalid value"
             );
         }
@@ -90,7 +93,7 @@ public:
     template<class T>
     Derived & operator=(const T & rhs){
         if(! derived().validate(rhs)){
-            get_exception_policy<Policies>::type::range_error(
+            ExceptionPolicy::range_error(
                 "Invalid value passed on assignment"
             );
         }
@@ -162,7 +165,7 @@ public:
     Derived operator++(int){ // post increment
         Stored t = m_t;
         if(! derived().validate(*this + 1)){
-            get_exception_policy<Policies>::type::overflow_error(
+            ExceptionPolicy::overflow_error(
                 "Overflow on increment"
             );
         }
@@ -172,7 +175,7 @@ public:
     Derived & operator--(int){ // post decrement
         Stored t = m_t;
         if(! derived().validate(*this - 1)){
-            get_exception_policy<Policies>::type::overflow_error(
+            ExceptionPolicy::overflow_error(
                 "Overflow on increment"
             );
         }
@@ -363,8 +366,8 @@ public:
     }
 
     typedef Stored stored_type;
-    typedef Policies policies_type;
-    //typedef Stored derived_type;
+    typedef P PromotionPolicy;
+    typedef E ExceptionPolicy;
 };
 
 } // numeric
@@ -436,6 +439,7 @@ SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(T && t) {
     return invoke_operator::get_stored_value(t);
 }
 
+/*
 template<class T>
 struct get_policies {
     static_assert(
@@ -444,6 +448,7 @@ struct get_policies {
     );
     typedef typename T::policies_type type;
 };
+*/
 
 } // numeric
 } // boost

@@ -5,8 +5,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <cassert>
-#include <type_traits>
 
 #include "../include/safe_integer.hpp"
 
@@ -29,13 +27,17 @@ bool test_add(
 
         try{
             result = t1 + v2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 + v2)>::value,
+                "Expression failed to return safe type"
+            );
             if(expected_result == 'x'){
-                try{
                     std::cout
                         << "failed to detect error in addition "
                         << std::hex << result << "(" << std::dec << result << ")"
                         << " ! = "<< av1 << " + " << av2
                         << std::endl;
+                try{
                     t1 + v2;
                 }
                 catch(...){}
@@ -44,12 +46,12 @@ bool test_add(
         }
         catch(std::exception & e){
             if(expected_result == '.'){
-                try{
                     std::cout
                         << "erroneously detected error in addition "
                         << std::hex << result << "(" << std::dec << result << ")"
                         << " == "<< av1 << " + " << av2
                         << std::endl;
+                try{
                     t1 + v2;
                 }
                 catch(...){}

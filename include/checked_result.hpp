@@ -6,11 +6,12 @@
 //
 //
 
-#ifndef BOOST_NUMERIC_CHECKED_CHECKED_RESULT
-#define BOOST_NUMERIC_CHECKED_CHECKED_RESULT
+#ifndef BOOST_NUMERIC_CHECKED_RESULT
+#define BOOST_NUMERIC_CHECKED_RESULT
 
 #include <ostream>
-#include "policies.hpp"
+#include "safe_base.hpp" // SAFE_NUMERIC_CONSTEXPR
+#include "exception_policies.hpp"
 
 namespace boost {
 namespace numeric {

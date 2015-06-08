@@ -92,6 +92,7 @@ struct trap_exception {
     }
 };
 
+/*
 // policies structure
 // note: if there's no exception policy then any operation which
 // could result in a runtime exception will trap during compile
@@ -120,7 +121,7 @@ struct get_exception_policy {
     static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
     typedef typename P::t_e type;
 };
-
+*/
 } // namespace numeric
 } // namespace boost
 

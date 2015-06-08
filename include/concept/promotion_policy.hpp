@@ -19,34 +19,11 @@ namespace numeric {
 
 template<class PP>
 struct PromotionPolicy {
-    const char * message;
-    BOOST_CONCEPT_USAGE(PromotionPolicy){
-        EP::overflow_error(message);
-        EP::underflow_error(message);
-        EP::range_error(message);
-    }
-    template<
-        typename T,
-        typename U,
-        typename P
-    >
-    struct addition_result {
-        typedef typename boost::numeric::base_type<T>::type base_type_t;
-        typedef typename boost::numeric::base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() + base_type_u()) result_base_type;
-        typedef safe<result_base_type, P> type;
-    };
-    template<
-        typename T,
-        typename U,
-        typename P
-    >
-    struct subtraction_result {
-        typedef typename boost::numeric::base_type<T>::type base_type_t;
-        typedef typename boost::numeric::base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() - base_type_u()) result_base_type;
-        typedef safe<result_base_type, P> type;
-    };
+    typedef int T;
+    typedef int U;
+    typedef void E;
+    typedef typename PP::template addition_result<T, U, PP, E> ar_type;
+    typedef typename PP::template subtraction_result<T, U, PP, E> s_type;
 };
 
 } // numeric
