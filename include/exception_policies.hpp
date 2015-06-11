@@ -92,36 +92,6 @@ struct trap_exception {
     }
 };
 
-/*
-// policies structure
-// note: if there's no exception policy then any operation which
-// could result in a runtime exception will trap during compile
-// time.  For example i = i / j will not be permited because we
-// can't know at compiler time that j can never be zero
-
-struct policies_tag {};
-template<class P, class E = throw_exception>
-struct policies : public policies_tag {
-    typedef P t_p; // promotion policy
-    typedef E t_e; // exception policy
-};
-
-template<class P>
-struct is_policies : public
-    std::is_base_of<boost::numeric::policies_tag, P>
-{};
-
-template<class P>
-struct get_promotion_policy {
-    static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
-    typedef typename P::t_p type;
-};
-template<class P>
-struct get_exception_policy {
-    static_assert(boost::numeric::is_policies<P>::value, "P is not a pair of policies");
-    typedef typename P::t_e type;
-};
-*/
 } // namespace numeric
 } // namespace boost
 

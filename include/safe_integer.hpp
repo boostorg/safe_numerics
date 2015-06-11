@@ -20,35 +20,73 @@
 
 #include "boost/concept/assert.hpp"
 
+// specialization for meta functions with safe<T> argument
 namespace boost {
 namespace numeric {
 
 template<
     class T,
-    class P = boost::numeric::native,
-    class E = boost::numeric::throw_exception
+    class P,
+    class E
+>
+struct safe;
+
+template<
+    class T,
+    class P,
+    class E
+>
+struct is_safe<safe<T, P, E> > : public std::true_type
+{};
+
+template<
+    class T,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe<T, P, E> > {
+    typedef P type;
+};
+
+template<
+    class T,
+    class P,
+    class E
+>
+struct get_exception_policy<safe<T, P, E> > {
+    typedef E type;
+};
+
+template<
+    class T,
+    class P,
+    class E
+>
+struct base_type<safe<T, P, E> > {
+    typedef T type;
+};
+
+template<
+    class T,
+    class P = native,
+    class E = throw_exception
 >
 struct safe : public safe_base<T, safe<T, P, E>, P, E>{
-    BOOST_CONCEPT_ASSERT((boost::numeric::Integer<T>));
-    BOOST_CONCEPT_ASSERT((boost::numeric::PromotionPolicy<P>));
-    BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<E>));
-
+private:
     typedef safe_base<T, safe<T, P, E>, P, E > base_type;
+    friend base_type;
+    static_assert(std::is_integral<T>::value, "Only integer types supported");
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
 
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return true;
     }
-    SAFE_NUMERIC_CONSTEXPR bool validate(T && t) const {
-        return true;
-    }
-
+public:
+    // note: Rule of Three.  Don't specify custom move, copy etc.
     SAFE_NUMERIC_CONSTEXPR safe() :
         base_type()
     {}
-
-    //SAFE_NUMERIC_CONSTEXPR safe(safe && s) :
-    //    base_type()
-    //{}
     template<class U>
     SAFE_NUMERIC_CONSTEXPR safe(const U & u) :
         base_type(u)

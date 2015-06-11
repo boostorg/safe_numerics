@@ -31,25 +31,18 @@
 <li class="listitem"><p>The library is currently limited to integers.</p></li>
 <li class="listitem"><p>Conversions to safe integer types from floating point types is
         not checked.</p></li>
-<li class="listitem"><p>Stream input of safe integer types is not checked. Note that
-        standard library stream conversion functions such as
+<li class="listitem"><p>Note that standard library stream conversion functions such as
         <code class="computeroutput">strtoi</code> etc. DO check for valid input and throw the
         exception <code class="computeroutput">std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
         <code class="computeroutput">strtoi</code> aready contains the exact functionality that
         <code class="computeroutput">safe&lt;int&gt;</code> provides.</p></li>
-<li class="listitem"><p>There is currently no convenient way to override the overflow
-        function.</p></li>
-<li class="listitem"><p>Expressions with safe integer types don't return safe integer
-        types.</p></li>
 </ul></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
-        Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

@@ -2,13 +2,14 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe">
-  <title>safe&lt;T&gt;</title>
+  <title>safe&lt;T, PP, EP&gt;</title>
 
   <section>
     <title>Description</title>
 
-    <para>A <code>safe&lt;T&gt;</code> can be used anywhere a type T is used.
-    When T is used in operation which overflows, a exception is thrown</para>
+    <para>A <code>safe&lt;T, PP, EP&gt;</code> can be used anywhere a type T
+    can be used. Any expression which uses this type is guarenteed to return
+    an arithmetically correct value or trap in some way.</para>
   </section>
 
   <section>
@@ -30,28 +31,38 @@
 
         <tbody>
           <row>
-            <entry><code>T, U, V</code></entry>
+            <entry><code>T</code></entry>
 
-            <entry>Types which model the <link
-            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
+            <entry>Underlying type from which a safe type is being
+            derived</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Associated Types</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <tbody>
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry>A type which specifes the result type of an expression
+            using safe types. </entry>
           </row>
 
           <row>
-            <entry>t, u, v</entry>
+            <entry><code>EP</code></entry>
 
-            <entry>objects of types T</entry>
-          </row>
-
-          <row>
-            <entry>st</entry>
-
-            <entry>object of type safe&lt;T&gt;</entry>
-          </row>
-
-          <row>
-            <entry>su</entry>
-
-            <entry>object of type safe&lt;U&gt;</entry>
+            <entry>A type containing members which are called when a correct
+            result cannot be returned</entry>
           </row>
         </tbody>
       </tgroup>
@@ -63,11 +74,11 @@
 
     <informaltable>
       <tgroup cols="3">
-        <colspec align="left" colwidth="1*"/>
+        <colspec colwidth="1*"/>
 
         <colspec align="left" colwidth="3*"/>
 
-        <colspec align="left" colwidth="6*"/>
+        <colspec align="left" colwidth="7*"/>
 
         <thead>
           <row>
@@ -83,87 +94,57 @@
           <row>
             <entry><code>T</code></entry>
 
-            <entry><link
-            linkend="safe_numerics.numeric">boost::is_integer&lt;T&gt;::value
-            == true</link></entry>
+            <entry><ulink
+            url="http://en.cppreference.com/w/cpp/types/is_integral">Integer&lt;T&gt;</ulink></entry>
 
-            <entry><para>The underlying intrinsic integer type</para></entry>
+            <entry><para>The underlying type. Currently only integer types
+            supported</para></entry>
+          </row>
+
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.promotion_policy.models.native">boost::numeric::native</link></para></entry>
+          </row>
+
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.exception_policy">Exception
+            Policy&lt;EP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</link></para></entry>
           </row>
         </tbody>
       </tgroup>
     </informaltable>
+
+    <para>See examples below.</para>
   </section>
 
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+
+    <para><link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
   </section>
 
   <section>
     <title>Valid Expressions</title>
 
-    <para><informaltable>
-        <tgroup cols="3">
-          <colspec align="left" colwidth="1*"/>
-
-          <colspec align="left" colwidth="2*"/>
-
-          <colspec align="left" colwidth="4*"/>
-
-          <thead>
-            <row>
-              <entry align="left">Expression</entry>
-
-              <entry align="left">Result Type</entry>
-
-              <entry>Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry><code>st op u</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
-              u)&gt;</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>t op su</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
-              u)&gt;</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>st op su</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">safe&lt;typeof(t op
-              u)&gt;</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>st(t)</code></entry>
-
-              <entry><link
-              linkend="safe_numerics.numeric">safe&lt;T&gt;</link></entry>
-
-              <entry><para>construct a instance of safe&lt;T&gt; from
-              t</para></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable></para>
+    <para>Implements all expressions and only those expressions defined by the
+    <link linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
+    requirements. This, the result type of such an expression will be another
+    safe type. The actual type of the result of such an expression will depend
+    upon the specific promotion policy template parameter.</para>
   </section>
 
   <section>
@@ -174,39 +155,109 @@
   </section>
 
   <section>
-    <title>Example of use</title>
+    <title>Examples of use</title>
 
-    <para>The following program will emit an error message on a machine where
-    int is only 16 bits but run without problem on a machine where int is 32
-    bits.</para>
+    <para>The most common usage would be safe&lt;T&gt; which uses the default
+    promotion and exception policies. This type is meant to be a "drop-in"
+    replacement of the intrinsic integer types. That is, expressions involving
+    these types will be evaluated into result types which reflect the standard
+    rules for evaluation of C++ expressions. Should it occur that such
+    evaluation cannot return a correct result, an exception will be
+    thrown.</para>
 
-    <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
-#include &lt;iostream&gt;
+    <para>There are two aspects of the operation of this type which can be
+    customized with a policy. The first is the result type of an arithmetic
+    operation. C++ defines the rules which define this result type in terms of
+    the constintuent types of the operation. Here we refer to these rules a
+    "type promotion" rules. These rules will sometimes result in a type which
+    cannot hold the actual arithmetic result of the operation. This is the
+    main motivation for making this library in the first place. One way to
+    deal with this problem is to substitute our own type promotion rules for
+    the C++ ones.</para>
+
+    <section>
+      <title>Drop-in replacement for standard integer type.</title>
+
+      <para>The following program will throw an exception and emit a error
+      message at runtime if any of several events result in an incorrect
+      arithmetic type. Behavior of this program could vary according to the
+      machine architecture in question.</para>
+
+      <para><programlisting>#include &lt;iostream&gt;
+#include &lt;stdexcept&gt; // std::runtime_error
+#include &lt;boost/numeric/safe.hpp&gt;
+
 void f(){
-    safe&lt;int&gt; i = 400;
     safe&lt;int&gt; j;
     try {
-        j = i * i;
+        safe&lt;int&gt; i;
+        std::cin &gt;&gt; i;  // could overflow !
+        j = i * i;      // could overflow
     }
-    catch(...){
-       std::cout &lt;&lt; "overflow error" &lt;&lt; std::endl;
+    catch(std::runtime_error &amp; re){
+       std::cout &lt;&lt; re.what() &lt;&lt; std::endl;
     }
-}
+    std::cout &lt;&lt; j;
+}</programlisting></para>
+    </section>
 
-</programlisting></para>
-  </section>
+    <section>
+      <title>Guarantee correct behavior at compile time.</title>
 
-  <section>
-    <title>Notes</title>
+      <para>In some instance catching an error at run time is not sufficient.
+      We want to be sure that the program can never fail. To achieve this, use
+      the trap_exception exception policy rather than the default throw
+      exception policy.</para>
 
-    <para>Footnotes (if any) that are referred to by other parts of the
-    page.</para>
-  </section>
+      <para>The following program will emit a compile error at any statement
+      which might possibly result in incorrect behavior. </para>
 
-  <section>
-    <title>See Also</title>
+      <para>This is because there is no way to guarantee that the expression i
+      * i will return an arithmetically correct result. Since we know that the
+      program cannot compile if there is any possibility of arithmetic error,
+      we can dispense with the exception handling used above.</para>
 
-    <para>Footnotes (if any) that are referred to by other parts of the
-    page.</para>
+      <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
+#include &lt;iostream&gt;
+void f(){
+    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;t; 
+    safe_int i;
+    std::cin &gt;&gt; i;  // could throw exception here !!!
+    safe_int j;
+    j = i * i; // could throw exception here !!!
+}</programlisting></para>
+    </section>
+
+    <section>
+      <title>Adjust type promotion rules.</title>
+
+      <para>Another way to avoid arithmetic errors like overflow is to promote
+      types to larger sizes before doing the arithmetic. This can be justified
+      by the observ</para>
+
+      <para>Stepping back, we can see that many of the cases of invalid
+      arithmetic are wouldn't exist if results types were larger. So we can
+      avoid these problems by replacing the C++ type promotion rules for
+      expressions with our own rules. This can be done by specifying a
+      non-default type promotion policy automatic. The policy stores the
+      result of an expression in the smallest size that can accomodate the
+      largest value that an expression can yield. All the work is done at
+      compile time - checking for exceptions necessary (input is of course an
+      exception). The following example illustrates this.</para>
+
+      <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
+#include &lt;iostream&gt;
+void f(){
+    using safe_int = safe&lt;int, boost::numeric::automatic, boost::numeric::throw_exception&gt;; 
+    safe_int i;
+    std::cin &gt;&gt; i; // might throw exception
+    auto j = i * i; // won't ever trap - result type can hold the maximum value of i * i
+    static_assert(boost::numeric::is_safe&lt;decltype(j)&gt;::value); // result is another safe type
+    static_assert(
+        std::numeric_limits&lt;decltype(i * i)&gt;::max() &gt;=
+        std::numeric_limits&lt;safe_int&gt;::max() * std::numeric_limits&lt;safe_int&gt;::max()
+    ); // always true
+}</programlisting></para>
+    </section>
   </section>
 </section>

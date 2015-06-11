@@ -2,23 +2,24 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_signed_range">
-  <title>safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_t
-  MAX&gt;</title>
+  <title>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</title>
 
   <section>
     <title>Description</title>
 
-    <para>This type holds a integer in the range [MIN, MAX]. It will throw a
-    <code>std::out_of_range</code> exception for operation which would result
-    in assigning an integer value outside of this range.</para>
+    <para>This type holds a signed integer in the range [MIN, MAX]. It will
+    throw a <code>std::out_of_range</code> exception for operation which would
+    result in assigning an integer value outside of this range.</para>
   </section>
 
   <section>
     <title>Notation</title>
 
+    <para>In addition</para>
+
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left" colwidth="1*"/>
+        <colspec align="left" colwidth="2*"/>
 
         <colspec align="left" colwidth="10*"/>
 
@@ -32,34 +33,38 @@
 
         <tbody>
           <row>
-            <entry><code>T, U, V</code></entry>
+            <entry><code>MIN, MAX</code></entry>
 
-            <entry>Types which model the <link
-            linkend="safe_numerics.numeric">Numeric</link> concept</entry>
+            <entry>Minimum and maximum signed values that the
+            safe_signed_range can represent.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Associated Types</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="2*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <tbody>
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry>A type which specifes the result type of an expression
+            using safe types.</entry>
           </row>
 
           <row>
-            <entry>t, u, v</entry>
+            <entry><code>EP</code></entry>
 
-            <entry>objects of types T</entry>
-          </row>
-
-          <row>
-            <entry>ssr</entry>
-
-            <entry>object of type safe_signed_range</entry>
-          </row>
-
-          <row>
-            <entry>ssr(t)</entry>
-
-            <entry>some safe range with value t</entry>
-          </row>
-
-          <row>
-            <entry>S</entry>
-
-            <entry>some safe type</entry>
+            <entry>A type containing members which are called when a correct
+            result cannot be returned</entry>
           </row>
         </tbody>
       </tgroup>
@@ -71,11 +76,11 @@
 
     <informaltable>
       <tgroup cols="3">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="2*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="4*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="6*"/>
 
         <thead>
           <row>
@@ -99,17 +104,38 @@
           <row>
             <entry><code>MAX</code></entry>
 
-            <entry>must be an integer literal</entry>
+            <entry>must be a negative literal</entry>
 
             <entry>The maximum integer value that this type may hold</entry>
           </row>
 
           <row>
-            <entry><code/></entry>
-
-            <entry>MIN &lt; MAX</entry>
-
             <entry/>
+
+            <entry>MIN &lt;= MAX</entry>
+
+            <entry>must be a valid closed range</entry>
+          </row>
+
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.promotion_policy.models.native">boost::numeric::native</link></para></entry>
+          </row>
+
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.exception_policy">Exception
+            Policy&lt;EP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</link></para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -119,79 +145,20 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+    <para><link linkend="safe_numerics.numeric">Integer</link></para>
 
-    <para>The usage of this type in an arithmetic expression will result in
-    another type fulfilling the <link
-    linkend="safe_numerics.numeric">Numeric</link> concept.</para>
-
-    <para>Operations on safe_signed_range will result in the same</para>
+    <para><link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
   </section>
 
   <section>
     <title>Valid Expressions</title>
 
-    <para><informaltable>
-        <tgroup cols="3">
-          <colspec align="left" colwidth="2*"/>
-
-          <colspec align="left" colwidth="2*"/>
-
-          <colspec align="left" colwidth="4*"/>
-
-          <thead>
-            <row>
-              <entry align="left">Expression</entry>
-
-              <entry align="left">Result Type</entry>
-
-              <entry>Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry><code>ssr op u</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">S(ssr(t op
-              u))</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>t op su</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">S(ssr(t op
-              u))</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>ssr op su</code></entry>
-
-              <entry><link linkend="safe_numerics.numeric">S(ssr(t op
-              u))</link></entry>
-
-              <entry><para>op is any valid binary operator for type
-              T</para></entry>
-            </row>
-
-            <row>
-              <entry><code>safe_signed_range(MIN, MAX)</code></entry>
-
-              <entry><link
-              linkend="safe_numerics.numeric">safe&lt;T&gt;</link></entry>
-
-              <entry><para>construct a instance of safe&lt;T&gt; from
-              t</para></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable></para>
+    <para>Implements all expressions and only those expressions defined by the
+    <link linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
+    requirements. This, the result type of such an expression will be another
+    safe type. The actual type of the result of such an expression will depend
+    upon the specific promotion policy template parameter.</para>
   </section>
 
   <section>
@@ -207,24 +174,19 @@
     <programlisting>#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
-    boost::numeric::safe_signed_range&lt;7, 24&gt; i;
-    i = 0; // error
-    i = 9; // ok
-    i *= 9; // throws overflow exception
-
+    boost::numeric::safe_signed_range&lt;-7, 24&gt; i;
+    // since the range is included in [-128,127], the underlying type of i 
+    // will be a char.
+    i = -41; // throws out_of_range exception
+    i = 9;   // ok
+    i = -1;  // ok
+    i *= 9;  // throws out_of_range exception
     std::int8_t j = 4;
     auto k = i + j;
-        // since i can vary between 7 and 24 and j can vary between 0 and 255
-        // the smallest unsigned integer which can hold the result std::int16_t
-        // j will be of type std::int16_t 
+        // These types use default promotion policy so standard C++ type promotion rules 
+        // will be used in evaluating expressions.   C++ type promotion rules mandate
+        // that the result of k = i + j when both are signed char types, will be another
+        // signed char type.
 }</programlisting>
-  </section>
-
-  <section>
-    <title>See Also</title>
-
-    <para><code>std::out_of_range</code></para>
-
-    <para><code>safe_unsigned_range</code></para>
   </section>
 </section>

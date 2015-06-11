@@ -31,21 +31,20 @@
 namespace boost {
 namespace numeric {
 
-struct safe_tag {};
-
 template<
     class Stored,
     class Derived,
     class P, // promotion policy
     class E  // exception policy
 >
-class safe_base : private safe_tag {
+class safe_base {
     SAFE_NUMERIC_CONSTEXPR const Derived &
     derived() const {
         return static_cast<const Derived &>(*this);
     }
     Stored m_t;
 protected:
+    // note: Rule of Three.  Don't specify custom move, copy etc.
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
@@ -65,7 +64,15 @@ protected:
             "Constructor argument is convertible to the storable type"
         );
         if(! derived().validate(t)){
-            ExceptionPolicy::range_error(
+            E::range_error(
+                "Invalid value"
+            );
+        }
+    }
+
+    bool validate() const {
+        if(! derived().validate(m_t)){
+            E::range_error(
                 "Invalid value"
             );
         }
@@ -79,21 +86,13 @@ public:
     SAFE_NUMERIC_CONSTEXPR const Stored & get_stored_value() const {
         return m_t;
     }
-
-    bool validate() const {
-        if(! derived().validate(m_t)){
-            ExceptionPolicy::range_error(
-                "Invalid value"
-            );
-        }
-    }
-
+    
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
     Derived & operator=(const T & rhs){
         if(! derived().validate(rhs)){
-            ExceptionPolicy::range_error(
+            E::range_error(
                 "Invalid value passed on assignment"
             );
         }
@@ -165,7 +164,7 @@ public:
     Derived operator++(int){ // post increment
         Stored t = m_t;
         if(! derived().validate(*this + 1)){
-            ExceptionPolicy::overflow_error(
+            E::overflow_error(
                 "Overflow on increment"
             );
         }
@@ -175,7 +174,7 @@ public:
     Derived & operator--(int){ // post decrement
         Stored t = m_t;
         if(! derived().validate(*this - 1)){
-            ExceptionPolicy::overflow_error(
+            E::overflow_error(
                 "Overflow on increment"
             );
         }
@@ -195,7 +194,11 @@ public:
             std::numeric_limits<Stored>::is_signed,
             "Bitwise inversion of unsigned value is an error"
         );
-        validate(~m_t);
+        if(! derived().validate(~m_t)){
+            E::overflow_error(
+                "Overflow on increment"
+            );
+        }
         return derived();
     }
 
@@ -364,10 +367,6 @@ public:
     explicit operator Stored () const {
         return m_t;
     }
-
-    typedef Stored stored_type;
-    typedef P PromotionPolicy;
-    typedef E ExceptionPolicy;
 };
 
 } // numeric
@@ -376,80 +375,25 @@ public:
 namespace boost {
 namespace numeric {
 
-template<class T>
-struct is_safe : public
-    std::is_base_of<boost::numeric::safe_tag, T>
+// default implementations for required meta-functions
+template<typename T>
+struct is_safe : public std::false_type
 {};
 
-template<class T>
-struct safe_base_type {
-    typedef typename boost::mpl::if_<
-        typename std::is_const<T>,
-        const typename T::stored_type,
-        typename T::stored_type
-    >::type type;
+template<typename T>
+struct base_type {
+    typedef T type;
 };
 
-// invoke using base_type::type
-template<class T>
-struct base_type : public
-    boost::mpl::eval_if<
-        is_safe<T>,
-        safe_base_type<T>,
-        boost::mpl::identity<T>
-    >
-{};
-
-namespace detail {
-    template<class T>
-    struct safe_type {
-        static_assert(
-            is_safe<T>::value,
-            "Should be safe type here!"
-        );
-        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
-            return t.get_stored_value();
-        }
-    };
-    template<class T>
-    struct other_type {
-        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
-            return t;
-        }
-    };
-} // detail
-
-template<class T>
-SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T &  t) {
-    typedef typename boost::mpl::if_<
-        is_safe<T>,
-        detail::safe_type<T>,
-        detail::other_type<T>
-    >::type invoke_operator;
-    return invoke_operator::get_stored_value(t);
-}
-
-template<class T>
-SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(T && t) {
-    typedef typename boost::mpl::if_<
-        is_safe<T>,
-        detail::safe_type<T>,
-        detail::other_type<T>
-    >::type invoke_operator;
-    return invoke_operator::get_stored_value(t);
-}
-
-/*
-template<class T>
-struct get_policies {
-    static_assert(
-        is_safe<T>::value,
-        "Policies only defined for safe types"
-    );
-    typedef typename T::policies_type type;
+template<typename T>
+struct get_promotion_policy {
+    typedef void type;
 };
-*/
 
+template<typename T>
+struct get_exception_policy {
+    typedef void type;
+};
 } // numeric
 } // boost
 

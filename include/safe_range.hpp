@@ -66,6 +66,44 @@ namespace boost {
 namespace numeric {
 
 template<
+template<
+    class T,
+    class P,
+    class E
+>
+struct safe_signed_range;
+
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe<T, P, E> > {
+    typedef P type;
+};
+
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class P,
+    class E
+>
+struct get_exception_policy<safe<T, P, E> > {
+    typedef E type;
+};
+
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class P,
+    class E
+>
+struct base_type<safe<T, P, E> > {
+    typedef T type;
+};
+
+template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
     class P = boost::numeric::native
@@ -79,60 +117,34 @@ class safe_signed_range : public
         E
     >
 {
-    BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     typedef typename boost::numeric::safe_base<
         typename detail::signed_stored_type<MIN, MAX>::type, 
         safe_signed_range<MIN, MAX, P, E>
-    > base;
+    > base_type;
+    friend base_type;
 
-public:
     template<class T>
-    stored_type validate(const T & t) const {
-        if(safe_compare::less_than(t, MIN)
-        || safe_compare::greater_than(t, MAX))
-            overflow("safe range out of range");
-        return static_cast<stored_type>(t);
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        return safe_compare::less_than(t, MIN)
+        || safe_compare::greater_than(t, MAX);
     }
+public:
+    // note: Rule of Three.  Don't specify custom move, copy etc.
     SAFE_NUMERIC_CONSTEXPR safe_signed_range() :
-        base()
+        base_type()
     {}
-
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_signed_range(const T & t) :
-        base(t)
+    SAFE_NUMERIC_CONSTEXPR safe_signed_range(const U & u) :
+        base_type(u)
     {}
+
 };
-
-template<
-    boost::intmax_t MIN,
-    boost::intmax_t MAX,
-    class P,
-    class E
->
-std::ostream & operator<<(
-    std::ostream & os,
-    const safe_signed_range<MIN, MAX, P, E> & t
-){
-    return os << t.get_stored_value();
-}
-
-template<
-    boost::intmax_t MIN,
-    boost::intmax_t MAX,
-    class P,
-    class E
->
-std::istream & operator>>(
-    std::istream & is,
-    safe_signed_range<MIN, MAX, P, E> & t
-){
-    return is >> t.get_stored_value();
-}
 
 } // numeric
 } // boost
@@ -182,34 +194,34 @@ class safe_unsigned_range : public
         E
     >
 {
-    BOOST_CONCEPT_ASSERT((PromotionPolicy<E>));
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
+private
     static_assert(
         MIN < MAX,
         "minimum must be less than maximum"
     );
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<E>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     typedef typename boost::numeric::safe_base<
-        typename detail::unsigned_stored_type<MIN, MAX>::type, 
+        typename detail::unsigned_stored_type<MIN, MAX>::type,
         safe_unsigned_range<MIN, MAX, P, E>,
         P,
         E
-    > base;
-
-public:
-//    typedef typename detail::unsigned_stored_type<MIN, MAX>::type stored_type;
+    > base_type;
+    friend base_type;
 
     template<class T>
-    stored_type validate(const T & t) const {
-        if(safe_compare::less_than(t, MIN)
-        || safe_compare::greater_than(t, MAX))
-            overflow("safe range out of range");
-        return static_cast<stored_type>(t);
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        return safe_compare::less_than(t, MIN)
+        || safe_compare::greater_than(t, MAX);
     }
-    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range(){}
-
+public:
+    // note: Rule of Three.  Don't specify custom move, copy etc.
+    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range() :
+        base_type()
+    {}
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range(const T & t) :
-        base(t)
+    SAFE_NUMERIC_CONSTEXPR safe_unsigned_range(const U & u) :
+        base_type(u)
     {}
 };
 

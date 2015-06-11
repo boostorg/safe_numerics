@@ -1,0 +1,229 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>SafeNumeric&lt;T&gt;</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="concepts.html" title="Type Requirements">
+<link rel="prev" href="integer.html" title="Integer&lt;T&gt;">
+<link rel="next" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
+<td align="center"><a href="../../index.html">Home</a></td>
+<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
+<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
+<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
+<td align="center"><a href="../../more/index.htm">More</a></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="integer.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policy.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.safe_numeric_concept"></a>SafeNumeric&lt;T&gt;</h3></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477605568">Description</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477604176">Refinement of</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477602672">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477588048">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477581520">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477558128">Complexity Guarentees</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477556816">Invariants</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477555232">Header</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm354477552656">Models</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477605568"></a>Description</h4></div></div></div>
+<p>This holds an arithmetic value which can be used as a replacement
+    for built-in C++ arithmetic values. These types differ from their built-in
+    counter parts in that the ar guarenteed not to produce invalid arithemetic
+    results.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477604176"></a>Refinement of</h4></div></div></div>
+<p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477602672"></a>Notation</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Symbol</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">T, U</code></td>
+<td align="left">Underlying <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> type from which a
+            safe type is being derived</td>
+</tr>
+<tr>
+<td align="left">t, u</td>
+<td align="left">objects of types T</td>
+</tr>
+<tr>
+<td align="left">S</td>
+<td align="left">A type fullfilling a SafeNumeric type requirements</td>
+</tr>
+<tr>
+<td align="left">s, s1, s2</td>
+<td align="left">objects of types S</td>
+</tr>
+<tr>
+<td align="left">op</td>
+<td align="left">C++ infix operator</td>
+</tr>
+<tr>
+<td align="left">prefix_op</td>
+<td align="left">C++ prefix operator</td>
+</tr>
+<tr>
+<td align="left">postfix_op</td>
+<td align="left">C++ postix operator</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477588048"></a>Associated Types</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left">A type which specifes the result type of an expression
+            using safe types.</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left">A type containing members which are called when a correct
+            result cannot be returned</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477581520"></a>Valid Expressions</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Expression</th>
+<th align="left">Result Type</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">s op u</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>invoke C++ operator op and return another
+              SafeNumeric type</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">t op s</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>invoke C++ operator op and return another
+              SafeNumeric type</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">s1 op s2</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>invoke C++ operator op and return another
+              SafeNumeric type</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">s(t)</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>construct a instance of S from t</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">s</code></td>
+<td align="left">S</td>
+<td align="left"><p>construct a unitiaized instance of S</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">prefix_op S</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>invoke C++ operator op and return another
+              SafeNumeric type</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">S postfix_op</code></td>
+<td align="left">unspecified S</td>
+<td align="left"><p>invoke C++ operator op and return another
+              SafeNumeric type</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">is_safe&lt;S&gt;</code></td>
+<td align="left">std::true_type or std::false_type</td>
+<td align="left"><p>type trait to query whether any type T fullfills
+              the requirments for a SafeNumeric type.</p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477558128"></a>Complexity Guarentees</h4></div></div></div>
+<p>There are no explicit complexity guarentees here. However, it would
+    be very surprising if any implementation were to be more complex that
+    O(0);</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477556816"></a>Invariants</h4></div></div></div>
+<p>The fundamental requirement of a SafeNumeric type is that implements
+    all C++ operations permitted on it's base type in a way the prevents the
+    return of an incorrect arithmetic result. Various implementations of this
+    concept may handle circumstances which produce such results differently (
+    throw exception, compile time trap, etc..) no implementation should return
+    an arithmetically incorrect result.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477555232"></a>Header</h4></div></div></div>
+<p>[A link to the source code where the concept checking header is
+    defined. This header should contain boost concept checking class for this
+    concept]</p>
+<p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
+    &lt;safe_numerics/include/concepts/safe_numeric_policy.hpp&gt;
+    </code></a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477552656"></a>Models</h4></div></div></div>
+<p>boost::numeric::safe&lt;T&gt;</p>
+<p>boost::numeric::safe_signed_range&lt;T&gt;</p>
+<p>boost::numeric::safe_unsigned_range&lt;T&gt;</p>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="integer.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policy.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

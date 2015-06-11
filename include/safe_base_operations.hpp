@@ -32,6 +32,45 @@
 namespace boost {
 namespace numeric {
 
+namespace detail {
+    template<class T>
+    struct safe_type {
+        static_assert(
+            is_safe<T>::value,
+            "Should be safe type here!"
+        );
+        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
+            return t.get_stored_value();
+        }
+    };
+    template<class T>
+    struct other_type {
+        static SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & get_stored_value(const T & t){
+            return t;
+        }
+    };
+} // detail
+
+template<class T>
+SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T &  t) {
+    typedef typename boost::mpl::if_<
+        is_safe<T>,
+        detail::safe_type<T>,
+        detail::other_type<T>
+    >::type invoke_operator;
+    return invoke_operator::get_stored_value(t);
+}
+
+template<class T>
+SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(T && t) {
+    typedef typename boost::mpl::if_<
+        is_safe<T>,
+        detail::safe_type<T>,
+        detail::other_type<T>
+    >::type invoke_operator;
+    return invoke_operator::get_stored_value(t);
+}
+
 template<class T, class U>
 struct common_policies {
     static_assert(
@@ -41,24 +80,6 @@ struct common_policies {
         >::value,
         "at least one type must be a safe type"
     );
-
-    template<typename Z>
-    struct get_promotion_policy {
-        static_assert(
-            boost::numeric::is_safe<Z>::value,
-            "only safe types have promotion policies"
-        );
-        typedef typename Z::PromotionPolicy type;
-    };
-
-    template<typename Z>
-    struct get_exception_policy {
-        static_assert(
-            is_safe<Z>::value,
-            "only safe types have exceptions policies"
-        );
-        typedef typename Z::ExceptionPolicy type;
-    };
 
     // if both types are safe, the policies have to be the same!
     static_assert(
@@ -466,8 +487,11 @@ operator>>(
     std::istream & is,
     T & t
 ){
-    return is >> t.get_stored_value();
-    t.validate();
+    typedef typename get_exception_policy<T>::type exception_policy;
+    is >> t.get_stored_value();
+    if(std::cin.fail() || !t.validate())
+        exception_policy::range_error("error in file input");
+    return is;
 }
 } // numeric
 } // boost

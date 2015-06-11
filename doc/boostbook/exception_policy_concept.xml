@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.exception_polcy">
+<section id="safe_numerics.exception_policy">
   <title>ExceptionPolicy&lt;EP&gt;</title>
 
   <section>
@@ -16,9 +16,7 @@
   <section>
     <title>Notation</title>
 
-    <table colsep="0" frame="all" rowsep="0">
-      <title>Notation</title>
-
+    <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
         <colspec align="left"/>
 
@@ -40,16 +38,14 @@
           </row>
         </tbody>
       </tgroup>
-    </table>
+    </informaltable>
   </section>
 
   <section>
     <title>Valid Expressions</title>
 
     <para>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.<table>
-        <title>General</title>
-
+    as some Numeric type will throw an exception.<informaltable>
         <tgroup cols="2">
           <colspec align="left"/>
 
@@ -86,7 +82,7 @@
             </row>
           </tbody>
         </tgroup>
-      </table></para>
+      </informaltable></para>
   </section>
 
   <section>
@@ -107,14 +103,7 @@
     a number of pre-made exception policies:</para>
 
     <itemizedlist>
-      <listitem>
-        <para><code>boost::numeric::ignore_exception</code></para>
-
-        <para>Emulate the normal C/C++ behavior of permitting overflows,
-        underflows etc.</para>
-      </listitem>
-
-      <listitem>
+      <listitem id="safe_numerics.exception_policy.models.thow_exception">
         <para><code>boost::numeric::throw_exception</code></para>
 
         <para>If an exceptional condition is detected at runtime throw the
@@ -122,7 +111,14 @@
         other one is specified.</para>
       </listitem>
 
-      <listitem>
+      <listitem id="safe_numerics.exception_policy.models.ignore_exception">
+        <para><code>boost::numeric::ignore_exception</code></para>
+
+        <para>Emulate the normal C/C++ behavior of permitting overflows,
+        underflows etc.</para>
+      </listitem>
+
+      <listitem id="safe_numerics.exception_policy.models.no_exception_support">
         <para><code>template&lt;void (*F)(const char *), void (*G)(const char
         *), void (*H)(const char *)&gt;</code></para>
 
@@ -134,7 +130,7 @@
         calling your own special functions.</para>
       </listitem>
 
-      <listitem>
+      <listitem id="safe_numerics.exception_policy.models.trap_exception">
         <para><code>boost::numeric::trap_exception</code></para>
 
         <para>Use this policy to trap at compile time any operation which

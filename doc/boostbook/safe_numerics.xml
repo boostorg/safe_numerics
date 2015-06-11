@@ -19,10 +19,8 @@
     </copyright>
 
     <legalnotice>
-      <para>
-        <ulink url="http://www.boost.org/LICENSE_1_0.txt">Subject to Boost
-        Software License</ulink>
-      </para>
+      <para><ulink url="http://www.boost.org/LICENSE_1_0.txt">Subject to Boost
+      Software License</ulink></para>
     </legalnotice>
 
     <librarypurpose>Safe integer operations</librarypurpose>
@@ -91,6 +89,12 @@
     <xi:include href="numeric_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+    <xi:include href="integer_concept.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="safe_numeric_concept.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
     <xi:include href="promotion_policy_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
@@ -104,10 +108,10 @@
     <xi:include href="safe.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
+    <xi:include href="safe_signed_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="safe_signed_range.xml" xpointer="element(/1)"
+    <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
@@ -304,23 +308,12 @@
       </listitem>
 
       <listitem>
-        <para>Stream input of safe integer types is not checked. Note that
-        standard library stream conversion functions such as
+        <para>Note that standard library stream conversion functions such as
         <code>strtoi</code> etc. DO check for valid input and throw the
         exception <code>std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
         <code>strtoi</code> aready contains the exact functionality that
         <code>safe&lt;int&gt;</code> provides.</para>
-      </listitem>
-
-      <listitem>
-        <para>There is currently no convenient way to override the overflow
-        function.</para>
-      </listitem>
-
-      <listitem>
-        <para>Expressions with safe integer types don't return safe integer
-        types.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -328,7 +321,7 @@
   <section id="safe_numerics.change_log">
     <title>Change Log</title>
 
-    <para>This is the initial version.</para>
+    <para>This is the second version.</para>
   </section>
 
   <section id="safe_numerics.bibliography">

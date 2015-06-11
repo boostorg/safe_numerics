@@ -24,9 +24,7 @@
   <section>
     <title>Notation</title>
 
-    <table colsep="0" frame="all" rowsep="0">
-      <title>Notation</title>
-
+    <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
         <colspec align="left"/>
 
@@ -34,27 +32,25 @@
 
         <tbody>
           <row>
-            <entry><code>T, U, V</code></entry>
+            <entry><code>T, U</code></entry>
 
             <entry>A type that is a model of the Numeric</entry>
           </row>
 
           <row>
-            <entry><code>t, u, v</code></entry>
+            <entry><code>t, u</code></entry>
 
             <entry>An object of type modeling Numeric</entry>
           </row>
         </tbody>
       </tgroup>
-    </table>
+    </informaltable>
   </section>
 
   <section>
     <title>Associated Types</title>
 
-    <table>
-      <title>Associated Types</title>
-
+    <informaltable>
       <tgroup cols="2">
         <colspec align="left"/>
 
@@ -71,7 +67,7 @@
           </row>
         </tbody>
       </tgroup>
-    </table>
+    </informaltable>
   </section>
 
   <section>
@@ -79,10 +75,9 @@
 
     <para>In addition to the expressions defined in <ulink
     url="http://www.sgi.com/tech/stl/Assignable.html">Assignable</ulink> the
-    following expressions must be valid.</para>
-
-    <para>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.<table>
+    following expressions must be valid. Any operations which result in
+    integers which cannot be represented as some Numeric type will throw an
+    exception.<table>
         <title>General</title>
 
         <tgroup cols="2">
@@ -102,12 +97,6 @@
             <row>
               <entry><code>std::numeric_limits&lt;T&gt;.is_bounded
               </code></entry>
-
-              <entry>true</entry>
-            </row>
-
-            <row>
-              <entry><code>std::numeric_limits&lt;T&gt;.is_integer</code></entry>
 
               <entry>true</entry>
             </row>

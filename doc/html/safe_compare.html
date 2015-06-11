@@ -26,15 +26,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_compare"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_compare.html#idm141062368368">Synopsis</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#idm141062366448">Description</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#idm141062363920">Type requirements</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#idm141063665632">Header</a></span></dt>
-<dt><span class="section"><a href="safe_compare.html#idm141063663840">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#idm354477307616">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#idm354477305520">Description</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#idm354477302976">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#idm354477293424">Header</a></span></dt>
+<dt><span class="section"><a href="safe_compare.html#idm354477291360">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062368368"></a>Synopsis</h4></div></div></div>
+<a name="idm354477307616"></a>Synopsis</h4></div></div></div>
 <p>safe_compare is several functions:.</p>
 <pre class="programlisting">template&lt;class T, class U&gt;
 bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
@@ -56,7 +56,7 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062366448"></a>Description</h4></div></div></div>
+<a name="idm354477305520"></a>Description</h4></div></div></div>
 <p>With normal comparison operators, comparison of unsigned types to
     signed types will be done by converting the unsigned type to a signed type
     before comparing. Unfortunately this is not always possible. Most C++
@@ -68,7 +68,7 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062363920"></a>Type requirements</h4></div></div></div>
+<a name="idm354477302976"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -92,13 +92,13 @@ bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141063665632"></a>Header</h4></div></div></div>
+<a name="idm354477293424"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="filename">#include
     &lt;boost/numeric/safe_compare.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141063663840"></a>Example of use</h4></div></div></div>
+<a name="idm354477291360"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_compare.hpp&gt;
 
 void f(){
@@ -118,10 +118,8 @@ void g(){
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
-        Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

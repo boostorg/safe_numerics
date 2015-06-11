@@ -15,12 +15,14 @@
 ../html/notes.html
 ../html/concepts.html
 ../html/numeric.html
+../html/integer.html
+../html/safe_numeric_concept.html
 ../html/promotion_policy.html
-../html/exception_polcy.html
+../html/exception_policy.html
 ../html/types.html
 ../html/safe.html
-../html/safe_unsigned_range.html
 ../html/safe_signed_range.html
+../html/safe_unsigned_range.html
 ../html/functions.html
 ../html/safe_cast.html
 ../html/safe_compare.html

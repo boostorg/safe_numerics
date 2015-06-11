@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>safe_unsigned_range&lt;boost::uintmax_t MIN, boost::uintmax_t MAX&gt;</title>
+<title>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="safe.html" title="safe&lt;T&gt;">
-<link rel="next" href="safe_signed_range.html" title="safe_signed_range&lt;boost::intmax_t MIN, boost::intmax_t MAX&gt;">
+<link rel="prev" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt;">
+<link rel="next" href="functions.html" title="Functions">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -20,32 +20,33 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_signed_range.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_signed_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="functions.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;boost::uintmax_t MIN, boost::uintmax_t
-  MAX&gt;</h3></div></div></div>
+<a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062493616">Description</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062491744">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062481792">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062470112">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062467344">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062450864">Header</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062448880">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm141062446464">See Also</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477377568">Description</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477375408">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477368128">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477361088">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477340736">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477338144">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477335856">Header</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm354477333760">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062493616"></a>Description</h4></div></div></div>
-<p>This type holds a integer in the range [MIN, MAX]. It will throw a
-    <code class="computeroutput">std::out_of_range</code> exception for any operation which would
-    result in assigning an integer value outside of this range.</p>
+<a name="idm354477377568"></a>Description</h4></div></div></div>
+<p>This type holds an unsigned integer in the closed range [MIN, MAX].
+    A <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
+    anywhere an arithmetic type is permitted. Any expression which uses this
+    type is guarenteed to return an arithmetically correct value or trap in
+    some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062491744"></a>Notation</h4></div></div></div>
+<a name="idm354477375408"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -55,25 +56,38 @@
 <th align="left">Symbol</th>
 <th align="left">Description</th>
 </tr></thead>
+<tbody><tr>
+<td align="left"><code class="computeroutput">MIN, MAX</code></td>
+<td align="left">Minimum and maximum unsigned values that the
+            safe_unsigned_range can represent.</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm354477368128"></a>Associated Types</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
 <tbody>
 <tr>
-<td align="left"><code class="computeroutput">T, U, V</code></td>
-<td align="left">Types which model the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept</td>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left">A type which specifes the result type of an expression
+            using safe types.</td>
 </tr>
 <tr>
-<td align="left">t, u, v</td>
-<td align="left">objects of types T</td>
-</tr>
-<tr>
-<td align="left">sur</td>
-<td align="left">object of type safe_unsigned_range</td>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left">A type containing members which are called when a correct
+            result cannot be returned</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062481792"></a>Template Parameters</h4></div></div></div>
+<a name="idm354477361088"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -88,120 +102,87 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">MIN</code></td>
-<td align="left">must be a non-negative integer literal</td>
-<td align="left">The minimum integer value that this type may hold</td>
+<td align="left">must be non-integer literal</td>
+<td align="left">The minimum non-negative integer value that this type may
+            hold</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">MAX</code></td>
-<td align="left">must be a positive integer literal</td>
-<td align="left">The maximum integer value that this type may hold</td>
+<td align="left">must be a non-negative literal</td>
+<td align="left">The maximum non-negative integer value that this type may
+            hold</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput"></code></td>
+<td align="left">&#160;</td>
 <td align="left">MIN &lt;= MAX</td>
-<td class="auto-generated">&#160;</td>
+<td align="left">must be a valid closed range</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy&lt;PP&gt;</a></a></td>
+<td align="left"><p>Default value is <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">boost::numeric::native</a></p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">Exception
+            Policy&lt;EP&gt;</a></a></td>
+<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</a></p></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062470112"></a>Model of</h4></div></div></div>
-<p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
-<p>The usage of this type in an arithmetic expression with another
-    unsigned type will result in another unsigned type fulfilling the <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> concept. This will be the
-    smallest unsigned integer type of sufficient size to hold the result of
-    the operation.</p>
+<a name="idm354477340736"></a>Model of</h4></div></div></div>
+<p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
+<p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062467344"></a>Valid Expressions</h4></div></div></div>
-<div class="informaltable"><table class="table">
-<colgroup>
-<col align="left">
-<col align="left">
-<col align="left">
-</colgroup>
-<thead><tr>
-<th align="left">Expression</th>
-<th align="left">Result Type</th>
-<th align="left">Description</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code class="computeroutput">st op u</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">typeof(t op
-              u)</a></td>
-<td align="left"><p>op is any valid binary operator for type
-              T</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">t op su</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">typeof(t op
-              u)</a></td>
-<td align="left"><p>op is any valid binary operator for type
-              T</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">st op su</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">typeof(t op
-              u)</a></td>
-<td align="left"><p>op is any valid binary operator for type
-              T</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">st(t)</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">safe&lt;T&gt;</a></td>
-<td align="left"><p>construct a instance of safe&lt;T&gt; from
-              t</p></td>
-</tr>
-</tbody>
-</table></div>
+<a name="idm354477338144"></a>Valid Expressions</h4></div></div></div>
+<p>Implements all expressions and only those expressions defined by the
+    <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
+    requirements. This, the result type of such an expression will be another
+    safe type. The actual type of the result of such an expression will depend
+    upon the specific promotion policy template parameter.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062450864"></a>Header</h4></div></div></div>
+<a name="idm354477335856"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062448880"></a>Example of use</h4></div></div></div>
+<a name="idm354477333760"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){
     boost::numeric::safe_unsigned_range&lt;7, 24&gt; i;
+    // since the range is included in [0,255], the underlying type of i 
+    // will be an unsigned char.
     i = 0;  // throws out_of_range exception
     i = 9;  // ok
     i *= 9; // throws out_of_range exception
     i = -1; // throws out_of_range exception
-
     std::uint8_t j = 4;
     auto k = i + j;
-        // since i can vary between 7 and 24 and j can vary between 0 and 255
-        // the smallest unsigned integer which can hold the result std::uint16_t
-        // j will be of type std::uint16_t 
-    
-}</pre>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062446464"></a>See Also</h4></div></div></div>
-<p><code class="computeroutput">std::out_of_range</code></p>
-<p><code class="computeroutput">safe_signed_range</code></p>
+        // These types use default promotion policy so standard C++ type promotion rules 
+        // will be used in evaluating expressions.   C++ type promotion rules mandate
+        // that the result of k = i + j when both are unsigned char types, will be another
+        // unsigned char type.
+  }</pre>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
-        Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_signed_range.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_signed_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="functions.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

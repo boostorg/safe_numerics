@@ -8,9 +8,9 @@
     <title>Description</title>
 
     <para>In C++, arithmetic operations result in types which may or may not
-    be the same as the constituent types. For example, A promotion policy
-    determines the type of the result of an arithmetic operation. For example,
-    in the following code<programlisting>int x;
+    be the same as the constituent types. A promotion policy determines the
+    type of the result of an arithmetic operation. For example, in the
+    following code<programlisting>int x;
 char y;
 auto z = x + y</programlisting>the type of <code>z</code> will be an
     <code>int</code>. This is a consequence for the standard rules for type
@@ -21,9 +21,7 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
   <section>
     <title>Notation</title>
 
-    <table colsep="0" frame="all" rowsep="0">
-      <title>Notation</title>
-
+    <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
         <colspec align="left"/>
 
@@ -50,15 +48,13 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
           </row>
         </tbody>
       </tgroup>
-    </table>
+    </informaltable>
   </section>
 
   <section>
     <title>Associated Types</title>
 
-    <table>
-      <title>Associated Types</title>
-
+    <informaltable>
       <tgroup cols="2">
         <colspec align="left"/>
 
@@ -73,16 +69,14 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
           </row>
         </tbody>
       </tgroup>
-    </table>
+    </informaltable>
   </section>
 
   <section>
     <title>Valid Expressions</title>
 
     <para>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.<table>
-        <title>Valid Expressions</title>
-
+    as some Numeric type will throw an exception.<informaltable>
         <tgroup cols="2">
           <colspec align="left"/>
 
@@ -112,7 +106,7 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
             </row>
           </tbody>
         </tgroup>
-      </table></para>
+      </informaltable></para>
   </section>
 
   <section>
@@ -130,11 +124,11 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
     <para>The library contains a number of pre-made promotion policies:</para>
 
     <itemizedlist>
-      <listitem>
+      <listitem id="safe_numerics.promotion_policy.models.native">
         <para><code>boost::numeric::native</code></para>
 
         <para>Use the normal C/C++ expression type promotion rules.
-        <programlisting>int x;
+        <programlisting name="cpp">int x;
 char y;
 auto z = x + y; // could result in overflow
 safe&lt;int&gt; sx;
@@ -147,7 +141,7 @@ auto sz = sx + y; // includes code which traps overflows at runtime</programlist
         &lt;safe_numerics/include/native.hpp&gt;</code></ulink></para>
       </listitem>
 
-      <listitem>
+      <listitem id="safe_numerics.promotion_policy.models.automatic">
         <para><code>boost::numeric::automatic</code></para>
 
         <para>Use optimizing expression type promotion rules. These rules

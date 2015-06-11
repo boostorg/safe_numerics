@@ -4,6 +4,10 @@
 <section id="safe_numerics.introduction">
   <title>Introduction</title>
 
+  <para>All data types, type requirements, function and meta function names
+  are found in the namespase boost::numeric . In order to make this document
+  more readable, we have omitted this namespace qualifier.</para>
+
   <section id="safe_numerics.introduction.problem">
     <title>Problem</title>
 

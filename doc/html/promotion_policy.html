@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="concepts.html" title="Type Requirements">
-<link rel="prev" href="numeric.html" title="Numeric&lt;T&gt;">
-<link rel="next" href="exception_polcy.html" title="ExceptionPolicy&lt;EP&gt;">
+<link rel="prev" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">
+<link rel="next" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -20,26 +20,26 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="numeric.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_polcy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_numeric_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="promotion_policy.html#idm141062617760">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm141062614320">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm141062604896">Associated Types</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm141062599600">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm141062590656">Header</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm141062588624">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477549584">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477546160">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477537792">Associated Types</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477532880">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477524320">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm354477522288">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062617760"></a>Description</h4></div></div></div>
+<a name="idm354477549584"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
-    be the same as the constituent types. For example, A promotion policy
-    determines the type of the result of an arithmetic operation. For example,
-    in the following code</p>
+    be the same as the constituent types. A promotion policy determines the
+    type of the result of an arithmetic operation. For example, in the
+    following code</p>
 <pre class="programlisting">int x;
 char y;
 auto z = x + y</pre>
@@ -50,10 +50,8 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062614320"></a>Notation</h4></div></div></div>
-<div class="table">
-<a name="idm141062613680"></a><p class="title"><b>Table&#160;6.&#160;Notation</b></p>
-<div class="table-contents"><table class="table" summary="Notation">
+<a name="idm354477546160"></a>Notation</h4></div></div></div>
+<div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
@@ -75,14 +73,10 @@ auto z = x + y</pre>
 </tbody>
 </table></div>
 </div>
-<br class="table-break">
-</div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062604896"></a>Associated Types</h4></div></div></div>
-<div class="table">
-<a name="idm141062604256"></a><p class="title"><b>Table&#160;7.&#160;Associated Types</b></p>
-<div class="table-contents"><table class="table" summary="Associated Types">
+<a name="idm354477537792"></a>Associated Types</h4></div></div></div>
+<div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
@@ -94,16 +88,12 @@ auto z = x + y</pre>
 </tr></tbody>
 </table></div>
 </div>
-<br class="table-break">
-</div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062599600"></a>Valid Expressions</h4></div></div></div>
+<a name="idm354477532880"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
-<div class="table">
-<a name="idm141062598576"></a><p class="title"><b>Table&#160;8.&#160;Valid Expressions</b></p>
-<div class="table-contents"><table class="table" summary="Valid Expressions">
+<div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
@@ -126,22 +116,20 @@ auto z = x + y</pre>
 </tbody>
 </table></div>
 </div>
-<p><br class="table-break"></p>
-</div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062590656"></a>Header</h4></div></div></div>
+<a name="idm354477524320"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm141062588624"></a>Models</h4></div></div></div>
+<a name="idm354477522288"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
-<p><code class="computeroutput">boost::numeric::native</code></p>
+<p><a name="safe_numerics.promotion_policy.models.native"></a><code class="computeroutput">boost::numeric::native</code></p>
 <p>Use the normal C/C++ expression type promotion rules.
         </p>
 <pre class="programlisting">int x;
@@ -154,7 +142,7 @@ auto sz = sx + y; // includes code which traps overflows at runtime</pre>
         &lt;safe_numerics/include/native.hpp&gt;</code></a></p>
 </li>
 <li class="listitem">
-<p><code class="computeroutput">boost::numeric::automatic</code></p>
+<p><a name="safe_numerics.promotion_policy.models.automatic"></a><code class="computeroutput">boost::numeric::automatic</code></p>
 <p>Use optimizing expression type promotion rules. These rules
         replace the normal C/C++ type promotion rules with other rules which
         are designed to result in more efficient computations. Expression
@@ -187,15 +175,13 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
-        Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="numeric.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_polcy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_numeric_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

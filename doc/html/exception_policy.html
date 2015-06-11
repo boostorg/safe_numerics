@@ -24,17 +24,17 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.exception_polcy"></a>ExceptionPolicy&lt;EP&gt;</h3></div></div></div>
+<a name="safe_numerics.exception_policy"></a>ExceptionPolicy&lt;EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="exception_polcy.html#idm444525041696">Description</a></span></dt>
-<dt><span class="section"><a href="exception_polcy.html#idm444525040272">Notation</a></span></dt>
-<dt><span class="section"><a href="exception_polcy.html#idm444525033520">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="exception_polcy.html#idm444525023072">Header</a></span></dt>
-<dt><span class="section"><a href="exception_polcy.html#idm444525020816">Models</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm354477509136">Description</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm354477507712">Notation</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm354477501184">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm354477491232">Header</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm354477489200">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm444525041696"></a>Description</h4></div></div></div>
+<a name="idm354477509136"></a>Description</h4></div></div></div>
 <p>The exception policy specifies what is to occur when a safe
     operation cannot return a valid arithmetic result. A type is an
     ExceptionPolicy if it has functions for handling exceptional events that
@@ -42,7 +42,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm444525040272"></a>Notation</h4></div></div></div>
+<a name="idm354477507712"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -64,7 +64,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm444525033520"></a>Valid Expressions</h4></div></div></div>
+<a name="idm354477501184"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="informaltable"><table class="table">
@@ -97,14 +97,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm444525023072"></a>Header</h4></div></div></div>
+<a name="idm354477491232"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm444525020816"></a>Models</h4></div></div></div>
+<a name="idm354477489200"></a>Models</h4></div></div></div>
 <p>The library header <a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/exception_policy.hpp&gt; </code></a>contains
     a number of pre-made exception policies:</p>
@@ -140,10 +140,8 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p>
-        <a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
-        Software License</a>
-      </p>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
 </div></td>
 </tr></table>
 <hr>

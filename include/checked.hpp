@@ -18,7 +18,6 @@
 #include <limits>
 
 #include <boost/utility/enable_if.hpp>
-#include <type_traits> // make_unsigned
 #include "safe_base.hpp"
 #include "checked_result.hpp"
 
@@ -40,8 +39,9 @@ namespace checked {
         const T & t
     ){
         return
-        std::is_signed<R>::value ?
-            std::is_signed<T>::value ?
+        std::numeric_limits<R>::is_signed ?
+            // T is signed
+            std::numeric_limits<T>::is_signed ?
                 t > std::numeric_limits<R>::max() ?
                     checked_result<R>(
                         checked_result<R>::exception_type::range_error,
@@ -63,8 +63,9 @@ namespace checked {
                     )
                 :
                     checked_result<R>(t)
-        : // std::is_unsigned<R>::value
-            std::is_unsigned<T>::value ?
+        : // std::numeric_limits<R>::is_signed
+            // T is signed
+            ! std::numeric_limits<T>::is_signed ?
                 t > std::numeric_limits<R>::max() ?
                     checked_result<R>(
                         checked_result<R>::exception_type::range_error,
