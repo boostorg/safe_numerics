@@ -381,7 +381,7 @@ namespace checked {
         const T & t,
         const U & u
     ) {
-        static_assert(! is_safe<T>::value, "should only be a base type here!");
+        static_assert(! is_safe<T>::value, "should not be a base type here!");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
@@ -410,134 +410,88 @@ namespace checked {
         ;
     }
 
-/*
+    ////////////////////////////////
+    // safe division on unsafe types
     namespace detail {
 
-    ////////////////////////////////
-    // multiplication implementation
-
-    template<class T, class U>
-    decltype(T() * U())
-    check_multiplication_overflow(const T & t, const U & u){
-        typedef decltype(T() * U()) result_type;
-        char const * const msg = "safe range multiplication overflow";
-        // presume that size of uintmax_t and intmax_t are the same
-        typedef bits<boost::uintmax_t> available_bits;
-
-        if(multiply_result_bits<T, U>::value
-        <= boost::numeric::bits<result_type>::value)
-            return t * u;
-
-        if(multiply_result_bits<T, U>::value <= available_bits::value){
-            typedef typename multiply_result_type<T, U>::type temp_type;
-            temp_type tmp = static_cast<temp_type>(t) * temp_type(u);
-            // the following works for both positive and negative results
-            // and for both signed and unsigned numbers
-            if(tmp > boost::integer_traits<result_type>::const_max)
-                boost::numeric::overflow(msg);
-            if(tmp < boost::integer_traits<result_type>::const_min)
-                boost::numeric::overflow(msg);
-            return static_cast<result_type>(tmp);
-        }
-
-        // when the there is no native type which can hold the product
-        // use multible precision
-
-        // t is factored as (a << temp_bits) + b
-        // u is factored as (c << temp_bits) + d
-        // so we use multi-precision:
-        // a + b
-        // c + d
-        // -----
-        //    bd
-        //   ad
-        //   cb
-        //  ac
-        // -----
-        //    ..
-
-        if(boost::numeric::is_unsigned<result_type>::value
-        && (t < 0 || u < 0))
-            overflow("conversion of negative value to unsigned");
-
-        if(t == 1)
-            return u;
-        if(u == 1)
-            return t;
-            
-        result_type rt = t;
-        if(rt < 0){
-            rt = ~rt + 1;
-            // address
-            if(rt < 0)
-                overflow("overflow of negative value");
-        }
-        result_type ru = u;
-        if(ru < 0){
-            ru = ~ru + 1;
-            // address
-            if(ru < 0)
-                overflow("overflow of negative value");
-        }
-
-        // check positive values for overflow
-
-        // t is factored as (a << temp_bits) + b
-        // u is factored as (c << temp_bits) + d
-        // so we use multi-precision:
-        // a + b
-        // c + d
-        // -----
-        //    bd
-        //   ad
-        //   cb
-        //  ac
-        // -----
-        //    ..
-
-        typedef boost::uintmax_t accumulator_type;
-        const int temp_bits = bits<accumulator_type>::value / 2;
-        typedef typename boost::uint_t<temp_bits>::least temp_type;
-
-        temp_type a = (static_cast<accumulator_type>(rt) >> temp_bits);
-        temp_type c = (static_cast<accumulator_type>(ru) >> temp_bits);
-        if(0 != a && 0 != c)
-            overflow(msg);
-
-        temp_type b = static_cast<temp_type>(rt);
-        if((static_cast<accumulator_type>(b) * static_cast<accumulator_type>(c) >> temp_bits) > 0)
-            overflow(msg);
-
-        temp_type d = static_cast<const temp_type>(ru);
-        if(0 != (static_cast<accumulator_type>(a) * static_cast<accumulator_type>(d) >> temp_bits))
-            overflow(msg);
-            
-        return t * u;
+    template<class R>
+    typename boost::enable_if_c<
+        std::is_unsigned<R>::value,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR divide(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ) {
+        return checked_result<R>(t / u);
     }
-    template<class T, class U>
-    decltype(T() / U())
-    check_division_overflow(const T & t, const U & u){
-        if(0 == u)
-            overflow("divide by zero");
 
-        if(boost::numeric::is_signed<U>::value){
-            // t unsigned, u signed
-            if(boost::numeric::is_unsigned<T>::value){
-                if(u < 0){
-                    overflow("conversion of negative value to unsigned");
-                }
-            }
-            else{
-            // both signed
-                // pathological case: change sign on negative number so it overflows
-                if(t == boost::integer_traits<T>::const_min && u == -1)
-                    overflow("overflow in result");
-            }
-        }
-        // both unsigned
-        // t signed, u unsigned
-        return t / u;
+    template<class R>
+    typename boost::enable_if_c<
+        std::is_signed<R>::value,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR divide(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ){
+        return
+            // note presumption of two's complement arithmetic
+            (u < 0 && t == std::numeric_limits<R>::min()) ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::domain_error,
+                    "divide by zero"
+                )
+            :
+                checked_result<R>(t / u)
+            ;
     }
+
+    } // namespace detail
+
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
+        const R & minr,
+        const R & maxr,
+        const T & t,
+        const U & u
+    ) {
+        static_assert(! is_safe<T>::value, "should not be a base type here!");
+        return
+            detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(t)
+            :
+            detail::cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(u)
+            :
+                u == 0 ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::domain_error,
+                        "divide by zero"
+                    )
+                :
+                    detail::divide<R>(minr, maxr, t, u)
+        ;
+    }
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
+        const T & t,
+        const U & u
+    ) {
+        return
+            divide<R, T, U>(
+                std::numeric_limits<R>::min(),
+                std::numeric_limits<R>::max(),
+                t,
+                u
+            )
+        ;
+    }
+    /*
     template<class T, class U>
     decltype(T() / U())
     check_modulus_overflow(const T & t, const U & u){
@@ -562,8 +516,7 @@ namespace checked {
         // t signed, u unsigned
         return t % u;
     }
-}   // detail
-*/
+    */
 } // checked
 } // numeric
 } // boost

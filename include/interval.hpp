@@ -54,11 +54,11 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
             (u.l < 0) ?
                 (u.u > 0) ? // M * M
                     interval<R>(
-                        boost::numeric::minxx(
+                        min(
                             checked::multiply<R>(t.l, u.u),
                             checked::multiply<R>(t.u, u.l)
                         ),
-                        boost::numeric::maxxx(
+                        max(
                             checked::multiply<R>(t.l, u.u),
                             checked::multiply<R>(t.u, u.l)
                         )
@@ -118,6 +118,102 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
             interval<R>(0, 0)
     ;
 }
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interval<U> & u){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    return
+        (u.l <= 0) ?
+            interval<R>(
+                0,
+                checked_result<R>(
+                    checked_result<R>::exception_type::domain_error,
+                    "interval divisor includes zero"
+                )
+            )
+        :
+            interval<R>(
+                min(
+                    min(
+                        checked::divide<R>(t.l, u.l),
+                        checked::divide<R>(t.l, u.u)
+                    ),
+                    min(
+                        checked::divide<R>(t.u, u.l),
+                        checked::divide<R>(t.u, u.u)
+                    )
+                ),
+                max(
+                    max(
+                        checked::divide<R>(t.l, u.l),
+                        checked::divide<R>(t.l, u.u)
+                    ),
+                    max(
+                        checked::divide<R>(t.u, u.l),
+                        checked::divide<R>(t.u, u.u)
+                    )
+                )
+            )
+        ;
+}
+
+/*
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interval<U> & u){
+    // adapted from boost interval library
+    return
+        (t.u < 0) ?
+            (u.u < 0) ?
+                interval<R>(
+                    checked_result<R>(t.u, u.l),
+                    checked_result<R>(t.l, u.u)
+                )
+            :
+                interval<R>(
+                    checked_result<R>(t.l, u.l),
+                    checked_result<R>(t.u, u.u)
+                )
+        :
+        (t.l < 0) ?
+            (u.u < 0) ?
+                interval<R>(
+                    checked_result<R>(t.u, u.u),
+                    checked_result<R>(t.l, u.u)
+                )
+            :
+                interval<R>(
+                    checked_result<R>(t.l, u.l),
+                    checked_result<R>(t.u, u.l)
+                )
+        :
+            (u.u < 0) ?
+                interval<R>(
+                    checked_result<R>(t.u, u.u),
+                    checked_result<R>(t.l, u.l)
+                )
+            :
+                interval<R>(
+                    checked_result<R>(t.l, u.u),
+                    checked_result<R>(t.u, u.l)
+                )
+    ;
+}
+  if (::boost::numeric::interval_lib::user::is_neg(xu))
+    if (::boost::numeric::interval_lib::user::is_neg(yu))
+      return I(rnd.div_down(xu, yl), rnd.div_up(xl, yu), true);
+    else
+      return I(rnd.div_down(xl, yl), rnd.div_up(xu, yu), true);
+  else if (::boost::numeric::interval_lib::user::is_neg(xl))
+    if (::boost::numeric::interval_lib::user::is_neg(yu))
+      return I(rnd.div_down(xu, yu), rnd.div_up(xl, yu), true);
+    else
+      return I(rnd.div_down(xl, yl), rnd.div_up(xu, yl), true);
+  else
+    if (::boost::numeric::interval_lib::user::is_neg(yu))
+      return I(rnd.div_down(xu, yu), rnd.div_up(xl, yl), true);
+    else
+      return I(rnd.div_down(xl, yu), rnd.div_up(xu, yl), true);
+*/
 
 } // numeric
 } // boost

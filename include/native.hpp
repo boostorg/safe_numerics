@@ -30,40 +30,32 @@ template<
 struct safe;
 
 struct native {
-    template<
-        typename T,
-        typename U,
-        typename P,
-        typename E
-    >
+    template<typename T, typename U, typename P, typename E>
     struct addition_result {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
         typedef decltype(base_type_t() + base_type_u()) result_base_type;
         typedef safe<result_base_type, P, E> type;
     };
-    template<
-        typename T,
-        typename U,
-        typename P,
-        typename E
-    >
+    template<typename T, typename U, typename P, typename E>
     struct subtraction_result {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
         typedef decltype(base_type_t() - base_type_u()) result_base_type;
         typedef safe<result_base_type, P, E> type;
     };
-    template<
-        typename T,
-        typename U,
-        typename P,
-        typename E
-    >
+    template<typename T, typename U, typename P, typename E>
     struct multiplication_result {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
         typedef decltype(base_type_t() * base_type_u()) result_base_type;
+        typedef safe<result_base_type, P, E> type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct division_result {
+        typedef typename base_type<T>::type base_type_t;
+        typedef typename base_type<U>::type base_type_u;
+        typedef decltype(base_type_t() / base_type_u()) result_base_type;
         typedef safe<result_base_type, P, E> type;
     };
 };

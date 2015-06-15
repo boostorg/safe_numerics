@@ -310,22 +310,74 @@ inline operator*(const T & t, const U & u){
     return static_cast<result_type>(r);
 }
 
-/*
 /////////////////////////////////////////////////////////////////
 // division
-// special case - possible overflow
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    std::is_integral<T>,
-    decltype(T() / Stored())
+
+template<class T, class U>
+struct division_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template division_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    division_result<T, U>
 >::type
-inline operator/(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    if(safe_compare::equal(0, rhs))
-        throw std::domain_error("Divide by zero");
-    return static_cast<
-        decltype(T() / Stored())
-    >(lhs / static_cast<const Stored &>(rhs));
+inline operator/(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef division_result<T, U> ar;
+    typedef typename ar::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<t_base_type>::min()),
+            base_value(std::numeric_limits<t_base_type>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<u_base_type>::min()),
+            base_value(std::numeric_limits<u_base_type>::max())
+        };
+
+    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
+        = operator/<result_base_type>(t_interval, u_interval);
+
+    // if no over/under flow possible
+    if(r_interval.no_exception())
+        return result_type(base_value(t) / base_value(u));
+
+    // otherwise do the multiplication checking for overflow
+    checked_result<result_base_type>  r = checked::divide(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
+        base_value(t),
+        base_value(u)
+    );
+
+    r.template dispatch<typename ar::P::exception_policy>();
+    
+    return static_cast<result_type>(r);
 }
+
+/*
+
 // comparison operators
 template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<

@@ -23,7 +23,8 @@ struct checked_result {
         no_exception,
         overflow_error,
         underflow_error,
-        range_error
+        range_error,
+        domain_error
     };
     exception_type m_e;
     union {
@@ -103,6 +104,9 @@ struct checked_result {
         case checked_result<R>::exception_type::range_error:
             EP::range_error(m_msg);
             break;
+        case checked_result<R>::exception_type::domain_error:
+            EP::domain_error(m_msg);
+            break;
         case checked_result<R>::exception_type::no_exception:
             break;
         default:
@@ -112,7 +116,7 @@ struct checked_result {
 };
 
 template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> minxx(const checked_result<R> & t, const checked_result<R> & u){
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(const checked_result<R> & t, const checked_result<R> & u){
     return
         (t.m_e == checked_result<R>::exception_type::no_exception
         && u.m_e == checked_result<R>::exception_type::no_exception) ?
@@ -127,8 +131,9 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> minxx(const checked_result
             )
         ;
 }
+
 template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> maxxx(const checked_result<R> & t, const checked_result<R> & u){
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R> & t, const checked_result<R> & u){
     return
         (t.m_e == checked_result<R>::exception_type::no_exception
         && u.m_e == checked_result<R>::exception_type::no_exception) ?

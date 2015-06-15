@@ -24,6 +24,7 @@ struct ExceptionPolicy {
         EP::overflow_error(message);
         EP::underflow_error(message);
         EP::range_error(message);
+        EP::domain_error(message);
     }
 };
 

@@ -27,10 +27,12 @@ bool test_add(
 
         try{
             result = t1 + v2;
+
             static_assert(
                 boost::numeric::is_safe<decltype(t1 + v2)>::value,
                 "Expression failed to return safe type"
             );
+            
             if(expected_result == 'x'){
                     std::cout
                         << "failed to detect error in addition "
@@ -66,14 +68,6 @@ bool test_add(
         // presuming native policy
         boost::numeric::safe<decltype(v1 + v2)> result;
 
-        static_assert(
-            std::is_same<
-                boost::numeric::safe<decltype(v1 + v2)>,
-                decltype(t1 + t2)
-            >::value,
-            "unexpected result type"
-        );
-
         try{
             result = t1 + t2;
 
@@ -81,6 +75,7 @@ bool test_add(
                 boost::numeric::is_safe<decltype(t1 + t2)>::value,
                 "Expression failed to return safe type"
             );
+
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in addition "

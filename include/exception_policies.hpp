@@ -31,6 +31,7 @@ struct ignore_exception {
     static void overflow_error(const char * message) {}
     static void underflow_error(const char * message) {}
     static void range_error(const char * message) {}
+    static void domain_error(const char * message) {}
 };
 
 // If an exceptional condition is detected at runtime throw the exception.
@@ -45,6 +46,9 @@ struct throw_exception {
     static void range_error(const char * message) {
         throw std::domain_error(message);
     }
+    static void domain_error(const char * message) {
+        throw std::domain_error(message);
+    }
 };
 
 // example - if you want to specify specific behavior for particular exception
@@ -54,7 +58,8 @@ struct throw_exception {
 template<
     void (*OVERFLOW)(const char *),
     void (*UNDERFLOW)(const char *),
-    void (*RANGE)(const char *)
+    void (*RANGE)(const char *),
+    void (*DOMAIN)(const char *)
 >
 struct no_exception_support {
     BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<no_exception_support>));
@@ -66,6 +71,9 @@ struct no_exception_support {
     }
     static void range_error(const char * message) {
         RANGE(message);
+    }
+    static void domain_error(const char * message) {
+        DOMAIN(message);
     }
 };
 
@@ -89,6 +97,10 @@ struct trap_exception {
     template<class T>
     static void range_error(const T *) {
         static_assert(std::is_void<T>::value, "range_error");
+    }
+    template<class T>
+    static void domain_error(const T *) {
+        static_assert(std::is_void<T>::value, "domain_error");
     }
 };
 
