@@ -12,16 +12,13 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <type_traits> // is_base_of, is_convertible, remove_reference
 #include <limits>
+#include <type_traits> // is_integral
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
-
-//#include <boost/mpl/and.hpp>
-//#include <boost/utility/enable_if.hpp>
 
 // don't use constexpr so we can debug
 #define SAFE_NUMERIC_CONSTEXPR constexpr
@@ -364,7 +361,7 @@ public:
 */
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
-    explicit operator Stored () const {
+    explicit SAFE_NUMERIC_CONSTEXPR operator const Stored & () const {
         return m_t;
     }
 };
@@ -384,6 +381,11 @@ template<typename T>
 struct base_type {
     typedef T type;
 };
+
+template<class T>
+SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T & t) {
+    return static_cast<const typename base_type<T>::type & >(t);
+}
 
 template<typename T>
 struct get_promotion_policy {

@@ -31,6 +31,18 @@ struct checked_result {
         const char * m_msg;
     };
     // constructors
+    /*
+    // breaks add/subtrac etc.!!!
+    SAFE_NUMERIC_CONSTEXPR checked_result(const checked_result<R> & r) :
+        m_e(r.m_e)
+    {
+        (m_e == exception_type::no_exception) ?
+            (m_r = r.m_r), 0
+        :
+            (m_msg = r.m_msg), 0
+        ;
+    }
+    */
     SAFE_NUMERIC_CONSTEXPR explicit checked_result(const R & r) :
         m_e(exception_type::no_exception),
         m_r(r)
@@ -60,6 +72,16 @@ struct checked_result {
     SAFE_NUMERIC_CONSTEXPR operator const char *() const {
         return m_msg;
     }
+    SAFE_NUMERIC_CONSTEXPR bool operator<(const checked_result & r) const {
+        return
+            (m_e == exception_type::no_exception
+            || r.m_e == exception_type::no_exception) ?
+                false // replace with tribool?
+            :
+                m_r < r.m_r
+            ;
+    }
+
     SAFE_NUMERIC_CONSTEXPR bool operator==(const exception_type & et) const {
         return m_e == et;
     }
@@ -88,6 +110,39 @@ struct checked_result {
         }
     }
 };
+
+template<typename R>
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> minxx(const checked_result<R> & t, const checked_result<R> & u){
+    return
+        (t.m_e == checked_result<R>::exception_type::no_exception
+        && u.m_e == checked_result<R>::exception_type::no_exception) ?
+            t.m_r < u.m_r ?
+                t
+            :
+                u
+        :
+            checked_result<R>(
+                checked_result<R>::exception_type::range_error,
+                "Can't compare values without values"
+            )
+        ;
+}
+template<typename R>
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> maxxx(const checked_result<R> & t, const checked_result<R> & u){
+    return
+        (t.m_e == checked_result<R>::exception_type::no_exception
+        && u.m_e == checked_result<R>::exception_type::no_exception) ?
+            t.m_r < u.m_r ?
+                u
+            :
+                t
+        :
+            checked_result<R>(
+                checked_result<R>::exception_type::range_error,
+                "Can't compare values without values"
+            )
+        ;
+}
 
 } // numeric
 } // boost
