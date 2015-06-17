@@ -98,9 +98,8 @@
     <title>Models</title>
 
     <para>The library header <ulink
-    url="../../include/exception_policy.hpp"><code>#include
-    &lt;safe_numerics/include/exception_policy.hpp&gt; </code></ulink>contains
-    a number of pre-made exception policies:</para>
+    url="../../include/exception_policies.hpp"><code>&lt;safe_numerics/include/exception_policies.hpp&gt;
+    </code></ulink>contains a number of pre-made exception policies:</para>
 
     <itemizedlist>
       <listitem id="safe_numerics.exception_policy.models.thow_exception">

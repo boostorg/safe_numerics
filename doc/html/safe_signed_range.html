@@ -26,25 +26,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_signed_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477422384">Description</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477420512">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477412992">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477406240">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477387104">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477384544">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477382272">Header</a></span></dt>
-<dt><span class="section"><a href="safe_signed_range.html#idm354477380224">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379936640">Description</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379934768">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379927248">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379920496">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379902032">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379899792">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379897728">Header</a></span></dt>
+<dt><span class="section"><a href="safe_signed_range.html#idm305379895744">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477422384"></a>Description</h4></div></div></div>
+<a name="idm305379936640"></a>Description</h4></div></div></div>
 <p>This type holds a signed integer in the range [MIN, MAX]. It will
     throw a <code class="computeroutput">std::out_of_range</code> exception for operation which would
     result in assigning an integer value outside of this range.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477420512"></a>Notation</h4></div></div></div>
+<a name="idm305379934768"></a>Notation</h4></div></div></div>
 <p>In addition</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -64,7 +64,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477412992"></a>Associated Types</h4></div></div></div>
+<a name="idm305379927248"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -86,7 +86,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477406240"></a>Template Parameters</h4></div></div></div>
+<a name="idm305379920496"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -130,13 +130,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477387104"></a>Model of</h4></div></div></div>
+<a name="idm305379902032"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477384544"></a>Valid Expressions</h4></div></div></div>
+<a name="idm305379899792"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -145,13 +145,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477382272"></a>Header</h4></div></div></div>
+<a name="idm305379897728"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477380224"></a>Example of use</h4></div></div></div>
+<a name="idm305379895744"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
 void f(){

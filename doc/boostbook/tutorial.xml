@@ -75,8 +75,8 @@
         </listitem>
       </itemizedlist></para>
 
-    <para>This solution is the same as the above, Just replace instances of
-    the <code>int </code>with <code>safe&lt;int&gt;</code>.<programlisting><xi:include
+    <para>This solution is simple, Just replace instances of the <code>int
+    </code>with <code>safe&lt;int&gt;</code>.<programlisting><xi:include
           href="../../examples/example4.cpp" parse="text"
           xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
   </section>

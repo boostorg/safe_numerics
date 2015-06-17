@@ -221,15 +221,18 @@
 
       <qandaentry>
         <question>
-          <para>Isn't putting a defensive check just before any potential UB,
-          is often considered a bad practice?</para>
+          <para>Isn't putting a defensive check just before any potential
+          undefined behavior is often considered a bad practice?</para>
         </question>
 
         <answer>
           <para>By whom? Is leaving code which can produce incorrect results
           better? Note that the documentation contains references to various
           sources which recommend exactly this approach to mitigate the
-          problems created by this C/C++ behavior.</para>
+          problems created by this C/C++ behavior. See <link
+          linkend="Seacord"><citation>Seacord</citation></link>, <ulink
+          url="https://www.cert.org">Software Engineering Institute - Carnegie
+          Mellon University</ulink></para>
         </answer>
       </qandaentry>
 
@@ -278,16 +281,6 @@
           replacement for T so it has to implement all the operations.</para>
         </answer>
       </qandaentry>
-
-      <qandaentry>
-        <question>
-          <para/>
-        </question>
-
-        <answer>
-          <para/>
-        </answer>
-      </qandaentry>
     </qandaset>
   </section>
 
@@ -327,7 +320,7 @@
   <section id="safe_numerics.bibliography">
     <title>Bibliography</title>
 
-    <biblioentry>
+    <biblioentry id="Seacord">
       <author>
         <surname>Robert C. Seacord</surname>
       </author>
@@ -372,7 +365,7 @@
 
     <biblioentry>
       <author>
-        <surname>Robert C. Seacord</surname>
+        <surname id="INT32-C">Robert C. Seacord</surname>
       </author>
 
       <title>

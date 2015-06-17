@@ -26,22 +26,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_cast"></a>safe_cast&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_cast.html#idm354477330048">Synopsis</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm354477328432">Description</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm354477325488">Type requirements</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm354477315728">Preconditions</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm354477312992">Header</a></span></dt>
-<dt><span class="section"><a href="safe_cast.html#idm354477310896">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379849200">Synopsis</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379847744">Description</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379845136">Type requirements</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379836112">Preconditions</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379833744">Header</a></span></dt>
+<dt><span class="section"><a href="safe_cast.html#idm305379831760">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477330048"></a>Synopsis</h4></div></div></div>
+<a name="idm305379849200"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting">template&lt;class T, class U&gt;
 T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477328432"></a>Description</h4></div></div></div>
+<a name="idm305379847744"></a>Description</h4></div></div></div>
 <p>Converts one <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a>
     type to another. Throws an <code class="computeroutput">std::out_of_range</code> exception if
     such a conversion is not possible without changing the value. This
@@ -50,7 +50,7 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477325488"></a>Type requirements</h4></div></div></div>
+<a name="idm305379845136"></a>Type requirements</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -74,20 +74,20 @@ T safe_cast(const U &amp; u);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477315728"></a>Preconditions</h4></div></div></div>
+<a name="idm305379836112"></a>Preconditions</h4></div></div></div>
 <p>The value of u must be representable by the type <code class="computeroutput">T</code>. If
     this is not true, an <code class="computeroutput">std::out_of_range</code> exception will be
     thrown.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477312992"></a>Header</h4></div></div></div>
+<a name="idm305379833744"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_cast.hpp" target="_top">#include
     &lt;boost/numeric/safe_cast.hpp&gt; </a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477310896"></a>Example of use</h4></div></div></div>
+<a name="idm305379831760"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;boost/numeric/safe_cast.hpp&gt; 
 #include &lt;boost/numeric/safe_integer.hpp&gt; 
 

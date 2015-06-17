@@ -42,8 +42,8 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See[<a class="citation" href="bibliography.html#idm354480662352"><span class="citation">INT32-C</span></a>] seems to recommend the following
-    approach.</p>
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm305381190752"><span class="citation">INT32-C</span></a>]</a> seems
+    to recommend the following approach.</p>
 <pre class="programlisting">int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
   || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - x)))) {

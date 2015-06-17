@@ -231,14 +231,9 @@
   <section>
     <title>Header</title>
 
-    <para>[A link to the source code where the concept checking header is
-    defined. This header should contain boost concept checking class for this
-    concept]</para>
-
     <para><ulink
     url="../../include/concept/exception_policy.hpp"><code>#include
-    &lt;safe_numerics/include/concepts/safe_numeric_policy.hpp&gt;
-    </code></ulink></para>
+    &lt;safe_numerics/include/concepts/safe_numeric.hpp&gt;</code></ulink></para>
   </section>
 
   <section>
@@ -246,8 +241,8 @@
 
     <para>boost::numeric::safe&lt;T&gt;</para>
 
-    <para>boost::numeric::safe_signed_range&lt;T&gt;</para>
+    <para>boost::numeric::safe_signed_range&lt;-11, 11&gt;</para>
 
-    <para>boost::numeric::safe_unsigned_range&lt;T&gt;</para>
+    <para>boost::numeric::safe_unsigned_range&lt;0, 11&gt;</para>
   </section>
 </section>

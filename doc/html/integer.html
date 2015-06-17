@@ -26,41 +26,40 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.integer"></a>Integer&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="integer.html#idm354477624816">Description</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm354477619648">Refinement of</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm354477618144">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm354477610288">Header</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm354477608288">Models</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm305380138000">Description</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm305380131984">Refinement of</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm305380130480">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm305380123248">Header</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm305380121248">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477624816"></a>Description</h4></div></div></div>
-<p>A type is Numeric if it has the properties of a number.</p>
-<p>More specifically, a type T is Numeric if there exists
-    specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt;</code>. See the
-    documentation for standard library class numeric_limits. The standard
-    library includes such specializations for all the primitive numeric types.
-    Note that this concept is distinct from the C++ standard library type
-    traits <code class="computeroutput">is_integral</code> and <code class="computeroutput">is_arithmetic</code>. These
-    latter fulfill the requirement of the concept Numeric. But there are types
-    T which fulfill this concept for which <code class="computeroutput">is_arithmetic&lt;T&gt;::value
-    == false</code>. For example see
-    <code class="computeroutput">safe_signed_integer&lt;int&gt;</code>.</p>
+<a name="idm305380138000"></a>Description</h4></div></div></div>
+<p>A type is fulls the requirements of an Integer if it has the
+    properties of a integer.</p>
+<p>More specifically, a type T is Integer if there exists
+    specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt; for which
+    std::numeric_limits&lt;T&gt;.is_integer</code> is equal to
+    <code class="computeroutput">true</code>. See the documentation for standard library class
+    numeric_limits. The standard library includes such specializations for all
+    the primitive numeric types. Note that this concept is distinct from the
+    C++ standard library type traits <code class="computeroutput">is_integral</code> and
+    <code class="computeroutput">is_arithmetic</code>. These latter fulfill the requirement of the
+    concept Numeric. But there are types which fulfill this concept for which
+    <code class="computeroutput">is_arithmetic&lt;T&gt;::value == false</code>. For example see
+    <code class="computeroutput">safe&lt;int&gt;</code>.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477619648"></a>Refinement of</h4></div></div></div>
+<a name="idm305380131984"></a>Refinement of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477618144"></a>Valid Expressions</h4></div></div></div>
+<a name="idm305380130480"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined defined in <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> the following expressions
-    must be valid. Any operations which result in integers which cannot be
-    represented as some Numeric type will throw an exception.</p>
-<div class="table">
-<a name="idm354477616400"></a><p class="title"><b>Table&#160;4.&#160;General</b></p>
-<div class="table-contents"><table class="table" summary="General">
+    must be valid. </p>
+<div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
 <col align="left">
@@ -75,19 +74,17 @@
 </tr></tbody>
 </table></div>
 </div>
-<p><br class="table-break"></p>
-</div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477610288"></a>Header</h4></div></div></div>
+<a name="idm305380123248"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm354477608288"></a>Models</h4></div></div></div>
-<p><code class="computeroutput">int, safe_signed_integer&lt;int&gt;,
-    safe_signed_range&lt;int&gt;, etc.</code></p>
+<a name="idm305380121248"></a>Models</h4></div></div></div>
+<p><code class="computeroutput">int, safe&lt;int&gt;, safe_unsigned_range&lt;0, 11&gt;,
+    etc.</code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
