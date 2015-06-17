@@ -7,10 +7,6 @@
 #include <iostream>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
 
 #include "../include/safe_cast.hpp"
 #include "../include/safe_compare.hpp"
@@ -52,6 +48,9 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     }
     return true; // passed test
 }
+
+#include "test.hpp"
+#include "test_values.hpp"
 
 #define TEST_CAST(T1, v)              \
     rval = rval && test_cast<T1>(     \

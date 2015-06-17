@@ -105,6 +105,40 @@ struct common_policies {
 // as safe_base<...> >= U which should be handled above.
 
 /////////////////////////////////////////////////////////////////
+// cast
+
+/*
+template<class R, class U>
+T safe_cast(const U & u) {
+
+    typedef typename base_type<R>::type result_base_type;
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<R> r_interval;
+    SAFE_NUMERIC_CONSTEXPR const interval<U> u_interval(
+        base_value<std::numeric_limits<U>::min()>,
+        base_value<std::numeric_limits<U>::max()>
+    );
+
+
+                    = operator*<result_base_type>(
+            interval<typename base_type<T>::type>(),
+            interval<typename base_type<U>::type>()
+        );
+
+
+    if(std::numeric_limits<T>::is_unsigned)
+        if(u < 0)
+            overflow("casting alters value");
+    if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
+        overflow("safe range overflow");
+    if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
+        overflow("safe range underflow");
+    return static_cast<T>(u);
+}
+*/
+
+/////////////////////////////////////////////////////////////////
 // addition
 
 template<class T, class U>
@@ -137,29 +171,31 @@ inline operator+(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
+    // note: subtle trickery.  Suppose is safe_range<MIN, ..>.  Then
+    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
+    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
+    // for MAX.  Now
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
 
-    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> maxx = checked::add(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(std::numeric_limits<T>::max()),
-        base_value(std::numeric_limits<U>::max())
-    );
-
-    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> minx = checked::add(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<U>::min())
-    );
-
-    typedef typename checked_result<result_base_type>::exception_type exception_type;
+    // when we add the temporary intervals above, we'll get a new interva
+    // with the correct range for the sum !  Same goes for all the operations
+    // defined below.
+    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
+        = operator+<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
-    if(maxx == exception_type::no_exception
-    && minx == exception_type::no_exception)
-        // just do simple addition of base values
+    if(r_interval.no_exception())
         return result_type(base_value(t) + base_value(u));
 
     // otherwise do the addition checking for overflow
@@ -207,29 +243,24 @@ inline operator-(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
 
-    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> maxx = checked::subtract(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(std::numeric_limits<T>::max()),
-        base_value(std::numeric_limits<U>::min())
-    );
-
-    SAFE_NUMERIC_CONSTEXPR checked_result<result_base_type> minx = checked::subtract(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<U>::max())
-    );
-
-    typedef typename checked_result<result_base_type>::exception_type exception_type;
+    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
+        = operator-<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
-    if(maxx == exception_type::no_exception
-    && minx == exception_type::no_exception)
-        // just do simple subtraction of base values
+    if(r_interval.no_exception())
         return result_type(base_value(t) - base_value(u));
 
     // otherwise do the subtraction checking for overflow
@@ -282,12 +313,12 @@ inline operator*(const T & t, const U & u){
 
     // filter out case were overflow cannot occur
     SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<t_base_type>::min()),
-            base_value(std::numeric_limits<t_base_type>::max())
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
         };
     SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<u_base_type>::min()),
-            base_value(std::numeric_limits<u_base_type>::max())
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
         };
 
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
@@ -348,12 +379,12 @@ inline operator/(const T & t, const U & u){
 
     // filter out case were overflow cannot occur
     SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<t_base_type>::min()),
-            base_value(std::numeric_limits<t_base_type>::max())
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
         };
     SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<u_base_type>::min()),
-            base_value(std::numeric_limits<u_base_type>::max())
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
         };
 
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
@@ -376,7 +407,87 @@ inline operator/(const T & t, const U & u){
     return static_cast<result_type>(r);
 }
 
+/////////////////////////////////////////////////////////////////
+// modulus
+
+template<class T, class U>
+struct modulus_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template modulus_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    modulus_result<T, U>
+>::type
+inline operator%(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef modulus_result<T, U> ar;
+    typedef typename ar::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
+        = operator%<result_base_type>(t_interval, u_interval);
+
+    // if no over/under flow possible
+    if(r_interval.no_exception())
+        return result_type(base_value(t) % base_value(u));
+
+    // otherwise do the multiplication checking for overflow
+    checked_result<result_base_type>  r = checked::modulus(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
+        base_value(t),
+        base_value(u)
+    );
+
+    r.template dispatch<typename ar::P::exception_policy>();
+    
+    return static_cast<result_type>(r);
+}
+
 /*
+// modulus
+template<class T, class Stored, class Derived, class Policies>
+typename boost::enable_if<
+    boost::is_integral<T>,
+    decltype(T() % Stored())
+>::type
+inline operator%(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
+    if(safe_compare::equal(0, rhs))
+        throw std::domain_error("Divide by zero");
+    return static_cast<
+        decltype(T() % Stored())
+    >(lhs % static_cast<const Stored &>(rhs));
+}
+
 
 // comparison operators
 template<class T, class Stored, class Derived, class Policies>
@@ -426,45 +537,6 @@ typename boost::enable_if<
 >::type
 inline operator<=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return  rhs >= lhs;
-}
-
-// multiplication
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() * Stored())
->::type
-inline operator*(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs * lhs;
-}
-
-// division
-// special case - possible overflow
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() / Stored())
->::type
-inline operator/(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    if(safe_compare::equal(0, rhs))
-        throw std::domain_error("Divide by zero");
-    return static_cast<
-        decltype(T() / Stored())
-    >(lhs / static_cast<const Stored &>(rhs));
-}
-
-// modulus
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() % Stored())
->::type
-inline operator%(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    if(safe_compare::equal(0, rhs))
-        throw std::domain_error("Divide by zero");
-    return static_cast<
-        decltype(T() % Stored())
-    >(lhs % static_cast<const Stored &>(rhs));
 }
 
 // logical operators

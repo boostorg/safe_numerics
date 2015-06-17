@@ -66,16 +66,16 @@ struct base_type<safe<T, P, E> > {
     typedef T type;
 };
 
-/*
 template<
     class T,
     class P,
     class E
 >
-SAFE_NUMERIC_CONSTEXPR const T & base_value(const safe<T, P, E>  & t) {
-    return static_cast<const T & >(t);
+SAFE_NUMERIC_CONSTEXPR const T & base_value(
+    const safe<T, P, E>  & st
+) {
+    return static_cast<const T & >(st);
 }
-*/
 
 template<
     class T,

@@ -46,6 +46,24 @@ struct interval {
 };
 
 template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR interval<R> operator+(const interval<T> & t, const interval<U> & u){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    return interval<R>(
+        checked::add<R>(t.l, u.l),
+        checked::add<R>(t.u, u.u)
+    );
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR interval<R> operator-(const interval<T> & t, const interval<U> & u){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    return interval<R>(
+        checked::subtract<R>(t.l, u.u),
+        checked::subtract<R>(t.u, u.l)
+    );
+}
+
+template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interval<U> & u){
     // the following is adapted from boost interval arith.hpp
     return
@@ -157,63 +175,43 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interv
         ;
 }
 
-/*
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interval<U> & u){
-    // adapted from boost interval library
+SAFE_NUMERIC_CONSTEXPR interval<R> operator%(const interval<T> & t, const interval<U> & u){
+    // adapted from / operator above
     return
-        (t.u < 0) ?
-            (u.u < 0) ?
-                interval<R>(
-                    checked_result<R>(t.u, u.l),
-                    checked_result<R>(t.l, u.u)
+        (u.l <= 0) ?
+            interval<R>(
+                0,
+                checked_result<R>(
+                    checked_result<R>::exception_type::domain_error,
+                    "interval divisor includes zero"
                 )
-            :
-                interval<R>(
-                    checked_result<R>(t.l, u.l),
-                    checked_result<R>(t.u, u.u)
-                )
+            )
         :
-        (t.l < 0) ?
-            (u.u < 0) ?
-                interval<R>(
-                    checked_result<R>(t.u, u.u),
-                    checked_result<R>(t.l, u.u)
+            interval<R>(
+                min(
+                    min(
+                        checked::modulus<R>(t.l, u.l),
+                        checked::modulus<R>(t.l, u.u)
+                    ),
+                    min(
+                        checked::modulus<R>(t.u, u.l),
+                        checked::modulus<R>(t.u, u.u)
+                    )
+                ),
+                max(
+                    max(
+                        checked::modulus<R>(t.l, u.l),
+                        checked::modulus<R>(t.l, u.u)
+                    ),
+                    max(
+                        checked::modulus<R>(t.u, u.l),
+                        checked::modulus<R>(t.u, u.u)
+                    )
                 )
-            :
-                interval<R>(
-                    checked_result<R>(t.l, u.l),
-                    checked_result<R>(t.u, u.l)
-                )
-        :
-            (u.u < 0) ?
-                interval<R>(
-                    checked_result<R>(t.u, u.u),
-                    checked_result<R>(t.l, u.l)
-                )
-            :
-                interval<R>(
-                    checked_result<R>(t.l, u.u),
-                    checked_result<R>(t.u, u.l)
-                )
-    ;
+            )
+        ;
 }
-  if (::boost::numeric::interval_lib::user::is_neg(xu))
-    if (::boost::numeric::interval_lib::user::is_neg(yu))
-      return I(rnd.div_down(xu, yl), rnd.div_up(xl, yu), true);
-    else
-      return I(rnd.div_down(xl, yl), rnd.div_up(xu, yu), true);
-  else if (::boost::numeric::interval_lib::user::is_neg(xl))
-    if (::boost::numeric::interval_lib::user::is_neg(yu))
-      return I(rnd.div_down(xu, yu), rnd.div_up(xl, yu), true);
-    else
-      return I(rnd.div_down(xl, yl), rnd.div_up(xu, yl), true);
-  else
-    if (::boost::numeric::interval_lib::user::is_neg(yu))
-      return I(rnd.div_down(xu, yu), rnd.div_up(xl, yl), true);
-    else
-      return I(rnd.div_down(xl, yu), rnd.div_up(xu, yl), true);
-*/
 
 } // numeric
 } // boost

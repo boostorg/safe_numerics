@@ -160,6 +160,21 @@ namespace checked {
         ;
     }
 
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
+        const T & t,
+        const U & u
+    ) {
+        return
+            add<R, T, U>(
+                std::numeric_limits<R>::min(),
+                std::numeric_limits<R>::max(),
+                t,
+                u
+            )
+        ;
+    }
+
     ////////////////////////////////////////////////////
     // safe subtraction on primitive types
     namespace detail {
@@ -229,6 +244,21 @@ namespace checked {
                 detail::cast<R>(u)
             :
                 detail::subtract<R>(minr, maxr, t, u)
+        ;
+    }
+    
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> subtract(
+        const T & t,
+        const U & u
+    ) {
+        return
+            subtract<R, T, U>(
+                std::numeric_limits<R>::min(),
+                std::numeric_limits<R>::max(),
+                t,
+                u
+            )
         ;
     }
 
@@ -389,9 +419,9 @@ namespace checked {
             detail::cast<R>(u) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(u)
             :
-            //sizeof(R) >= sizeof(T) + sizeof(U) ?
-            //    checked_result<R>(static_cast<R>(t) * static_cast<R>(u))
-            //:
+            sizeof(R) >= sizeof(T) + sizeof(U) ?
+                checked_result<R>(static_cast<R>(t) * static_cast<R>(u))
+            :
                 detail::multiply<R>(minr, maxr, t, u)
         ;
     }
@@ -491,32 +521,89 @@ namespace checked {
             )
         ;
     }
-    /*
-    template<class T, class U>
-    decltype(T() / U())
-    check_modulus_overflow(const T & t, const U & u){
-        if(0 == u)
-            overflow("modulus divide by zero");
 
-        if(boost::numeric::is_signed<U>::value){
-            // t unsigned, u signed
-            if(boost::numeric::is_unsigned<T>::value){
-                if(u < 0){
-                    overflow("conversion of negative value to unsigned");
-                }
-            }
-            else{
-            // both signed
-                // pathological case: change sign on negative number so it overflows
-                if(t == boost::integer_traits<T>::const_min && u == -1)
-                    overflow("overflow in result");
-            }
-        }
-        // both unsigned
-        // t signed, u unsigned
-        return t % u;
+    ////////////////////////////////
+    // safe modulus on unsafe types
+    namespace detail {
+
+    template<class R>
+    typename boost::enable_if_c<
+        std::is_unsigned<R>::value,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR modulus(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ) {
+        return checked_result<R>(t % u);
     }
-    */
+
+    template<class R>
+    typename boost::enable_if_c<
+        std::is_signed<R>::value,
+        checked_result<R>
+    >::type
+    SAFE_NUMERIC_CONSTEXPR modulus(
+        const R & minr,
+        const R & maxr,
+        const R t,
+        const R u
+    ){
+        return
+            // note presumption of two's complement arithmetic
+            (u < 0 && t == std::numeric_limits<R>::min()) ?
+                checked_result<R>(
+                    checked_result<R>::exception_type::domain_error,
+                    "divide by zero"
+                )
+            :
+                checked_result<R>(t % u)
+            ;
+    }
+
+    } // namespace detail
+
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> modulus(
+        const R & minr,
+        const R & maxr,
+        const T & t,
+        const U & u
+    ) {
+        static_assert(! is_safe<T>::value, "should not be a base type here!");
+        return
+            detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(t)
+            :
+            detail::cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+                detail::cast<R>(u)
+            :
+                u == 0 ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::domain_error,
+                        "divide by zero"
+                    )
+                :
+                    detail::divide<R>(minr, maxr, t, u)
+        ;
+    }
+    template<class R, class T, class U>
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> modulus(
+        const T & t,
+        const U & u
+    ) {
+        return
+            divide<R, T, U>(
+                std::numeric_limits<R>::min(),
+                std::numeric_limits<R>::max(),
+                t,
+                u
+            )
+        ;
+    }
+
 } // checked
 } // numeric
 } // boost

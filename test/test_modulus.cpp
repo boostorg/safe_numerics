@@ -9,12 +9,6 @@
 
 #include "../include/safe_integer.hpp"
 
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
-#include "test.hpp"
-
 template<class T1, class T2>
 bool test_modulus(
     T1 v1,
@@ -27,73 +21,83 @@ bool test_modulus(
         << "testing  "
         << av1 << " % " << av2
         << std::endl;
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 + v2)> result;
 
-    boost::numeric::safe<T1> t1 = v1;
-    BOOST_TYPEOF_TPL(T1() / T2()) result;
+        try{
+            result = t1 % v2;
 
-    try{
-        result = t1 % v2;
-
-        if(expected_result != '.'){
-        //if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in division "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " % " << av2
-                << std::endl;
-            try{
-                result = t1 % v2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 + v2)>::value,
+                "Expression failed to return safe type"
+            );
+            
+            if(expected_result != '.'){
+                std::cout
+                    << "failed to detect error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    result = t1 % v2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
+        }
+        catch(std::exception & e){
+            if(expected_result != 'x'){
+                std::cout
+                    << "erroneously detected error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    t1 % v2;
+                }
+                catch(...){}
+                return false;
+            }
         }
     }
-    catch(std::range_error){
-        if(expected_result != 'x'){
-        //if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in division "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " % " << av2
-                << std::endl;
-            try{
-                result = t1 % v2;
-            }
-            catch(...){}
-            return false;
-        }
-    }
-    boost::numeric::safe<T2> t2 = v2;
-    try{
-        result = t1 % t2;
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        boost::numeric::safe<T2> t2 = v2;
 
-        if(expected_result != '.'){
-        //if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in division "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " % " << av2
-                << std::endl;
-            try{
-                result = t1 % t2;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 + v2)> result;
+
+        try{
+            result = t1 % t2;
+
+            if(expected_result != '.'){
+                std::cout
+                    << "failed to detect error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    result = t1 % t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
-    }
-    catch(std::range_error){
-        if(expected_result != 'x'){
-        //if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in division "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " % " << av2
-                << std::endl;
-            try{
-                result = t1 % t2;
+        catch(std::exception & e){
+            if(expected_result != 'x'){
+                std::cout
+                    << "erroneously detected error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    t1 % t2;
+                }
+                catch(...){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
     }
     return true;
@@ -106,44 +110,44 @@ bool test_modulus(
 // This should be changed for a different architecture or better yet
 // be dynamically adjusted depending on the indicated architecture
 
-const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
+const char *test_modulus_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
 /* 0*/ "................................",
 /* 1*/ "................................",
-/* 2*/ "...x...x...x...x................",
-/* 3*/ "................................",
+/* 2*/ "........................xxxxxxxx",
+/* 3*/ "........................xxxxxxxx",
 /* 4*/ ".................................",
 /* 5*/ "................................",
-/* 6*/ "...x...x...x...x................",
-/* 7*/ "................................",
+/* 6*/ "........................xxxxxxxx",
+/* 7*/ "........................xxxxxxxx",
 
 /* 8*/ "................................",
 /* 9*/ "................................",
-/*10*/ "...x...x...x...x................",
-/*11*/ "................................",
+/*10*/ "..xx..xx..xx............xxxxxxxx",
+/*11*/ "........................xxxxxxxx",
 /*12*/ "................................",
 /*13*/ "................................",
-/*14*/ "...x...x...x...x................",
-/*15*/ "................................",
+/*14*/ "..xx..xx..xx..xx............xxxx",
+/*15*/ "............................xxxx",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ "..xx..xx..xx..xx................",
-/*17*/ "..xx..xx..xx..xx................",
-/*18*/ "..xx..xx..xx..xx................",
-/*19*/ "..xx..xx..xx..xx................",
-/*20*/ "..xx..xx..xx..xx................",
-/*21*/ "..xx..xx..xx..xx................",
-/*22*/ "..xx..xx..xx..xx................",
-/*23*/ "..xx..xx..xx..xx................",
+/*16*/ "................................",
+/*17*/ "................................",
+/*18*/ "................................",
+/*19*/ "................................",
+/*20*/ "................................",
+/*21*/ "................................",
+/*22*/ "................................",
+/*23*/ "................................",
 
-/*24*/ "..xx..xx..xx..xx................",
-/*25*/ "..xx..xx..xx..xx................",
-/*26*/ "..xx..xx..xx..xx................",
-/*27*/ "..xx..xx..xx..xx................",
+/*24*/ "..xx..xx..xx....................",
+/*25*/ "..xx..xx..xx....................",
+/*26*/ "..xx..xx..xx....................",
+/*27*/ "..xx..xx..xx....................",
 /*28*/ "..xx..xx..xx..xx................",
 /*29*/ "..xx..xx..xx..xx................",
 /*30*/ "..xx..xx..xx..xx................",
@@ -165,11 +169,11 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_multiplication_result[value_index1][value_index2] \
+        test_modulus_result[value_index1][value_index2] \
     )
 /**/
 
-#define COUNT sizeof(test_multiplication_result)
+#define COUNT sizeof(test_modulus_result)
 int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR

@@ -7,18 +7,10 @@
 // test construction conversions
 
 #include <iostream>
-#include <cstdlib> // EXIT_SUCCESS
-
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
+#include <exception>
 
 #include "../include/safe_compare.hpp"
 #include "../include/safe_integer.hpp"
-
-#include "test_types.hpp"
-#include "test_values.hpp"
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
@@ -39,7 +31,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             return false;
         }
     }
-    catch(std::range_error e){
+    catch(std::exception & e){
         if(boost::numeric::safe_compare::equal(t2, v1)){
             std::cout
                 << "failed to detect error in construction "
@@ -67,7 +59,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             return false;
         }
     }
-    catch(std::range_error e){
+    catch(std::exception & e){
         if(boost::numeric::safe_compare::equal(t2, t1)){
             std::cout
                 << "failed to detect error in construction "
@@ -82,6 +74,15 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
     }
     return true; // passed test
 }
+
+#include "test.hpp"
+#include "test_types.hpp"
+#include "test_values.hpp"
+
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/array/elem.hpp>
+#include <boost/preprocessor/array/size.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #define TEST_CONVERSION(T1, v)        \
     test_conversion<T1>(              \
@@ -105,7 +106,6 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
         type_index                                 \
     )                                              \
 /**/
-
 int main(int argc, char *argv[]){
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),
@@ -114,3 +114,4 @@ int main(int argc, char *argv[]){
     )
     return 0;
 }
+

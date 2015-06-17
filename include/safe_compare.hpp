@@ -14,12 +14,8 @@
 
 #include <type_traits>
 #include <limits>
-#include <boost/mpl/if.hpp>
+#include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
-
-//#include "numeric.hpp"
-//#include "concept/numeric.hpp"
-//#include "boost/concept/assert.hpp"
 
 namespace boost {
 namespace numeric {
@@ -27,11 +23,11 @@ namespace safe_compare {
     namespace detail {
         template<typename T>
         struct make_unsigned {
-            typedef typename boost::mpl::if_<
+            typedef typename boost::mpl::eval_if<
                 typename std::numeric_limits<T>::is_signed,
                 typename std::make_unsigned<T>,
                 typename boost::mpl::identity<T>
-            >::type::type type;
+            >::type type;
         };
         // both arguments unsigned or signed
         template<bool TS, bool US>

@@ -5,15 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <cassert>
 
 #include "../include/safe_integer.hpp"
-
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
-#include "test.hpp"
 
 template<class T1, class T2>
 bool test_divide(
@@ -182,7 +175,6 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-#define COUNT sizeof(test_multiplication_result)
 int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR

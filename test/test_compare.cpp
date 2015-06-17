@@ -37,29 +37,34 @@ bool test_compare_detail(
     char expected_result
 ){
     print_argument_types(v1, v2);
-    if('=' == expected_result){
+    switch(expected_result){
+    case '=': {
         if(! boost::numeric::safe_compare::equal(v1, v2))
             return false;
         if(boost::numeric::safe_compare::less_than(v1, v2))
             return false;
         if(boost::numeric::safe_compare::greater_than(v1, v2))
             return false;
+        break;
     }
-    if('<' == expected_result){
+    case '<': {
         if(! boost::numeric::safe_compare::less_than(v1, v2))
             return false;
         if(boost::numeric::safe_compare::equal(v1, v2))
             return false;
         if(boost::numeric::safe_compare::greater_than(v1, v2))
             return false;
+        break;
     }
-    if('>' == expected_result){
+    case '>':{
         if(! boost::numeric::safe_compare::greater_than(v1, v2))
             return false;
         if(boost::numeric::safe_compare::less_than(v1, v2))
             return false;
         if(boost::numeric::safe_compare::equal(v1, v2))
             return false;
+        break;
+    }
     }
     return true;
 }
