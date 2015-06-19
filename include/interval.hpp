@@ -49,8 +49,8 @@ template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator+(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return interval<R>(
-        checked::add<R>(t.l, u.l),
-        checked::add<R>(t.u, u.u)
+        checked::add<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
+        checked::add<R>(static_cast<R>(t.u), static_cast<R>(u.u))
     );
 }
 
@@ -58,83 +58,37 @@ template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator-(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return interval<R>(
-        checked::subtract<R>(t.l, u.u),
-        checked::subtract<R>(t.u, u.l)
+        checked::subtract<R>(static_cast<R>(t.l), static_cast<R>(u.u)),
+        checked::subtract<R>(static_cast<R>(t.u), static_cast<R>(u.l))
     );
 }
 
 template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interval<U> & u){
-    // the following is adapted from boost interval arith.hpp
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return
-    (t.l < 0) ?
-        (t.u > 0) ?
-            (u.l < 0) ?
-                (u.u > 0) ? // M * M
-                    interval<R>(
-                        min(
-                            checked::multiply<R>(t.l, u.u),
-                            checked::multiply<R>(t.u, u.l)
-                        ),
-                        max(
-                            checked::multiply<R>(t.l, u.u),
-                            checked::multiply<R>(t.u, u.l)
-                        )
-                    )
-                :  // M * N
-                    interval<R>(
-                        checked::multiply<R>(t.u, u.l),
-                        checked::multiply<R>(t.l, u.l)
-                    )
-            :
-                (u.u > 0) ? // M * P
-                    interval<R>(
-                        checked::multiply<R>(t.l, u.u),
-                        checked::multiply<R>(t.u, u.l)
-                    )
-                :   // M * Z
-                    interval<R>(0, 0)
-        :
-            (t.l < 0) ?
-                (u.u > 0) ? // N * M
-                    interval<R>(
-                        checked::multiply<R>(t.l, u.u),
-                        checked::multiply<R>(t.l, u.l)
-                    )
-                : // N * N
-                    interval<R>(
-                        checked::multiply<R>(t.u, u.u),
-                        checked::multiply<R>(t.l, u.l)
-                    )
-            :
-                (t.u > 0) ? // N * P
-                    interval<R>(static_cast<const R>(t.l), static_cast<const R>(u.u))
-                :  // N * Z
-                    interval<R>(0, 0)
-    :
-        (t.u > 0) ?
-            (u.l < 0) ?
-                (u.u > 0) ? // P * M
-                    interval<R>(
-                        checked::multiply<R>(t.u, u.l),
-                        checked::multiply<R>(t.u, u.u)
-                    )
-                :
-                    interval<R>(
-                        checked::multiply<R>(t.u, u.l),
-                        checked::multiply<R>(t.l, u.u)
-                    )
-            :
-                (t.u > 0) ? // P * P
-                    interval<R>(
-                        checked::multiply<R>(t.u, u.l),
-                        checked::multiply<R>(t.u, u.u)
-                    )
-                :
-                    interval<R>(0, 0) // P * Z
-        :
-            interval<R>(0, 0)
-    ;
+        interval<R>(
+            min(
+                min(
+                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
+                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                ),
+                min(
+                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
+                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                )
+            ),
+            max(
+                max(
+                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
+                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                ),
+                max(
+                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
+                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                )
+            )
+        );
 }
 
 template<typename R, typename T, typename U>
@@ -153,22 +107,22 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interv
             interval<R>(
                 min(
                     min(
-                        checked::divide<R>(t.l, u.l),
-                        checked::divide<R>(t.l, u.u)
+                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
+                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                     ),
                     min(
-                        checked::divide<R>(t.u, u.l),
-                        checked::divide<R>(t.u, u.u)
+                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
+                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                     )
                 ),
                 max(
                     max(
-                        checked::divide<R>(t.l, u.l),
-                        checked::divide<R>(t.l, u.u)
+                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
+                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                     ),
                     max(
-                        checked::divide<R>(t.u, u.l),
-                        checked::divide<R>(t.u, u.u)
+                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
+                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                     )
                 )
             )
@@ -176,7 +130,10 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interv
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator%(const interval<T> & t, const interval<U> & u){
+SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
+    const interval<T> & t,
+    const interval<U> & u
+){
     // adapted from / operator above
     return
         (u.l <= 0) ?
@@ -188,32 +145,11 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(const interval<T> & t, const interv
                 )
             )
         :
-            interval<R>(
-                min(
-                    min(
-                        checked::modulus<R>(t.l, u.l),
-                        checked::modulus<R>(t.l, u.u)
-                    ),
-                    min(
-                        checked::modulus<R>(t.u, u.l),
-                        checked::modulus<R>(t.u, u.u)
-                    )
-                ),
-                max(
-                    max(
-                        checked::modulus<R>(t.l, u.l),
-                        checked::modulus<R>(t.l, u.u)
-                    ),
-                    max(
-                        checked::modulus<R>(t.u, u.l),
-                        checked::modulus<R>(t.u, u.u)
-                    )
-                )
-            )
+            interval<R>(0, max(u.u, u.l))
         ;
 }
 
-} // numeric
+} // umeric
 } // boost
 
 #endif // BOOST_NUMERIC_INTERVAL_HPP

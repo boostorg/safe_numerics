@@ -23,8 +23,6 @@
 // don't use constexpr so we can debug
 #define SAFE_NUMERIC_CONSTEXPR constexpr
 
-#include "safe_compare.hpp"
-
 namespace boost {
 namespace numeric {
 
@@ -104,59 +102,57 @@ public:
     }
     template<class T>
     Derived & operator-=(const T & rhs){
-        *this = *this - rhs;
-        return derived();
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) - rhs;
     }
     template<class T>
     Derived & operator*=(const T & rhs){
-        *this = *this * rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) * rhs;
         return derived();
     }
     template<class T>
     Derived & operator/=(const T & rhs){
-        *this = *this / rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) / rhs;
         return derived();
     }
     template<class T>
     Derived & operator%=(const T & rhs){
-        *this = *this % rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) % rhs;
         return derived();
     }
     template<class T>
     Derived & operator|=(const T & rhs){
-        *this = *this | rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) | rhs;
         return derived();
     }
     template<class T>
     Derived & operator&=(const T & rhs){
-        *this = *this & rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) & rhs;
         return derived();
     }
     template<class T>
     Derived & operator^=(const T & rhs){
-        *this = *this * rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) * rhs;
         return derived();
     }
     template<class T>
     Derived & operator>>=(const T & rhs){
-        *this = *this >> rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) >> rhs;
         return derived();
     }
     template<class T>
     Derived & operator<<=(const T & rhs){
-        *this = *this << rhs;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) << rhs;
         return derived();
     }
     // unary operators
     Derived operator++(){
         // this checks for overflow
-        *this = *this + 1;
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) + 1;
         return derived();
     }
     Derived operator--(){
         // this checks for overflow
-        *this = *this - 1;
-        return derived();
+        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) - 1;
     }
     Derived operator++(int){ // post increment
         Stored t = m_t;
@@ -197,33 +193,6 @@ public:
             );
         }
         return derived();
-    }
-
-    /////////////////////////////////////////////////////////////////
-    // binary comparison operators
-    template<class U>
-    bool operator<(const U & rhs) const {
-        return boost::numeric::safe_compare::less_than(m_t, rhs);
-    }
-    template<class U>
-    bool operator>(const U & rhs) const {
-        return boost::numeric::safe_compare::greater_than(m_t, rhs);
-    }
-    template<class U>
-    bool operator==(const U & rhs) const {
-        return boost::numeric::safe_compare::equal(m_t, rhs);
-    }
-    template<class U>
-    bool inline operator!=(const U & rhs) const {
-        return ! boost::numeric::safe_compare::equal(m_t,rhs);
-    }
-    template<class U>
-    bool inline operator>=(const U & rhs) const {
-        return ! boost::numeric::safe_compare::less_than(m_t, rhs);
-    }
-    template<class U>
-    bool inline operator<=(const U & rhs) const {
-        return ! boost::numeric::safe_compare::greater_than(m_t, rhs);
     }
 
 /*

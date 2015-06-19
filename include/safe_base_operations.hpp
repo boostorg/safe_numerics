@@ -18,7 +18,7 @@
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
-#include <boost/mpl/print.hpp>
+//#include <boost/mpl/print.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
@@ -473,71 +473,82 @@ inline operator%(const T & t, const U & u){
     return static_cast<result_type>(r);
 }
 
+/////////////////////////////////////////////////////////////////
+// comparison
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
+    return checked::less_than(base_value(lhs), base_value(rhs));
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator>(const T & lhs, const U & rhs) {
+    return checked::greater_than(base_value(lhs), base_value(rhs));
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator==(const T & lhs, const U & rhs) {
+    return checked::equal(base_value(lhs), base_value(rhs));
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator!=(const T & lhs, const U & rhs) {
+    return checked::not_equal(base_value(lhs), base_value(rhs));
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator>=(const T & lhs, const U & rhs) {
+    return checked::greater_than_equal(base_value(lhs), base_value(rhs));
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator<=(const T & lhs, const U & rhs) {
+    return checked::less_than_equal(base_value(lhs), base_value(rhs));
+}
+
 /*
-// modulus
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() % Stored())
->::type
-inline operator%(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    if(safe_compare::equal(0, rhs))
-        throw std::domain_error("Divide by zero");
-    return static_cast<
-        decltype(T() % Stored())
-    >(lhs % static_cast<const Stored &>(rhs));
-}
-
-
-// comparison operators
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-operator<(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs > lhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-inline operator>(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs < lhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-inline operator==(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs == lhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-inline operator!=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs != rhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-inline operator>=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs <= lhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    bool
->::type
-inline operator<=(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return  rhs >= lhs;
-}
 
 // logical operators
 template<class T, class Stored, class Derived, class Policies>

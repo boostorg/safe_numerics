@@ -16,6 +16,7 @@
 // C++ types.
 
 #include <limits>
+#include <type_traits> // is_integral
 
 #include <boost/utility/enable_if.hpp>
 #include "safe_base.hpp"
@@ -24,12 +25,159 @@
 namespace boost {
 namespace numeric {
 namespace checked {
+
+////////////////////////////////////////////////////
+// layer 0 - implment safe operations for intrinsic integers
+// Note presumption of twos complement integer arithmetic
+
     ////////////////////////////////////////////////////
-    // layer 0 - detect overflows / alteration at the
-    // atomic operation level taking care to work around
-    // otherwise undetect alterations in integers due
-    // to machine architecture.  Note presumption of twos
-    // complement integer arithmetic
+    // safe comparison on primitive types
+    namespace detail {
+        template<typename T>
+        struct make_unsigned {
+            typedef typename boost::mpl::eval_if_c<
+                std::numeric_limits<T>::is_signed,
+                typename std::make_unsigned<T>,
+                typename boost::mpl::identity<T>
+            >::type type;
+        };
+        // both arguments unsigned or signed
+        template<bool TS, bool US>
+        struct less_than {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return t < u;
+            }
+        };
+
+        // T unsigned, U signed
+        template<>
+        struct less_than<false, true> {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return
+                    (u < 0) ?
+                        false
+                    :
+                        less_than<false, false>::invoke(
+                            t,
+                            static_cast<const typename make_unsigned<U>::type &>(u)
+                        )
+                    ;
+            }
+        };
+        // T signed, U unsigned
+        template<>
+        struct less_than<true, false> {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return
+                    (t < 0) ?
+                        true
+                    :
+                        less_than<false, false>::invoke(
+                            static_cast<const typename make_unsigned<T>::type &>(t),
+                            u
+                        )
+                    ;
+            }
+        };
+    } // detail
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool less_than(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return detail::less_than<
+            std::numeric_limits<T>::is_signed,
+            std::numeric_limits<U>::is_signed
+        >::template invoke(lhs, rhs);
+    }
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool greater_than_equal(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return less_than(rhs, lhs);
+    }
+
+    namespace detail { 
+        // both arguments unsigned or signed
+        template<bool TS, bool US>
+        struct greater_than {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return t > u;
+            }
+        };
+
+        // T unsigned, U signed
+        template<>
+        struct greater_than<false, true> {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return
+                    (u < 0) ?
+                        true
+                    :
+                        greater_than<false, false>::invoke(
+                            t,
+                            static_cast<const typename make_unsigned<U>::type &>(u)
+                        )
+                    ;
+            }
+        };
+        // T signed, U unsigned
+        template<>
+        struct greater_than<true, false> {
+            template<class T, class U>
+            SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+                return
+                    (t < 0) ?
+                        false
+                    :
+                        greater_than<false, false>::invoke(
+                            static_cast<const typename make_unsigned<T>::type &>(t),
+                            u
+                        )
+                    ;
+            }
+        };
+    } // detail
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool greater_than(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return detail::greater_than<
+            std::numeric_limits<T>::is_signed,
+            std::numeric_limits<U>::is_signed
+        >::template invoke(lhs, rhs);
+    }
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool less_than_equal(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return greater_than(rhs, lhs);
+    }
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool equal(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return ! less_than(lhs, rhs) && ! greater_than(lhs, rhs);
+    }
+
+    template<class T, class U>
+    SAFE_NUMERIC_CONSTEXPR bool not_equal(const T & lhs, const U & rhs) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+        return ! equal(lhs, rhs);
+    }
+
+    ////////////////////////////////////////////////////
+    // safe casting on primitive types
 
     namespace detail {
 
@@ -90,55 +238,59 @@ namespace checked {
         ;
     }
 
+    } // detail
+
     ////////////////////////////////////////////////////
     // safe addition on primitive types
 
-    // result unsigned
-    template<class R>
-    typename boost::enable_if<
-        typename std::is_unsigned<R>,
-        checked_result<R>
-    >::type
-    SAFE_NUMERIC_CONSTEXPR add(
-        const R & minr,
-        const R & maxr,
-        const R t,
-        const R u
-    ) {
-        return
-            maxr - u < t ?
-                checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
-                    "addition overflow"
-                )
-            :
-                checked_result<R>(t + u)
-        ;
-    }
+    namespace detail {
 
-    // result signed
-    template<class R>
-    typename boost::enable_if<
-        typename std::is_signed<R>,
-        checked_result<R>
-    >::type
-    SAFE_NUMERIC_CONSTEXPR add(
-        const R & minr,
-        const R & maxr,
-        const R t,
-        const R u
-    ) {
-        return
-            ((u > 0) && (t > (maxr - u)))
-            || ((u < 0) && (t < (minr - u))) ?
-                checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
-                    "addition overflow"
-                )
-            :
-                checked_result<R>(t + u)
-        ;
-    }
+        // result unsigned
+        template<class R>
+        typename boost::enable_if<
+            typename std::is_unsigned<R>,
+            checked_result<R>
+        >::type
+        SAFE_NUMERIC_CONSTEXPR add(
+            const R & minr,
+            const R & maxr,
+            const R t,
+            const R u
+        ) {
+            return
+                maxr - u < t ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(t + u)
+            ;
+        }
+
+        // result signed
+        template<class R>
+        typename boost::enable_if<
+            typename std::is_signed<R>,
+            checked_result<R>
+        >::type
+        SAFE_NUMERIC_CONSTEXPR add(
+            const R & minr,
+            const R & maxr,
+            const R t,
+            const R u
+        ) {
+            return
+                ((u > 0) && (t > (maxr - u)))
+                || ((u < 0) && (t < (minr - u))) ?
+                    checked_result<R>(
+                        checked_result<R>::exception_type::overflow_error,
+                        "addition overflow"
+                    )
+                :
+                    checked_result<R>(t + u)
+            ;
+        }
 
     } // namespace detail
 
@@ -149,6 +301,8 @@ namespace checked {
         const T & t,
         const U & u
     ) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
@@ -236,6 +390,8 @@ namespace checked {
         const T & t,
         const U & u
     ) {
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
@@ -411,7 +567,8 @@ namespace checked {
         const T & t,
         const U & u
     ) {
-        static_assert(! is_safe<T>::value, "should not be a base type here!");
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
@@ -490,7 +647,8 @@ namespace checked {
         const T & t,
         const U & u
     ) {
-        static_assert(! is_safe<T>::value, "should not be a base type here!");
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
@@ -572,7 +730,8 @@ namespace checked {
         const T & t,
         const U & u
     ) {
-        static_assert(! is_safe<T>::value, "should not be a base type here!");
+        static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+        static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
         return
             detail::cast<R>(t) != checked_result<R>::exception_type::no_exception ?
                 detail::cast<R>(t)
