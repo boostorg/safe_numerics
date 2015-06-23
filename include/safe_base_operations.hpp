@@ -18,7 +18,7 @@
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
-//#include <boost/mpl/print.hpp>
+#include <boost/mpl/identity.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
@@ -105,40 +105,6 @@ struct common_policies {
 // as safe_base<...> >= U which should be handled above.
 
 /////////////////////////////////////////////////////////////////
-// cast
-
-/*
-template<class R, class U>
-T safe_cast(const U & u) {
-
-    typedef typename base_type<R>::type result_base_type;
-
-    // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<R> r_interval;
-    SAFE_NUMERIC_CONSTEXPR const interval<U> u_interval(
-        base_value<std::numeric_limits<U>::min()>,
-        base_value<std::numeric_limits<U>::max()>
-    );
-
-
-                    = operator*<result_base_type>(
-            interval<typename base_type<T>::type>(),
-            interval<typename base_type<U>::type>()
-        );
-
-
-    if(std::numeric_limits<T>::is_unsigned)
-        if(u < 0)
-            overflow("casting alters value");
-    if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
-        overflow("safe range overflow");
-    if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
-        overflow("safe range underflow");
-    return static_cast<T>(u);
-}
-*/
-
-/////////////////////////////////////////////////////////////////
 // addition
 
 template<class T, class U>
@@ -160,10 +126,11 @@ typename boost::lazy_enable_if<
     >,
     addition_result<T, U>
 >::type
-inline operator+(const T & t, const U & u){
+SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef addition_result<T, U> ar;
+    typedef typename ar::P::exception_policy exception_policy;
     typedef typename ar::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
@@ -175,7 +142,7 @@ inline operator+(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    // note: subtle trickery.  Suppose is safe_range<MIN, ..>.  Then
+    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
     // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
     // Use base_value(T) ( which equals MIN ) to create a new interval. Same
     // for MAX.  Now
@@ -188,9 +155,8 @@ inline operator+(const T & t, const U & u){
             base_value(std::numeric_limits<U>::max())
         };
 
-    // when we add the temporary intervals above, we'll get a new interva
-    // with the correct range for the sum !  Same goes for all the operations
-    // defined below.
+    // when we add the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
         = operator+<result_base_type>(t_interval, u_interval);
 
@@ -206,9 +172,9 @@ inline operator+(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::P::exception_policy>();
-    
-    return static_cast<result_type>(r);
+    r.template dispatch<exception_policy>();
+
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -232,10 +198,11 @@ typename boost::lazy_enable_if<
     >,
     subtraction_result<T, U>
 >::type
-inline operator-(const T & t, const U & u){
+SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef subtraction_result<T, U> ar;
+    typedef typename ar::P::exception_policy exception_policy;
     typedef typename ar::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
@@ -271,13 +238,14 @@ inline operator-(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::P::exception_policy>();
+    r.template dispatch<exception_policy>();
     
-    return static_cast<result_type>(r);
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
 // multiplication
+
 template<class T, class U>
 struct multiplication_result {
     typedef common_policies<T, U> P;
@@ -297,11 +265,12 @@ typename boost::lazy_enable_if<
     >,
     multiplication_result<T, U>
 >::type
-inline operator*(const T & t, const U & u){
+SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
-    typedef multiplication_result<T, U> ar;
-    typedef typename ar::type result_type;
+    typedef multiplication_result<T, U> mr;
+    typedef typename mr::P::exception_policy exception_policy;
+    typedef typename mr::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
@@ -336,9 +305,9 @@ inline operator*(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::P::exception_policy>();
-    
-    return static_cast<result_type>(r);
+    r.template dispatch<exception_policy>();
+
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -366,8 +335,9 @@ typename boost::lazy_enable_if<
 inline operator/(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
-    typedef division_result<T, U> ar;
-    typedef typename ar::type result_type;
+    typedef division_result<T, U> dr;
+    typedef typename dr::P::exception_policy exception_policy;
+    typedef typename dr::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
@@ -402,9 +372,9 @@ inline operator/(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::P::exception_policy>();
-    
-    return static_cast<result_type>(r);
+    r.template dispatch<exception_policy>();
+
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -475,6 +445,35 @@ inline operator%(const T & t, const U & u){
 
 /////////////////////////////////////////////////////////////////
 // comparison
+/* implement this later - requires C++14
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<bool>
+>::type
+SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
+    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r = (
+        interval<t_base_type>(
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        )
+        <
+        interval<u_base_type>(
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        )
+    );
+    if(r != boost::logic::tribool::indeterminate_value)
+        return r;
+    return
+        checked::less_than(base_value(lhs), base_value(rhs));
+}
+*/
 
 template<class T, class U>
 typename boost::lazy_enable_if<
@@ -579,6 +578,9 @@ inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs
 
 } // numeric
 } // boost
+
+#include <ostream>
+#include <istream>
 
 template<class T>
 typename std::enable_if<

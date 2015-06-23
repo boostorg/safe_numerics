@@ -20,8 +20,8 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
-// don't use constexpr so we can debug
-#define SAFE_NUMERIC_CONSTEXPR constexpr
+#include "checked.hpp"
+#include "safe_common.hpp"
 
 namespace boost {
 namespace numeric {
@@ -29,13 +29,20 @@ namespace numeric {
 template<
     class Stored,
     class Derived,
-    class P, // promotion policy
+    class P, // promotion polic
     class E  // exception policy
 >
 class safe_base {
     SAFE_NUMERIC_CONSTEXPR const Derived &
     derived() const {
         return static_cast<const Derived &>(*this);
+    }
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        return ! (
+            boost::numeric::checked::greater_than(t, base_value(Derived::max()))
+            && boost::numeric::checked::less_than(t, base_value(Derived::min()))
+        );
     }
     Stored m_t;
 protected:
@@ -51,29 +58,28 @@ protected:
     {}
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(T & t) :
-        m_t(t)
+        m_t(static_cast<Stored>(t))
     {
         // verify that this is convertible to the storable type
         static_assert(
             std::is_convertible<T, Stored>::value,
             "Constructor argument is convertible to the storable type"
         );
-        if(! derived().validate(t)){
-            E::range_error(
-                "Invalid value"
-            );
-        }
-    }
-
-    bool validate() const {
-        if(! derived().validate(m_t)){
-            E::range_error(
-                "Invalid value"
-            );
+        if(! validate(t)){
+            E::range_error("Invalid value");
         }
     }
 
 public:
+    /////////////////////////////////////////////////////////////////
+    // casting operators for intrinsic integers
+    template<class R>
+    explicit SAFE_NUMERIC_CONSTEXPR operator R () const {
+        return static_cast<R>(m_t);
+    }
+    explicit SAFE_NUMERIC_CONSTEXPR operator const Stored & () const {
+        return m_t;
+    }
     // used to implement stream i/o operators
     Stored & get_stored_value() {
         return m_t;
@@ -156,20 +162,16 @@ public:
     }
     Derived operator++(int){ // post increment
         Stored t = m_t;
-        if(! derived().validate(*this + 1)){
-            E::overflow_error(
-                "Overflow on increment"
-            );
+        if(! validate(*this + 1)){
+            E::overflow_error("Overflow on increment");
         }
         ++t;
         return derived();
     }
     Derived & operator--(int){ // post decrement
         Stored t = m_t;
-        if(! derived().validate(*this - 1)){
-            E::overflow_error(
-                "Overflow on increment"
-            );
+        if(! validate(*this - 1)){
+            E::overflow_error("Overflow on increment");
         }
         --t;
         return derived();
@@ -187,10 +189,8 @@ public:
             std::numeric_limits<Stored>::is_signed,
             "Bitwise inversion of unsigned value is an error"
         );
-        if(! derived().validate(~m_t)){
-            E::overflow_error(
-                "Overflow on increment"
-            );
+        if(! validate(~m_t)){
+            E::overflow_error("Overflow on increment");
         }
         return derived();
     }
@@ -260,43 +260,9 @@ public:
     }
 
 */
-    /////////////////////////////////////////////////////////////////
-    // casting operators for intrinsic integers
-    explicit SAFE_NUMERIC_CONSTEXPR operator const Stored & () const {
-        return m_t;
-    }
+
 };
 
-} // numeric
-} // boost
-
-namespace boost {
-namespace numeric {
-
-// default implementations for required meta-functions
-template<typename T>
-struct is_safe : public std::false_type
-{};
-
-template<typename T>
-struct base_type {
-    typedef T type;
-};
-
-template<class T>
-SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T & t) {
-    return static_cast<const typename base_type<T>::type & >(t);
-}
-
-template<typename T>
-struct get_promotion_policy {
-    typedef void type;
-};
-
-template<typename T>
-struct get_exception_policy {
-    typedef void type;
-};
 } // numeric
 } // boost
 

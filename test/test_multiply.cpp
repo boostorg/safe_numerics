@@ -5,7 +5,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <type_traits> // is same
+#include <exception>
+#include <type_traits> // is_same
 
 #include "../include/safe_integer.hpp"
 
@@ -23,43 +24,44 @@ bool test_multiply(
         << "testing  "
         << av1 << " * " << av2
         << std::endl;
+    {
+        boost::numeric::safe<T1> t1 = v1;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 * v2)> result;
 
-    boost::numeric::safe<T1> t1 = v1;
-    // presuming native policy
-    boost::numeric::safe<decltype(v1 + v2)> result;
+        try{
+            result = t1 * v2;
+            static_assert(
+                boost::numeric::is_safe<decltype(t1 * v2)>::value,
+                "Expression failed to return safe type"
+            );
 
-    try{
-        result = t1 * v2;
-        static_assert(
-            boost::numeric::is_safe<decltype(t1 * v2)>::value,
-            "Expression failed to return safe type"
-        );
-
-        if(expected_result == 'x'){
-            std::cout
-                << "failed to detect error in multiplication "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " ! = "<< av1 << " * " << av2
-                << std::endl;
-            try{
-                t1 * v2;
+            if(expected_result == 'x'){
+                std::cout
+                    << "failed to detect error in multiplication "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " * " << av2
+                    << std::endl;
+                try{
+                    t1 * v2;
+                }
+                catch(std::exception){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
-    }
-    catch(std::exception & e){
-        if(expected_result == '.'){
-            std::cout
-                << "erroneously detected error in multiplication "
-                << std::hex << result << "(" << std::dec << result << ")"
-                << " == "<< av1 << " * " << av2
-                << std::endl;
-            try{
-                t1 * v2;
+        catch(std::exception){
+            if(expected_result == '.'){
+                std::cout
+                    << "erroneously detected error in multiplication "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " * " << av2
+                    << std::endl;
+                try{
+                    t1 * v2;
+                }
+                catch(std::exception){}
+                return false;
             }
-            catch(...){}
-            return false;
         }
     }
     {
@@ -67,11 +69,11 @@ bool test_multiply(
         boost::numeric::safe<T2> t2 = v2;
 
         // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        boost::numeric::safe<decltype(v1 * v2)> result;
 
         static_assert(
             std::is_same<
-                boost::numeric::safe<decltype(v1 + v2)>,
+                boost::numeric::safe<decltype(v1 * v2)>,
                 decltype(t1 * t2)
             >::value,
             "unexpected result type"
@@ -94,11 +96,11 @@ bool test_multiply(
                 try{
                     t1 * t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
-        catch(std::exception & e){
+        catch(std::exception){
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in multiplication "
@@ -108,7 +110,7 @@ bool test_multiply(
                 try{
                     t1 * t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }

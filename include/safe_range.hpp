@@ -12,12 +12,9 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-//#include <boost/integer.hpp>
-//#include "numeric.hpp"
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"
 #include "native.hpp"
-//#include "concept/numeric.hpp"
 #include "exception_policies.hpp"
 #include "native.hpp"
 
@@ -66,8 +63,8 @@ namespace boost {
 namespace numeric {
 
 template<
-template<
-    class T,
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
     class P,
     class E
 >
@@ -79,7 +76,16 @@ template<
     class P,
     class E
 >
-struct get_promotion_policy<safe<T, P, E> > {
+struct is_safe<safe_signed_range<MIN, MAX, P, E> > : public std::true_type
+{};
+
+template<
+    boost::intmax_t MIN,
+    boost::intmax_t MAX,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe_signed_range<MIN, MAX, P, E> > {
     typedef P type;
 };
 
@@ -89,7 +95,7 @@ template<
     class P,
     class E
 >
-struct get_exception_policy<safe<T, P, E> > {
+struct get_exception_policy<safe_signed_range<MIN, MAX, P, E> > {
     typedef E type;
 };
 
@@ -99,15 +105,15 @@ template<
     class P,
     class E
 >
-struct base_type<safe<T, P, E> > {
+struct base_type<safe_signed_range<MIN, MAX, P, E> > {
     typedef T type;
 };
 
 template<
     boost::intmax_t MIN,
     boost::intmax_t MAX,
-    class P = boost::numeric::native
-    class E = dboost::numeric::throw_exception
+    class P = native
+    class E = throw_exception
 >
 class safe_signed_range : public
     safe_base<
@@ -118,22 +124,19 @@ class safe_signed_range : public
     >
 {
     static_assert(
-        MIN < MAX,
-        "minimum must be less than maximum"
+        MIN <= MAX,
+        "minimum cannot exceed maximum"
     );
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
+    typedef typename detail::signed_stored_type<MIN, MAX>::type stored_type;
+
     typedef typename boost::numeric::safe_base<
-        typename detail::signed_stored_type<MIN, MAX>::type, 
+        stored_type,
         safe_signed_range<MIN, MAX, P, E>
     > base_type;
     friend base_type;
 
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
-        return safe_compare::less_than(t, MIN)
-        || safe_compare::greater_than(t, MAX);
-    }
 public:
     // note: Rule of Three.  Don't specify custom move, copy etc.
     SAFE_NUMERIC_CONSTEXPR safe_signed_range() :
@@ -183,8 +186,55 @@ namespace numeric {
 template<
     boost::uintmax_t MIN,
     boost::uintmax_t MAX,
-    class P = boost::numeric::native
-    class E = dboost::numeric::throw_exception
+    class P,
+    class E
+>
+struct safe_unsigned_range;
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P,
+    class E
+>
+struct is_safe<safe_unsigned_range<MIN, MAX, P, E> > : public std::true_type
+{};
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe_unsigned_range<MIN, MAX, P, E> > {
+    typedef P type;
+};
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P,
+    class E
+>
+struct get_exception_policy<safe_unsigned_range<MIN, MAX, P, E> > {
+    typedef E type;
+};
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P,
+    class E
+>
+struct base_type<safe_unsigned_range<MIN, MAX, P, E> > {
+    typedef T type;
+};
+
+template<
+    boost::uintmax_t MIN,
+    boost::uintmax_t MAX,
+    class P = native
+    class E = throw_exception
 >
 class safe_unsigned_range : public
     safe_base<
@@ -209,11 +259,6 @@ private
     > base_type;
     friend base_type;
 
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
-        return safe_compare::less_than(t, MIN)
-        || safe_compare::greater_than(t, MAX);
-    }
 public:
     // note: Rule of Three.  Don't specify custom move, copy etc.
     SAFE_NUMERIC_CONSTEXPR safe_unsigned_range() :

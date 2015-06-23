@@ -6,56 +6,57 @@
 
 #include <iostream>
 #include <exception>
-
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "../include/safe_integer.hpp"
-#include "../include/safe_compare.hpp"
+#include "safe_integer.hpp"
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
 bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     std::cout
-        << "testing  "
-        << av1 << " + " << av2
+        << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
-    {
-
-    /* test conversion constructor to T1 */
-    T2 v2;
+    /* test conversion constructor to safe<T2> */
+    boost::numeric::safe<T2> s2;
     try{
-        v2 = boost::numeric::safe_cast<T2>(v1);
-        if(! boost::numeric::safe_compare::equal(v2, v1)){
+        s2 = static_cast<boost::numeric::safe<T2> >(v1);
+        if(! (s2 == v1)){
             std::cout
-                << "failed to detect error in cast "
+                << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
                 << std::endl;
             try{
-                v2 = boost::numeric::safe_cast<T2>(v1);
+                static_cast<boost::numeric::safe<T2> >(v1);
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }
-    catch(std::exception & e){
-        if(boost::numeric::safe_compare::equal(v2, v1)){
+    catch(std::exception){
+        if( s2 == v1 ){
             std::cout
-                << "failed to detect error in cast "
+                << "erroneously emitted error "
                 << t1_name << "<-" << t2_name
                 << std::endl;
             try{
-                v2 = boost::numeric::safe_cast<T2>(v1);
+                static_cast<boost::numeric::safe<T2> >(v1);
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }
     return true; // passed test
 }
 
-#include "test.hpp"
+
+#include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/preprocessor/array/elem.hpp>
+#include <boost/preprocessor/array/size.hpp>
+#include <boost/preprocessor/stringize.hpp>
+
 #include "test_types.hpp"
 #include "test_values.hpp"
+#include "test.hpp"
 
 #define TEST_CAST(T1, v)              \
     rval = rval && test_cast<T1>(     \

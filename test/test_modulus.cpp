@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <cassert>
+#include <exception>
 
 #include "../include/safe_integer.hpp"
 
@@ -43,11 +43,11 @@ bool test_modulus(
                 try{
                     result = t1 % v2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
-        catch(std::exception & e){
+        catch(std::exception){
             if(expected_result != 'x'){
                 std::cout
                     << "erroneously detected error in division "
@@ -57,7 +57,7 @@ bool test_modulus(
                 try{
                     t1 % v2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
@@ -81,11 +81,11 @@ bool test_modulus(
                 try{
                     result = t1 % t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
-        catch(std::exception & e){
+        catch(std::exception){
             if(expected_result != 'x'){
                 std::cout
                     << "erroneously detected error in division "
@@ -95,7 +95,7 @@ bool test_modulus(
                 try{
                     t1 % t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }

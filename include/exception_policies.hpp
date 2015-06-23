@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 #include <type_traits> // is_base_of, is_same
-//#include <boost/config.hpp>
+#include <exception>
 
 #include "concept/exception_policy.hpp"
 #include "boost/concept/assert.hpp"

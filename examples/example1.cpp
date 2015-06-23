@@ -1,5 +1,5 @@
 #include <cassert>
-#include <stdexcept>
+#include <exception>
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
@@ -26,7 +26,7 @@ int main(int argc, const char * argv[]){
         std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
         detected_msg(false);
     }
-    catch(...){
+    catch(std::exception){
         assert(false); // never arrive here
     }
     // solution: replace char with safe<char>

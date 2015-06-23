@@ -10,7 +10,6 @@
 #include <cxxabi.h> 
 
 #include "../include/safe_integer.hpp"
-#include "../include/safe_compare.hpp"
 
 template<class T1, class T2>
 void print_argument_types(
@@ -65,44 +64,6 @@ bool test_compare_detail(
     return true;
 }
 
-template<class T1, class T2>
-bool test_compare_detail2(
-    T1 v1,
-    T2 v2,
-    char expected_result
-){
-    print_argument_types(v1, v2);
-    switch(expected_result){
-    case '=': {
-        if(! boost::numeric::safe_compare::equal(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::less_than(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::greater_than(v1, v2))
-            return false;
-        break;
-    }
-    case '<': {
-        if(! boost::numeric::safe_compare::less_than(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::equal(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::greater_than(v1, v2))
-            return false;
-        break;
-    }
-    case '>':{
-        if(! boost::numeric::safe_compare::greater_than(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::less_than(v1, v2))
-            return false;
-        if(boost::numeric::safe_compare::equal(v1, v2))
-            return false;
-        break;
-    }
-    }
-    return true;
-}
 
 template<class T1, class T2>
 bool test_compare(
@@ -116,15 +77,6 @@ bool test_compare(
         << "testing  "
         << av1 << ' ' << expected_result << ' ' << av2
         << std::endl;
-
-    if(! test_compare_detail2(v1, v2,expected_result)){
-        std::cout
-            << "error "
-            << av1 << ' ' << expected_result << ' ' << av2
-            << std::endl;
-        test_compare_detail2(v1, v2,expected_result);
-        return false;
-    }
 
     boost::numeric::safe<T1> t1 = v1;
     if(!test_compare_detail(t1, v2, expected_result)){

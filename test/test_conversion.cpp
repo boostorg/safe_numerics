@@ -9,7 +9,6 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_compare.hpp"
 #include "../include/safe_integer.hpp"
 
 // test conversion to T2 from different literal types
@@ -19,7 +18,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
     boost::numeric::safe<T2> t2;
     try{
         t2 = v1;
-        if(! boost::numeric::safe_compare::equal(t2, v1)){
+        if(! (t2 == v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
@@ -27,12 +26,12 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 t2 = v1;
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }
-    catch(std::exception & e){
-        if(boost::numeric::safe_compare::equal(t2, v1)){
+    catch(std::exception){
+        if(t2 == v1){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t2_name
@@ -40,14 +39,14 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 t2 = v1;
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }
     boost::numeric::safe<T1> t1 = v1;
     try{
         t2 = t1;
-        if(! boost::numeric::safe_compare::equal(t2, t1)){
+        if(! (t2 == t1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
@@ -55,12 +54,12 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 t2 = t1;
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }
-    catch(std::exception & e){
-        if(boost::numeric::safe_compare::equal(t2, t1)){
+    catch(std::exception){
+        if(t2 == t1){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t2_name
@@ -68,7 +67,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 t2 = t1;
             }
-            catch(...){}
+            catch(std::exception){}
             return false;
         }
     }

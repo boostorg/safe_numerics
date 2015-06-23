@@ -5,6 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
+#include <exception>
 
 #include "../include/safe_integer.hpp"
 
@@ -40,11 +41,11 @@ bool test_divide(
                 try{
                     t1 / v2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
-        catch(std::exception & e){
+        catch(std::exception){
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in division "
@@ -54,7 +55,7 @@ bool test_divide(
                 try{
                     t1 / v2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
@@ -83,11 +84,11 @@ bool test_divide(
                 try{
                     t1 / t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
-        catch(std::exception & e){
+        catch(std::exception){
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in division "
@@ -97,7 +98,7 @@ bool test_divide(
                 try{
                     t1 / t2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }

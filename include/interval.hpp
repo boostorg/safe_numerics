@@ -15,6 +15,8 @@
 #include <limits>
 #include <algorithm> // min, max
 
+#include <boost/logic/tribool.hpp>
+
 #include "safe_base.hpp"
 #include "checked_result.hpp"
 #include "checked.hpp"
@@ -69,21 +71,21 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
     return
         interval<R>(
             min(
-                min(
+                std::min(
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                 ),
-                min(
+                std::min(
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                 )
             ),
-            max(
-                max(
+            std::max(
+                std::max(
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                 ),
-                max(
+                std::max(
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                 )
@@ -149,7 +151,27 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
         ;
 }
 
-} // umeric
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return
+        (t.no_exception() || u.no_exception) ?
+            boost::logic::indeterminate
+        :
+        (t.u < u.l) ?
+            boost::logic::tribool(true)
+        :
+        (t.l > u.u) ?
+            boost::logic::tribool(true)
+        :
+            boost::logic::indeterminate
+    ;
+}
+
+} // numeric
 } // boost
 
 #endif // BOOST_NUMERIC_INTERVAL_HPP

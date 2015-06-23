@@ -16,22 +16,17 @@
 #include <boost/mpl/less.hpp>
 #include <boost/mpl/greater.hpp>
 
-//#include "overflow.hpp"
-#include "safe_compare.hpp"
+#include "safe_common.hpp"
+#include "safe_base_operations.hpp"
 
 namespace boost {
 namespace numeric {
 
-template<class T, class U>
-T safe_cast(const U & u) {
-    if(std::numeric_limits<T>::is_unsigned)
-        if(u < 0)
-            overflow("casting alters value");
-    if(safe_compare::greater_than(u, std::numeric_limits<T>::max()))
-        overflow("safe range overflow");
-    if(safe_compare::less_than(u, std::numeric_limits<T>::min()))
-        overflow("safe range underflow");
-    return static_cast<T>(u);
+template<class R, class U>
+R safe_cast(const U & u) {
+    checked_result<R> r = checked::detail::cast<R>(base_value(u));
+    r.template dispatch<typename P::exception_policy>();
+    return static_cast<R>(r);
 }
 
 } // numeric

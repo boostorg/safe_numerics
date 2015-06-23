@@ -10,7 +10,7 @@
 #define BOOST_NUMERIC_CHECKED_RESULT
 
 #include <ostream>
-#include "safe_base.hpp" // SAFE_NUMERIC_CONSTEXPR
+#include "safe_common.hpp" // SAFE_NUMERIC_CONSTEXPR
 #include "exception_policies.hpp"
 
 namespace boost {
@@ -32,8 +32,8 @@ struct checked_result {
         const char * m_msg;
     };
     // constructors
-    /*
     // breaks add/subtrac etc.!!!
+    /*
     SAFE_NUMERIC_CONSTEXPR checked_result(const checked_result<R> & r) :
         m_e(r.m_e)
     {
@@ -65,7 +65,7 @@ struct checked_result {
     */
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
-        return m_r;
+        return static_cast<R>(m_r);
     }
     SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
         return m_e;
@@ -115,8 +115,12 @@ struct checked_result {
     }
 };
 
+/*
 template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(const checked_result<R> & t, const checked_result<R> & u){
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
+    const checked_result<R> & t,
+    const checked_result<R> & u
+){
     return
         (t.m_e == checked_result<R>::exception_type::no_exception
         && u.m_e == checked_result<R>::exception_type::no_exception) ?
@@ -131,7 +135,25 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(const checked_result<R
             )
         ;
 }
+*/
+template<typename R>
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
+    const checked_result<R> & t,
+    const checked_result<R> & u
+){
+    return
+        (t.m_e == checked_result<R>::exception_type::no_exception
+        && u.m_e == checked_result<R>::exception_type::no_exception) ?
+            checked_result<R>(std::min(t.m_r, u.m_r))
+        :
+            checked_result<R>(
+                checked_result<R>::exception_type::range_error,
+                "Can't compare values without values"
+            )
+        ;
+}
 
+/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R> & t, const checked_result<R> & u){
     return
@@ -141,6 +163,20 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R
                 u
             :
                 t
+        :
+            checked_result<R>(
+                checked_result<R>::exception_type::range_error,
+                "Can't compare values without values"
+            )
+        ;
+}
+*/
+template<typename R>
+SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R> & t, const checked_result<R> & u){
+    return
+        (t.m_e == checked_result<R>::exception_type::no_exception
+        && u.m_e == checked_result<R>::exception_type::no_exception) ?
+            checked_result<R>(std::max(t.m_r, u.m_r))
         :
             checked_result<R>(
                 checked_result<R>::exception_type::range_error,

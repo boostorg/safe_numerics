@@ -1,11 +1,13 @@
-
 #include <iostream>
-#include "safe_integer.hpp"
+
+constexpr int factorial (int n)
+{
+    return n > 0 ? n * factorial( n - 1 ) : 1;
+}
 
 int main(){
-    boost::numeric::safe<int32_t> t1(0x80000000);
-    int8_t v2(0xff);
-
-    std::cout << t1 / v2;
+    int n;
+    std::cin >> n;
+    constexpr int x = factorial( n );
     return 0;
 }

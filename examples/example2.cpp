@@ -1,5 +1,5 @@
 #include <cassert>
-#include <stdexcept>
+#include <exception>
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
@@ -18,7 +18,7 @@ int main(int argc, const char * argv[]){
         std::cout << x << " != " << INT_MAX << " + 1" << std::endl;
         detected_msg(false);
     }
-    catch(...){
+    catch(std::exception){
         assert(false); // never arrive here
     }
     // solution: replace int with safe<int>
