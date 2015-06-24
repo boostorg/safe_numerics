@@ -71,21 +71,21 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
     return
         interval<R>(
             min(
-                std::min(
+                min(
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                 ),
-                std::min(
+                min(
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                 )
             ),
-            std::max(
-                std::max(
+            max(
+                max(
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
                 ),
-                std::max(
+                max(
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
                     checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
                 )

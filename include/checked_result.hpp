@@ -115,7 +115,6 @@ struct checked_result {
     }
 };
 
-/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
     const checked_result<R> & t,
@@ -135,7 +134,7 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
             )
         ;
 }
-*/
+/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
     const checked_result<R> & t,
@@ -152,8 +151,8 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
             )
         ;
 }
+*/
 
-/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R> & t, const checked_result<R> & u){
     return
@@ -170,7 +169,7 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R
             )
         ;
 }
-*/
+/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R> & t, const checked_result<R> & u){
     return
@@ -184,6 +183,7 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R
             )
         ;
 }
+*/
 
 } // numeric
 } // boost

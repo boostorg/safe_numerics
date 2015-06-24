@@ -581,7 +581,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
         sizeof(R) >= sizeof(T) + sizeof(U) ?
             checked_result<R>(static_cast<R>(t) * static_cast<R>(u))
         :
-            multiply<R>(minr, maxr, t, u)
+            detail::multiply<R>(minr, maxr, t, u)
     ;
 }
 template<class R, class T, class U>

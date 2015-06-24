@@ -67,11 +67,6 @@ protected:
     SAFE_NUMERIC_CONSTEXPR safe_base(T & t) :
         m_t(static_cast<Stored>(t))
     {
-        // verify that this is convertible to the storable type
-        static_assert(
-            std::is_convertible<T, Stored>::value,
-            "Constructor argument is convertible to the storable type"
-        );
         if(! validate(t)){
             E::range_error("Invalid value");
         }
