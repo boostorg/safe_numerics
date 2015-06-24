@@ -24,7 +24,7 @@ bool test_modulus(
     {
         boost::numeric::safe<T1> t1 = v1;
         // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        boost::numeric::safe<decltype(v1 % v2)> result;
 
         try{
             result = t1 % v2;
@@ -41,7 +41,7 @@ bool test_modulus(
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
                 try{
-                    result = t1 % v2;
+                    t1 % v2;
                 }
                 catch(std::exception){}
                 return false;
@@ -67,7 +67,7 @@ bool test_modulus(
         boost::numeric::safe<T2> t2 = v2;
 
         // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        boost::numeric::safe<decltype(v1 % v2)> result;
 
         try{
             result = t1 % t2;

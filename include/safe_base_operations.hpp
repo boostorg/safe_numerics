@@ -402,8 +402,9 @@ typename boost::lazy_enable_if<
 inline operator%(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
-    typedef modulus_result<T, U> ar;
-    typedef typename ar::type result_type;
+    typedef modulus_result<T, U> mr;
+    typedef typename mr::P::exception_policy exception_policy;
+    typedef typename mr::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
@@ -438,9 +439,9 @@ inline operator%(const T & t, const U & u){
         base_value(u)
     );
 
-    r.template dispatch<typename ar::P::exception_policy>();
-    
-    return static_cast<result_type>(r);
+    r.template dispatch<exception_policy>();
+
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////

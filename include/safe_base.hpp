@@ -40,8 +40,15 @@ class safe_base {
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return ! (
-            boost::numeric::checked::greater_than(t, base_value(Derived::max()))
-            && boost::numeric::checked::less_than(t, base_value(Derived::min()))
+            boost::numeric::checked::greater_than(
+                base_value(t),
+                base_value(Derived::max())
+            )
+            &&
+            boost::numeric::checked::less_than(
+                base_value(t),
+                base_value(Derived::min())
+            )
         );
     }
     Stored m_t;
@@ -92,7 +99,7 @@ public:
     // modification binary operators
     template<class T>
     Derived & operator=(const T & rhs){
-        if(! derived().validate(rhs)){
+        if(! validate(rhs)){
             E::range_error(
                 "Invalid value passed on assignment"
             );
