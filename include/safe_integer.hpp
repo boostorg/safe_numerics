@@ -128,10 +128,10 @@ class numeric_limits<boost::numeric::safe<T, P, E> >
 public:
     // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
     SAFE_NUMERIC_CONSTEXPR static SI min() noexcept {
-        return boost::numeric::safe<T, P, E>(std::numeric_limits<T>::min());
+        return SI(std::numeric_limits<T>::min());
     }
     SAFE_NUMERIC_CONSTEXPR static SI max() noexcept {
-        return boost::numeric::safe<T, P, E>(std::numeric_limits<T>::max());
+        return SI(std::numeric_limits<T>::max());
     }
 };
 

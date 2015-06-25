@@ -4,120 +4,11 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#if 1
-
-#include "safe_integer.hpp"
-
-const intmax_t x = std::numeric_limits<
-    boost::numeric::safe<
-        signed char,
-        boost::numeric::policies<
-            boost::numeric::native,
-            boost::numeric::relaxed, boost::numeric::throw_exception
-        >
-    >
->::min();
-
-#endif
-
-#if 0
-#include <boost/mpl/print.hpp>
-
-template<
-    class T,
-    class P
->
-struct safe;
-
-std::numeric_limits<int> ai0;
-
-namespace std {
-
-numeric_limits<int> ai2;
-
-template<class T>
-struct numeric_limits {
-    // no message here with numeric_limits<int> because it's already
-    // specialized in <limits>
-    typedef typename boost::mpl::print<T>::type t0;
-};
-
-template<class T, class P>
-struct std::numeric_limits <safe<T, P> > : public numeric_limits<T>{
-    typedef typename boost::mpl::print<T>::type t0;
-    typedef typename boost::mpl::print<P>::type t1;
-};
-
-numeric_limits<int> ai3;
-
-} // std
-#endif
-
-#if 0
-
-#include <limits>
-#include <boost/mpl/print.hpp>
-
-namespace std {
-template<class T> class numeric_limits;
-} // std
-
-template<class T>
-class std::numeric_limits {
-    typedef typename boost::mpl::print<T>::type t0;
-};
-
-std::numeric_limits<int> ai;
-
-#endif
-
-#if 0
-
-#include <limits>
-#include <boost/mpl/print.hpp>
-
-namespace std {
-
-template<class T>
-class numeric_limits {
-    typedef typename boost::mpl::print<T>::type t0;
-};
-
-} // std
-
-std::numeric_limits<int> ai;
-
-
-#endif
-
-#if 0
-#include <exception>
-#include <cstdlib>   // EXIT_SUCCESS
 #include <iostream>
-
 #include <boost/mpl/print.hpp>
 
-#endif
-
-#if 0
-typedef boost::numeric::safe_signed_range<-64, 63> X;
-//typedef boost::mpl::print<boost::numeric::get_policy<int, X>::type>::type t8 ;
-//typedef boost::mpl::print<boost::numeric::get_policy<X, X>::type>::type t9 ;
-//typedef boost::mpl::print<boost::numeric::get_policy<X, int>::type >::type t7 ;
-//typedef boost::mpl::print<boost::numeric::is_safe<int>::type>::type t10;
-
-typedef boost::mpl::print<boost::numeric::addition_result<int,X>::type>  t13;
-#endif
-
-#if 0
-typedef boost::numeric::safe_signed_range<-64, 63> X;
-typedef boost::mpl::print<boost::numeric::get_policy<short,X>::type>::type t12;
-typedef boost::mpl::print<boost::numeric::addition_result<short,X>::type
-> t11;
-
-#endif
-
-#if 0
+#include "../include/safe_range.hpp"
+#include "../include/numeric.hpp"
 
 bool test1(){
     std::cout << "test1" << std::endl;
@@ -259,7 +150,7 @@ bool test5(){
 
 int main(int argc, char *argv[]){
     return (
-        test1() &&
+//        test1() &&
         test2() &&
         test3() &&
         test4() &&
@@ -267,5 +158,4 @@ int main(int argc, char *argv[]){
     ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-#endif
 

@@ -14,7 +14,11 @@
 // test conversion to T2 from different literal types
 template<class T2, class T1>
 bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
-    /* test conversion constructor to T1 */
+    std::cout
+        << "testing safe<" << t2_name << "> = " << t1_name << ")"
+        << std::endl;
+{
+    /* test conversion constructor to T2 */
     boost::numeric::safe<T2> t2;
     try{
         t2 = v1;
@@ -23,10 +27,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
                 << std::endl;
-            try{
-                t2 = v1;
-            }
-            catch(std::exception){}
+            t2 = v1;
             return false;
         }
     }
@@ -37,12 +38,15 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
                 << t2_name << "<-" << t2_name
                 << std::endl;
             try{
-                t2 = v1;
+                t2 = v1; // try again for debugging
             }
             catch(std::exception){}
             return false;
         }
     }
+}
+{
+    boost::numeric::safe<T2> t2;
     boost::numeric::safe<T1> t1 = v1;
     try{
         t2 = t1;
@@ -72,6 +76,7 @@ bool test_conversion(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     return true; // passed test
+}
 }
 
 #include "test.hpp"

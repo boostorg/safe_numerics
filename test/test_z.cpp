@@ -8,6 +8,6 @@ constexpr int factorial (int n)
 int main(){
     int n;
     std::cin >> n;
-    constexpr int x = factorial( n );
+    factorial( n );
     return 0;
 }

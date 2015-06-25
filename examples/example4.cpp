@@ -27,7 +27,7 @@ int main(int argc, const char * argv[]){
         std::cout << x << " != " << -1;
         detected_msg(false);
     }
-    catchstd::exception){
+    catch(std::exception){
         assert(false); // never arrive here
     }
     // solution: replace unsigned int with safe<unsigned int>

@@ -33,16 +33,8 @@ int main(int argc, const char * argv[]){
             is >> x >> y; // get integer values from the user
             detected_msg(false);
         }
-        catch(std::range_error & e){
-            std::cout << e.what() << std::endl;
-            detected_msg(true);
-        }
-        try{
-            z = x + y;
-            detected_msg(false);
-        }
         catch(std::exception e){
-            std::cout << z << std::endl;  // display sum of the values
+            std::cout << e.what() << std::endl;
             detected_msg(true);
         }
     }

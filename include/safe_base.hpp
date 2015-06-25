@@ -37,6 +37,7 @@ class safe_base {
     derived() const {
         return static_cast<const Derived &>(*this);
     }
+public:
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return ! (
@@ -44,7 +45,7 @@ class safe_base {
                 base_value(t),
                 base_value(Derived::max())
             )
-            &&
+            ||
             boost::numeric::checked::less_than(
                 base_value(t),
                 base_value(Derived::min())

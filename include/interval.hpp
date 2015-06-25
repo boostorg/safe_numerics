@@ -28,8 +28,14 @@ template<typename R>
 struct interval {
     checked_result<R> l;
     checked_result<R> u;
+    /*
     template<typename T, typename U>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
+        l(lower),
+        u(upper)
+    {}
+    */
+    SAFE_NUMERIC_CONSTEXPR interval(const R & lower, const R & upper) :
         l(lower),
         u(upper)
     {}

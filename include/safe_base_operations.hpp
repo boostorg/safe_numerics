@@ -598,16 +598,19 @@ operator<<(
 template<class T>
 typename std::enable_if<
     boost::numeric::is_safe<T>::value,
-    std::ostream &
+    std::istream &
 >::type
 operator>>(
     std::istream & is,
     T & t
 ){
     typedef typename boost::numeric::get_exception_policy<T>::type exception_policy;
-    is >> t.get_stored_value();
-    if(is.fail() || !t.validate())
+    typename boost::numeric::base_type<T>::type tx;
+    //int tx;
+    is >> tx;
+    if(is.fail() || !t.validate(tx))
         exception_policy::range_error("error in file input");
+    t.get_stored_value() = tx;
     return is;
 }
 

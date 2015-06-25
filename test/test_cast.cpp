@@ -8,39 +8,46 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "../include/checked.hpp"
+#include "safe_integer.hpp"
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
-bool test_cast(const T1 & v1, const char *t2_name, const char *t1_name){
+bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     std::cout
         << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
-
-    constexpr const T1 cev1 = 0;
-    constexpr const boost::numeric::checked_result<T2> r2 = boost::numeric::checked::cast<T2>(cev1);
-
-    if(r2 == boost::numeric::checked_result<T2>::exception_type::no_exception){
-        if(! (r2 == v1)){
+    /* test conversion constructor to safe<T2> */
+    boost::numeric::safe<T2> s2;
+    try{
+        s2 = static_cast<boost::numeric::safe<T2> >(v1);
+        if(! (s2 == v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
                 << std::endl;
-            boost::numeric::checked::cast<T2>(v1);
+            try{
+                static_cast<boost::numeric::safe<T2> >(v1);
+            }
+            catch(std::exception){}
             return false;
         }
     }
-    else{
-        if( r2 == v1 ){
+    catch(std::exception){
+        if( s2 == v1 ){
             std::cout
                 << "erroneously emitted error "
                 << t1_name << "<-" << t2_name
                 << std::endl;
-            boost::numeric::checked::cast<T2>(v1);
+            try{
+                static_cast<boost::numeric::safe<T2> >(v1);
+            }
+            catch(std::exception){}
+            return false;
         }
     }
     return true; // passed test
 }
+
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/array/elem.hpp>
