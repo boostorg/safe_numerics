@@ -14,6 +14,7 @@
 
 #include <limits>
 #include <type_traits> // is_integral
+#include <iosfwd>
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -22,38 +23,95 @@
 
 #include "checked.hpp"
 #include "safe_common.hpp"
+#include "concept/numeric.hpp"
+#include "exception_policies.hpp"
+#include "native.hpp"
+
+#include "boost/concept/assert.hpp"
 
 namespace boost {
 namespace numeric {
 
+/////////////////////////////////////////////////////////////////
+// forward declarations to support friend function declarations
+// in safe_base
+
 template<
     class Stored,
-    class Derived,
+    Stored Min,
+    Stored Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+class safe_base;
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+std::ostream & operator<<(
+    std::ostream & os,
+    const boost::numeric::safe_base<T, Min, Max, P, E> & t
+);
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+std::istream & operator>>(
+    std::istream & is,
+    boost::numeric::safe_base<T, Min, Max, P, E> & t
+);
+
+/////////////////////////////////////////////////////////////////
+// Main implementation
+
+template<
+    class Stored,
+    Stored Min,
+    Stored Max,
     class P, // promotion polic
     class E  // exception policy
 >
 class safe_base {
-    SAFE_NUMERIC_CONSTEXPR const Derived &
-    derived() const {
-        return static_cast<const Derived &>(*this);
-    }
-public:
+    BOOST_CONCEPT_ASSERT((Integer<Stored>));
+    BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
+    Stored m_t;
+
+    friend
+    std::ostream & operator<< <Stored, Min, Max, P, E> (
+        std::ostream & os,
+        const safe_base & t
+    );
+    friend
+    std::istream & operator>> <Stored, Min, Max, P, E> (
+        std::istream & is,
+        safe_base & t
+    );
+
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
         return ! (
             boost::numeric::checked::greater_than(
                 base_value(t),
-                base_value(Derived::max())
+                Max
             )
             ||
             boost::numeric::checked::less_than(
                 base_value(t),
-                base_value(Derived::min())
+                Min
             )
         );
     }
-    Stored m_t;
-protected:
+public:
+
     // note: Rule of Three.  Don't specify custom move, copy etc.
     ////////////////////////////////////////////////////////////
     // constructors
@@ -65,7 +123,7 @@ protected:
         m_t(t.m_t)
     {}
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(T & t) :
+    SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
     {
         if(! validate(t)){
@@ -83,119 +141,85 @@ public:
     explicit SAFE_NUMERIC_CONSTEXPR operator const Stored & () const {
         return m_t;
     }
-    // used to implement stream i/o operators
-    Stored & get_stored_value() {
-        return m_t;
-    }
-    SAFE_NUMERIC_CONSTEXPR const Stored & get_stored_value() const {
-        return m_t;
-    }
-    
+
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
-    Derived & operator=(const T & rhs){
+    safe_base & operator=(const T & rhs){
         if(! validate(rhs)){
             E::range_error(
                 "Invalid value passed on assignment"
             );
         }
-        m_t = rhs;
-        return derived();
+        m_t = static_cast<Stored>(rhs);
+        return *this;
     }
     template<class T>
-    Derived & operator+=(const T & rhs){
-        // validate?
-        m_t = derived() + rhs;
-        return derived();
+    safe_base & operator+=(const T & rhs){
+        return *this = *this + rhs;
     }
     template<class T>
-    Derived & operator-=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) - rhs;
+    safe_base & operator-=(const T & rhs){
+        return *this = *this - rhs;
     }
     template<class T>
-    Derived & operator*=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) * rhs;
-        return derived();
+    safe_base & operator*=(const T & rhs){
+        return *this = *this * rhs;
     }
     template<class T>
-    Derived & operator/=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) / rhs;
-        return derived();
+    safe_base & operator/=(const T & rhs){
+        return *this = *this / rhs;
     }
     template<class T>
-    Derived & operator%=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) % rhs;
-        return derived();
+    safe_base & operator%=(const T & rhs){
+        return *this = *this % rhs;
     }
     template<class T>
-    Derived & operator|=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) | rhs;
-        return derived();
+    safe_base & operator|=(const T & rhs){
+        return *this = *this | rhs;
     }
     template<class T>
-    Derived & operator&=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) & rhs;
-        return derived();
+    safe_base & operator&=(const T & rhs){
+        return *this = *this & rhs;
     }
     template<class T>
-    Derived & operator^=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) * rhs;
-        return derived();
+    safe_base & operator^=(const T & rhs){
+        return *this = *this ^ rhs;
     }
     template<class T>
-    Derived & operator>>=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) >> rhs;
-        return derived();
+    safe_base & operator>>=(const T & rhs){
+        return *this = *this >> rhs;
     }
     template<class T>
-    Derived & operator<<=(const T & rhs){
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) << rhs;
-        return derived();
+    safe_base & operator<<=(const T & rhs){
+        return *this = *this << rhs;
     }
     // unary operators
-    Derived operator++(){
-        // this checks for overflow
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) + 1;
-        return derived();
+    safe_base operator++(){
+        return *this = *this + 1;
     }
-    Derived operator--(){
-        // this checks for overflow
-        return static_cast<Derived &>(*this) = static_cast<Derived &>(*this) - 1;
+    safe_base operator--(){
+        return *this = *this - 1;
     }
-    Derived operator++(int){ // post increment
-        Stored t = m_t;
-        if(! validate(*this + 1)){
-            E::overflow_error("Overflow on increment");
-        }
-        ++t;
-        return derived();
+    safe_base operator++(int){ // post increment
+        safe_base old_t = *this;
+        ++(*this);
+        return old_t;
     }
-    Derived & operator--(int){ // post decrement
-        Stored t = m_t;
-        if(! validate(*this - 1)){
-            E::overflow_error("Overflow on increment");
-        }
-        --t;
-        return derived();
+    safe_base & operator--(int){ // post decrement
+        safe_base old_t = *this;
+        --(*this);
+        return old_t;
     }
-    Derived operator-() const { // unary minus
+    safe_base operator-() const { // unary minus
+        return *this = 0 - *this; // this will check for overflow
+    }
+    safe_base operator~() const {
         static_assert(
             std::numeric_limits<Stored>::is_signed,
-            "Application of unary minus to unsigned value is an error"
+            "Bitwise inversion of signed value is an error"
         );
-        *this = 0 - *this; // this will check for overflow
-        return derived();
-    }
-    Derived operator~() const {
-        static_assert(
-            std::numeric_limits<Stored>::is_signed,
-            "Bitwise inversion of unsigned value is an error"
-        );
-        if(! validate(~m_t)){
-            E::overflow_error("Overflow on increment");
-        }
-        return derived();
+        return *this = ~(m_t);
     }
 
 /*
@@ -266,7 +290,93 @@ public:
 
 };
 
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct is_safe<safe_base<T, Min, Max, P, E> > : public std::true_type
+{};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe_base<T, Min, Max, P, E> > {
+    typedef P type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct get_exception_policy<safe_base<T, Min, Max, P, E> > {
+    typedef E type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct base_type<safe_base<T, Min, Max, P, E> > {
+    typedef T type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+SAFE_NUMERIC_CONSTEXPR T base_value(
+    const safe_base<T, Min, Max, P, E>  & st
+) {
+    return static_cast<T>(st);
+}
+
 } // numeric
 } // boost
+
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe<int> etc.
+
+#include <limits>
+
+namespace std {
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
+    : public std::numeric_limits<T>
+{
+    typedef boost::numeric::safe_base<T, Min, Max, P, E> SB;
+public:
+    // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
+    SAFE_NUMERIC_CONSTEXPR static SB min() noexcept {
+        return SB(Min);
+    }
+    SAFE_NUMERIC_CONSTEXPR static SB max() noexcept {
+        return SB(Max);
+    }
+};
+
+} // std
 
 #endif // BOOST_NUMERIC_SAFE_BASE_HPP

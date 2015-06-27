@@ -14,6 +14,8 @@
 
 #include <limits>
 #include <type_traits> // is_convertible, is_same, enable_if
+#include <ostream>
+#include <istream>
 
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
@@ -146,10 +148,11 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
     // Use base_value(T) ( which equals MIN ) to create a new interval. Same
     // for MAX.  Now
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval(
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
-        };
+        );
+
     SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
@@ -290,6 +293,8 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
             base_value(std::numeric_limits<U>::max())
         };
 
+    // when we multiply the temporary intervals above, we'll get a new interval
+    // with the correct range for the  product!
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
         = operator*<result_base_type>(t_interval, u_interval);
 
@@ -577,41 +582,40 @@ inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs
 }
 */
 
-} // numeric
-} // boost
-
-#include <ostream>
-#include <istream>
-
-template<class T>
-typename std::enable_if<
-    boost::numeric::is_safe<T>::value,
-    std::ostream &
->::type
-operator<<(
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+std::ostream & operator<<(
     std::ostream & os,
-    const T & t
+    const boost::numeric::safe_base<T, Min, Max, P, E> & t
 ){
-    return os << t.get_stored_value();
+    return os << t.m_t;
 }
 
-template<class T>
-typename std::enable_if<
-    boost::numeric::is_safe<T>::value,
-    std::istream &
->::type
-operator>>(
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+std::istream & operator>>(
     std::istream & is,
-    T & t
+    boost::numeric::safe_base<T, Min, Max, P, E> & t
 ){
-    typedef typename boost::numeric::get_exception_policy<T>::type exception_policy;
-    typename boost::numeric::base_type<T>::type tx;
-    //int tx;
+    T tx;
     is >> tx;
     if(is.fail() || !t.validate(tx))
-        exception_policy::range_error("error in file input");
-    t.get_stored_value() = tx;
+        E::range_error("error in file input");
+    t.m_t = tx;
     return is;
 }
+
+} // numeric
+} // boost
 
 #endif // BOOST_NUMERIC_SAFE_BASE_OPERATIONS_HPP

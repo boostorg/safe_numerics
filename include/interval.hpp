@@ -28,6 +28,7 @@ template<typename R>
 struct interval {
     checked_result<R> l;
     checked_result<R> u;
+
     /*
     template<typename T, typename U>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
@@ -35,14 +36,24 @@ struct interval {
         u(upper)
     {}
     */
-    SAFE_NUMERIC_CONSTEXPR interval(const R & lower, const R & upper) :
-        l(lower),
-        u(upper)
+    
+    SAFE_NUMERIC_CONSTEXPR interval(
+        const checked_result<R> & lower,
+        const checked_result<R> & upper
+    ) :
+        l(checked_result<R>(lower)),
+        u(checked_result<R>(upper))
     {}
+    SAFE_NUMERIC_CONSTEXPR interval(const R & lower, const R & upper) :
+        l(checked_result<R>(lower)),
+        u(checked_result<R>(upper))
+    {}
+    /*
     SAFE_NUMERIC_CONSTEXPR interval(const interval<R> & rhs) :
         l(rhs.l),
         u(rhs.u)
     {}
+    */
     SAFE_NUMERIC_CONSTEXPR interval() :
         l(std::numeric_limits<R>::min()),
         u(std::numeric_limits<R>::max())
@@ -103,9 +114,9 @@ template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return
-        (u.l <= 0) ?
+        (u.l <= 0 && u.u >= 0) ?
             interval<R>(
-                0,
+                checked_result<R>(0),
                 checked_result<R>(
                     checked_result<R>::exception_type::domain_error,
                     "interval divisor includes zero"
@@ -146,14 +157,14 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
     return
         (u.l <= 0) ?
             interval<R>(
-                0,
+                checked_result<R>(0),
                 checked_result<R>(
                     checked_result<R>::exception_type::domain_error,
                     "interval divisor includes zero"
                 )
             )
         :
-            interval<R>(0, max(u.u, u.l))
+            interval<R>(checked_result<R>(0), max(u.u, u.l))
         ;
 }
 

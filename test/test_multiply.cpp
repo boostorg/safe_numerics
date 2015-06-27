@@ -157,7 +157,7 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 /*20*/ "................................",
 /*21*/ ".........xx..xx..........xxx.xxx",
 /*22*/ ".........xx..xx..........xxx.xxx",
-/*23*/ ".........xx..xx........x.xxx.xxx",
+/*23*/ ".........xx..xx..........xxx.xxx",
 
 /*24*/ "..xx..xx..xx....................",
 /*25*/ ".xxx.xxx.xxx.xx..xxx.xxx.xxx.xxx",
