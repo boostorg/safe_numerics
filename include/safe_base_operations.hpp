@@ -25,6 +25,7 @@
 #include <boost/utility/enable_if.hpp>
 
 #include "safe_base.hpp"
+#include "safe_integer.hpp"
 #include "checked.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
@@ -369,7 +370,7 @@ inline operator/(const T & t, const U & u){
     if(r_interval.no_exception())
         return result_type(base_value(t) / base_value(u));
 
-    // otherwise do the multiplication checking for overflow
+    // otherwise do the division checking for overflow
     checked_result<result_base_type>  r = checked::divide(
         base_value(std::numeric_limits<result_type>::min()),
         base_value(std::numeric_limits<result_type>::max()),
@@ -436,7 +437,7 @@ inline operator%(const T & t, const U & u){
     if(r_interval.no_exception())
         return result_type(base_value(t) % base_value(u));
 
-    // otherwise do the multiplication checking for overflow
+    // otherwise do the modulus checking for overflow
     checked_result<result_base_type>  r = checked::modulus(
         base_value(std::numeric_limits<result_type>::min()),
         base_value(std::numeric_limits<result_type>::max()),

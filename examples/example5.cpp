@@ -32,7 +32,7 @@ int main(int argc, const char * argv[]){
         i_array[i_index] = 84; // so we never arrive here
         assert(false);
     }
-    catch(std::range_error & e){
+    catch(std::exception & e){
         std::cout << e.what() << std::endl;
         detected_msg(true);
     }

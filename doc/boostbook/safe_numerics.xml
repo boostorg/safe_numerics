@@ -117,12 +117,6 @@
 
   <section id="safe_numerics.functions">
     <title>Functions</title>
-
-    <xi:include href="safe_cast.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-    <xi:include href="safe_compare.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
   <section id="safe_numerics.exception_safety">

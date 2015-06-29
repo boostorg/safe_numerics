@@ -29,8 +29,8 @@ int main(int argc, const char * argv[]){
         ++x;
         assert(false); // never arrive here
     }
-    catch(std::range_error & e){
-        std::cout << e.what();
+    catch(std::exception & e){
+        std::cout << e.what() << std::endl;
         detected_msg(true);
     }
     return 0;

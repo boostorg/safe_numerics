@@ -13,8 +13,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_integral
+#include <type_traits> // is_integral, enable_if
 #include <iosfwd>
+#include <cassert>
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -83,8 +84,9 @@ class safe_base {
     BOOST_CONCEPT_ASSERT((Integer<Stored>));
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
+public:
     Stored m_t;
-
+private:
     friend
     std::ostream & operator<< <Stored, Min, Max, P, E> (
         std::ostream & os,
@@ -111,17 +113,11 @@ class safe_base {
         );
     }
 public:
-
-    // note: Rule of Three.  Don't specify custom move, copy etc.
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    SAFE_NUMERIC_CONSTEXPR safe_base() {}
+    SAFE_NUMERIC_CONSTEXPR explicit safe_base() {}
 
-    // copy constructor 
-    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
-        m_t(t.m_t)
-    {}
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
@@ -131,15 +127,48 @@ public:
         }
     }
 
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
+        m_t(static_cast<Stored>(t.m_t))
+    {
+    }
+
+    template<
+        class T,
+        T MinT,
+        T MaxT,
+        class PT, // promotion polic
+        class ET  // exception policy
+    >
+    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
+        T tx = t.m_t;
+        if(! validate(tx)){
+            E::range_error("Invalid value");
+        }
+        m_t = tx;
+    }
+
+    // note: Rule of Five.  Don't specify custom destructor,
+    // custom move, custom copy, custom assignment, custom
+    // move assignment.  Let the compiler build the defaults.
 public:
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
-    template<class R>
-    explicit SAFE_NUMERIC_CONSTEXPR operator R () const {
-        return static_cast<R>(m_t);
-    }
-    explicit SAFE_NUMERIC_CONSTEXPR operator const Stored & () const {
-        return m_t;
+    // convert to any type which is not safe.  safe types need to be
+    // excluded to prevent ambiguous function selection which
+    // would otherwise occur
+    template<
+        class R,
+        typename std::enable_if<
+            !boost::numeric::is_safe<R>::value,
+            int
+        >::type = 0
+    >
+    SAFE_NUMERIC_CONSTEXPR operator R () const {
+        checked_result<R> r = checked::cast<R>(m_t);
+        if(r != checked_result<R>::exception_type::no_exception)
+            E::range_error("conversion not possible");
+        return static_cast<R>(r);
     }
 
     /////////////////////////////////////////////////////////////////
@@ -152,6 +181,20 @@ public:
             );
         }
         m_t = static_cast<Stored>(rhs);
+        return *this;
+    }
+    template<
+        class T,
+        T MinT,
+        T MaxT,
+        class PT, // promotion polic
+        class ET  // exception policy
+    >
+    safe_base & operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
+        if(! validate(rhs)){
+            E::range_error("Invalid value");
+        }
+        m_t = rhs.m_t;
         return *this;
     }
     template<class T>
@@ -226,36 +269,7 @@ public:
 
     /////////////////////////////////////////////////////////////////
     // logical operators
-    template<class U>
-    decltype(Stored() | U())
-    inline operator|(const U & rhs) const {
-        // verify that U is an integer type
-        static_assert(
-            std::numeric_limits<U>::is_integer,
-            "right hand side is not an integer type"
-        );
-        return m_t | rhs;
-    }
-    template<class U>
-    decltype(Stored() & U())
-    inline operator&(const U & rhs) const {
-        // verify that U is an integer type
-        static_assert(
-            std::numeric_limits<U>::is_integer,
-            "right hand side is not an integer type"
-        );
-        return m_t & rhs;
-    }
-    template<class U>
-    decltype(Stored() ^ U())
-    inline operator^(const U & rhs) const {
-        // verify that U is an integer type
-        static_assert(
-            std::numeric_limits<U>::is_integer,
-            "right hand side is not an integer type"
-        );
-        return m_t ^ rhs;
-    }
+
     template<class U>
     Stored inline operator>>(const U & rhs) const {
         // verify that U is an integer type
@@ -343,7 +357,7 @@ template<
 SAFE_NUMERIC_CONSTEXPR T base_value(
     const safe_base<T, Min, Max, P, E>  & st
 ) {
-    return static_cast<T>(st);
+    return static_cast<T>(st.m_t);
 }
 
 } // numeric

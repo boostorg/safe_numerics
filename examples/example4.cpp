@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
-#include "../include/safe_compare.hpp"
 
 void detected_msg(bool detected){
     std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
@@ -22,9 +21,8 @@ int main(int argc, const char * argv[]){
         assert(x == -1);
         // even though it's not !!!
 
-        // however, safe_compare does detect the error
-        assert(! boost::numeric::safe_compare::equal(x, -1));
-        std::cout << x << " != " << -1;
+        // so the error is not detected!
+        std::cout << x << " != " << -1 << std::endl;
         detected_msg(false);
     }
     catch(std::exception){
@@ -39,8 +37,8 @@ int main(int argc, const char * argv[]){
         --x;
         assert(false); // never arrive here
     }
-    catch(std::range_error & e){
-        std::cout << e.what();
+    catch(std::exception & e){
+        std::cout << e.what() << std::endl;
         detected_msg(true);
     }
     return 0;

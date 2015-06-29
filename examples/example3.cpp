@@ -27,10 +27,13 @@ int main(int argc, const char * argv[]){
         using namespace boost::numeric;
         safe<int> x = -1000;
         // throws exception when conversion change data value
-        safe<char> y = x;
+        safe<char> y1(x);
+        safe<char> y3 = x;
+        safe<char> y = {x};
+        y = x;
         assert(false); // never arrive here
     }
-    catch(std::range_error & e){
+    catch(std::exception & e){
         std::cout << e.what() << std::endl;
         detected_msg(true);
     }

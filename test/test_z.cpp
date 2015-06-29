@@ -1,13 +1,13 @@
 #include <iostream>
-
-constexpr int factorial (int n)
-{
-    return n > 0 ? n * factorial( n - 1 ) : 1;
-}
-
+#include "../include/safe_integer.hpp"
 int main(){
-    int n;
-    std::cin >> n;
-    factorial( n );
+    try{
+        using namespace boost::numeric;
+        safe<int> x;
+        safe<char> y3 = x;
+    }
+    catch(std::exception & e){
+        std::cout << e.what() << std::endl;
+    }
     return 0;
 }

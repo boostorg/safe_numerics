@@ -16,7 +16,8 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     std::cout
         << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
-    /* test conversion constructor to safe<T2> */
+{
+    /* test conversion constructor to safe<T2> from v1 */
     boost::numeric::safe<T2> s2;
     try{
         s2 = static_cast<boost::numeric::safe<T2> >(v1);
@@ -45,9 +46,41 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
             return false;
         }
     }
+}
+{
+    /* test conversion to T1 from safe<T2>(v2) */
+    boost::numeric::safe<T1> s1(v1);
+    T2 t2;
+    try{
+        t2 = static_cast<T2>(s1);
+        if(! (t2 == v1)){
+            std::cout
+                << "failed to detect error in construction "
+                << t2_name << "<-" << t1_name
+                << std::endl;
+            try{
+                static_cast<T2>(s1);
+            }
+            catch(std::exception){}
+            return false;
+        }
+    }
+    catch(std::exception){
+        if(t2 == v1){
+            std::cout
+                << "erroneously emitted error "
+                << t1_name << "<-" << t2_name
+                << std::endl;
+            try{
+                static_cast<T2>(s1);
+            }
+            catch(std::exception){}
+            return false;
+        }
+    }
     return true; // passed test
 }
-
+}
 
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/array/elem.hpp>

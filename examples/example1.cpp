@@ -40,7 +40,7 @@ int main(int argc, const char * argv[]){
         z = x + y;
         assert(false); // never arrive here
     }
-    catch(std::range_error & e){
+    catch(std::exception & e){
         // which can catch here
         std::cout << e.what() << std::endl;
         detected_msg(true);
