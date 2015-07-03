@@ -22,6 +22,7 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
+#include "checked_result.hpp"
 #include "checked.hpp"
 #include "safe_common.hpp"
 #include "concept/numeric.hpp"
@@ -45,6 +46,62 @@ template<
     class E  // exception policy
 >
 class safe_base;
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct is_safe<safe_base<T, Min, Max, P, E> > : public std::true_type
+{};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct get_promotion_policy<safe_base<T, Min, Max, P, E> > {
+    typedef P type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct get_exception_policy<safe_base<T, Min, Max, P, E> > {
+    typedef E type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+struct base_type<safe_base<T, Min, Max, P, E> > {
+    typedef T type;
+};
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P,
+    class E
+>
+SAFE_NUMERIC_CONSTEXPR T base_value(
+    const safe_base<T, Min, Max, P, E>  & st
+) {
+    return static_cast<T>(st);
+}
 
 template<
     class T,
@@ -84,19 +141,25 @@ class safe_base {
     BOOST_CONCEPT_ASSERT((Integer<Stored>));
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
-public:
     Stored m_t;
-private:
-    friend
-    std::ostream & operator<< <Stored, Min, Max, P, E> (
+
+    friend std::ostream & operator<< <Stored, Min, Max, P, E> (
         std::ostream & os,
         const safe_base & t
     );
-    friend
-    std::istream & operator>> <Stored, Min, Max, P, E> (
+    friend std::istream & operator>> <Stored, Min, Max, P, E> (
         std::istream & is,
         safe_base & t
     );
+
+    template<
+        class StoredX,
+        StoredX MinX,
+        StoredX MaxX,
+        class PX, // promotion polic
+        class EX  // exception policy
+    >
+    friend class safe_base;
 
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
@@ -118,6 +181,21 @@ public:
     // default constructor
     SAFE_NUMERIC_CONSTEXPR explicit safe_base() {}
 
+    /* default copy constructor should be sufficient
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
+        m_t(static_cast<Stored>(t.m_t))
+    {
+    }
+    */
+
+    // don't need to do any validation here because result has already
+    // been checked
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR safe_base(const checked_result<T> & t) :
+        m_t(static_cast<Stored>(t))
+    {}
+
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
@@ -125,12 +203,6 @@ public:
         if(! validate(t)){
             E::range_error("Invalid value");
         }
-    }
-
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
-        m_t(static_cast<Stored>(t.m_t))
-    {
     }
 
     template<
@@ -141,12 +213,12 @@ public:
         class ET  // exception policy
     >
     SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
-        T tx = t.m_t;
-        if(! validate(tx)){
+        if(! validate(t.m_t)){
             E::range_error("Invalid value");
         }
-        m_t = tx;
+        m_t = t.m_t;
     }
+
 
     // note: Rule of Five.  Don't specify custom destructor,
     // custom move, custom copy, custom assignment, custom
@@ -169,6 +241,10 @@ public:
         if(r != checked_result<R>::exception_type::no_exception)
             E::range_error("conversion not possible");
         return static_cast<R>(r);
+    }
+
+    SAFE_NUMERIC_CONSTEXPR operator Stored () const {
+        return m_t;
     }
 
     /////////////////////////////////////////////////////////////////
@@ -304,61 +380,6 @@ public:
 
 };
 
-template<
-    class T,
-    T Min,
-    T Max,
-    class P,
-    class E
->
-struct is_safe<safe_base<T, Min, Max, P, E> > : public std::true_type
-{};
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P,
-    class E
->
-struct get_promotion_policy<safe_base<T, Min, Max, P, E> > {
-    typedef P type;
-};
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P,
-    class E
->
-struct get_exception_policy<safe_base<T, Min, Max, P, E> > {
-    typedef E type;
-};
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P,
-    class E
->
-struct base_type<safe_base<T, Min, Max, P, E> > {
-    typedef T type;
-};
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P,
-    class E
->
-SAFE_NUMERIC_CONSTEXPR T base_value(
-    const safe_base<T, Min, Max, P, E>  & st
-) {
-    return static_cast<T>(st.m_t);
-}
 
 } // numeric
 } // boost

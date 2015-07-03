@@ -98,6 +98,32 @@ struct native {
             E
         > type;
     };
+    template<typename T, typename U, typename P, typename E>
+    struct left_shift_result {
+        typedef typename base_type<T>::type base_type_t;
+        typedef typename base_type<U>::type base_type_u;
+        typedef decltype(base_type_t() << base_type_u()) result_base_type;
+        typedef safe_base<
+            result_base_type,
+            std::numeric_limits<result_base_type>::min(),
+            std::numeric_limits<result_base_type>::max(),
+            P,
+            E
+        > type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct right_shift_result {
+        typedef typename base_type<T>::type base_type_t;
+        typedef typename base_type<U>::type base_type_u;
+        typedef decltype(base_type_t() >> base_type_u()) result_base_type;
+        typedef safe_base<
+            result_base_type,
+            std::numeric_limits<result_base_type>::min(),
+            std::numeric_limits<result_base_type>::max(),
+            P,
+            E
+        > type;
+    };
 };
 
 } // numeric

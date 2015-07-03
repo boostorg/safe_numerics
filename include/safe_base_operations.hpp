@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_convertible, is_same, enable_if
+#include <type_traits> // is_base_of, is_same, enable_if
 #include <ostream>
 #include <istream>
 
@@ -166,7 +166,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) + base_value(u));
+        return checked_result<result_base_type>(base_value(t) + base_value(u));
 
     // otherwise do the addition checking for overflow
     checked_result<result_base_type> r = checked::add(
@@ -178,7 +178,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return result_type(static_cast<result_base_type>(r));
+    return r;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -232,7 +232,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) - base_value(u));
+        return checked_result<result_base_type>(base_value(t) - base_value(u));
 
     // otherwise do the subtraction checking for overflow
     checked_result<result_base_type> r = checked::subtract(
@@ -244,7 +244,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
     
-    return result_type(static_cast<result_base_type>(r));
+    return r;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) * base_value(u));
+        return checked_result<result_base_type>(base_value(t) * base_value(u));
 
     // otherwise do the multiplication checking for overflow
     checked_result<result_base_type>  r = checked::multiply(
@@ -313,7 +313,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return result_type(static_cast<result_base_type>(r));
+    return r;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -368,7 +368,7 @@ inline operator/(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) / base_value(u));
+        return checked_result<result_base_type>(base_value(t) / base_value(u));
 
     // otherwise do the division checking for overflow
     checked_result<result_base_type>  r = checked::divide(
@@ -380,7 +380,7 @@ inline operator/(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return result_type(static_cast<result_base_type>(r));
+    return r;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ inline operator%(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) % base_value(u));
+        return checked_result<result_base_type>(base_value(t) % base_value(u));
 
     // otherwise do the modulus checking for overflow
     checked_result<result_base_type>  r = checked::modulus(
@@ -447,12 +447,11 @@ inline operator%(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return result_type(static_cast<result_base_type>(r));
+    return r;
 }
 
 /////////////////////////////////////////////////////////////////
 // comparison
-/* implement this later - requires C++14
 template<class T, class U>
 typename boost::lazy_enable_if<
     boost::mpl::or_<
@@ -464,24 +463,29 @@ typename boost::lazy_enable_if<
 SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
-    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r = (
-        interval<t_base_type>(
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
-        )
-        <
-        interval<u_base_type>(
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
-        )
-    );
+        };
+
+    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+        t_interval < u_interval;
+
+//        = operator< (t_interval, u_interval);
+
     if(r != boost::logic::tribool::indeterminate_value)
         return r;
     return
         checked::less_than(base_value(lhs), base_value(rhs));
 }
-*/
 
+/* implement this later - requires C++14
 template<class T, class U>
 typename boost::lazy_enable_if<
     boost::mpl::or_<
@@ -493,6 +497,7 @@ typename boost::lazy_enable_if<
 SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
     return checked::less_than(base_value(lhs), base_value(rhs));
 }
+*/
 
 template<class T, class U>
 typename boost::lazy_enable_if<
@@ -554,9 +559,99 @@ SAFE_NUMERIC_CONSTEXPR operator<=(const T & lhs, const U & rhs) {
     return checked::less_than_equal(base_value(lhs), base_value(rhs));
 }
 
-/*
+/////////////////////////////////////////////////////////////////
+// shift operators
 
+template<class T, class U>
+struct left_shift_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template left_shift_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if_c<
+    // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
+    // exclude std::ostream << ...
+    (! std::is_base_of<std::ios_base, T>::value)
+    && (
+        boost::numeric::is_safe<T>::value
+        ||boost::numeric::is_safe<U>::value
+    ),
+    left_shift_result<T, U>
+>::type
+SAFE_NUMERIC_CONSTEXPR inline operator<<(const T & t, const U & u){
+    // INT13-CPP
+    typedef left_shift_result<T, U> lsr;
+    typedef typename lsr::P::exception_policy exception_policy;
+    typedef typename lsr::type result_type;
+    typedef typename base_type<result_type>::type result_base_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    // note: it's possible to trap some sitations at compile and skip
+    // the error checking.  Maybe later - for now check all the time.
+
+     const checked_result<result_base_type> r = {
+        checked::left_shift<result_base_type>(base_value(t), base_value(u))
+    };
+
+    r.template dispatch<exception_policy>();
+    return r;
+}
+
+template<class T, class U>
+struct right_shift_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template right_shift_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if_c<
+    // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
+    // exclude std::ostream << ...
+    (! std::is_base_of<std::ios_base, T>::value)
+    && (
+        boost::numeric::is_safe<T>::value
+        ||boost::numeric::is_safe<U>::value
+    ),
+    right_shift_result<T, U>
+>::type
+SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
+    // INT13-CPP
+    typedef right_shift_result<T, U> lsr;
+    typedef typename lsr::P::exception_policy exception_policy;
+    typedef typename lsr::type result_type;
+    typedef typename base_type<result_type>::type result_base_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    // note: it's possible to trap some sitations at compile and skip
+    // the error checking.  May later - for now check all the time.
+
+    SAFE_NUMERIC_CONSTEXPR const checked_result<result_base_type> r = {
+        checked::right_shift<result_base_type>(base_value(t), base_value(u))
+    };
+    r.template dispatch<exception_policy>();
+    return r;
+}
+
+/////////////////////////////////////////////////////////////////
 // logical operators
+/*
 template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,
@@ -565,6 +660,15 @@ typename boost::enable_if<
 inline operator|(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
     return rhs | lhs;
 }
+template<class T, class Stored, class Derived, class Policies>
+typename boost::enable_if<
+    boost::is_integral<T>,
+    typename multiply_result_type<T, Stored>::type
+>::type
+inline operator|(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
+    return rhs | lhs;
+}
+
 template<class T, class Stored, class Derived, class Policies>
 typename boost::enable_if<
     boost::is_integral<T>,

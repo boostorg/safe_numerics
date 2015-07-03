@@ -12,13 +12,13 @@ message(STATUS "compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
   add_definitions( -ftemplate-depth=300 )
-  set (CMAKE_CXX_FLAGS "-std=c++11" )
+  set (CMAKE_CXX_FLAGS "-std=c++14" )
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
   add_definitions( /wd4996 )
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" )
   add_definitions( -ftemplate-depth=300 )
-  # include the following if and only if you want to use c++11 features
-  set (CMAKE_CXX_FLAGS "-std=c++11" )
+  # include the following if and only if you want to use c++14 features
+  set (CMAKE_CXX_FLAGS "-std=c++14" )
   set (CMAKE_CXX_FLAGS_DEBUG "-g -O0" )
   set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3" )
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -dead_strip")
@@ -52,7 +52,8 @@ endif()
 # So my recommendation is 
 # a) to place the compiled libraries in two different directories
 #    - e.g. stage/lib-static/*.a and stage/lib-shared/*.dylib
-#    and set the CMake variable Boost_LIBRARY_DIR to point to one or the other
+#    and set the CMake variable Boost_LIBRARY_DIR to point to one or the other.
+
 # b) create two different CMake build directories - build-static and build-shared
 #    and switch between the generated projects as desired.  I like to test both since
 #    there are things like dead code elimination and visibility which vary
@@ -66,7 +67,27 @@ endif()
 #    and it's not practical to do this for 247 test targets one at a time.
 
 # c) The targets in the project will by default be built as universal 32/64 binaries
-#    in debug mode.  When working with the  
+#    in debug mode.  Use the Xcode IDE select one or the other type of binaries
+
+# d) If you are creating executables to run under Xcode for testing examples or other
+#    purposes AND you're linking to dynamic linked versions of other boost libraries,
+#    you'll have to set the environmental variable DYLD_,
+
+# d) If your test code uses other boost libraries which are not header only, You'll
+#    have to set the environmental variable DYLD_LIBRARY_PATH to the directory which
+#    contains the *.dylib files for Boost libraries.  Unfortunately, it turns out
+#    that it's not at all obvious how to do this and as far as I can tell, it can't
+#    be done automatically by CMake. Here's what you have to do:
+#    1) Using CMake create the Xcode project in the normal way
+#    2) Build all your executables.
+#    3) If you've imported shared libraries your tests may not fail with the message:
+#       dylib: can't find …. 
+#    4) Select the target "RUN_TESTS"
+#    5) select edit scheme for the target
+#    6) add an environmental variable to be set when executing
+#       DYLD_LIBRARY_PATH = … directory which contains the boost library shared
+#       *.dylib files.
+#    7) Try to run tests again.
 
 # end special note for Xcode
 ############################
@@ -75,7 +96,7 @@ endif()
 # Project settings
 #
 
-find_package(Boost REQUIRED COMPONENTS unit_test )
+find_package(Boost )
 
 if(Boost_FOUND)
   set(Boost_USE_MULTITHREADED ON)
@@ -152,7 +173,7 @@ foreach(file_path ${test_list})
   string(REPLACE ".cpp" "" base_name ${file_name})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_path})
-  target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
@@ -171,7 +192,7 @@ foreach(file_path ${example_list})
   string(REPLACE ".cpp" "" base_name ${file_name})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_path})
-  target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
+  # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 

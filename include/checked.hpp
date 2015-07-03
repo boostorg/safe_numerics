@@ -765,6 +765,79 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> modulus(
     ;
 }
 
+///////////////////////////////////
+// shift operations
+
+namespace detail {
+
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> check_shift(
+    const T & t,
+    const U & u
+) {
+    // INT13-CPP C++ standard paragraph 5.8
+    static_assert(
+        std::numeric_limits<T>::is_integer,
+        "shift operation can only be applied to integers"
+    );
+    static_assert(
+        std::numeric_limits<U>::is_integer,
+        "number of bits to shift must be an integer"
+    );
+    const checked_result<R> ru = cast<R>(u);
+    // INT34-C C++ standard paragraph 5.8
+    return
+        ( ! ru.is_valid()) ?
+            ru
+        :
+        ( ru < 0) ?
+            checked_result<R>(
+               checked_result<R>::exception_type::domain_error,
+               "shifting negative amount is undefined behavior"
+            )
+        :
+        ( ru > std::numeric_limits<T>::digits) ?
+            checked_result<R>(
+               checked_result<R>::exception_type::domain_error,
+               "shifting more bits than available is undefined behavior"
+            )
+        :
+            checked_result<R>(0)
+    ;
+}
+
+} // detail
+
+// left shift
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> left_shift(
+    const T & t,
+    const U & u
+) {
+    const checked_result<R> r = detail::check_shift<R>(t, u);
+    return
+        (! r.is_valid()) ?
+            r
+        :
+            checked_result<R>(static_cast<R>(r) << t);
+        ;
+}
+
+// right shift
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
+    const T & t,
+    const U & u
+) {
+    const checked_result<R> r = detail::check_shift<R>(t, u);
+    return
+        (! r.is_valid()) ?
+            r
+        :
+            checked_result<R>(static_cast<R>(r) >> t);
+        ;
+}
+
 } // checked
 } // numeric
 } // boost

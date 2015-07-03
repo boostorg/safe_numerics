@@ -81,12 +81,14 @@ struct checked_result {
                 m_r < r.m_r
             ;
     }
-
     SAFE_NUMERIC_CONSTEXPR bool operator==(const exception_type & et) const {
         return m_e == et;
     }
     SAFE_NUMERIC_CONSTEXPR bool operator!=(const exception_type & et) const {
         return m_e != et;
+    }
+    SAFE_NUMERIC_CONSTEXPR bool is_valid() const {
+        return m_e == exception_type::no_exception;
     }
 
     template<class EP>

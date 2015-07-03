@@ -169,19 +169,19 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
 }
 
 
-template<typename R, typename T, typename U>
+template<typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
     const interval<T> & t,
     const interval<U> & u
 ){
     return
-        (t.no_exception() || u.no_exception) ?
+        (t.no_exception() || u.no_exception()) ?
             boost::logic::indeterminate
         :
-        (t.u < u.l) ?
+        checked::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
             boost::logic::tribool(true)
         :
-        (t.l > u.u) ?
+        checked::less_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
             boost::logic::tribool(true)
         :
             boost::logic::indeterminate
