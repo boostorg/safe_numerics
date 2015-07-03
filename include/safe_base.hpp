@@ -163,6 +163,7 @@ class safe_base {
 
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        // INT08-C
         return ! (
             boost::numeric::checked::greater_than(
                 base_value(t),
@@ -340,44 +341,6 @@ public:
         );
         return *this = ~(m_t);
     }
-
-/*
-
-    /////////////////////////////////////////////////////////////////
-    // logical operators
-
-    template<class U>
-    Stored inline operator>>(const U & rhs) const {
-        // verify that U is an integer type
-        static_assert(
-            std::numeric_limits<U>::is_integer,
-            "right hand side is not an integer type"
-        );
-        if(m_t < 0)
-            boost::numeric::overflow("right shift of negative number undefined");
-        typedef decltype(Stored() >> U()) result_type;
-        if(rhs > boost::numeric::bits<Stored>::value)
-            boost::numeric::overflow("conversion of negative value to unsigned");
-
-        return m_t >> rhs;
-    }
-    template<class U>
-    Stored inline operator<<(const U & rhs) const {
-        // verify that U is an integer type
-        static_assert(
-            std::numeric_limits<U>::is_integer,
-            "right hand side is not an integer type"
-        );
-        if(m_t < 0)
-            boost::numeric::overflow("right shift of negative number undefined");
-        typedef decltype(Stored() >> U()) result_type;
-        if(rhs > boost::numeric::bits<Stored>::value)
-            boost::numeric::overflow("conversion of negative value to unsigned");
-        return m_t << rhs;
-    }
-
-*/
-
 };
 
 

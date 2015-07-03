@@ -838,6 +838,78 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
         ;
 }
 
+///////////////////////////////////
+// bitwise operations
+
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_or(
+    const T & t,
+    const U & u
+) {
+    static_assert(
+        std::is_integral<T>::value && std::is_signed<T>::value
+        && std::is_integral<U>::value && std::is_signed<T>::value,
+        "only intrinsic unsigned integers permitted"
+    );
+    const checked_result<R> ru = cast<R>(u);
+    const checked_result<R> rt = cast<R>(t);
+    return
+        rt != checked_result<R>::exception_type::no_exception ?
+            rt
+        :
+        ru != checked_result<R>::exception_type::no_exception ?
+            ru
+        :
+            static_cast<R>(ru) | static_cast<R>(rt)
+    ;
+}
+
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_and(
+    const T & t,
+    const U & u
+) {
+    static_assert(
+        std::is_integral<T>::value && std::is_signed<T>::value
+        && std::is_integral<U>::value && std::is_signed<T>::value,
+        "only intrinsic unsigned integers permitted"
+    );
+    const checked_result<R> ru = cast<R>(u);
+    const checked_result<R> rt = cast<R>(t);
+    return
+        rt != checked_result<R>::exception_type::no_exception ?
+            rt
+        :
+        ru != checked_result<R>::exception_type::no_exception ?
+            ru
+        :
+            static_cast<R>(ru) & static_cast<R>(rt)
+    ;
+}
+
+template<class R, class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_xor(
+    const T & t,
+    const U & u
+) {
+    static_assert(
+        std::is_integral<T>::value && std::is_signed<T>::value
+        && std::is_integral<U>::value && std::is_signed<T>::value,
+        "only intrinsic unsigned integers permitted"
+    );
+    const checked_result<R> ru = cast<R>(u);
+    const checked_result<R> rt = cast<R>(t);
+    return
+        rt != checked_result<R>::exception_type::no_exception ?
+            rt
+        :
+        ru != checked_result<R>::exception_type::no_exception ?
+            ru
+        :
+            static_cast<R>(ru) ^ static_cast<R>(rt)
+    ;
+}
+
 } // checked
 } // numeric
 } // boost

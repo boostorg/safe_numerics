@@ -642,7 +642,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
     // note: it's possible to trap some sitations at compile and skip
     // the error checking.  May later - for now check all the time.
 
-    SAFE_NUMERIC_CONSTEXPR const checked_result<result_base_type> r = {
+    const checked_result<result_base_type> r = {
         checked::right_shift<result_base_type>(base_value(t), base_value(u))
     };
     r.template dispatch<exception_policy>();
@@ -650,42 +650,150 @@ SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
 }
 
 /////////////////////////////////////////////////////////////////
-// logical operators
-/*
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    typename multiply_result_type<T, Stored>::type
+// bitwise operators
+
+// operator |
+template<class T, class U>
+struct or_result {
+    typedef common_policies<T, U> P;
+    typedef typename P::promotion_policy::template or_result<
+        T,
+        U,
+        typename P::promotion_policy,
+        typename P::exception_policy
+    >::type type;
+};
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    or_result<T, U>
 >::type
-inline operator|(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs | lhs;
-}
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    typename multiply_result_type<T, Stored>::type
->::type
-inline operator|(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs | lhs;
+SAFE_NUMERIC_CONSTEXPR inline operator|(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef or_result<T, U> or_;
+    typedef typename or_::P::exception_policy exception_policy;
+    typedef typename or_::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    static_assert(
+        std::numeric_limits<T>::is_integer
+        && (! std::numeric_limits<T>::is_signed)
+        && std::numeric_limits<U>::is_integer
+        && (! std::numeric_limits<U>::is_signed),
+        // INT13-C
+        "bitwise operations are only applicable to unsigned integers"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+
+    static_assert(
+        std::numeric_limits<result_base_type>::is_integer
+        && (! std::numeric_limits<result_base_type>::is_signed),
+        // INT13-C
+        "bitwise operations should return unsigned integers"
+    );
+
+    checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(t, u);
+    r.template dispatch<exception_policy>();
+    return r;
 }
 
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() & Stored())
+// operator &
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    or_result<T, U>
 >::type
-inline operator&(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs & lhs;
+SAFE_NUMERIC_CONSTEXPR inline operator&(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef or_result<T, U> and_;
+    typedef typename and_::P::exception_policy exception_policy;
+    typedef typename and_::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    static_assert(
+        std::numeric_limits<T>::is_integer
+        && (! std::numeric_limits<T>::is_signed)
+        && std::numeric_limits<U>::is_integer
+        && (! std::numeric_limits<U>::is_signed),
+        // INT13-C
+        "bitwise operations are only applicable to unsigned integers"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+
+    static_assert(
+        std::numeric_limits<result_base_type>::is_integer
+        && (! std::numeric_limits<result_base_type>::is_signed),
+        // INT13-C
+        "bitwise operations should return unsigned integers"
+    );
+
+    checked_result<result_base_type> r = checked::bitwise_and<result_base_type>(t, u);
+    r.template dispatch<exception_policy>();
+    return r;
 }
-template<class T, class Stored, class Derived, class Policies>
-typename boost::enable_if<
-    boost::is_integral<T>,
-    decltype(T() ^ Stored())
+
+// operator ^
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    or_result<T, U>
 >::type
-inline operator^(const T & lhs, const safe_base<Stored, Derived, Policies> & rhs) {
-    return rhs ^ lhs;
+SAFE_NUMERIC_CONSTEXPR inline operator^(const T & t, const U & u){
+    // argument dependent lookup should guarentee that we only get here
+    // only if one of the types is a safe type. Verify this here
+    typedef or_result<T, U> xor_;
+    typedef typename xor_::P::exception_policy exception_policy;
+    typedef typename xor_::type result_type;
+    static_assert(
+        boost::numeric::is_safe<result_type>::value,
+        "Promotion failed to return safe type"
+    );
+
+    static_assert(
+        std::numeric_limits<T>::is_integer
+        && (! std::numeric_limits<T>::is_signed)
+        && std::numeric_limits<U>::is_integer
+        && (! std::numeric_limits<U>::is_signed),
+        // INT13-C
+        "bitwise operations are only applicable to unsigned integers"
+    );
+
+    typedef typename base_type<result_type>::type result_base_type;
+
+    static_assert(
+        std::numeric_limits<result_base_type>::is_integer
+        && (! std::numeric_limits<result_base_type>::is_signed),
+        // INT13-C
+        "bitwise operations should return unsigned integers"
+    );
+
+    checked_result<result_base_type> r = checked::bitwise_xor<result_base_type>(t, u);
+    r.template dispatch<exception_policy>();
+    return r;
 }
-*/
+
+/////////////////////////////////////////////////////////////////
+// stream operators
 
 template<
     class T,
