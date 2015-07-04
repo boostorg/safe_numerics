@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.safe_compare">
+  <title>safe_compare&lt;T, U&gt;</title>
+
+  <section>
+    <title>Synopsis</title>
+
+    <para>safe_compare is several functions:.</para>
+
+    <programlisting>template&lt;class T, class U&gt;
+bool safe_compare::less_than(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::less_than_equal(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::greater_than(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::greater_than_equal(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::equal(const T &amp; lhs, const U &amp; rhs);
+
+template&lt;class T, class U&gt;
+bool safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</programlisting>
+  </section>
+
+  <section>
+    <title>Description</title>
+
+    <para>With normal comparison operators, comparison of unsigned types to
+    signed types will be done by converting the unsigned type to a signed type
+    before comparing. Unfortunately this is not always possible. Most C++
+    compilers will emit an warning message when this is possible but won't
+    check that an error is made in the conversion. This function guarantees a
+    correct result regardless of the types of the arguments. It's used in the
+    implementation of the safe numerics library. It has been made publicly
+    accessible in because it might be useful in other contexts.</para>
+  </section>
+
+  <section>
+    <title>Type requirements</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Type</entry>
+
+            <entry align="left">Requirements</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>T</code></entry>
+
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
+          </row>
+
+          <row>
+            <entry><code>U </code></entry>
+
+            <entry><link
+            linkend="safe_numerics.numeric">Numeric</link></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../../include/safe_compare.hpp"><filename>#include
+    &lt;boost/numeric/safe_compare.hpp&gt; </filename></ulink></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <programlisting>#include &lt;boost/numeric/safe_compare.hpp&gt;
+
+void f(){
+    unsigned char i = 129;
+    unsigned int j = 1;
+    assert(j &lt; i); // program traps because expression is false. But this is a surprise because 1 &lt; 129
+    assert( safe_compare::less_than(j,i)); // expression is true as we would expect
+}
+
+// safe_compare is used to implement comparison operators for safe types.  So we can do this:
+void g(){
+    safe&lt;unsigned char&gt; int i = 0x129;
+    safe&lt;int&gt; j = 1;
+    assert(j &lt; i); // program works as expected
+}</programlisting>
+  </section>
+</section>
