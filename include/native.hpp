@@ -35,7 +35,7 @@ struct native {
 
     template<typename T, typename U, typename P, typename E>
     struct addition_result {
-        typedef typename ::boost::numeric::base_type<T>::type base_type_t;
+        typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
         typedef decltype(base_type_t() + base_type_u()) result_base_type;
         typedef safe_base<

@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <algorithm> // min, max
+//#include <algorithm> // min, max
 
 #include <boost/logic/tribool.hpp>
 
@@ -26,8 +26,8 @@ namespace numeric {
 
 template<typename R>
 struct interval {
-    checked_result<R> l;
-    checked_result<R> u;
+    const checked_result<R> l;
+    const checked_result<R> u;
 
     /*
     template<typename T, typename U>
@@ -190,5 +190,17 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
 
 } // numeric
 } // boost
+
+#include <iosfwd>
+
+namespace std {
+
+template<typename T>
+std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> & i){
+    os << "[" << i.l << "," << i.u << "]" << std::endl;
+    return os;
+}
+
+} // std
 
 #endif // BOOST_NUMERIC_INTERVAL_HPP

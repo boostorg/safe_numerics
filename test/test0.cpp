@@ -150,7 +150,7 @@ bool test5(){
 
 int main(int argc, char *argv[]){
     return (
-//        test1() &&
+        test1() &&
         test2() &&
         test3() &&
         test4() &&

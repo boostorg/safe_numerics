@@ -9,6 +9,8 @@
 #ifndef BOOST_NUMERIC_CHECKED_RESULT
 #define BOOST_NUMERIC_CHECKED_RESULT
 
+#include <cassert>
+
 #include "safe_common.hpp" // SAFE_NUMERIC_CONSTEXPR
 #include "exception_policies.hpp"
 
@@ -50,26 +52,24 @@ struct checked_result {
         m_r(0)
     {}
     */
-    SAFE_NUMERIC_CONSTEXPR explicit checked_result(const R & r) :
+    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
         m_e(exception_type::no_exception),
         m_r(r)
     {}
-    SAFE_NUMERIC_CONSTEXPR explicit checked_result(exception_type e, const char * msg) :
+    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(exception_type e, const char * msg) :
         m_e(e),
         m_msg(msg)
     {}
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
-        return (exception_type::no_exception == m_e) ?
-            m_r
-        :
-            0
-        ;
+        assert(exception_type::no_exception == m_e);
+        return m_r;
     }
     SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
         return m_e;
     }
     SAFE_NUMERIC_CONSTEXPR operator const char *() const {
+        assert(exception_type::no_exception != m_e);
         return m_msg;
     }
     SAFE_NUMERIC_CONSTEXPR bool operator<(const checked_result & r) const {
@@ -156,7 +156,9 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R
 } // numeric
 } // boost
 
-#include <ostream>
+#include <iosfwd>
+
+namespace std {
 
 template<typename R>
 std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<R> & r){
@@ -167,5 +169,35 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_resul
     return os;
 }
 
+template<typename R>
+std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<R> & r){
+    is >> r.m_r;
+    return is;
+}
+
+} // std
+
+/////////////////////////////////////////////////////////////////
+// numeric limits for checked<R>
+
+#include <limits>
+
+namespace std {
+
+template<class R>
+class numeric_limits<boost::numeric::checked_result<R> >
+    : public std::numeric_limits<R>
+{
+    typedef boost::numeric::checked_result<R> this_type;
+public:
+    SAFE_NUMERIC_CONSTEXPR static this_type min() noexcept {
+        return this_type(std::numeric_limits<R>::min());
+    }
+    SAFE_NUMERIC_CONSTEXPR static this_type max() noexcept {
+        return this_type(std::numeric_limits<R>::max());
+    }
+};
+
+} // std
 
 #endif  // BOOST_NUMERIC_CHECKED_CHECKED_RESULT

@@ -166,7 +166,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return checked_result<result_base_type>(base_value(t) + base_value(u));
+        return result_type(base_value(t) + base_value(u));
 
     // otherwise do the addition checking for overflow
     checked_result<result_base_type> r = checked::add(
@@ -205,9 +205,9 @@ typename boost::lazy_enable_if<
 SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
-    typedef subtraction_result<T, U> ar;
-    typedef typename ar::P::exception_policy exception_policy;
-    typedef typename ar::type result_type;
+    typedef subtraction_result<T, U> sr;
+    typedef typename sr::P::exception_policy exception_policy;
+    typedef typename sr::type result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
@@ -232,7 +232,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return checked_result<result_base_type>(base_value(t) - base_value(u));
+        return result_type(base_value(t) - base_value(u));
 
     // otherwise do the subtraction checking for overflow
     checked_result<result_base_type> r = checked::subtract(
@@ -244,7 +244,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
     
-    return r;
+    return result_type(r);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -452,6 +452,11 @@ inline operator%(const T & t, const U & u){
 
 /////////////////////////////////////////////////////////////////
 // comparison
+
+// note: not really correct.  Should subject both t and u to type
+// promotion to R.  Then interval::operator< can be simpler
+// as can checked::less_than.  This is a relic of the previous system
+// still to do.
 template<class T, class U>
 typename boost::lazy_enable_if<
     boost::mpl::or_<
@@ -477,27 +482,13 @@ SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
     SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
         t_interval < u_interval;
 
-//        = operator< (t_interval, u_interval);
-
-    if(r != boost::logic::tribool::indeterminate_value)
-        return r;
     return
-        checked::less_than(base_value(lhs), base_value(rhs));
+        (r != boost::logic::tribool::indeterminate_value) ?
+            r
+        :
+            checked::less_than(base_value(lhs), base_value(rhs));
+        ;
 }
-
-/* implement this later - requires C++14
-template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
-    boost::mpl::identity<bool>
->::type
-SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
-    return checked::less_than(base_value(lhs), base_value(rhs));
-}
-*/
 
 template<class T, class U>
 typename boost::lazy_enable_if<
