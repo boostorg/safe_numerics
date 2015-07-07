@@ -165,18 +165,68 @@ SAFE_NUMERIC_CONSTEXPR bool less_than_equal(const T & lhs, const U & rhs) {
     return greater_than(rhs, lhs);
 }
 
+namespace detail { 
+    // both arguments unsigned or signed
+    template<bool TS, bool US>
+    struct equal {
+        template<class T, class U>
+        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+            return t == u;
+        }
+    };
+
+    // T unsigned, U signed
+    template<>
+    struct equal<false, true> {
+        template<class T, class U>
+        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+            return
+                (u < 0) ?
+                    false
+                :
+                    equal<false, false>::invoke(
+                        t,
+                        static_cast<const typename make_unsigned<U>::type &>(u)
+                    )
+                ;
+        }
+    };
+    // T signed, U unsigned
+    template<>
+    struct equal<true, false> {
+        template<class T, class U>
+        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+            return
+                (t < 0) ?
+                    false
+                :
+                    equal<false, false>::invoke(
+                        static_cast<const typename make_unsigned<T>::type &>(t),
+                        u
+                    )
+                ;
+        }
+    };
+} // detail
+
 template<class T, class U>
 SAFE_NUMERIC_CONSTEXPR bool equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return ! less_than(lhs, rhs) && ! greater_than(lhs, rhs);
+    return detail::equal<
+        std::numeric_limits<T>::is_signed,
+        std::numeric_limits<U>::is_signed
+    >::template invoke(lhs, rhs);
 }
 
 template<class T, class U>
 SAFE_NUMERIC_CONSTEXPR bool not_equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return ! equal(lhs, rhs);
+    return ! detail::equal<
+        std::numeric_limits<T>::is_signed,
+        std::numeric_limits<U>::is_signed
+    >::template invoke(lhs, rhs);
 }
 
 ////////////////////////////////////////////////////

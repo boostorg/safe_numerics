@@ -188,7 +188,6 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-#define COUNT sizeof(test_multiplication_result)
 int main(int argc, char * argv[]){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)

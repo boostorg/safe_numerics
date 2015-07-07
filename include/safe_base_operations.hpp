@@ -33,6 +33,86 @@
 namespace boost {
 namespace numeric {
 
+/////////////////////////////////////////////////////////////////
+// construction and assignment operators
+
+template< class Stored, Stored Min, Stored Max, class P, class E>
+template<class T, T MinT, T MaxT, class PT, class ET>
+SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
+safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
+    SAFE_NUMERIC_CONSTEXPR const interval<T> t_interval = {
+        MinT,
+        MaxT
+    };
+    SAFE_NUMERIC_CONSTEXPR const interval<Stored> this_interval = {
+        Min,
+        Max
+    };
+    // note: r returns "indeterminent" if the ranges of t and u overlap.
+    // If they don't overlap we can skip the runtime check.  Otherwise
+    // we have to do it
+    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+        t_interval < this_interval;
+
+    if(r == boost::logic::tribool::indeterminate_value)
+        E::range_error("Invalid value");
+
+    if(! validate(t.m_t))
+        E::range_error("Invalid value");
+    m_t = t.m_t;
+}
+
+template< class Stored, Stored Min, Stored Max, class P, class E>
+template<class T, T MinT, T MaxT, class PT, class ET>
+SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E> &
+safe_base<Stored, Min, Max, P, E>::
+operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
+    SAFE_NUMERIC_CONSTEXPR const interval<T> t_interval = {
+        MinT,
+        MaxT
+    };
+    SAFE_NUMERIC_CONSTEXPR const interval<Stored> this_interval = {
+        Min,
+        Max
+    };
+    // note: r returns "indeterminent" if the ranges of t and u overlap.
+    // If they don't overlap we can skip the runtime check.  Otherwise
+    // we have to do it
+    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+        t_interval < this_interval;
+
+    if(r == boost::logic::tribool::indeterminate_value)
+        E::range_error("Invalid value");
+
+    if(! validate(rhs.m_t)){
+        E::range_error("Invalid value");
+    }
+    m_t = rhs.m_t;
+    return *this;
+}
+
+/////////////////////////////////////////////////////////////////
+// casting operators
+
+template< class Stored, Stored Min, Stored Max, class P, class E>
+template<
+    class R,
+    typename std::enable_if<
+        !boost::numeric::is_safe<R>::value,
+        int
+    >::type
+>
+SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
+operator R () const {
+    checked_result<R> r = checked::cast<R>(m_t);
+    if(r != checked_result<R>::exception_type::no_exception)
+        E::range_error("conversion not possible");
+    return static_cast<R>(r);
+}
+
+/////////////////////////////////////////////////////////////////
+// binary operators
+
 template<class T, class U>
 struct common_policies {
     static_assert(
@@ -95,9 +175,6 @@ struct common_policies {
     typedef typename get_promotion_policy<safe_type>::type promotion_policy;
     typedef typename get_exception_policy<safe_type>::type exception_policy;
 };
-
-/////////////////////////////////////////////////////////////////
-// binary operators
 
 // Note: the following global operators will be only found via
 // argument dependent lookup.  So they won't conflict any
@@ -178,7 +255,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return r;
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -244,7 +321,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
     
-    return result_type(r);
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -301,7 +378,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return checked_result<result_base_type>(base_value(t) * base_value(u));
+        return result_type(base_value(t) * base_value(u));
 
     // otherwise do the multiplication checking for overflow
     checked_result<result_base_type>  r = checked::multiply(
@@ -313,7 +390,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return r;
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -368,7 +445,7 @@ inline operator/(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return checked_result<result_base_type>(base_value(t) / base_value(u));
+        return result_type(base_value(t) / base_value(u));
 
     // otherwise do the division checking for overflow
     checked_result<result_base_type>  r = checked::divide(
@@ -380,7 +457,7 @@ inline operator/(const T & t, const U & u){
 
     r.template dispatch<exception_policy>();
 
-    return r;
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -435,7 +512,7 @@ inline operator%(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return checked_result<result_base_type>(base_value(t) % base_value(u));
+        return result_type(base_value(t) % base_value(u));
 
     // otherwise do the modulus checking for overflow
     checked_result<result_base_type>  r = checked::modulus(
@@ -446,8 +523,7 @@ inline operator%(const T & t, const U & u){
     );
 
     r.template dispatch<exception_policy>();
-
-    return r;
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -483,9 +559,12 @@ SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
         t_interval < u_interval;
 
     return
-        (r != boost::logic::tribool::indeterminate_value) ?
-            r
+        // if the ranges don't overlap
+        (! boost::logic::indeterminate(r)) ?
+            // values in those ranges can't be equal
+            false
         :
+            // otherwise we have to check
             checked::less_than(base_value(lhs), base_value(rhs));
         ;
 }
@@ -499,7 +578,31 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 SAFE_NUMERIC_CONSTEXPR operator>(const T & lhs, const U & rhs) {
-    return checked::greater_than(base_value(lhs), base_value(rhs));
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+        t_interval > u_interval;
+
+    return
+        // if the ranges don't overlap
+        (! boost::logic::indeterminate(r)) ?
+            // values in those ranges can't be equal
+            false
+        :
+            // otherwise we have to check
+            checked::greater_than(base_value(lhs), base_value(rhs));
+        ;
 }
 
 template<class T, class U>
@@ -511,7 +614,28 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 SAFE_NUMERIC_CONSTEXPR operator==(const T & lhs, const U & rhs) {
-    return checked::equal(base_value(lhs), base_value(rhs));
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
+
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+    return
+        // if the ranges don't overlap
+        ( t_interval < u_interval || t_interval > u_interval) ?
+            // values in those ranges can't be equal
+            false
+        :
+            // otherwise we have to check
+            checked::equal(base_value(lhs), base_value(rhs));
+        ;
 }
 
 template<class T, class U>
@@ -523,7 +647,7 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 SAFE_NUMERIC_CONSTEXPR operator!=(const T & lhs, const U & rhs) {
-    return checked::not_equal(base_value(lhs), base_value(rhs));
+    return ! (lhs == rhs);
 }
 
 template<class T, class U>
@@ -535,7 +659,7 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 SAFE_NUMERIC_CONSTEXPR operator>=(const T & lhs, const U & rhs) {
-    return checked::greater_than_equal(base_value(lhs), base_value(rhs));
+    return ! ( rhs < lhs );
 }
 
 template<class T, class U>
@@ -547,7 +671,7 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 SAFE_NUMERIC_CONSTEXPR operator<=(const T & lhs, const U & rhs) {
-    return checked::less_than_equal(base_value(lhs), base_value(rhs));
+    return ! ( rhs > lhs );
 }
 
 /////////////////////////////////////////////////////////////////
@@ -594,7 +718,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator<<(const T & t, const U & u){
     };
 
     r.template dispatch<exception_policy>();
-    return r;
+    return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
 template<class T, class U>
@@ -637,7 +761,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
         checked::right_shift<result_base_type>(base_value(t), base_value(u))
     };
     r.template dispatch<exception_policy>();
-    return r;
+    return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -694,7 +818,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator|(const T & t, const U & u){
 
     checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(t, u);
     r.template dispatch<exception_policy>();
-    return r;
+    return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
 // operator &
@@ -737,7 +861,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator&(const T & t, const U & u){
 
     checked_result<result_base_type> r = checked::bitwise_and<result_base_type>(t, u);
     r.template dispatch<exception_policy>();
-    return r;
+    return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
 // operator ^
@@ -780,7 +904,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator^(const T & t, const U & u){
 
     checked_result<result_base_type> r = checked::bitwise_xor<result_base_type>(t, u);
     r.template dispatch<exception_policy>();
-    return r;
+    return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////

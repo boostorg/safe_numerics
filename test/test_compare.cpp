@@ -180,7 +180,6 @@ void break_check(unsigned int i, unsigned int j){
     )
 /**/
 
-#define COUNT sizeof(test_addition_result)
 int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR

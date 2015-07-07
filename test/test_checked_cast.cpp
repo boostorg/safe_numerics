@@ -12,32 +12,33 @@
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
-bool test_cast(const T1 & v1, const char *t2_name, const char *t1_name){
+bool test_cast(
+    const T1 & v1,
+    const char *t2_name,
+    const char *t1_name,
+    char expected_result
+){
     std::cout
         << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
 
-    boost::numeric::checked_result<T2> r2
-        = boost::numeric::checked::cast<T2>(v1);
+    boost::numeric::checked_result<T2> r2 = boost::numeric::checked::cast<T2>(v1);
 
-    if(r2 == boost::numeric::checked_result<T2>::exception_type::no_exception){
-        if(! (r2 == v1)){
-            std::cout
-                << "failed to detect error in construction "
-                << t2_name << "<-" << t1_name
-                << std::endl;
-            boost::numeric::checked::cast<T2>(v1);
-            return false;
-        }
+    if(expected_result == 'x' && r2.is_valid()){
+        std::cout
+            << "failed to detect error in construction "
+            << t2_name << "<-" << t1_name
+            << std::endl;
+        boost::numeric::checked::cast<T2>(v1);
+        return false;
     }
-    else{
-        if( r2 == v1 ){
-            std::cout
-                << "erroneously emitted error "
-                << t1_name << "<-" << t2_name
-                << std::endl;
-            boost::numeric::checked::cast<T2>(v1);
-        }
+    if(expected_result == '.' && ! r2.is_valid()){
+        std::cout
+            << "erroneously emitted error "
+            << t2_name << "<-" << t1_name
+            << std::endl;
+        boost::numeric::checked::cast<T2>(v1);
+        return false;
     }
     return true; // passed test
 }
@@ -51,18 +52,39 @@ bool test_cast(const T1 & v1, const char *t2_name, const char *t1_name){
 #include "test_values.hpp"
 #include "test.hpp"
 
-#define TEST_CAST(T1, v)              \
+// note: same test matrix as used in test_checked.  Here we test all combinations
+// safe and unsafe integers.  in test_checked we test all combinations of
+// integer primitives
+
+const char *test_result[VALUE_ARRAY_SIZE] = {
+//      0       0       0       0
+//      01234567012345670123456701234567
+//      01234567890123456789012345678901
+/* 0*/ ".....xx..xx..xx...xx.xxx.xxx.xxx",
+/* 1*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx",
+/* 2*/ ".........xx..xx.......xx.xxx.xxx",
+/* 3*/ "..xx..xx.xxx.xxx.........xxx.xxx",
+/* 4*/ ".............xx...........xx.xxx",
+/* 5*/ "..xx..xx..xx.xxx.............xxx",
+/* 6*/ "..............................xx",
+/* 7*/ "..xx..xx..xx..xx................"
+};
+
+#define TEST_CAST(T1, v, result)      \
     rval = rval && test_cast<T1>(     \
         v,                            \
         BOOST_PP_STRINGIZE(T1),       \
-        BOOST_PP_STRINGIZE(v)         \
+        BOOST_PP_STRINGIZE(v),        \
+        result                        \
     );
 /**/
 
 #define EACH_VALUE(z, value_index, type_index)     \
-    TEST_CAST(                               \
+    (std::cout << type_index << ',' << value_index << ','); \
+    TEST_CAST(                                     \
         BOOST_PP_ARRAY_ELEM(type_index, TYPES),    \
-        BOOST_PP_ARRAY_ELEM(value_index, VALUES)   \
+        BOOST_PP_ARRAY_ELEM(value_index, VALUES),  \
+        test_result[type_index][value_index]       \
     )                                              \
 /**/
 
@@ -76,10 +98,10 @@ bool test_cast(const T1 & v1, const char *t2_name, const char *t1_name){
 
 int main(int argc, char *argv[]){
     bool rval = true;
-    BOOST_PP_REPEAT(
-        BOOST_PP_ARRAY_SIZE(TYPES),
-        EACH_TYPE1,
-        nothing
+    BOOST_PP_REPEAT(                               \
+        BOOST_PP_ARRAY_SIZE(TYPES),                \
+        EACH_TYPE1,                                \
+        nothing                                    \
     )
     return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }

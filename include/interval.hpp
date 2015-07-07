@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-//#include <algorithm> // min, max
+#include <cassert>
 
 #include <boost/logic/tribool.hpp>
 
@@ -29,14 +29,12 @@ struct interval {
     const checked_result<R> l;
     const checked_result<R> u;
 
-    /*
     template<typename T, typename U>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
         l(lower),
         u(upper)
     {}
-    */
-    
+
     SAFE_NUMERIC_CONSTEXPR interval(
         const checked_result<R> & lower,
         const checked_result<R> & upper
@@ -168,24 +166,91 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
         ;
 }
 
-
 template<typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
     const interval<T> & t,
     const interval<U> & u
 ){
     return
-        (t.no_exception() || u.no_exception()) ?
+        (! t.no_exception() || ! u.no_exception()) ?
             boost::logic::indeterminate
         :
+        // if every element in t is less than every element in u
         checked::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
             boost::logic::tribool(true)
         :
-        checked::less_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
-            boost::logic::tribool(true)
+        // if every element in t is greater than every element in u
+        checked::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+            boost::logic::tribool(false)
         :
+        // otherwise some element(s) in t are greater than some element in u
             boost::logic::indeterminate
     ;
+}
+
+template<typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return
+        (! t.no_exception() || ! u.no_exception()) ?
+            boost::logic::indeterminate
+        :
+        // if every element in t is greater than every element in u
+        checked::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+            boost::logic::tribool(true)
+        :
+        // if every element in t is less than every element in u
+        checked::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
+            boost::logic::tribool(false)
+        :
+        // otherwise some element(s) in t are greater than some element in u
+            boost::logic::indeterminate
+    ;
+}
+
+template<typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator==(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    // every element in t can only equal every element in u if and only if
+    return
+        (! t.no_exception() || ! u.no_exception()) ?
+            boost::logic::indeterminate
+        :
+        // if intervals don't over lap
+        (t < u) || (t > u) ?
+            // no element in t can equal any element in u
+            boost::logic::tribool(false)
+        :
+        // there is only one element in each
+        (t.l == t.u) && (u.l == u.u)
+        // and the element is the same
+        && (t.l == u.l) ?
+            // this must be true
+            boost::logic::tribool(true)
+        :
+        // otherwise we have to check at runtime
+            boost::logic::indeterminate
+    ;
+}
+
+template<typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<=(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return ! (t > u);
+}
+
+template<typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>=(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return ! (t < u);
 }
 
 } // numeric

@@ -163,6 +163,7 @@ class safe_base {
 
     template<class T>
     SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        static_assert(! is_safe<T>::value, "catch dumb mistake");
         // INT08-C
         return (
             ! boost::numeric::checked::less_than(
@@ -176,27 +177,28 @@ class safe_base {
             )
         );
     }
+    /*
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
+        // INT08-C
+        return ! (Max < t && t < Min );
+    }
+    */
+
 public:
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
     SAFE_NUMERIC_CONSTEXPR explicit safe_base() {}
 
-    /* default copy constructor should be sufficient
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base & t) :
-        m_t(static_cast<Stored>(t.m_t))
-    {
-    }
-    */
-
     // don't need to do any validation here because result has already
     // been checked
+    /*
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(const checked_result<T> & t) :
         m_t(static_cast<Stored>(t))
     {}
-
+    */
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
@@ -206,21 +208,9 @@ public:
         }
     }
 
-    template<
-        class T,
-        T MinT,
-        T MaxT,
-        class PT, // promotion polic
-        class ET  // exception policy
-    >
-    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
-        if(! validate(t.m_t)){
-            E::range_error("Invalid value");
-        }
-        m_t = t.m_t;
-    }
-
-
+    template<class T, T MinT, T MaxT, class PT, class ET>
+    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t);
+    
     // note: Rule of Five.  Don't specify custom destructor,
     // custom move, custom copy, custom assignment, custom
     // move assignment.  Let the compiler build the defaults.
@@ -237,13 +227,8 @@ public:
             int
         >::type = 0
     >
-    SAFE_NUMERIC_CONSTEXPR operator R () const {
-        checked_result<R> r = checked::cast<R>(m_t);
-        if(r != checked_result<R>::exception_type::no_exception)
-            E::range_error("conversion not possible");
-        return static_cast<R>(r);
-    }
-
+    SAFE_NUMERIC_CONSTEXPR operator R () const;
+    
     SAFE_NUMERIC_CONSTEXPR operator Stored () const {
         return m_t;
     }
@@ -251,8 +236,9 @@ public:
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
-    safe_base & operator=(const T & rhs){
+    SAFE_NUMERIC_CONSTEXPR safe_base & operator=(const T & rhs){
         if(! validate(rhs)){
+            static_assert(std::is_literal_type<T>::value, "expecting a literal");
             E::range_error(
                 "Invalid value passed on assignment"
             );
@@ -260,20 +246,11 @@ public:
         m_t = static_cast<Stored>(rhs);
         return *this;
     }
-    template<
-        class T,
-        T MinT,
-        T MaxT,
-        class PT, // promotion polic
-        class ET  // exception policy
-    >
-    safe_base & operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
-        if(! validate(rhs)){
-            E::range_error("Invalid value");
-        }
-        m_t = rhs.m_t;
-        return *this;
-    }
+    
+    template<class T, T MinT, T MaxT, class PT, class ET>
+    SAFE_NUMERIC_CONSTEXPR safe_base &
+    operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
+
     template<class T>
     safe_base & operator+=(const T & rhs){
         return *this = *this + rhs;

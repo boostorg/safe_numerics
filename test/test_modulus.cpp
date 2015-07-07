@@ -173,7 +173,6 @@ const char *test_modulus_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-#define COUNT sizeof(test_modulus_result)
 int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
