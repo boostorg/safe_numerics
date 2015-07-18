@@ -62,7 +62,7 @@ struct checked_result {
     {}
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
-        assert(exception_type::no_exception == m_e);
+       // assert(exception_type::no_exception == m_e);
         return m_r;
     }
     SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
@@ -156,7 +156,9 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(const checked_result<R
 } // numeric
 } // boost
 
-#include <iosfwd>
+//#include <iosfwd>
+#include <ostream>
+#include <istream>
 
 namespace std {
 
@@ -164,6 +166,15 @@ template<typename R>
 std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<R> & r){
     if(r == boost::numeric::checked_result<R>::exception_type::no_exception)
         os << static_cast<R>(r);
+    else
+        os << static_cast<const char *>(r);
+    return os;
+}
+
+template<>
+std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<std::int8_t> & r){
+    if(r == boost::numeric::checked_result<std::int8_t>::exception_type::no_exception)
+        os << std::dec << static_cast<int>(r);
     else
         os << static_cast<const char *>(r);
     return os;

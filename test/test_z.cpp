@@ -1,14 +1,8 @@
 #include <iostream>
-#include <boost/mpl/print.hpp>
 
-#include "../include/automatic.hpp"
 #include "../include/safe_range.hpp"
+#include "../include/automatic.hpp"
 
-#include "../include/interval.hpp"
-
-int main(){}
-
-#if 0
 template <
     std::intmax_t Min,
     std::intmax_t Max
@@ -17,15 +11,13 @@ using safe_t = boost::numeric::safe_signed_range<
     Min,
     Max,
     boost::numeric::automatic,
-    boost::numeric::trap_exception
+    boost::numeric::throw_exception
 >;
 
 bool test1(){
     std::cout << "test1" << std::endl;
     try{
-        constexpr const int xi = 1;
-        constexpr const safe_t<-64, 63> x(xi);
-/*
+        constexpr const safe_t<-64, 63> x(1);
         safe_t<-64, 63> y;
         y = 2;
         std::cout << "x = " << x << std::endl;
@@ -45,7 +37,6 @@ bool test1(){
             short int yi, zi;
             yi = y;
             zi = x + yi;
-*/
     }
     catch(std::exception e){
         // none of the above should trap. Mark failure if they do
@@ -65,4 +56,3 @@ int main(){
         */
     ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-#endif

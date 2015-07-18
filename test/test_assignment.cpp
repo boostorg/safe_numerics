@@ -194,11 +194,6 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
 #include "test_types.hpp"
 #include "test_values.hpp"
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
 #define TEST_ASSIGNMENT(T1, v)        \
     test_assignment<T1>(              \
         v,                            \

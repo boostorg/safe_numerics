@@ -32,97 +32,55 @@ template<
 class safe_base;
 
 struct native {
+    // Standard C++ type promotion for expressions doesn't depend
+    // on the operation being performed so we can just as well
+    // use any operation to determine it.  We choose + for this
+    // purpose.
+
+    template<typename T, typename U>
+    using result_type = decltype(T() + U());
+
+    template<typename T, typename U, typename P, typename E>
+    struct safe_type_promotion {
+        using base_type_t = typename base_type<T>::type;
+        using base_type_u = typename base_type<U>::type;
+        using result_base_type = result_type<base_type_t, base_type_u>;
+        typedef safe_base<
+            result_base_type,
+            std::numeric_limits<result_base_type>::min(),
+            std::numeric_limits<result_base_type>::max(),
+            P,
+            E
+        > type;
+    };
 
     template<typename T, typename U, typename P, typename E>
     struct addition_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() + base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct subtraction_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() - base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct multiplication_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() * base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct division_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() / base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct modulus_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() / base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct left_shift_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() << base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
     template<typename T, typename U, typename P, typename E>
     struct right_shift_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef decltype(base_type_t() >> base_type_u()) result_base_type;
-        typedef safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        > type;
+        typedef safe_type_promotion<T, U, P, E> type;
     };
 };
 

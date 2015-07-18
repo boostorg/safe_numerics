@@ -22,7 +22,6 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
-#include "checked_result.hpp"
 #include "checked.hpp"
 #include "safe_common.hpp"
 #include "concept/numeric.hpp"
@@ -147,6 +146,7 @@ class safe_base {
         std::ostream & os,
         const safe_base & t
     );
+
     friend std::istream & operator>> <Stored, Min, Max, P, E> (
         std::istream & is,
         safe_base & t

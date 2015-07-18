@@ -6,8 +6,16 @@
 
 #include <iostream>
 #include <exception>
+#include <cxxabi.h>
 
-#include "../include/safe_base.hpp"
+#include "../include/safe_integer.hpp"
+#include "../include/automatic.hpp"
+
+template <class T>
+using safe_t = boost::numeric::safe<
+    T,
+    boost::numeric::automatic
+>;
 
 template<class T1, class T2>
 bool test_add(
@@ -22,26 +30,27 @@ bool test_add(
         << "testing  "
         << av1 << " + " << av2
         << std::endl;
-    /*
     {
-        boost::numeric::safe<T1> t1 = v1;
-        // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        static_assert(boost::numeric::is_safe<safe_t<T1> >::value, "safe_t not safe!");
+
+        safe_t<T1> t1 = v1;
+
+        using result_type = decltype(t1 + v2);
+        result_type result;
+
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
 
         try{
             result = t1 + v2;
-
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 + v2)>::value,
-                "Expression failed to return safe type"
-            );
-            
             if(expected_result == 'x'){
-                    std::cout
-                        << "failed to detect error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
-                        << " ! = "<< av1 << " + " << av2
-                        << std::endl;
+                std::cout
+                    << "failed to detect error in addition "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " + " << av2
+                    << std::endl;
                 try{
                     t1 + v2;
                 }
@@ -51,11 +60,14 @@ bool test_add(
         }
         catch(std::exception){
             if(expected_result == '.'){
-                    std::cout
-                        << "erroneously detected error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
-                        << " == "<< av1 << " + " << av2
-                        << std::endl;
+                const std::type_info & ti = typeid(result);
+                int status;
+                std::cout
+                    << "erroneously detected error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << ' '
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " + " << av2
+                    << std::endl;
                 try{
                     t1 + v2;
                 }
@@ -65,20 +77,19 @@ bool test_add(
         }
     }
     {
-        boost::numeric::safe<T1> t1 = v1;
-        boost::numeric::safe<T2> t2 = v2;
+        safe_t<T1> t1 = v1;
+        safe_t<T2> t2 = v2;
 
-        // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        using result_type = decltype(t1 + v2);
+        result_type result;
+
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
 
         try{
             result = t1 + t2;
-
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 + t2)>::value,
-                "Expression failed to return safe type"
-            );
-
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in addition "
@@ -107,7 +118,6 @@ bool test_add(
             }
         }
     }
-    */
     return true; // correct result
 }
 
@@ -122,44 +132,44 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/* 0*/ ".........x...x.............x...x",
-/* 1*/ ".........x...x.............x...x",
-/* 2*/ "..........x...x.........xxxxxxxx",
-/* 3*/ "..........x...x.........xxxxxxxx",
-/* 4*/ ".........x...x.............x...x",
-/* 5*/ ".........x...x.............x...x",
-/* 6*/ "..........x...x.........xxxxxxxx",
-/* 7*/ "..........x...x.........xxxxxxxx",
+/* 0*/ ".............x.................x",
+/* 1*/ ".............x.................x",
+/* 2*/ "..............x.x..............x",
+/* 3*/ ".............x..................",
+/* 4*/ "................................",
+/* 5*/ "................................",
+/* 6*/ "................................",
+/* 7*/ "................................",
 
-/* 8*/ ".........x...x.............x...x",
-/* 9*/ "xx..xx..xx...x..xxxxxxxx...x...x",
-/*10*/ "..xx..xx..xx..x.........xxxxxxxx",
-/*11*/ "..........x...x.........xxxxxxxx",
-/*12*/ ".............x.................x",
-/*13*/ "xx..xx..xx..xx..xxxxxxxxxxxx...x",
-/*14*/ "..xx..xx..xx..xx............xxxx",
-/*15*/ "..............x.............xxxx",
+/* 8*/ "................................",
+/* 9*/ "................................",
+/*10*/ "................................",
+/*11*/ "................................",
+/*12*/ "................................",
+/*13*/ "xx.x............................",
+/*14*/ "..x..............................",
+/*15*/ "................................",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ ".........x...x.............x...x",
-/*17*/ ".........x...x.............x...x",
-/*18*/ ".........x...x.............x...x",
-/*19*/ ".........x...x.............x...x",
-/*20*/ ".........x...x.............x...x",
-/*21*/ ".........x...x.............x...x",
-/*22*/ ".........x...x.............x...x",
-/*23*/ ".........x...x.............x...x",
+/*16*/ "..x............................x",
+/*17*/ "...............................x",
+/*18*/ "...............................x",
+/*19*/ "...............................x",
+/*20*/ "...............................x",
+/*21*/ "...............................x",
+/*22*/ "...............................x",
+/*23*/ "...............................x",
 
-/*24*/ "..xx..xx..xx.x.............x...x",
-/*25*/ "..xx..xx..xx.x.............x...x",
-/*26*/ "..xx..xx..xx.x............xx...x",
-/*27*/ "xxxxxxxxxxxx.x..xxxxxxxxxxxx...x",
-/*28*/ "..xx..xx..xx..xx...............x",
-/*29*/ "..xx..xx..xx..xx...............x",
-/*30*/ "..xx..xx..xx..xx..............xx",
-/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+/*24*/ "...............................x",
+/*25*/ "...............................x",
+/*26*/ "...............................x",
+/*27*/ "...............................x",
+/*28*/ "...............................x",
+/*29*/ "...............................x",
+/*30*/ "...............................x",
+/*31*/ "xxx.............xxxxxxxxxxxxxxxx"
 };
 
 #define TEST_IMPL(v1, v2, result) \

@@ -159,6 +159,8 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
 
+#include <boost/preprocessor/stringize.hpp>
+
 #define TEST_IMPL(v1, v2, result) \
     rval &= test_add(             \
         v1,                       \

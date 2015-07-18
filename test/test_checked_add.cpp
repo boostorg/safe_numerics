@@ -13,7 +13,7 @@
 #include "../include/checked.hpp"
 
 template<class T1, class T2>
-bool test_add(
+bool test_checked_add(
     T1 v1,
     T2 v2,
     const char *av1,
@@ -36,7 +36,7 @@ bool test_add(
         );
 
     if(result == boost::numeric::checked_result<result_type>::exception_type::no_exception
-    && expected_result == 'x'){
+    && expected_result != '.'){
         std::cout
             << "failed to detect error in addition "
             << std::hex << result << "(" << std::dec << result << ")"
@@ -53,7 +53,7 @@ bool test_add(
     }
     else
     if(result != boost::numeric::checked_result<result_type>::exception_type::no_exception
-    && expected_result == '.'){
+    && expected_result != 'x'){
         std::cout
             << "erroneously detected error "
             << std::hex << result <<  av1 << " + " << av2
@@ -123,13 +123,8 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
 #define TEST_IMPL(v1, v2, result) \
-    rval &= test_add(             \
+    rval &= test_checked_add(     \
         v1,                       \
         v2,                       \
         BOOST_PP_STRINGIZE(v1),   \
@@ -157,10 +152,6 @@ int main(int argc, char *argv[]){
 
     TEST_EACH_VALUE_PAIR
     return ! rval ;
-
-    return (
-        test_add(1, 2, "1", "2", '.')
-    ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 

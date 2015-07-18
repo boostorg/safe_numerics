@@ -14,6 +14,7 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/array/elem.hpp>
 #include <boost/preprocessor/array/size.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #define VALUE_ARRAY_SIZE BOOST_PP_ARRAY_SIZE(VALUES)
 

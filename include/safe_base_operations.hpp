@@ -181,9 +181,6 @@ struct common_policies {
 // other global operators for types in namespaces other than
 // boost::numeric
 
-// These should catch things like U < safe_base<...> and implement them
-// as safe_base<...> >= U which should be handled above.
-
 /////////////////////////////////////////////////////////////////
 // addition
 
@@ -197,6 +194,11 @@ struct addition_result {
         typename P::exception_policy
     >::type type;
 };
+
+    template<typename Tx>
+    struct print {
+        typedef typename Tx::error_message type;
+    };
 
 template<class T, class U>
 typename boost::lazy_enable_if<
@@ -212,12 +214,15 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     typedef addition_result<T, U> ar;
     typedef typename ar::P::exception_policy exception_policy;
     typedef typename ar::type result_type;
+    typedef typename base_type<result_type>::type result_base_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
 
-    typedef typename base_type<result_type>::type result_base_type;
+    //typedef typename print<result_type>::type p_result_type;
+    //typedef typename print<result_base_type>::type p_result_base_type;
+
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
@@ -242,8 +247,11 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
         = operator+<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
-    if(r_interval.no_exception())
-        return result_type(base_value(t) + base_value(u));
+    if(r_interval.no_exception()){
+        result_base_type t_value = base_value(t);
+        result_base_type u_value = base_value(u);
+        return result_type(t_value + u_value);
+    }
 
     // otherwise do the addition checking for overflow
     checked_result<result_base_type> r = checked::add(
@@ -256,6 +264,8 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     r.template dispatch<exception_policy>();
 
     return result_type(static_cast<result_base_type>(r));
+    //return result_type(r);
+
 }
 
 /////////////////////////////////////////////////////////////////
@@ -921,8 +931,37 @@ std::ostream & operator<<(
     std::ostream & os,
     const boost::numeric::safe_base<T, Min, Max, P, E> & t
 ){
-    return os << t.m_t;
+    os << (
+        (std::is_same<T, signed char>::value
+        || std::is_same<T, unsigned char>::value
+        ) ?
+            static_cast<int>(t.m_t)
+        :
+            t.m_t
+    );
+    return os;
 }
+
+namespace detail {
+
+    template<class T, class Enable = void>
+    struct Temp {
+        T value;
+    }; // primary template
+     
+    template<class T>
+    struct Temp<
+        T,
+        typename std::enable_if<
+            (std::is_same<T, signed char>::value
+            || std::is_same<T, unsigned char>::value)
+        >
+    >
+    {
+        int value;
+    };
+
+} // detail
 
 template<
     class T,
@@ -935,11 +974,12 @@ std::istream & operator>>(
     std::istream & is,
     boost::numeric::safe_base<T, Min, Max, P, E> & t
 ){
-    T tx;
-    is >> tx;
-    if(is.fail() || !t.validate(tx))
+
+    detail::Temp<T> tx;
+    is >> tx.value;
+    if(is.fail())
         E::range_error("error in file input");
-    t.m_t = tx;
+    t = tx.value;
     return is;
 }
 

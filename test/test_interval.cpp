@@ -19,13 +19,23 @@ bool test2(){
     return true;
 }
 
+bool test3(){
+    using namespace boost::numeric;
+    interval<std::int8_t> t;
+    std::cout << "t = " << t << std::endl;
+    interval<std::uint64_t> u;
+    std::cout << "u = " << u << std::endl;
+    using max_t = unsigned long long;
+    interval< max_t> r = operator+<max_t>(t, u);
+    std::cout << "r = " << r << std::endl;
+    return true;
+}
+
+
 int main(){
     return (
-        test1() &&
-        test2() /* &&
-        test3() &&
-        test4() &&
-        test5()
-        */
+        //test1() &&
+        //test2() &&
+        test3()
     ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
