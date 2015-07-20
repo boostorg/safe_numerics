@@ -8,7 +8,6 @@
 #include <boost/mpl/print.hpp>
 
 #include "../include/safe_range.hpp"
-#include "../include/numeric.hpp"
 
 bool test1(){
     std::cout << "test1" << std::endl;
@@ -18,22 +17,6 @@ bool test1(){
     z = 3;
     z = x + y;
     z = x - y;
-    typedef boost::mpl::print<
-        boost::numeric::addition_result_bits<
-            boost::numeric::safe_signed_range<-64, 63>,
-            int
-        >::type
-    >::type t1;
-    typedef boost::mpl::print<
-        boost::numeric::bits<
-            boost::numeric::safe_signed_range<-64, 63>
-        >::type
-    >::type t2;
-    typedef boost::mpl::print<
-        boost::numeric::bits<
-            int
-        >::type
-    >::type t3;
 
     try{
         short int yi, zi;

@@ -25,12 +25,8 @@ bool test_add(
     const char *av2,
     char expected_result
 ){
-    
-    std::cout
-        << "testing  "
-        << av1 << " + " << av2
-        << std::endl;
     {
+        std::cout << "testing  safe<" << av1 << "> + " << av2 << " -> ";
         static_assert(boost::numeric::is_safe<safe_t<T1> >::value, "safe_t not safe!");
 
         safe_t<T1> t1 = v1;
@@ -45,11 +41,14 @@ bool test_add(
 
         try{
             result = t1 + v2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "failed to detect error in addition "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " + " << av2
+                    << "*** failed to detect error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 + v2;
@@ -59,14 +58,14 @@ bool test_add(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "erroneously detected error in addition "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << ' '
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " + " << av2
+                    << "*** erroneously detected error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 + v2;
@@ -77,6 +76,7 @@ bool test_add(
         }
     }
     {
+        std::cout << "testing  safe<" << av1 << "> + safe<" << av2 << "> -> ";
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
 
@@ -90,11 +90,14 @@ bool test_add(
 
         try{
             result = t1 + t2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "failed to detect error in addition "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " + " << av2
+                    << "*** failed to detect error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 +t2;
@@ -104,11 +107,14 @@ bool test_add(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == '.'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "erroneously detected error in addition "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " + " << av2
+                    << "*** erroneously detected error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 + t2;
@@ -134,42 +140,42 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 //      01234567890123456789012345678901
 /* 0*/ ".............x.................x",
 /* 1*/ ".............x.................x",
-/* 2*/ "..............x.x..............x",
-/* 3*/ ".............x..................",
-/* 4*/ "................................",
-/* 5*/ "................................",
-/* 6*/ "................................",
-/* 7*/ "................................",
+/* 2*/ "..............x.............xxxx",
+/* 3*/ "..............x.............xxxx",
+/* 4*/ ".............x.................x",
+/* 5*/ ".............x.................x",
+/* 6*/ "..............x.............xxxx",
+/* 7*/ "..............x.............xxxx",
 
-/* 8*/ "................................",
-/* 9*/ "................................",
-/*10*/ "................................",
-/*11*/ "................................",
-/*12*/ "................................",
-/*13*/ "xx.x............................",
-/*14*/ "..x..............................",
-/*15*/ "................................",
+/* 8*/ ".............x.................x",
+/* 9*/ ".............x.................x",
+/*10*/ "..............x.............xxxx",
+/*11*/ "..............x.............xxxx",
+/*12*/ ".............x.................x",
+/*13*/ "xx..xx..xx..xx..xxxxxxxxxxxx...x",
+/*14*/ "..xx..xx..xx..xx............xxxx",
+/*15*/ "..............x.............xxxx",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ "..x............................x",
-/*17*/ "...............................x",
-/*18*/ "...............................x",
-/*19*/ "...............................x",
-/*20*/ "...............................x",
-/*21*/ "...............................x",
-/*22*/ "...............................x",
-/*23*/ "...............................x",
+/*16*/ ".............x.................x",
+/*17*/ ".............x.................x",
+/*18*/ ".............x.................x",
+/*19*/ ".............x.................x",
+/*20*/ ".............x.................x",
+/*21*/ ".............x.................x",
+/*22*/ ".............x.................x",
+/*23*/ ".............x.................x",
 
-/*24*/ "...............................x",
-/*25*/ "...............................x",
-/*26*/ "...............................x",
-/*27*/ "...............................x",
-/*28*/ "...............................x",
-/*29*/ "...............................x",
-/*30*/ "...............................x",
-/*31*/ "xxx.............xxxxxxxxxxxxxxxx"
+/*24*/ ".............x.................x",
+/*25*/ ".............x.................x",
+/*26*/ ".............x.................x",
+/*27*/ ".............x.................x",
+/*28*/ "..xx..xx..xx..xx...............x",
+/*29*/ "..xx..xx..xx..xx...............x",
+/*30*/ "..xx..xx..xx..xx..............xx",
+/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
 
 #define TEST_IMPL(v1, v2, result) \
@@ -183,7 +189,7 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    (std::cout << value_index1 << ',' << value_index2 << std::endl); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \

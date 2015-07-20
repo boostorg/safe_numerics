@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <cstdint> // intmax_t, uintmax_t
-#include <boost/integer.hpp> // (u)int_t<>::least
+#include <boost/integer.hpp> // (u)int_t<>::least, exact
 #include <boost/mpl/max.hpp>
 
 #include "safe_base.hpp"
@@ -34,7 +34,7 @@ namespace detail {
             x >>= 1;
         return i;
     }
-    constexpr int log(boost::intmax_t x){
+    constexpr int log(std::intmax_t x){
         if(x < 0)
             x = ~x;
         return ulog(x) + 1;

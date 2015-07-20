@@ -18,7 +18,7 @@
 // that errors aren't trapped.
 
 #include <limits>
-#include <cstdint>
+#include <cstdint> (u)intmax_t,
 #include <type_traits> // true_type, false_type
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
@@ -38,8 +38,8 @@ struct automatic {
         typename boost::mpl::if_c<
             std::numeric_limits<T>::is_signed
             || std::numeric_limits<U>::is_signed,
-            boost::intmax_t,
-            boost::uintmax_t
+            std::intmax_t,
+            std::uintmax_t
         >::type;
 
     // section 4.13 integer conversion rank
@@ -88,25 +88,25 @@ struct automatic {
             // use that sign
             typename boost::mpl::if_c<
                 std::numeric_limits<T>::is_signed,
-                boost::intmax_t,
-                boost::uintmax_t
+                std::intmax_t,
+                std::uintmax_t
             >::type,
         // clause 2 - otherwise if the rank of he unsigned type exceeds
-        // the rank of the of the signed type
+        // the rank of the of the maximum signed type
         typename boost::mpl::if_c<
             (rank< select_unsigned<T, U>>::value
-            > rank< select_signed<T, U>>::value),
+            > rank< std::intmax_t >::value),
             // use unsigned type
-            boost::uintmax_t,
+            std::uintmax_t,
         // clause 3 - otherwise if the type of the signed integer type can
         // represent all the values of the unsigned type
         typename boost::mpl::if_c<
-            std::numeric_limits< select_signed<T, U> >::digits >=
+            std::numeric_limits< std::intmax_t >::digits >=
             std::numeric_limits< select_unsigned<T, U> >::digits,
             // use signed type
-            boost::intmax_t,
+            std::intmax_t,
         // clause 4 - otherwise use unsigned version of the signed type
-            boost::uintmax_t
+            std::uintmax_t
         >::type >::type >::type;
 
     template<typename Tx>

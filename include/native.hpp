@@ -56,31 +56,31 @@ struct native {
 
     template<typename T, typename U, typename P, typename E>
     struct addition_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct subtraction_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct multiplication_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct division_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct modulus_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct left_shift_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct right_shift_result {
-        typedef safe_type_promotion<T, U, P, E> type;
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
 };
 
