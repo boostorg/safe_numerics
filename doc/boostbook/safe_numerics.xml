@@ -113,10 +113,26 @@
 
     <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
-  </section>
 
-  <section id="safe_numerics.functions">
-    <title>Functions</title>
+    <section>
+      <title>Promotion Policies</title>
+
+      <xi:include href="native.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="automatic.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="cpp.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    </section>
+
+    <section>
+      <title>Exception Policies</title>
+
+      <xi:include href="throw_exception.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+    </section>
   </section>
 
   <section id="safe_numerics.exception_safety">
@@ -130,46 +146,6 @@
     <title>Rationale</title>
 
     <qandaset defaultlabel="number">
-      <qandaentry>
-        <question>
-          <para>Why does a binary operation on two
-          <code>safe&lt;int&gt;</code> values not return another
-          <code>safe</code> type ?</para>
-        </question>
-
-        <answer>
-          <para>There are a number of reasons:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>it was too hard to implement.</para>
-            </listitem>
-
-            <listitem>
-              <para>it doesn't really seem necessary. We always do SOMETHING
-              with result of the operation. This will result in an assignment
-              or a conversion to some other type where the result will be
-              validated.</para>
-            </listitem>
-          </itemizedlist>
-        </answer>
-      </qandaentry>
-
-      <qandaentry>
-        <question>
-          <para>Why is there no policy driven design for handling
-          overflows?</para>
-        </question>
-
-        <answer>
-          <para>This is planned for a future version of the library. However,
-          attempts to implement this idea have so far failed as it turns out
-          to more technically challenging than one would think. Rather than
-          wait for a future event that might never happen, it was decided to
-          release the library without this feature.</para>
-        </answer>
-      </qandaentry>
-
       <qandaentry>
         <question>
           <para>Why is Boost.Convert not used.</para>
@@ -232,20 +208,6 @@
 
       <qandaentry>
         <question>
-          <para>Why are safe_compare and safe_cast included in the library?
-          The don't really fit with the "drop-in" replacement idea for
-          built-in types.</para>
-        </question>
-
-        <answer>
-          <para>They are part of the implementation of the library. I thought
-          they would be useful outside the formal context of the library so I
-          make access to them public.</para>
-        </answer>
-      </qandaentry>
-
-      <qandaentry>
-        <question>
           <para>It looks like it presumes two's complement arithmetic at the
           hardware level. So this library is not portable - correct? What
           about other hardware architectures?</para>
@@ -253,7 +215,7 @@
 
         <answer>
           <para>Correct. Almost all hardware in current use two's complement
-          arithmetic. This library works all and only on all such machines.
+          arithmetic. This library works on all and only on all such machines.
           For example, if one were to implement 48 bit integers with two's
           complement arithmetic, the save .. versions could be used without
           change. To support hardware which does not use two's complement
@@ -308,11 +270,174 @@
   <section id="safe_numerics.change_log">
     <title>Change Log</title>
 
-    <para>This is the second version.</para>
+    <para>This is the third version.</para>
   </section>
 
   <section id="safe_numerics.bibliography">
     <title>Bibliography</title>
+
+    <biblioentry>
+      <author>
+        <surname>Lawerence Crowl</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
+          Binary Fixed-Point Arithmetic</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
+        The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
+
+      <date>January 15, 2012</date>
+
+      <abbrev>Crowl</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Will Dietz</surname>
+      </author>
+
+      <author>
+        <surname>Peng Li</surname>
+      </author>
+
+      <author>
+        <surname>John Regehr</surname>
+      </author>
+
+      <author>
+        <surname>Vikram Adve</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
+        Integer Overflow in C/C++</ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="http://dl.acm.org/citation.cfm?id=2337223&amp;picked=prox">Proceedings
+        of the 34th International Conference on Software Engineering (ICSE),
+        Zurich, Switzerland</ulink>
+      </publishername>
+
+      <date>June 2012</date>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Omer Katz</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
+          code proposal</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">Boost
+        Developer's List</ulink>
+      </publishername>
+
+      <abbrev>Katz</abbrev>
+
+      <abstract>
+        <para>Posts of various authors regarding a proposed SafeInt library
+        for boost</para>
+      </abstract>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>David LeBlanc</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://msdn.microsoft.com/en-us/library/ms972705.aspx">Integer
+        Handling with the C++ SafeInt Class</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://www.cert.org">Microsoft Developer Network</ulink>
+      </publishername>
+
+      <date>January 7, 2004</date>
+
+      <abbrev>LeBlanc</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>David LeBlanc</surname>
+      </author>
+
+      <title>
+        <ulink url="https://safeint.codeplex.com">SafeInt</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://www.cert.org">CodePlex</ulink>
+      </publishername>
+
+      <date>Dec 3, 2014</date>
+
+      <abbrev>LeBlanc</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Jacques-Louis Lions</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://en.wikisource.org/wiki/Ariane_501_Inquiry_Board_report">Ariane
+        501 Inquiry Board report</ulink>
+      </title>
+
+      <publishername>
+        <ulink
+        url="https://en.wikisource.org/wiki/Main_Page">Wikisource</ulink>
+      </publishername>
+
+      <date>July 19, 1996</date>
+
+      <abbrev>Lions</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>Daniel Plakosh</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
+        Integer Operations</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://buildsecurityin.us-cert.gov">U.S. Department of
+        Homeland Security</ulink>
+      </publishername>
+
+      <date>May 10, 2013</date>
+
+      <abbrev>Plakosh</abbrev>
+    </biblioentry>
 
     <biblioentry id="Seacord">
       <author>
@@ -381,83 +506,6 @@
 
     <biblioentry>
       <author>
-        <surname>Daniel Plakosh</surname>
-      </author>
-
-      <title>
-        <ulink
-        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
-        Integer Operations</ulink>
-      </title>
-
-      <publishername>
-        <ulink url="https://buildsecurityin.us-cert.gov">U.S. Department of
-        Homeland Security</ulink>
-      </publishername>
-
-      <date>May 10, 2013</date>
-
-      <abbrev>Plakosh</abbrev>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>Will Dietz</surname>
-      </author>
-
-      <author>
-        <surname>Peng Li</surname>
-      </author>
-
-      <author>
-        <surname>John Regehr</surname>
-      </author>
-
-      <author>
-        <surname>Vikram Adve</surname>
-      </author>
-
-      <title>
-        <ulink
-        url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
-        Integer Overflow in C/C++</ulink>
-      </title>
-
-      <publishername>
-        <ulink
-        url="http://dl.acm.org/citation.cfm?id=2337223&amp;picked=prox">Proceedings
-        of the 34th International Conference on Software Engineering (ICSE),
-        Zurich, Switzerland</ulink>
-      </publishername>
-
-      <date>June 2012</date>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>Lawerence Crowl</surname>
-      </author>
-
-      <title>
-        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
-          <ulink
-          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
-          Binary Fixed-Point Arithmetic</ulink>
-        </ulink>
-      </title>
-
-      <publishername>
-        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
-        The C++ Standards Committee - ISOCPP</ulink>
-      </publishername>
-
-      <date>January 15, 2012</date>
-
-      <abbrev>Crowl</abbrev>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
         <surname>Forum Posts</surname>
       </author>
 
@@ -480,71 +528,6 @@
       <abstract>
         <para>Posts of various authors regarding proposal to add safe integer
         to C++ standard libraries</para>
-      </abstract>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>David LeBlanc</surname>
-      </author>
-
-      <title>
-        <ulink
-        url="https://msdn.microsoft.com/en-us/library/ms972705.aspx">Integer
-        Handling with the C++ SafeInt Class</ulink>
-      </title>
-
-      <publishername>
-        <ulink url="https://www.cert.org">Microsoft Developer Network</ulink>
-      </publishername>
-
-      <date>January 7, 2004</date>
-
-      <abbrev>LeBlanc</abbrev>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>David LeBlanc</surname>
-      </author>
-
-      <title>
-        <ulink url="https://safeint.codeplex.com">SafeInt</ulink>
-      </title>
-
-      <publishername>
-        <ulink url="https://www.cert.org">CodePlex</ulink>
-      </publishername>
-
-      <date>Dec 3, 2014</date>
-
-      <abbrev>LeBlanc</abbrev>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>Omer Katz</surname>
-      </author>
-
-      <title>
-        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
-          <ulink
-          url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
-          code proposal</ulink>
-        </ulink>
-      </title>
-
-      <publishername>
-        <ulink
-        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">Boost
-        Developer's List</ulink>
-      </publishername>
-
-      <abbrev>Katz</abbrev>
-
-      <abstract>
-        <para>Posts of various authors regarding a proposed SafeInt library
-        for boost</para>
       </abstract>
     </biblioentry>
   </section>

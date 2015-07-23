@@ -42,6 +42,20 @@ template<typename T>
 struct get_exception_policy {
     typedef void type;
 };
+
+// used for debugging
+// usage - typedef print<T> pt;
+// provokes error message with name of type T
+
+template<typename Tx>
+struct print_impl {
+    typedef typename Tx::error_message type;
+};
+
+template<typename Tx>
+using print = typename print_impl<Tx>::type;
+
+
 } // numeric
 } // boost
 

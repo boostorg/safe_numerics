@@ -13,6 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <stdexcept>
+#include <functional>
 #include <type_traits> // is_base_of, is_same
 #include <exception>
 
@@ -34,32 +35,15 @@ struct ignore_exception {
     static void domain_error(const char * message) {}
 };
 
-// If an exceptional condition is detected at runtime throw the exception.
-struct throw_exception {
-    BOOST_CONCEPT_ASSERT((ExceptionPolicy<throw_exception>));
-    static void overflow_error(const char * message) {
-        throw std::overflow_error(message);
-    }
-    static void underflow_error(const char * message) {
-        throw std::underflow_error(message);
-    }
-    static void range_error(const char * message) {
-        throw std::domain_error(message);
-    }
-    static void domain_error(const char * message) {
-        throw std::domain_error(message);
-    }
-};
-
 // example - if you want to specify specific behavior for particular exception
 // types, use this policy.  The most likely situation is where you don't have
 // exception support and you want to trap "exceptions" by calling your own
 // special functions.
 template<
     void (*OVERFLOW)(const char *),
-    void (*UNDERFLOW)(const char *),
-    void (*RANGE)(const char *),
-    void (*DOMAIN)(const char *)
+    void (*UNDERFLOW)(const char *) = *OVERFLOW,
+    void (*RANGE)(const char *) = *OVERFLOW,
+    void (*DOMAIN)(const char *) = *OVERFLOW
 >
 struct no_exception_support {
     BOOST_CONCEPT_ASSERT((boost::numeric::ExceptionPolicy<no_exception_support>));
@@ -74,6 +58,23 @@ struct no_exception_support {
     }
     static void domain_error(const char * message) {
         DOMAIN(message);
+    }
+};
+
+// If an exceptional condition is detected at runtime throw the exception.
+struct throw_exception {
+    BOOST_CONCEPT_ASSERT((ExceptionPolicy<throw_exception>));
+    static void overflow_error(const char * message) {
+        throw std::overflow_error(message);
+    }
+    static void underflow_error(const char * message) {
+        throw std::underflow_error(message);
+    }
+    static void range_error(const char * message) {
+        throw std::domain_error(message);
+    }
+    static void domain_error(const char * message) {
+        throw std::domain_error(message);
     }
 };
 

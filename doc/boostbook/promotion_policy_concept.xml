@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.promotion_policy">
-  <title>PromotionPolicy&lt;PP&gt;</title>
+  <title id="promotion_policy">PromotionPolicy&lt;PP&gt;</title>
 
   <section>
     <title>Description</title>
@@ -100,6 +100,41 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
 
             <row>
               <entry><code>PP::subtraction_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::multiplication_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::division_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::modulus_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::left_shift_result&lt;T, U, PP,
+              EP&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::right_shift_result&lt;T, U, PP,
               EP&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>

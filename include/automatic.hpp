@@ -109,11 +109,6 @@ struct automatic {
             std::uintmax_t
         >::type >::type >::type;
 
-    template<typename Tx>
-    struct print {
-        typedef typename Tx::error_message type;
-    };
-
     template<typename T, T Min, T Max, class P, class E>
     struct defer_signed_lazily {
         using type = boost::numeric::safe_signed_range<Min, Max, P, E>;

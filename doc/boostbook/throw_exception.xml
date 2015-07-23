@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section>
+  <title>throw_exception</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>This exception policy throws a an exceptition derived from
+    <code>std::exception</code> any time some operation would result in an
+    incorrect result. This is the default exception handling policy.</para>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link
+    linkend="safe_numerics.promotion_policy">ExceptionPolicy</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para>[A link to the source code where the type is defined.]</para>
+
+    <para><code><ulink url="../../include/exception_policy.hpp"><code>#include
+    &lt;boost/safe_numerics/exception_policy.hpp&gt;
+    </code></ulink></code></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <para>[A code fragment involving the type.]</para>
+
+    <programlisting>#include &lt;vector&gt;
+
+vector&lt;int&gt; V;
+V.insert(V.begin(), 3);
+assert(V.size() == 1 &amp;&amp; V.capacity() &gt;= 1 &amp;&amp; V[0] == 3);
+</programlisting>
+  </section>
+</section>

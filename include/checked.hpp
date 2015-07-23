@@ -19,8 +19,6 @@
 #include <type_traits> // is_integral
 
 #include <boost/utility/enable_if.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/identity.hpp>
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
@@ -32,202 +30,6 @@ namespace checked {
 ////////////////////////////////////////////////////
 // layer 0 - implment safe operations for intrinsic integers
 // Note presumption of twos complement integer arithmetic
-
-////////////////////////////////////////////////////
-// safe comparison on primitive types
-namespace detail {
-    template<typename T>
-    struct make_unsigned {
-        typedef typename boost::mpl::eval_if_c<
-            std::numeric_limits<T>::is_signed,
-            typename std::make_unsigned<T>,
-            typename boost::mpl::identity<T>
-        >::type type;
-    };
-    // both arguments unsigned or signed
-    template<bool TS, bool US>
-    struct less_than {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return t < u;
-        }
-    };
-
-    // T unsigned, U signed
-    template<>
-    struct less_than<false, true> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (u < 0) ?
-                    false
-                :
-                    less_than<false, false>::invoke(
-                        t,
-                        static_cast<const typename make_unsigned<U>::type &>(u)
-                    )
-                ;
-        }
-    };
-    // T signed, U unsigned
-    template<>
-    struct less_than<true, false> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (t < 0) ?
-                    true
-                :
-                    less_than<false, false>::invoke(
-                        static_cast<const typename make_unsigned<T>::type &>(t),
-                        u
-                    )
-                ;
-        }
-    };
-} // detail
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool less_than(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return detail::less_than<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
-}
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool greater_than_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return less_than(rhs, lhs);
-}
-
-namespace detail { 
-    // both arguments unsigned or signed
-    template<bool TS, bool US>
-    struct greater_than {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return t > u;
-        }
-    };
-
-    // T unsigned, U signed
-    template<>
-    struct greater_than<false, true> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (u < 0) ?
-                    true
-                :
-                    greater_than<false, false>::invoke(
-                        t,
-                        static_cast<const typename make_unsigned<U>::type &>(u)
-                    )
-                ;
-        }
-    };
-    // T signed, U unsigned
-    template<>
-    struct greater_than<true, false> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (t < 0) ?
-                    false
-                :
-                    greater_than<false, false>::invoke(
-                        static_cast<const typename make_unsigned<T>::type &>(t),
-                        u
-                    )
-                ;
-        }
-    };
-} // detail
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool greater_than(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return detail::greater_than<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
-}
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool less_than_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return greater_than(rhs, lhs);
-}
-
-namespace detail { 
-    // both arguments unsigned or signed
-    template<bool TS, bool US>
-    struct equal {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return t == u;
-        }
-    };
-
-    // T unsigned, U signed
-    template<>
-    struct equal<false, true> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (u < 0) ?
-                    false
-                :
-                    equal<false, false>::invoke(
-                        t,
-                        static_cast<const typename make_unsigned<U>::type &>(u)
-                    )
-                ;
-        }
-    };
-    // T signed, U unsigned
-    template<>
-    struct equal<true, false> {
-        template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
-            return
-                (t < 0) ?
-                    false
-                :
-                    equal<false, false>::invoke(
-                        static_cast<const typename make_unsigned<T>::type &>(t),
-                        u
-                    )
-                ;
-        }
-    };
-} // detail
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return detail::equal<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
-}
-
-template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool not_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return ! detail::equal<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
-}
 
 ////////////////////////////////////////////////////
 // safe casting on primitive types
@@ -243,13 +45,13 @@ cast(
         std::numeric_limits<T>::is_signed ?
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted signed value too large"
                 )
             :
             t < std::numeric_limits<R>::min() ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted signed value too small"
                 )
             :
@@ -257,7 +59,7 @@ cast(
         : // T is unsigned
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted unsigned value too large"
                 )
             :
@@ -267,7 +69,7 @@ cast(
         ! std::numeric_limits<T>::is_signed ?
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted unsigned value too large"
                 )
             :
@@ -275,13 +77,13 @@ cast(
         : // T is signed
             t < 0 ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted negative value to unsigned"
                 )
             :
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::range_error,
+                    exception_type::range_error,
                     "converted signed value too large"
                 )
             :
@@ -309,7 +111,7 @@ namespace detail {
         return
             maxr - u < t ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "addition overflow"
                 )
             :
@@ -333,7 +135,7 @@ namespace detail {
             ((u > 0) && (t > (maxr - u)))
             || ((u < 0) && (t < (minr - u))) ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "addition overflow"
                 )
             :
@@ -355,10 +157,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
-        rt != checked_result<R>::exception_type::no_exception ?
+        rt != exception_type::no_exception ?
             rt
         :
-        ru != checked_result<R>::exception_type::no_exception ?
+        ru != exception_type::no_exception ?
             ru
         :
             detail::add<R>(minr, maxr, t, u)
@@ -400,7 +202,7 @@ SAFE_NUMERIC_CONSTEXPR subtract(
     return
         t < u ?
             checked_result<R>(
-                checked_result<R>::exception_type::overflow_error,
+                exception_type::overflow_error,
                 "subtraction overflow"
             )
         :
@@ -424,7 +226,7 @@ SAFE_NUMERIC_CONSTEXPR subtract(
         ((u > 0) && (t < (minr + u)))
         || ((u < 0) && (t > (maxr + u))) ?
             checked_result<R>(
-                checked_result<R>::exception_type::overflow_error,
+                exception_type::overflow_error,
                 "subtraction overflow"
             )
         :
@@ -444,10 +246,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> subtract(
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return
-        cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(t) != exception_type::no_exception ?
             cast<R>(t)
         :
-        cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(u) != exception_type::no_exception ?
             cast<R>(u)
         :
             detail::subtract<R>(minr, maxr, t, u)
@@ -494,7 +296,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
         static_cast<i_type>(t) * static_cast<i_type>(u)
         > std::numeric_limits<R>::max() ?
             checked_result<R>(
-                checked_result<R>::exception_type::overflow_error,
+                exception_type::overflow_error,
                 "multiplication overflow"
             )
         :
@@ -516,7 +318,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
     return
         u > 0 && t > std::numeric_limits<R>::max() / u ?
             checked_result<R>(
-                checked_result<R>::exception_type::overflow_error,
+                exception_type::overflow_error,
                 "multiplication overflow"
             )
         :
@@ -546,7 +348,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
             > static_cast<i_type>(std::numeric_limits<R>::max())
         ) ?
             checked_result<R>(
-                checked_result<R>::exception_type::overflow_error,
+                exception_type::overflow_error,
                 "multiplication overflow"
             )
         :
@@ -555,7 +357,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
             < static_cast<i_type>(std::numeric_limits<R>::min())
         ) ?
             checked_result<R>(
-                checked_result<R>::exception_type::underflow_error,
+                exception_type::underflow_error,
                 "multiplication underflow"
             )
         :
@@ -577,7 +379,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
         u > 0 ?
             t > std::numeric_limits<R>::max() / u ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -585,7 +387,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
         : // u <= 0
             u < std::numeric_limits<R>::min() / t ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -594,7 +396,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
         u > 0 ?
             t < std::numeric_limits<R>::min() / u ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -602,7 +404,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
         : // u <= 0
             t != 0 && u < std::numeric_limits<R>::max() / t ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::overflow_error,
+                    exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -622,10 +424,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return
-        cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(t) != exception_type::no_exception ?
             cast<R>(t)
         :
-        cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(u) != exception_type::no_exception ?
             cast<R>(u)
         :
         sizeof(R) >= sizeof(T) + sizeof(U) ?
@@ -682,7 +484,7 @@ SAFE_NUMERIC_CONSTEXPR divide(
         // note presumption of two's complement arithmetic
         (u < 0 && t == std::numeric_limits<R>::min()) ?
             checked_result<R>(
-                checked_result<R>::exception_type::domain_error,
+                exception_type::domain_error,
                 "divide by zero"
             )
         :
@@ -702,15 +504,15 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return
-        cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(t) != exception_type::no_exception ?
             cast<R>(t)
         :
-        cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(u) != exception_type::no_exception ?
             cast<R>(u)
         :
             u == 0 ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::domain_error,
+                    exception_type::domain_error,
                     "divide by zero"
                 )
             :
@@ -765,7 +567,7 @@ SAFE_NUMERIC_CONSTEXPR modulus(
         // note presumption of two's complement arithmetic
         (u < 0 && t == std::numeric_limits<R>::min()) ?
             checked_result<R>(
-                checked_result<R>::exception_type::domain_error,
+                exception_type::domain_error,
                 "divide by zero"
             )
         :
@@ -785,15 +587,15 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> modulus(
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return
-        cast<R>(t) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(t) != exception_type::no_exception ?
             cast<R>(t)
         :
-        cast<R>(u) != checked_result<R>::exception_type::no_exception ?
+        cast<R>(u) != exception_type::no_exception ?
             cast<R>(u)
         :
             u == 0 ?
                 checked_result<R>(
-                    checked_result<R>::exception_type::domain_error,
+                    exception_type::domain_error,
                     "divide by zero"
                 )
             :
@@ -842,13 +644,13 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> check_shift(
         :
         ( ru < 0) ?
             checked_result<R>(
-               checked_result<R>::exception_type::domain_error,
+               exception_type::domain_error,
                "shifting negative amount is undefined behavior"
             )
         :
         ( ru > std::numeric_limits<T>::digits) ?
             checked_result<R>(
-               checked_result<R>::exception_type::domain_error,
+               exception_type::domain_error,
                "shifting more bits than available is undefined behavior"
             )
         :
@@ -904,10 +706,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_or(
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
-        rt != checked_result<R>::exception_type::no_exception ?
+        rt != exception_type::no_exception ?
             rt
         :
-        ru != checked_result<R>::exception_type::no_exception ?
+        ru != exception_type::no_exception ?
             ru
         :
             static_cast<R>(ru) | static_cast<R>(rt)
@@ -927,10 +729,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_and(
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
-        rt != checked_result<R>::exception_type::no_exception ?
+        rt != exception_type::no_exception ?
             rt
         :
-        ru != checked_result<R>::exception_type::no_exception ?
+        ru != exception_type::no_exception ?
             ru
         :
             static_cast<R>(ru) & static_cast<R>(rt)
@@ -950,10 +752,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_xor(
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
-        rt != checked_result<R>::exception_type::no_exception ?
+        rt != exception_type::no_exception ?
             rt
         :
-        ru != checked_result<R>::exception_type::no_exception ?
+        ru != exception_type::no_exception ?
             ru
         :
             static_cast<R>(ru) ^ static_cast<R>(rt)

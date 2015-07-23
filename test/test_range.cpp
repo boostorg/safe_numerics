@@ -39,11 +39,6 @@ void test_log(){
     assert(log(-256) == 9); // 8 bits + 1 sign bit
 }
 
-template<typename Tx>
-struct print {
-    typedef typename Tx::error_message type;
-};
-
 int main(){
     using namespace boost::numeric;
     typedef detail::signed_stored_type<-256, 254> t1;

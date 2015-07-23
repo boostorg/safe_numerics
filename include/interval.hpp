@@ -17,7 +17,6 @@
 
 #include <boost/logic/tribool.hpp>
 
-#include "safe_base.hpp"
 #include "checked_result.hpp"
 #include "checked.hpp"
 
@@ -29,12 +28,13 @@ struct interval {
     const checked_result<R> l;
     const checked_result<R> u;
 
+/*
     template<typename T, typename U>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
-        l(lower),
-        u(upper)
+        l(checked::cast<R>(lower)),
+        u(checked::cast<R>(upper))
     {}
-
+*/
     SAFE_NUMERIC_CONSTEXPR interval(
         const checked_result<R> & lower,
         const checked_result<R> & upper
@@ -52,13 +52,24 @@ struct interval {
         u(rhs.u)
     {}
     */
+
     SAFE_NUMERIC_CONSTEXPR interval() :
         l(std::numeric_limits<R>::min()),
         u(std::numeric_limits<R>::max())
     {}
     SAFE_NUMERIC_CONSTEXPR bool no_exception() const {
-        return l == checked_result<R>::exception_type::no_exception
-        && u == checked_result<R>::exception_type::no_exception ;
+        return l == exception_type::no_exception
+        && u == exception_type::no_exception ;
+    }
+    // return true if this interval contains every point found in some
+    // other inteval t
+    template<typename T>
+    SAFE_NUMERIC_CONSTEXPR bool includes(const interval<T> & t) const {
+        // not very tricky algebra here.  the <= and >= operators
+        // on checked_result yield tribool.  If either argument is an exception
+        // condition, he result is indeterminate.  The result of && on two
+        // tribools is indeterminant if either is indeterminate.
+        return l <= t.l && u >= t.u ;
     }
 };
 
@@ -116,7 +127,7 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interv
             interval<R>(
                 checked_result<R>(0),
                 checked_result<R>(
-                    checked_result<R>::exception_type::domain_error,
+                    exception_type::domain_error,
                     "interval divisor includes zero"
                 )
             )
@@ -157,7 +168,7 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
             interval<R>(
                 checked_result<R>(0),
                 checked_result<R>(
-                    checked_result<R>::exception_type::domain_error,
+                    exception_type::domain_error,
                     "interval divisor includes zero"
                 )
             )
@@ -176,11 +187,11 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
             boost::logic::indeterminate
         :
         // if every element in t is less than every element in u
-        checked::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
+        safe_compare::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
             boost::logic::tribool(true)
         :
         // if every element in t is greater than every element in u
-        checked::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+        safe_compare::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
             boost::logic::tribool(false)
         :
         // otherwise some element(s) in t are greater than some element in u
@@ -198,11 +209,11 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
             boost::logic::indeterminate
         :
         // if every element in t is greater than every element in u
-        checked::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+        safe_compare::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
             boost::logic::tribool(true)
         :
         // if every element in t is less than every element in u
-        checked::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
+        safe_compare::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
             boost::logic::tribool(false)
         :
         // otherwise some element(s) in t are greater than some element in u
@@ -211,30 +222,12 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator==(
+SAFE_NUMERIC_CONSTEXPR bool operator==(
     const interval<T> & t,
     const interval<U> & u
 ){
     // every element in t can only equal every element in u if and only if
-    return
-        (! t.no_exception() || ! u.no_exception()) ?
-            boost::logic::indeterminate
-        :
-        // if intervals don't over lap
-        (t < u) || (t > u) ?
-            // no element in t can equal any element in u
-            boost::logic::tribool(false)
-        :
-        // there is only one element in each
-        (t.l == t.u) && (u.l == u.u)
-        // and the element is the same
-        && (t.l == u.l) ?
-            // this must be true
-            boost::logic::tribool(true)
-        :
-        // otherwise we have to check at runtime
-            boost::logic::indeterminate
-    ;
+    return (t.l == u.l && t.u == u.u) ;
 }
 
 template<typename T, typename U>

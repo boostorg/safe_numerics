@@ -162,28 +162,7 @@ class safe_base {
     friend class safe_base;
 
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
-        static_assert(! is_safe<T>::value, "catch dumb mistake");
-        // INT08-C
-        return (
-            ! boost::numeric::checked::less_than(
-                Max,
-                base_value(t)
-            )
-            &&
-            ! boost::numeric::checked::less_than(
-                base_value(t),
-                Min
-            )
-        );
-    }
-    /*
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const {
-        // INT08-C
-        return ! (Max < t && t < Min );
-    }
-    */
+    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const;
 
 public:
     ////////////////////////////////////////////////////////////

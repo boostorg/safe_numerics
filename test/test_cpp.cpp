@@ -42,13 +42,6 @@ test_integral_promotion(unsigned char)
 test_integral_promotion(signed short)
 test_integral_promotion(unsigned short)
 
-template<typename T>
-struct print_impl {
-    typedef typename T::error_message type;
-};
-
-template<typename T>
-using print = typename print_impl<T>::type;
 
 #define test_usual_arithmetic_conversions(T1, T2) \
 void test_usual_arithmetic_conversions(T1, T2){   \

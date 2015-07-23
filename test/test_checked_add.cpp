@@ -20,6 +20,7 @@ bool test_checked_add(
     const char *av2,
     char expected_result
 ){
+    using namespace boost::numeric;
     std::cout
         << "testing  "
         << av1 << " + " << av2
@@ -27,23 +28,23 @@ bool test_checked_add(
 
     typedef decltype(T1() + T2()) result_type;
 
-    boost::numeric::checked_result<result_type> result
-        = boost::numeric::checked::add<result_type>(
+    checked_result<result_type> result
+        = checked::add<result_type>(
             std::numeric_limits<result_type>::min(),
             std::numeric_limits<result_type>::max(),
             v1,
             v2
         );
 
-    if(result == boost::numeric::checked_result<result_type>::exception_type::no_exception
+    if(result == exception_type::no_exception
     && expected_result != '.'){
         std::cout
             << "failed to detect error in addition "
             << std::hex << result << "(" << std::dec << result << ")"
             << " != "<< av1 << " + " << av2
             << std::endl;
-        boost::numeric::checked_result<result_type> result
-            = boost::numeric::checked::add<result_type>(
+        checked_result<result_type> result
+            = checked::add<result_type>(
                 std::numeric_limits<result_type>::min(),
                 std::numeric_limits<result_type>::max(),
                 v1,
@@ -52,14 +53,14 @@ bool test_checked_add(
         return false;
     }
     else
-    if(result != boost::numeric::checked_result<result_type>::exception_type::no_exception
+    if(result != exception_type::no_exception
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "
             << std::hex << result <<  av1 << " + " << av2
             << std::endl;
-        boost::numeric::checked_result<result_type> result
-            = boost::numeric::checked::add<result_type>(
+        checked_result<result_type> result
+            = checked::add<result_type>(
                 std::numeric_limits<result_type>::min(),
                 std::numeric_limits<result_type>::max(),
                 v1,

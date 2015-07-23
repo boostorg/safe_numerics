@@ -5,9 +5,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <boost/mpl/print.hpp>
 
 #include "../include/safe_range.hpp"
+#include "../include/safe_integer.hpp"
 
 bool test1(){
     std::cout << "test1" << std::endl;
@@ -61,8 +61,9 @@ bool test2(){
 }
 
 bool test3(){
+    using namespace boost::numeric;
     std::cout << "test3" << std::endl;
-    boost::numeric::safe<int> x, y, z;
+    safe<int> x, y, z;
     x = 1;
     y = 2;
     z = 3;

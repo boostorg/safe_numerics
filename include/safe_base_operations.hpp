@@ -25,7 +25,7 @@
 #include <boost/utility/enable_if.hpp>
 
 #include "safe_base.hpp"
-#include "safe_integer.hpp"
+#include "safe_compare.hpp"
 #include "checked.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
@@ -34,9 +34,31 @@ namespace boost {
 namespace numeric {
 
 /////////////////////////////////////////////////////////////////
+// validation
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T>
+SAFE_NUMERIC_CONSTEXPR bool safe_base<Stored, Min, Max, P, E>::
+validate(const T & t) const {
+    static_assert(! is_safe<T>::value, "catch dumb mistake");
+    // INT08-C
+    return (
+        ! safe_compare::less_than(
+            Max,
+            base_value(t)
+        )
+        &&
+        ! safe_compare::less_than(
+            base_value(t),
+            Min
+        )
+    );
+}
+
+/////////////////////////////////////////////////////////////////
 // construction and assignment operators
 
-template< class Stored, Stored Min, Stored Max, class P, class E>
+template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T MinT, T MaxT, class PT, class ET>
 SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
 safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
@@ -48,21 +70,22 @@ safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
         Min,
         Max
     };
-    // note: r returns "indeterminent" if the ranges of t and u overlap.
-    // If they don't overlap we can skip the runtime check.  Otherwise
-    // we have to do it
-    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
-        t_interval < this_interval;
+    // if static values don't overlap, the program can never function
+    static_assert(
+        indeterminate(t_interval < this_interval),
+        "safe type cannot be constructed with this type"
+    );
 
-    if(r == boost::logic::tribool::indeterminate_value)
-        E::range_error("Invalid value");
+    // if the argument interval is not contained in this interval
+    if(! this_interval.includes(t_interval))
+        // we have to validate the value we're initializing with
+        if(! validate(t.m_t))
+            E::range_error("Value out of range for this safe type");
 
-    if(! validate(t.m_t))
-        E::range_error("Invalid value");
     m_t = t.m_t;
 }
 
-template< class Stored, Stored Min, Stored Max, class P, class E>
+template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T MinT, T MaxT, class PT, class ET>
 SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E> &
 safe_base<Stored, Min, Max, P, E>::
@@ -71,22 +94,39 @@ operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
         MinT,
         MaxT
     };
+    // typedef print<decltype(t_interval)> pt_interval;
     SAFE_NUMERIC_CONSTEXPR const interval<Stored> this_interval = {
         Min,
         Max
     };
-    // note: r returns "indeterminent" if the ranges of t and u overlap.
-    // If they don't overlap we can skip the runtime check.  Otherwise
-    // we have to do it
-    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
-        t_interval < this_interval;
+    // typedef print<decltype(this_interval)> pthis_intervall;
 
-    if(r == boost::logic::tribool::indeterminate_value)
-        E::range_error("Invalid value");
+    /*
+    typedef print<
+        std::integral_constant<
+            bool, (bool)(t_interval > this_interval)
+        >
+    > p_t_gt_this;
 
-    if(! validate(rhs.m_t)){
-        E::range_error("Invalid value");
-    }
+    typedef print<
+        std::integral_constant<
+            bool, (bool)(t_interval < this_interval)
+        >
+    > p_t_lt_this;
+    */
+
+    // if static values don't overlap, the program can never function
+    static_assert(
+        indeterminate(t_interval < this_interval),
+        "safe type cannot be constructed with this type"
+    );
+
+    // if the argument interval is not contained in this interval
+    if(! this_interval.includes(t_interval))
+        // we have to validate the value we're assigning
+        if(! validate(rhs.m_t))
+            E::range_error("Value out of range for this safe type");
+
     m_t = rhs.m_t;
     return *this;
 }
@@ -105,7 +145,7 @@ template<
 SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
 operator R () const {
     checked_result<R> r = checked::cast<R>(m_t);
-    if(r != checked_result<R>::exception_type::no_exception)
+    if(r != exception_type::no_exception)
         E::range_error("conversion not possible");
     return static_cast<R>(r);
 }
@@ -194,11 +234,6 @@ struct addition_result {
         typename P::exception_policy
     >::type type;
 };
-
-    template<typename Tx>
-    struct print {
-        typedef typename Tx::error_message type;
-    };
 
 template<class T, class U>
 typename boost::lazy_enable_if<
@@ -575,7 +610,7 @@ SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
             false
         :
             // otherwise we have to check
-            checked::less_than(base_value(lhs), base_value(rhs));
+            safe_compare::less_than(base_value(lhs), base_value(rhs));
         ;
 }
 
@@ -611,7 +646,7 @@ SAFE_NUMERIC_CONSTEXPR operator>(const T & lhs, const U & rhs) {
             false
         :
             // otherwise we have to check
-            checked::greater_than(base_value(lhs), base_value(rhs));
+            safe_compare::greater_than(base_value(lhs), base_value(rhs));
         ;
 }
 
@@ -644,7 +679,7 @@ SAFE_NUMERIC_CONSTEXPR operator==(const T & lhs, const U & rhs) {
             false
         :
             // otherwise we have to check
-            checked::equal(base_value(lhs), base_value(rhs));
+            safe_compare::equal(base_value(lhs), base_value(rhs));
         ;
 }
 

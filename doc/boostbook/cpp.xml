@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section>
+  <title>cpp&lt;int C, int S, int I, int L, int LL&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>This policy is used to promote safe types in arithmetic expressions
+    according the the standard rules in the C++ standard. But rather than
+    using the native C++ standard types supported by the compiler, it uses
+    types whose length in number of bits is specified by the template
+    parameters.</para>
+
+    <para>This policy is useful for running test program which use C++
+    portable integer types but which are destined to run on an an architecture
+    which is different than the one on which the test program is being built
+    and run. This can happen when developing code for embedded systems.
+    Algorithms developed or borrowed from one architecture can be tests on
+    another from the desk top. </para>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
+
+    <para>[The template parameters of a class template usually must satisfy a
+    set of requirements. Many of these can simply be expressed by listing
+    which concept a template parameter must conform to, but some type
+    requirements are slightly more complicated, and involve a relationship
+    between two different template parameters. If the type is not a template
+    and hence has no template parameters, this section can be skipped.]</para>
+
+    <informaltable>
+      <tgroup cols="3">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="6*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry align="left">Type</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>C</code></entry>
+
+            <entry>int</entry>
+
+            <entry>Number of bits in a char</entry>
+          </row>
+
+          <row>
+            <entry><code>S</code></entry>
+
+            <entry>int</entry>
+
+            <entry>Number of bits in a short</entry>
+          </row>
+
+          <row>
+            <entry><code>I</code></entry>
+
+            <entry>int</entry>
+
+            <entry>Number of bits in an integer</entry>
+          </row>
+
+          <row>
+            <entry><code>L</code></entry>
+
+            <entry>int</entry>
+
+            <entry>Number of bits in a long</entry>
+          </row>
+
+          <row>
+            <entry><code>LL</code></entry>
+
+            <entry>int</entry>
+
+            <entry>Number of bits in a long long</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link linkend="promotion_policy">PromotionPolicy</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code><ulink url="../../include/native.hpp"><code>#include
+    &lt;boost/safe_numerics/native.hpp&gt; </code></ulink></code></para>
+  </section>
+
+  <section>
+    <title>Case Study</title>
+
+    <para>[A code fragment involving the type.]</para>
+
+    <programlisting>#include &lt;vector&gt;
+
+vector&lt;int&gt; V;
+V.insert(V.begin(), 3);
+assert(V.size() == 1 &amp;&amp; V.capacity() &gt;= 1 &amp;&amp; V[0] == 3);
+</programlisting>
+  </section>
+
+  <section>
+    <title>Notes</title>
+
+    <para>[Footnotes (if any) that are referred to by other parts of the
+    page.]</para>
+  </section>
+
+  <section>
+    <title>See Also</title>
+
+    <para>[links to any other related concepts or types]</para>
+
+    <para/>
+  </section>
+</section>
