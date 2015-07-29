@@ -54,19 +54,6 @@ void test_usual_arithmetic_conversions(T1, T2){   \
     );                                   \
 }
 
-#if 0
-test_usual_arithmetic_conversions(std::int8_t, std::int64_t);
-
-    typedef print<T1> pt1;   \
-    typedef print<custom::rank<T1> > pr1; \
-    typedef print<T2> pt2;   \
-    typedef print<custom::rank<T2> > pr2; \
-    typedef print<custom::higher_ranked_type<T1, T2>> phr;   \
-
-    typedef print<custom_result_type<T1, T2>> pcrt;   \
-    typedef print<native::result_type<T1, T2>> pnrt;  \
-#endif
-
 #define TEST(T1, T2)              \
     test_usual_arithmetic_conversions(T1, T2);
 /**/

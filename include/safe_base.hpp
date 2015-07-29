@@ -22,11 +22,13 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
-#include "checked.hpp"
-#include "safe_common.hpp"
 #include "concept/numeric.hpp"
-#include "exception_policies.hpp"
+#include "concept/exception_policy.hpp"
+#include "concept/promotion_policy.hpp"
+
+#include "safe_common.hpp"
 #include "native.hpp"
+#include "exception_policies.hpp"
 
 #include "boost/concept/assert.hpp"
 
@@ -207,11 +209,13 @@ public:
         >::type = 0
     >
     SAFE_NUMERIC_CONSTEXPR operator R () const;
-    
+
+    /*
     SAFE_NUMERIC_CONSTEXPR operator Stored () const {
         return m_t;
     }
-
+    */
+    
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
@@ -287,10 +291,10 @@ public:
         --(*this);
         return old_t;
     }
-    safe_base operator-() const { // unary minus
+    safe_base operator-(){ // unary minus
         return *this = 0 - *this; // this will check for overflow
     }
-    safe_base operator~() const {
+    safe_base operator~(){
         static_assert(
             std::numeric_limits<Stored>::is_signed,
             "Bitwise inversion of signed value is an error"

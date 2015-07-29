@@ -2,14 +2,14 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section>
-  <title>throw_exception</title>
+  <title>trap_exception</title>
 
   <section>
     <title>Description</title>
 
-    <para>This exception policy throws a an exception derived from
-    <code>std::exception</code> any time some operation would result in an
-    incorrect result. This is the default exception handling policy.</para>
+    <para>This exception policy will trap at compile time any operation could
+    result in a runtime exception. It can be used in an evironment which can
+    tolerate neither arithmetic errors nor runtime overhead.</para>
   </section>
 
   <section>
@@ -23,26 +23,25 @@
     <title>Header</title>
 
     <para><code><ulink url="../../include/exception_policy.hpp"><code>#include
-    &lt;boost/safe_numerics/exception_policies.hpp&gt;
+    &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></ulink></code></para>
   </section>
 
   <section>
     <title>Example of use</title>
 
-    <para>This example is somewhat contrived as throw_exception is the default
-    for safe types. Hence it usually is not necessarily to request it
-    explicitly.</para>
+    <para>The following </para>
 
     <programlisting>#include "../../include/safe_integer.hpp"
-#include "../../include/exception_policies" // exception policies
-#include "../../include/native"             // native promotion policy
+#include "../../include/automatic.hpp"
+#include "../../include/exception_policies.hpp"
 
 int main(){
     using namespace boost::numeric;
-    safe&lt;int, native, throw_exception&gt; i;
-    int j = 0;
-    i /= j;   // throws exception
+    safe&lt;char, automatic, trap_exception&gt; x, y;
+    y = x * x; // compile error here !!!
+    auto z = x * x; // compile OK
+    return 0;
 }</programlisting>
   </section>
 </section>

@@ -7,34 +7,183 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="index.html" title="Safe Numerics">
-<link rel="next" href="introduction/problem.html" title="Problem">
+<link rel="next" href="tutorial.html" title="Tutorial and Motivating Examples">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
-<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="introduction/problem.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="tutorial.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="introduction/problem.html">Problem</a></span></dt>
-<dt><span class="section"><a href="introduction/solution.html">Solution</a></span></dt>
-<dt><span class="section"><a href="introduction/summary.html">Summary</a></span></dt>
-<dt><span class="section"><a href="introduction/requirements.html">Requirements</a></span></dt>
-<dt><span class="section"><a href="introduction/scope.html">Scope</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.summary">Summary</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm236255125200">Features</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.requirements">Requirements</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.scope">Scope</a></span></dt>
 </dl></div>
 <p>All data types, type requirements, function and meta function names
   are found in the namespase boost::numeric . In order to make this document
   more readable, we have omitted this namespace qualifier.</p>
+<div class="note"><table border="0" summary="Note">
+<tr>
+<td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td>
+<th align="left">Note</th>
+</tr>
+<tr><td align="left" valign="top"><p>Library code in this document resides in the namespace
+      <code class="computeroutput">boost::numeric</code>. This namespace has generally been
+      eliminated from text, code and examples in order to avoid
+      cludder.</p></td></tr>
+</table></div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.introduction.problem"></a>Problem</h3></div></div></div>
+<p>Arithmetic operations in C++ are NOT guaranteed to yield a correct
+    mathematical result. This feature is inherited from the early days of C.
+    The behavior of <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code> and others
+    were designed to map closely to the underlying hardware. Computer hardware
+    implements these types as a fixed number of bits. When the result of
+    arithmetic operations exceeds this number of bits, the result will not be
+    arithmetically correct. The following example illustrates this
+    problem.</p>
+<pre class="programlisting">int f(int x, int y){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y;
+}
+</pre>
+<p>It is incumbent up the C/C++ programmer to guarantee that this
+    behavior does not result in incorrect or unexpected operation of the
+    program. There are no language facilities which do this. They have to be
+    explicitly addressed in the program code. There are a number of ways to do
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm236260624176"><span class="citation">INT32-C</span></a>]</a> seems
+    to recommend the following approach.</p>
+<pre class="programlisting">int f(int x, int y){
+  if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
+  || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - x)))) {
+    /* Handle error */
+  }
+  return x + y;
+}
+</pre>
+<p>This will indeed trap the error. However, it would be tedious and
+    laborious for a programmer to do alter his code to do. Altering code in
+    this way for all arithmetic operations would likely render the code
+    unreadable and add another source of potential programming errors. This
+    approach is clearly not functional when the expression is even a little
+    more complex as is shown in the following example.</p>
+<pre class="programlisting">int f(int x, int y, int z){
+    // this returns an invalid result for some legal values of x and y !
+    return x + y * z;
+}
+</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.introduction.solution"></a>Solution</h3></div></div></div>
+<p>This library implements special versions of int, unsigned, etc.
+    which behave exactly like the original ones EXCEPT that the results of
+    these operations are guaranteed to be either arithmetically correct or
+    invoke an error. Using this library, the above would be rendered
+    as:</p>
+<pre class="programlisting">#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
+
+int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
+  return x + y; // throw exception if correct result cannot be returned
+}
+</pre>
+<p>The addition expression is checked at runtime or (if possible) or
+    compile time to trap any possible errors resulting from incorrect
+    arithmetic behavior. This will permit one to write arithmetic expressions
+    that cannot produce an erroneous result. Instead, one and only one of the
+    following is guaranteed to occur.</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>the expression will emit a compilation error.</p></li>
+<li class="listitem"><p>the expression will invoke a runtime exception.</p></li>
+<li class="listitem"><p>the expression will yield the correct mathematical
+          result</p></li>
+</ul></div>
+<p>In addition to eliminating undefined behavior from
+    primitive integer types, we define new data types
+    <code class="computeroutput">safe_signed_range&lt;MIN, MAX&gt;</code> and
+    <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX&gt;</code> which will throw an
+    exception if an attempt is made to store a result which is outside the
+    closed range [MIN, MAX].</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.introduction.summary"></a>Summary</h3></div></div></div>
+<p>Using techniques of C++ including overloading, template
+    metaprogramming, and others, this library implements special versions of
+    int, unsigned, etc. named <code class="computeroutput">safe&lt;int&gt;</code>,
+    <code class="computeroutput">safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
+    original ones EXCEPT that expressions involving these types are checked to
+    guarantee that any possible arithmetic errors are trapped at compile time
+    (if possible) or at runtime. Since these types are meant to be "drop-in"
+    replacements, they function in all other ways the same as the built-in
+    types they are meant to replace. So things which are legal - such as
+    assigning an signed to unsigned value are not trapped at compile time - as
+    they are legal C/C++ code - but rather checked at runtime to trap the case
+    where this (legal) operation would lead to an arithmetically incorrect
+    result.</p>
+<p>Note that the library addresses arithmetical errors generated by
+    straightforward C/C++ expressions. Some of these arithmetic errors are
+    defined as conforming to C/C++ standard while others are not. So
+    characterizing this library as addressing undefined behavior of C/C++
+    numeric expressions is misleading</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm236255125200"></a>Features</h3></div></div></div>
+<p>Operation of safe types is determined by template parameters which
+    specify a pair of <a class="link" href="types.html#safe_numerics.promotion_policies" title="Promotion Policies">policy
+    classes</a> which specify the behavior for type promotion and error
+    handling. In addition to the usage serving as a drop-in replacement for
+    standard integer types, The library can:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>Use custom type promotion so that expressions return types
+          guarenteed to hold the expression's results.</p></li>
+<li class="listitem"><p>Ability to use custom integer sizes to implement cross
+          platform code testing</p></li>
+<li class="listitem"><p>Trap any possible arithmetic errors at compile time</p></li>
+<li class="listitem"><p>Ranged integer types to permit enforcement of other program
+          requirements.</p></li>
+<li class="listitem"><p>Among others.</p></li>
+</ul></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.introduction.requirements"></a>Requirements</h3></div></div></div>
+<p>This library is composed entirely of C++ Headers. I requires a
+    compiler compatible with the C++11 standard.</p>
+<p>The following Boost Libraries must be installed in order to use this
+    library</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>mpl</p></li>
+<li class="listitem"><p>integer</p></li>
+<li class="listitem"><p>limits</p></li>
+<li class="listitem"><p>config</p></li>
+<li class="listitem"><p>concept checking</p></li>
+<li class="listitem"><p>type traits</p></li>
+<li class="listitem"><p>integer traits</p></li>
+</ul></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.introduction.scope"></a>Scope</h3></div></div></div>
+<p>This library currently applies only to built-in integer types.
+    Analogous issues arise for floating point types but they are not currently
+    addressed by this version of the library. User or Library defined types
+    such as arbitrary precision integers can also have this problem. Extension
+    of this library to these other types is not currently under development
+    but may be addressed in the future. This is one reason why the library
+    name is "safe numeric" rather than "safe integer" library.</p>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -44,7 +193,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="introduction/problem.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="tutorial.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

@@ -15,6 +15,7 @@
 
 #include "safe_common.hpp" // SAFE_NUMERIC_CONSTEXPR
 #include "exception_policies.hpp"
+#include "concept/exception_policy.hpp"
 #include "safe_compare.hpp"
 
 namespace boost {
@@ -123,10 +124,35 @@ struct checked_result {
         return m_e == exception_type::no_exception;
     }
 
+/*
     template<class EP>
     void
     dispatch() const {
-        BOOST_CONCEPT_ASSERT((ExceptionPolicy<EP>));
+        switch(m_e){
+        case exception_type::overflow_error:
+            EP::overflow_error(m_msg);
+            break;
+        case exception_type::underflow_error:
+            EP::underflow_error(m_msg);
+            break;
+        case exception_type::range_error:
+            EP::range_error(m_msg);
+            break;
+        case exception_type::domain_error:
+            EP::domain_error(m_msg);
+            break;
+        case exception_type::no_exception:
+            break;
+        default:
+            break;
+        }
+    }
+};
+*/
+
+    template<class EP>
+    SAFE_NUMERIC_CONSTEXPR void
+    dispatch() const {
         switch(m_e){
         case exception_type::overflow_error:
             EP::overflow_error(m_msg);

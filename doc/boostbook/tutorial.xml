@@ -22,6 +22,10 @@
 
     <programlisting><xi:include href="../../examples/example1.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+
+    <para>Note that I've used <code>char</code> types in this example to make
+    the problem and solution easier to see. The exact same example could have
+    been done with <code>int</code> types albeit with different values.</para>
   </section>
 
   <section id="safe_numerics.tutorial.2">
@@ -69,9 +73,10 @@
 
         <listitem>
           <para>We may believe that our signed type will never contain a
-          negative value. If we use a <code>static_cast</code> to suppress the
-          warning, we'll fail to detect a program error when it is committed.
-          This is aways a risk with casts.</para>
+          negative value. If we ignore the any compiler warnings or use a
+          <code>static_cast</code> to suppress them, we'll fail to detect a
+          program error when it is committed. This is aways a risk with
+          casts.</para>
         </listitem>
       </itemizedlist></para>
 
@@ -102,5 +107,116 @@
           xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Without
     safe integer, one will have to insert new code every time an integer
     variable is retrieved. This is a tedious and error prone procedure.</para>
+  </section>
+
+  <section>
+    <title>Parameter checking is too expensive</title>
+
+    <para>Programming by Contract is a highly regarded technique. There has
+    been much written about it has been proposed as an addition to the C++
+    language <citation>Garcia</citation><citation>Crowl &amp;
+    Ottosen</citation>. It (mostly depends upon runtime checking of parameter
+    values upon entry to every function and thus slows the program down. This
+    undermines the main motivation for using C++ in the first place! One
+    popular scheme for addressing this issue is to enable parameter checking
+    only during debugging and testing. This defeats the guarentee of
+    correctness which we are seeking here! This library has facilities which,
+    in many cases, can check guarentee parameter requirements with no runtime
+    overhead. Consider the following example:</para>
+
+    <para><programlisting><xi:include href="../../examples/example7.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+
+    <para>In the example above the function convert incurrs significant
+    runtime cost every time the function is called. By using "safe" types,
+    this cost is moved to moment when the parameters are constructed.
+    Depending on how the program is constructed, this may totally eliminate
+    extraneous computions for parameter requirement type checking. In this
+    scenario, there is no reason to suppress the checking for release mode and
+    our program can be guarenteed to be always arithmetically correct.</para>
+  </section>
+
+  <section>
+    <title>Eliminate runtime cost</title>
+
+    <para>Our system works by checking arithmetic operations whenever they
+    could result in an erroneous result. The C++ standard describes how binary
+    operations on different integer types are handled. Here is a simplified
+    version of the rules:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>promote any operand smaller than int to an int or unsigned
+        int.</para>
+      </listitem>
+
+      <listitem>
+        <para>if the signed operand is larger than the signed one, the result
+        will be signed, otherwise the result will be unsigned.</para>
+      </listitem>
+
+      <listitem>
+        <para>expand the smaller operand to the size of the larger one</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>So the result of the sum of two integer types will result in another
+    integer type. If the values are large, they will exceed the size that the
+    resulting integer type can hold. This is what we call "overflow". Standard
+    C++ just truncates the result to fit into the result type - which makes
+    the result arithmetically incorrect. Up until now, we've focused on
+    detecting when this happens and invoking an interrupt or other kind of
+    error handler. But now we look at another option. Using the "automatic"
+    type promotion policy, we can change the rules of C++ arithmetic for safe
+    types to something like the following:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>for any C++ numeric types, we know from
+          <code>std::numeric::limits</code> what the maximum and minimum
+          values that a variable can be - this defines a closed
+          interval.</para>
+        </listitem>
+
+        <listitem>
+          <para>For any binary operation on these types, we can calculate the
+          interval of the result.</para>
+        </listitem>
+
+        <listitem>
+          <para>From this we can determine a new safe type which can be
+          guarenteed to hold the result.</para>
+        </listitem>
+
+        <listitem>
+          <para>Since the result type is guarenteed to hold the result, there
+          is no need to check for errors - they can't happen !!!</para>
+        </listitem>
+
+        <listitem>
+          <para>The only error checking we need to do is when safe values are
+          initialized, but this we would have to do in any case. So we've
+          eliminated arithmetically incorrect results while incurring zero
+          runtime overhead for error checking.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>In sort, given a binary operation, we promote the constituent types
+    to a larger result type which can't overflow. This is a fundamental
+    deparature from the C++ Standard behavior.</para>
+
+    <para>If the interval of the result cannot be contained in the largest
+    type that the machine can handle (usually 64 bits these days), the largest
+    available integer type with the correct result sign is used. So even with
+    our "automatic" type promotion scheme, it's still possible to overflow. In
+    this case, and only this case, is runtime error checking code generated.
+    Depending on the application, it should be rare to generate error checking
+    code, and even more rare to actually invoke it.</para>
+
+    <para>This small example illustrates how to use type promotion and how it
+    works.</para>
+
+    <para><programlisting><xi:include href="../../examples/example8.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
   </section>
 </section>

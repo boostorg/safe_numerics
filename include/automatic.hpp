@@ -18,7 +18,7 @@
 // that errors aren't trapped.
 
 #include <limits>
-#include <cstdint> (u)intmax_t,
+#include <cstdint>     // (u)intmax_t,
 #include <type_traits> // true_type, false_type
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>

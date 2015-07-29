@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
+<section id="safe_numerics.automatic_policy">
   <title>automatic</title>
 
   <section>
@@ -20,8 +20,8 @@
   <section>
     <title>Header</title>
 
-    <para><code><ulink url="../../include/native.hpp"><code>#include
-    &lt;boost/safe_numerics/native.hpp&gt; </code></ulink></code></para>
+    <para><code><ulink url="../../include/automatic.hpp"><code>#include
+    &lt;boost/safe_numerics/automatic.hpp&gt; </code></ulink></code></para>
   </section>
 
   <section>
@@ -60,20 +60,5 @@ int main(){
 
     return 0;
 }</programlisting>
-  </section>
-
-  <section>
-    <title>Notes</title>
-
-    <para>[Footnotes (if any) that are referred to by other parts of the
-    page.]</para>
-  </section>
-
-  <section>
-    <title>See Also</title>
-
-    <para>[links to any other related concepts or types]</para>
-
-    <para/>
   </section>
 </section>

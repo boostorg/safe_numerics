@@ -133,7 +133,6 @@ operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
 
 /////////////////////////////////////////////////////////////////
 // casting operators
-
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
@@ -201,16 +200,33 @@ struct common_policies {
 
     // now we've verified that there is no conflict between policies
     // return the one from the first safe type
-    typedef typename boost::mpl::if_<
-        is_safe<T>,
-        T,
-    typename boost::mpl::if_<
-        is_safe<U>,
-        U,
-    //
-        boost::mpl::void_
-    >
-    >::type safe_type;
+    typedef
+        typename boost::mpl::if_<
+            is_safe<T>,
+            T,
+        typename boost::mpl::if_<
+            is_safe<U>,
+            U,
+        //
+            void
+        >::type >::type safe_type;
+
+    // typedef print<safe_type> p_st;
+    static_assert(
+        is_safe<safe_type>::value,
+        "is_safe<safe_type>::value"
+    );
+/*
+    static_assert(
+        is_safe<U>::value,
+        "is_safe<U>::value"
+    );
+    typedef print<safe_type> p_st;
+*/
+    static_assert(
+        ! std::is_same<void, safe_type>::value,
+        "asdfafs"
+    );
 
     typedef typename get_promotion_policy<safe_type>::type promotion_policy;
     typedef typename get_exception_policy<safe_type>::type exception_policy;
@@ -254,9 +270,8 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
-
-    //typedef typename print<result_type>::type p_result_type;
-    //typedef typename print<result_base_type>::type p_result_base_type;
+    //typedef print<result_type> p_result_type;
+    //typedef print<result_base_type> p_result_base_type;
 
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
@@ -964,7 +979,7 @@ template<
 >
 std::ostream & operator<<(
     std::ostream & os,
-    const boost::numeric::safe_base<T, Min, Max, P, E> & t
+    const safe_base<T, Min, Max, P, E> & t
 ){
     os << (
         (std::is_same<T, signed char>::value
@@ -1007,7 +1022,7 @@ template<
 >
 std::istream & operator>>(
     std::istream & is,
-    boost::numeric::safe_base<T, Min, Max, P, E> & t
+    safe_base<T, Min, Max, P, E> & t
 ){
 
     detail::Temp<T> tx;

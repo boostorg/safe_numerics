@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.safe_signed_range">
-  <title>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</title>
+<section id="safe_numerics.safe_unsigned_range">
+  <title>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
+  safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
 
   <section>
     <title>Description</title>
 
-    <para>This type holds a signed integer in the range [MIN, MAX]. It will
-    throw a <code>std::out_of_range</code> exception for operation which would
-    result in assigning an integer value outside of this range.</para>
+    <para>This type holds a signed or unsigned integer in the closed range
+    [MIN, MAX]. A <code>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
+    <code>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
+    anywhere an arithmetic type is permitted. Any expression which uses either
+    of these types is guarenteed to return an arithmetically correct value or
+    trap in some way.</para>
   </section>
 
   <section>
     <title>Notation</title>
 
-    <para>In addition</para>
-
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="10*"/>
+        <colspec align="left" colwidth="8*"/>
 
         <thead>
           <row>
@@ -35,8 +37,8 @@
           <row>
             <entry><code>MIN, MAX</code></entry>
 
-            <entry>Minimum and maximum signed values that the
-            safe_signed_range can represent.</entry>
+            <entry>Minimum and maximum values that the range can
+            represent.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -48,23 +50,23 @@
 
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="10*"/>
+        <colspec align="left" colwidth="8*"/>
 
         <tbody>
           <row>
             <entry><code>PP</code></entry>
 
-            <entry>A type which specifes the result type of an expression
-            using safe types.</entry>
+            <entry>Promotion Pollicy. A type which specifes the result type of
+            an expression using safe types.</entry>
           </row>
 
           <row>
             <entry><code>EP</code></entry>
 
-            <entry>A type containing members which are called when a correct
-            result cannot be returned</entry>
+            <entry>Exception Policy. A type containing members which are
+            called when a correct result cannot be returned</entry>
           </row>
         </tbody>
       </tgroup>
@@ -76,9 +78,9 @@
 
     <informaltable>
       <tgroup cols="3">
-        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="4*"/>
+        <colspec align="left" colwidth="2*"/>
 
         <colspec align="left" colwidth="6*"/>
 
@@ -96,17 +98,19 @@
           <row>
             <entry><code>MIN</code></entry>
 
-            <entry>must be an integer literal</entry>
+            <entry>must be non-integer literal</entry>
 
-            <entry>The minimum integer value that this type may hold</entry>
+            <entry>The minimum non-negative integer value that this type may
+            hold</entry>
           </row>
 
           <row>
             <entry><code>MAX</code></entry>
 
-            <entry>must be a negative literal</entry>
+            <entry>must be a non-negative literal</entry>
 
-            <entry>The maximum integer value that this type may hold</entry>
+            <entry>The maximum non-negative integer value that this type may
+            hold</entry>
           </row>
 
           <row>
@@ -165,7 +169,7 @@
     <title>Header</title>
 
     <para><filename><ulink url="../../include/safe_range.hpp">#include
-    &lt;boost/safe_numerics/safe_range.hpp&gt;</ulink></filename></para>
+    &lt;safe/numeric/safe_range.hpp&gt;</ulink></filename></para>
   </section>
 
   <section>
@@ -173,20 +177,19 @@
 
     <programlisting>#include &lt;safe/numeric/safe_range.hpp&gt;
 
-void f(){
-    boost::numeric::safe_signed_range&lt;-7, 24&gt; i;
-    // since the range is included in [-128,127], the underlying type of i 
-    // will be a char.
-    i = -41; // throws out_of_range exception
-    i = 9;   // ok
-    i = -1;  // ok
-    i *= 9;  // throws out_of_range exception
-    std::int8_t j = 4;
+void f(boost::numeric::safe_unsigned_range&lt;7, 24&gt; i){
+    // since the range is included in [0,255], the underlying type of i 
+    // will be an unsigned char.
+    i = 0;  // throws out_of_range exception
+    i = 9;  // ok
+    i *= 9; // throws out_of_range exception
+    i = -1; // throws out_of_range exception
+    std::uint8_t j = 4;
     auto k = i + j;
         // These types use default promotion policy so standard C++ type promotion rules 
         // will be used in evaluating expressions.   C++ type promotion rules mandate
-        // that the result of k = i + j when both are signed char types, will be another
-        // signed char type.
-}</programlisting>
+        // that the result of k = i + j when both are unsigned char types, will be another
+        // unsigned char type.
+  }</programlisting>
   </section>
 </section>

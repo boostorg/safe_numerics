@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
+<section id="safe_numerics.cpp_policy">
   <title>cpp&lt;int C, int S, int I, int L, int LL&gt;</title>
 
   <section>
@@ -17,19 +17,12 @@
     portable integer types but which are destined to run on an an architecture
     which is different than the one on which the test program is being built
     and run. This can happen when developing code for embedded systems.
-    Algorithms developed or borrowed from one architecture can be tests on
-    another from the desk top. </para>
+    Algorithms developed or borrowed from one architecture but destined for
+    another can be tested on ib the desk top.</para>
   </section>
 
   <section>
     <title>Template Parameters</title>
-
-    <para>[The template parameters of a class template usually must satisfy a
-    set of requirements. Many of these can simply be expressed by listing
-    which concept a template parameter must conform to, but some type
-    requirements are slightly more complicated, and involve a relationship
-    between two different template parameters. If the type is not a template
-    and hence has no template parameters, this section can be skipped.]</para>
 
     <informaltable>
       <tgroup cols="3">
@@ -97,41 +90,102 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="promotion_policy">PromotionPolicy</link></para>
+    <para><link
+    linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
   </section>
 
   <section>
     <title>Header</title>
 
-    <para><code><ulink url="../../include/native.hpp"><code>#include
-    &lt;boost/safe_numerics/native.hpp&gt; </code></ulink></code></para>
+    <para><code><ulink url="../../examples/example9.cpp"><code>#include
+    &lt;boost/safe_numerics/cpp.hpp&gt; </code></ulink></code></para>
   </section>
 
   <section>
-    <title>Case Study</title>
+    <title>Example of Use</title>
 
-    <para>[A code fragment involving the type.]</para>
+    <para>Consider the following problem. One is developing software which
+    uses a very small microprocessor and a very limited C compiler. The chip
+    is so small, you can't print anything from the code, log, debug or
+    anything else. One debugs this code by using the "burn" and "crash" method
+    - you burn the chip (download the code) run the code, observe the results,
+    make changes and try again. This is a crude method which is usually the
+    one used. But it can be quite time consuming.</para>
 
-    <programlisting>#include &lt;vector&gt;
+    <para>Consider an alternative. Build and compile your code in testable
+    modules. For each module write a test which excercises all the code and
+    makes it work. Finally download your code into the chip and - voila -
+    working product. This sounds great, but there's one problem. Our target
+    processor - in this case a PIC162550 from Microchip Technology is only an
+    8 bit CPU. The compiler we use defines INT as 8 bits. This (and a few
+    other problems), make our algorithm testing environment differ from our
+    target environment. We can address this by defining INT as a safe integer
+    with a range of 8 bits. By using a custom promotion policy, we can force
+    the evaluation of C++ expressions test environment to be the same as that
+    in the target environment. Also in our target environment, we can trap any
+    overflows or other errors. So we can write and test our code on our
+    desktop system and download the code to the target knowing that it just
+    has to work. This is a huge time saver and confidence builder. The
+    following code is taken from a real project which has used this
+    method.</para>
 
-vector&lt;int&gt; V;
-V.insert(V.begin(), 3);
-assert(V.size() == 1 &amp;&amp; V.capacity() &gt;= 1 &amp;&amp; V[0] == 3);
-</programlisting>
-  </section>
+    <programlisting>#include "../include/safe_integer.hpp"
+#include "../include/cpp.hpp"
 
-  <section>
-    <title>Notes</title>
+//////////////////////////////////////////////////////////////
+// Stepper Motor Control
 
-    <para>[Footnotes (if any) that are referred to by other parts of the
-    page.]</para>
-  </section>
+// emululate evironment for pic162550
+// data widths used by the CCS compiler for pic 16xxx series
 
-  <section>
-    <title>See Also</title>
+using pic16_promotion = boost::numeric::cpp&lt;
+    8,  // char
+    8,  // short - not used by pic 16xxxx
+    8,  // int
+    16, // long
+    32  // long long
+&gt;;
 
-    <para>[links to any other related concepts or types]</para>
+template &lt;typename T&gt; // T is char, int, etc data type
+using safe_t = boost::numeric::safe&lt;
+    T,
+    pic16_promotion,
+    boost::numeric::trap_exception // use for compiling and running tests
+&gt;;
 
-    <para/>
+using int8 = safe_t&lt;std::int8_t&gt;;
+using int16 = safe_t&lt;std::int16_t&gt;;
+using int32 = safe_t&lt;std::int32_t&gt;;
+using uint8 = safe_t&lt;std::uint8_t&gt;;
+using uint16 = safe_t&lt;std::uint16_t&gt;;
+using uint32 = safe_t&lt;std::uint32_t&gt;;
+
+////////////////////////////////////////////////////////////////
+// Mock defines, functions etc which are in he "real application
+
+...
+
+// return value in steps
+/*
+Use the formula:
+    stopping dist = v **2 / a / 2
+*/
+uint16 get_stopping_distance(LEMPARAMETER velocity){
+    int32 d;
+    d = velocity;
+    d *= velocity;
+    d /= lem.acceleration;
+    d /= 2;
+    return d;
+}
+
+...</programlisting>
+
+    <para>Note the usage of the compile time trap policy in order to detect at
+    compile time any possible error conditions. As I write this, this is still
+    being refined. Hopefully this will be available by the time you read this.
+    This example is too long to include in line in this documentation. You can
+    see the whole file at <ulink
+    url="../../include/cpp.hpp"><code>example.cpp</code></ulink></para>
   </section>
 </section>

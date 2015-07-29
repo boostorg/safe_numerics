@@ -14,7 +14,7 @@
 
 #include <type_traits>
 #include <limits>
-#include "concept/promotion_policy.hpp"
+
 // policy which creates results types and values equal to that of C++ promotions.
 // When used in conjunction with a desired exception policy, traps errors but
 // does not otherwise alter the results produced by the program using it.
@@ -45,13 +45,13 @@ struct native {
         using base_type_t = typename base_type<T>::type;
         using base_type_u = typename base_type<U>::type;
         using result_base_type = result_type<base_type_t, base_type_u>;
-        typedef safe_base<
+        using type = safe_base<
             result_base_type,
             std::numeric_limits<result_base_type>::min(),
             std::numeric_limits<result_base_type>::max(),
             P,
             E
-        > type;
+        >;
     };
 
     template<typename T, typename U, typename P, typename E>

@@ -22,7 +22,15 @@
 #include <boost/integer.hpp> // integer type selection
 #include <boost/mpl/if.hpp>
 
-#include "safe_base.hpp"
+// forward declaration - safe type
+template<
+    class Stored,
+    Stored Min,
+    Stored Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+class safe_base;
 
 namespace boost {
 namespace numeric {
@@ -141,27 +149,49 @@ struct cpp {
 
     template<typename T, typename U, typename P, typename E>
     struct safe_type_promotion {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
-        typedef usual_arithmetic_conversions<
+        using base_type_t = typename base_type<T>::type;
+        using base_type_u = typename base_type<U>::type;
+        using result_base_type = usual_arithmetic_conversions<
             integral_promotion<base_type_t>,
             integral_promotion<base_type_u>
-        > result_base_type;
-
-        typedef safe_base<
+        >;
+        using type = safe_base<
             result_base_type,
             std::numeric_limits<result_base_type>::min(),
             std::numeric_limits<result_base_type>::max(),
             P,
             E
-        > type;
+        >;
     };
 
     template<typename T, typename U, typename P, typename E>
     struct addition_result {
        using type = typename  safe_type_promotion<T, U, P, E>::type;
     };
-
+    template<typename T, typename U, typename P, typename E>
+    struct subtraction_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct multiplication_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct division_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct modulus_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct left_shift_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
+    template<typename T, typename U, typename P, typename E>
+    struct right_shift_result {
+        typedef typename safe_type_promotion<T, U, P, E>::type type;
+    };
 };
 
 }   // numeric

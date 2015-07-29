@@ -32,8 +32,6 @@
   <section>
     <title>Example of use</title>
 
-    <para>[A code fragment involving the type.]</para>
-
     <programlisting>safe&lt;int, native, ignore_exception&gt; st(4);</programlisting>
   </section>
 </section>

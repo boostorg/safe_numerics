@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section>
+  <title>no_exception_support&lt;O, U = O, R =O, D = O&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>This exception policy can be used in an environment where one cannot
+    or does not want to use exceptions.</para>
+
+    <para>Parameters are pointers to static functions which are invoked for
+    each kind of error encountered in the library. The function signature of
+    these functions are <code>void function(const char * message)</code> where
+    <code>message</code> is the address of a literal string with information
+    regarding the error.</para>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
+
+    <para>Function objects to be invoked are specified for each error
+    condition are specified via template parameters.</para>
+
+    <informaltable>
+      <tgroup cols="4">
+        <colspec align="left"/>
+
+        <colspec align="left"/>
+
+        <colspec align="left" colwidth="3*"/>
+
+        <colspec align="left" colwidth="6*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry>Default</entry>
+
+            <entry align="left">Type Requirements</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>O</code></entry>
+
+            <entry><code/></entry>
+
+            <entry>void (*O)(const char *)</entry>
+
+            <entry><para>Function to call on overflow error</para></entry>
+          </row>
+
+          <row>
+            <entry><code>O</code></entry>
+
+            <entry><code>O</code></entry>
+
+            <entry>void (*U)(const char *)</entry>
+
+            <entry><para>Function to call on underflow error</para></entry>
+          </row>
+
+          <row>
+            <entry><code>O</code></entry>
+
+            <entry><code>O</code></entry>
+
+            <entry>void (*R)(const char *)</entry>
+
+            <entry><para>Function to call on range error</para></entry>
+          </row>
+
+          <row>
+            <entry><code>O</code></entry>
+
+            <entry><code>O</code></entry>
+
+            <entry>void (*D)(const char *)</entry>
+
+            <entry><para>Function to call on domain error</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link
+    linkend="safe_numerics.promotion_policy">ExceptionPolicy</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code><ulink url="../../include/exception_policy.hpp"><code>#include
+    &lt;boost/safe_numerics/exception_policy.hpp&gt;
+    </code></ulink></code></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <para>[A code fragment involving the type.]</para>
+
+    <programlisting>void overflow(const char * msg);
+void underflow(const char * msg);
+void range_error(const char * msg);
+void domain_error(const char * msg);
+
+using ep = ignore_exception&lt;
+    overflow,
+    underflow,
+    range_error,
+    domain_error
+&gt;;
+
+safe&lt;int, native, ep&gt; st(4);</programlisting>
+  </section>
+</section>

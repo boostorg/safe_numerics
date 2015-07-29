@@ -108,13 +108,10 @@
     <xi:include href="safe.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="safe_signed_range.xml" xpointer="element(/1)"
+    <xi:include href="safe_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="safe_unsigned_range.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-    <section>
+    <section id="safe_numerics.promotion_policies">
       <title>Promotion Policies</title>
 
       <xi:include href="native.xml" xpointer="element(/1)"
@@ -127,10 +124,19 @@
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </section>
 
-    <section>
+    <section id="safe_numerics.exception_policies">
       <title>Exception Policies</title>
 
       <xi:include href="throw_exception.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="ignore_exception.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="no_exception_support.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+      <xi:include href="trap_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </section>
   </section>
@@ -143,12 +149,29 @@
   </section>
 
   <section id="safe_numerics.rationale">
-    <title>Rationale</title>
+    <title>Rationale and FAQ</title>
 
     <qandaset defaultlabel="number">
       <qandaentry>
         <question>
-          <para>Why is Boost.Convert not used.</para>
+          <para>Is this really necessary? If I'm writing the program with the
+          requisite care and competence, problems noted in the introduction
+          will never arise. Should they arise, they should be fixed "at the
+          source" and with a "bandaid" to cover up bad practice.</para>
+        </question>
+
+        <answer>
+          <para>This surprised me when it was first raised. But some of the
+          feedback I've received makes me thing that it's a widely held view.
+          The best answer is to consider the cases in the section <link
+          linkend="safe_numerics.tutorial">Tutorials and Motivating
+          Examples</link>.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Why is Boost.Convert not used?</para>
         </question>
 
         <answer>
@@ -214,13 +237,9 @@
         </question>
 
         <answer>
-          <para>Correct. Almost all hardware in current use two's complement
-          arithmetic. This library works on all and only on all such machines.
-          For example, if one were to implement 48 bit integers with two's
-          complement arithmetic, the save .. versions could be used without
-          change. To support hardware which does not use two's complement
-          arithmetic, at least part of the library would have to be
-          re-implemented.</para>
+          <para>As far as is known as of this writing, the library does not
+          presume that the underlying hardware is two's compliment. However,
+          this has yet to be verified in a rigorus way.</para>
         </answer>
       </qandaentry>
 
@@ -301,6 +320,33 @@
 
     <biblioentry>
       <author>
+        <surname>Lawerence Crowl</surname>
+      </author>
+
+      <author>
+        <surname>Thorsten Ottosen</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1962.html">Proposal
+          to add Contract Programming to C++</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N1962 and
+        J16/06-0032 - The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
+
+      <date>February 25, 2006</date>
+
+      <abbrev>Crowl &amp; Ottosen</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
         <surname>Will Dietz</surname>
       </author>
 
@@ -330,6 +376,29 @@
       </publishername>
 
       <date>June 2012</date>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <surname>J. Daniel Garcia</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1962.html">C++
+          language support for contract programming</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N4293 - The
+        C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
+
+      <date>December 23, 2014</date>
+
+      <abbrev>Garcia</abbrev>
     </biblioentry>
 
     <biblioentry>

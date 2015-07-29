@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
+<section id="safe_numerics.native_policy">
   <title>native</title>
 
   <section>
     <title>Description</title>
 
     <para>This type contains the functions to return a safe type corresponding
-    to the C++ type resulting for a given arithmetic operation. </para>
+    to the C++ type resulting for a given arithmetic operation.</para>
 
     <para>Usage of this policy with safe types will produce the exact same
     arithmetic results that using normal unsafe integer types will. Hence this
@@ -23,7 +23,7 @@
     <para><link linkend="promotion_policy">PromotionPolicy</link></para>
 
     <para>As an example of how this works consider C++ rules from section 5 of
-    the standard - "usual arithmetic conversions". </para>
+    the standard - "usual arithmetic conversions".</para>
 
     <para><programlisting>void int f(int x, int y){
     auto z = x + y; // z will be of type "int"
@@ -91,15 +91,6 @@ int main(){
   <section>
     <title>Notes</title>
 
-    <para>[Footnotes (if any) that are referred to by other parts of the
-    page.]</para>
-  </section>
-
-  <section>
-    <title>Bibliography</title>
-
-    <para>[links to any other related concepts or types]</para>
-
-    <para/>
+    <para>See Chapter 5, Expressions, C++ Standard</para>
   </section>
 </section>
