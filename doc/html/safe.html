@@ -7,44 +7,39 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
 <link rel="prev" href="types.html" title="Types">
-<link rel="next" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt;">
+<link rel="next" href="safe_unsigned_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
-<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_signed_range.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_unsigned_range.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#idm305379988976">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379987040">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379979920">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379973168">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379957280">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379955040">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379952976">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379950976">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745162496">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745160560">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745153440">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745146688">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745130800">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745128560">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745126496">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm110745124496">Examples of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379988976"></a>Description</h4></div></div></div>
+<a name="idm110745162496"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP, EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guarenteed to return
     an arithmetically correct value or trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379987040"></a>Notation</h4></div></div></div>
+<a name="idm110745160560"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -63,7 +58,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379979920"></a>Associated Types</h4></div></div></div>
+<a name="idm110745153440"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -85,7 +80,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379973168"></a>Template Parameters</h4></div></div></div>
+<a name="idm110745146688"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -121,13 +116,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379957280"></a>Model of</h4></div></div></div>
+<a name="idm110745130800"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379955040"></a>Valid Expressions</h4></div></div></div>
+<a name="idm110745128560"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -136,18 +131,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379952976"></a>Header</h4></div></div></div>
+<a name="idm110745126496"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379950976"></a>Examples of use</h4></div></div></div>
-<div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#idm305379948512">Drop-in replacement for standard integer type.</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379945584">Guarantee correct behavior at compile time.</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm305379941568">Adjust type promotion rules.</a></span></dt>
-</dl></div>
+<a name="idm110745124496"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -166,7 +156,7 @@
     the C++ ones.</p>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm305379948512"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
+<a name="idm110745121408"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
 <p>The following program will throw an exception and emit a error
       message at runtime if any of several events result in an incorrect
       arithmetic type. Behavior of this program could vary according to the
@@ -190,7 +180,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm305379945584"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
+<a name="idm110745118480"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
 <p>In some instance catching an error at run time is not sufficient.
       We want to be sure that the program can never fail. To achieve this, use
       the trap_exception exception policy rather than the default throw
@@ -213,7 +203,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm305379941568"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm110745114464"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic. This can be justified
       by the observ</p>
@@ -250,7 +240,7 @@ void f(){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_signed_range.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="types.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_unsigned_range.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

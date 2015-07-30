@@ -38,7 +38,7 @@ Override boost book implemenation of header.navigation with our own
 <xsl:param name = "toc.max.depth" select="2" />
 
 <!-- How far down we go with TOC's -->
-<xsl:param name="generate.section.toc.level" select="1" />
+<xsl:param name="generate.section.toc.level" select="2" />
 
 <!-- ************ Chunking ************ -->
 
@@ -75,6 +75,6 @@ Note: each chunk have to start with  a section with an id
 Otherwise the chunk (i.e. file) will be lost.  There is no 
 checking of this
 -->
-<xsl:param name="chunk.section.depth" select="1" />
+<xsl:param name="chunk.section.depth" select="2" />
 
 </xsl:stylesheet>

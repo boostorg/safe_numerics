@@ -24,7 +24,7 @@
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.summary">Summary</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm236255125200">Features</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm110745502544">Features</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.requirements">Requirements</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.scope">Scope</a></span></dt>
 </dl></div>
@@ -61,7 +61,7 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm236260624176"><span class="citation">INT32-C</span></a>]</a> seems
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm110746514176"><span class="citation">INT32-C</span></a>]</a> seems
     to recommend the following approach.</p>
 <pre class="programlisting">int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
@@ -139,9 +139,9 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm236255125200"></a>Features</h3></div></div></div>
+<a name="idm110745502544"></a>Features</h3></div></div></div>
 <p>Operation of safe types is determined by template parameters which
-    specify a pair of <a class="link" href="types.html#safe_numerics.promotion_policies" title="Promotion Policies">policy
+    specify a pair of <a class="link" href="promotion_policies.html" title="Promotion Policies">policy
     classes</a> which specify the behavior for type promotion and error
     handling. In addition to the usage serving as a drop-in replacement for
     standard integer types, The library can:</p>

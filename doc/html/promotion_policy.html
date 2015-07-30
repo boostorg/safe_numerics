@@ -11,14 +11,9 @@
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
 <a accesskey="p" href="safe_numeric_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
@@ -26,16 +21,16 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="promotion_policy.html#idm305380063168">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm305380059744">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm305380051376">Associated Types</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm305380046464">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm305380037904">Header</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm305380035872">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745244928">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745241504">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745233136">Associated Types</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745228224">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745211360">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm110745209328">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380063168"></a>Description</h4></div></div></div>
+<a name="idm110745244928"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
@@ -50,7 +45,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380059744"></a>Notation</h4></div></div></div>
+<a name="idm110745241504"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -75,7 +70,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380051376"></a>Associated Types</h4></div></div></div>
+<a name="idm110745233136"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -90,7 +85,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380046464"></a>Valid Expressions</h4></div></div></div>
+<a name="idm110745228224"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="informaltable"><table class="table">
@@ -113,19 +108,44 @@ auto z = x + y</pre>
               EP&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::multiplication_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::division_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::modulus_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::left_shift_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::right_shift_result&lt;T, U, PP,
+              EP&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380037904"></a>Header</h4></div></div></div>
+<a name="idm110745211360"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380035872"></a>Models</h4></div></div></div>
+<a name="idm110745209328"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">

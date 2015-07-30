@@ -11,14 +11,9 @@
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
 <a accesskey="p" href="concepts.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="integer.html"><img src="images/next.png" alt="Next"></a>
 </div>
@@ -26,16 +21,16 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="numeric.html#idm305380247904">Description</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm305380242672">Notation</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm305380235808">Associated Types</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm305380230736">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm305380143104">Header</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm305380141104">Models</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745429888">Description</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745424656">Notation</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745417792">Associated Types</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745412720">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745325088">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm110745323088">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380247904"></a>Description</h4></div></div></div>
+<a name="idm110745429888"></a>Description</h4></div></div></div>
 <p>A type is Numeric if it has the properties of a number.</p>
 <p>More specifically, a type T is Numeric if there exists
     specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt;</code>. See the
@@ -50,7 +45,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380242672"></a>Notation</h4></div></div></div>
+<a name="idm110745424656"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -70,7 +65,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380235808"></a>Associated Types</h4></div></div></div>
+<a name="idm110745417792"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -87,13 +82,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380230736"></a>Valid Expressions</h4></div></div></div>
+<a name="idm110745412720"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid. Any operations which result in
     integers which cannot be represented as some Numeric type will throw an
     exception.</p>
 <div class="table">
-<a name="idm305380229056"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
+<a name="idm110745411040"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -119,7 +114,7 @@
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="idm305380220960"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
+<a name="idm110745402944"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -171,7 +166,7 @@
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="idm305380202176"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
+<a name="idm110745384160"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -328,13 +323,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380143104"></a>Header</h4></div></div></div>
+<a name="idm110745325088"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/numeric.hpp&gt; </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305380141104"></a>Models</h4></div></div></div>
+<a name="idm110745323088"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></p>
 <p>The definition of this concept</p>

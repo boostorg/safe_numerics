@@ -109,7 +109,7 @@
     variable is retrieved. This is a tedious and error prone procedure.</para>
   </section>
 
-  <section>
+  <section id="safe_numerics.tutorial.7">
     <title>Parameter checking is too expensive</title>
 
     <para>Programming by Contract is a highly regarded technique. There has
@@ -136,7 +136,7 @@
     our program can be guarenteed to be always arithmetically correct.</para>
   </section>
 
-  <section>
+  <section id="safe_numerics.tutorial.8">
     <title>Eliminate runtime cost</title>
 
     <para>Our system works by checking arithmetic operations whenever they

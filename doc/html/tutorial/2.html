@@ -11,14 +11,9 @@
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="../pre-boost.jpg"></td>
-<td align="center"><a href="../../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
 <a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="3.html"><img src="../images/next.png" alt="Next"></a>
 </div>
@@ -28,11 +23,10 @@
 <p>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</p>
 <pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;stdexcept&gt;
+#include &lt;exception&gt;
 #include &lt;iostream&gt;
 
 #include "../include/safe_integer.hpp"
-//#include "../include/safe_compare.hpp"
 
 void detected_msg(bool detected){
     std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
@@ -48,7 +42,7 @@ int main(int argc, const char * argv[]){
         std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
         detected_msg(false);
     }
-    catch(...){
+    catch(std::exception){
         assert(false); // never arrive here
     }
     // solution: replace int with safe&lt;int&gt;
@@ -59,8 +53,8 @@ int main(int argc, const char * argv[]){
         ++x;
         assert(false); // never arrive here
     }
-    catch(std::range_error &amp; e){
-        std::cout &lt;&lt; e.what();
+    catch(std::exception &amp; e){
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
         detected_msg(true);
     }
     return 0;

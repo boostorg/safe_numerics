@@ -1,52 +1,49 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
+<title>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="safe_signed_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt;">
-<link rel="next" href="functions.html" title="Functions">
+<link rel="prev" href="safe.html" title="safe&lt;T, PP, EP&gt;">
+<link rel="next" href="promotion_policies.html" title="Promotion Policies">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
-<td valign="top"><img alt="pre-boost" width="30%" height="30%" src="pre-boost.jpg"></td>
-<td align="center"><a href="../../index.html">Home</a></td>
-<td align="center"><a href="http://www.boost.org/doc/libs">Libraries</a></td>
-<td align="center"><a href="http://www.boost.org/users/people.html">People</a></td>
-<td align="center"><a href="http://www.boost.org/users/faq.html">FAQ</a></td>
-<td align="center"><a href="../../more/index.htm">More</a></td>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
 </tr></table>
-<hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_signed_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="functions.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policies.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.safe_unsigned_range"></a>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
+<a name="safe_numerics.safe_unsigned_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
+  safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379893264">Description</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379891312">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379884176">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379877424">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379858864">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379856624">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379854560">Header</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm305379852576">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745109408">Description</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745106752">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745099712">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745092912">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745074416">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745072176">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745070112">Header</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm110745068128">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379893264"></a>Description</h4></div></div></div>
-<p>This type holds an unsigned integer in the closed range [MIN, MAX].
-    A <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
-    anywhere an arithmetic type is permitted. Any expression which uses this
-    type is guarenteed to return an arithmetically correct value or trap in
-    some way.</p>
+<a name="idm110745109408"></a>Description</h4></div></div></div>
+<p>This type holds a signed or unsigned integer in the closed range
+    [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
+    <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
+    anywhere an arithmetic type is permitted. Any expression which uses either
+    of these types is guarenteed to return an arithmetically correct value or
+    trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379891312"></a>Notation</h4></div></div></div>
+<a name="idm110745106752"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -58,14 +55,14 @@
 </tr></thead>
 <tbody><tr>
 <td align="left"><code class="computeroutput">MIN, MAX</code></td>
-<td align="left">Minimum and maximum unsigned values that the
-            safe_unsigned_range can represent.</td>
+<td align="left">Minimum and maximum values that the range can
+            represent.</td>
 </tr></tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379884176"></a>Associated Types</h4></div></div></div>
+<a name="idm110745099712"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -74,20 +71,20 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">PP</code></td>
-<td align="left">A type which specifes the result type of an expression
-            using safe types.</td>
+<td align="left">Promotion Pollicy. A type which specifes the result type of
+            an expression using safe types.</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
-<td align="left">A type containing members which are called when a correct
-            result cannot be returned</td>
+<td align="left">Exception Policy. A type containing members which are
+            called when a correct result cannot be returned</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379877424"></a>Template Parameters</h4></div></div></div>
+<a name="idm110745092912"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -133,13 +130,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379858864"></a>Model of</h4></div></div></div>
+<a name="idm110745074416"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379856624"></a>Valid Expressions</h4></div></div></div>
+<a name="idm110745072176"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -148,17 +145,16 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379854560"></a>Header</h4></div></div></div>
+<a name="idm110745070112"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm305379852576"></a>Example of use</h4></div></div></div>
+<a name="idm110745068128"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
-void f(){
-    boost::numeric::safe_unsigned_range&lt;7, 24&gt; i;
+void f(boost::numeric::safe_unsigned_range&lt;7, 24&gt; i){
     // since the range is included in [0,255], the underlying type of i 
     // will be an unsigned char.
     i = 0;  // throws out_of_range exception
@@ -182,7 +178,7 @@ void f(){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_signed_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="functions.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="promotion_policies.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>
