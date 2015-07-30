@@ -78,7 +78,6 @@ BOOST_PP_REPEAT(
     EACH_TYPE1,
     nothing
 )
-#endif
 
 int main(int argc, char *argv[]){
     // this is a compile only test - but since many build systems

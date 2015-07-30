@@ -63,6 +63,47 @@ bool test_modulus(
         }
     }
     {
+        boost::numeric::safe<T2> t2 = v2;
+        // presuming native policy
+        boost::numeric::safe<decltype(v1 % v2)> result;
+
+        try{
+            result = v1 % t2;
+
+            static_assert(
+                boost::numeric::is_safe<decltype(v1 % t2)>::value,
+                "Expression failed to return safe type"
+            );
+            
+            if(expected_result != '.'){
+                std::cout
+                    << "failed to detect error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " ! = "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    v1 % t2;
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+        catch(std::exception){
+            if(expected_result != 'x'){
+                std::cout
+                    << "erroneously detected error in division "
+                    << std::hex << result << "(" << std::dec << result << ")"
+                    << " == "<< av1 << " % " << av2
+                    << std::endl;
+                try{
+                    v1 % t2;
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+    }
+    {
         boost::numeric::safe<T1> t1 = v1;
         boost::numeric::safe<T2> t2 = v2;
 

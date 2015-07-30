@@ -24,7 +24,7 @@ template <typename T> // T is char, int, etc data type
 using safe_t = boost::numeric::safe<
     T,
     pic16_promotion,
-    boost::numeric::trap_exception  // use for running tests
+    boost::numeric::throw_exception  // use for running tests
 >;
 
 using int8 = safe_t<std::int8_t>;
@@ -179,9 +179,6 @@ Use the formula:
 */
 uint16 get_stopping_distance(LEMPARAMETER velocity){
     int32 d;
-    d = velocity;
-    //d *= velocity;
-
     d = velocity * velocity;
     d /= lem.acceleration;
     d /= 2;

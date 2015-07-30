@@ -22,6 +22,8 @@
 #include <boost/integer.hpp> // integer type selection
 #include <boost/mpl/if.hpp>
 
+#include "safe_common.hpp"
+
 // forward declaration - safe type
 template<
     class Stored,

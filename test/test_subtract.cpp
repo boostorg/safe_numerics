@@ -109,7 +109,7 @@ bool test_subtract(
         boost::numeric::safe<T2> t2 = v2;
 
         // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        boost::numeric::safe<decltype(v1 - v2)> result;
 
         try{
             result = t1 - t2;

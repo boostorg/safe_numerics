@@ -37,7 +37,7 @@ bool test_log(){
     assert(log(-129) == 9); // 8 bits + 1 sign bit
     assert(log(-255) == 9); // 8 bits + 1 sign bit
     assert(log(-256) == 9); // 8 bits + 1 sign bit
-    return 0;
+    return true;
 }
 
 bool test1(){
@@ -53,10 +53,9 @@ bool test1(){
         "this range should be unsigned"
     );
 
-
     //typedef ::print<t2>::type p_t2;
 
-    return 0;
+    return true;
 }
 
 #include "../include/automatic.hpp"
