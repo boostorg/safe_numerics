@@ -1,0 +1,166 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Parameter checking is too expensive</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="../index.html" title="Safe Numerics">
+<link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
+<link rel="prev" href="6.html" title="Checking of initialization values can be easily overlooked">
+<link rel="next" href="8.html" title="Eliminate runtime cost">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="6.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="8.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.tutorial.7"></a>Parameter checking is too expensive</h3></div></div></div>
+<p>Programming by Contract is a highly regarded technique. There has
+    been much written about it has been proposed as an addition to the C++
+    language [<a class="citation" href="bibliography.html#idm110741747440"><span class="citation">Garcia</span></a>][<span class="citation">Crowl &amp;
+    Ottosen</span>]. It (mostly depends upon runtime checking of parameter
+    values upon entry to every function and thus slows the program down. This
+    undermines the main motivation for using C++ in the first place! One
+    popular scheme for addressing this issue is to enable parameter checking
+    only during debugging and testing. This defeats the guarentee of
+    correctness which we are seeking here! This library has facilities which,
+    in many cases, can check guarentee parameter requirements with no runtime
+    overhead. Consider the following example:</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;stdexcept&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+
+#include "../include/safe_range.hpp"
+
+// return total number of minutes
+unsigned int convert(
+    const unsigned int &amp; hours,
+    const unsigned int &amp; minutes
+) {
+    // check that parameters are within required limits
+    // invokes a runtime cost EVERYTIME the function is called
+    // and the overhead of supporting an interrupt.
+    // note high runtime cost!
+    if(minutes &gt; 59)
+        throw std::domain_error("minutes exceeded 59");
+    if(hours &gt; 23)
+        throw std::domain_error("hours exceeded 23");
+    return hours * 60 + minutes;
+}
+
+// define convient typenames for hours and minutes hh:mm
+using hours_t = boost::numeric::safe_unsigned_range&lt;0, 23&gt;;
+using minutes_t = boost::numeric::safe_unsigned_range&lt;0, 59&gt;;
+
+// return total number of minutes
+// type returned is safe_unsigned_range&lt;0, 24*60 - 1&gt;
+auto safe_convert(const hours_t &amp; hours, const minutes_t &amp; minutes) {
+    // no need for checking as parameters are guaranteed to be within limits
+    // expression below cannot throw ! zero runtime overhead
+    return hours * 60 + minutes;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 7: ";
+    std::cout &lt;&lt; "enforce contracts with zero runtime cost" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+
+    // problem: checking of externally produced value can be expensive
+    try {
+        convert(10, 83); // invalid parameters - detected - but at a heavy cost
+    }
+    catch(std::exception e){
+        std::cout &lt;&lt; "exception thrown for parameter error" &lt;&lt; std::endl;
+    }
+
+    // solution: use safe range to restrict parameters
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
+
+    try {
+        // parameters are guarenteed to meet requirements
+        hours_t hours(10);
+        minutes_t minutes(83);  // interrupt thrown here
+        // so the following will never throw
+        safe_convert(hours, minutes);
+    }
+    catch(std::exception e){
+        std::cout
+            &lt;&lt; "exception thrown when invalid arguments are constructed"
+            &lt;&lt; std::endl;
+    }
+
+    try {
+        // parameters are guarenteed to meet requirements when
+        // constructed on the stack
+        safe_convert(hours_t(10), minutes_t(83));
+    }
+    catch(std::exception e){
+        std::cout
+            &lt;&lt; "exception thrown when invalid arguments are constructed on the stack"
+            &lt;&lt; std::endl;
+    }
+
+    try {
+        // parameters are guarenteed to meet requirements when
+        // implicitly constructed to safe types to match function signature
+        safe_convert(10, 83);
+    }
+    catch(std::exception e){
+        std::cout
+            &lt;&lt; "exception thrown when invalid arguments are implicitly constructed"
+            &lt;&lt; std::endl;
+    }
+
+    try {
+        // the following will never throw as the values meet requirements.
+        hours_t hours(10);
+        minutes_t minutes(17);
+
+        // the following will never throw because it cannot be called with
+        // invalid parameters
+        safe_convert(hours, minutes);
+
+        // since safe types can be converted to their underlying unsafe types
+        // we can still call an unsafe function with safe types
+        convert(hours, minutes);
+
+        // since unsafe types can be implicitly converted to corresponding
+        // safe types we can just pass the unsafe types.  checkin will occur
+        // when the safe type is constructed.
+        safe_convert(10, 17);
+
+        // note zero runtime overhead once values are constructed
+    }
+    catch(std::exception e){
+        assert(false); // can never arrive here !!!
+    }
+
+    return 0;
+}
+</pre>
+<p>In the example above the function convert incurrs significant
+    runtime cost every time the function is called. By using "safe" types,
+    this cost is moved to moment when the parameters are constructed.
+    Depending on how the program is constructed, this may totally eliminate
+    extraneous computions for parameter requirement type checking. In this
+    scenario, there is no reason to suppress the checking for release mode and
+    our program can be guarenteed to be always arithmetically correct.</p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="6.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="8.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

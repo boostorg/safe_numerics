@@ -1,0 +1,336 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Promotion Policies</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="types.html" title="Types">
+<link rel="prev" href="safe_unsigned_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;">
+<link rel="next" href="exception_policies.html" title="Exception Policies">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="safe_unsigned_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.promotion_policies"></a>Promotion Policies</h3></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="promotion_policies.html#safe_numerics.native_policy">native</a></span></dt>
+<dt><span class="section"><a href="promotion_policies.html#safe_numerics.automatic_policy">automatic</a></span></dt>
+<dt><span class="section"><a href="promotion_policies.html#safe_numerics.cpp_policy">cpp&lt;int C, int S, int I, int L, int LL&gt;</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.native_policy"></a>native</h4></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745064880"></a>Description</h5></div></div></div>
+<p>This type contains the functions to return a safe type corresponding
+    to the C++ type resulting for a given arithmetic operation.</p>
+<p>Usage of this policy with safe types will produce the exact same
+    arithmetic results that using normal unsafe integer types will. Hence this
+    policy is suitable as a drop-in replacement for these unsafe types. It's
+    main function is to trap incorrect arithmetic results when using C++ for
+    integer arithmetic.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745062864"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html#promotion_policy">PromotionPolicy</a></p>
+<p>As an example of how this works consider C++ rules from section 5 of
+    the standard - "usual arithmetic conversions".</p>
+<pre class="programlisting">void int f(int x, int y){
+    auto z = x + y; // z will be of type "int"
+    return z;
+}</pre>
+<p>According to these rules, z will be of type int. Depending on the
+    values of x and y, z may or may not contain the correct arithmetic result
+    of the operation x + y.</p>
+<pre class="programlisting">using safe_int = safe&lt;int, native&gt;;
+void int f(safe_int x, safe_int y){
+    auto z = x + y; // z will be of type "safe_int"
+    return z;
+}</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745058544"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/native.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/safe_numerics/native.hpp&gt; </code></a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745056208"></a>Example of use</h5></div></div></div>
+<p>The following example illustrates the <code class="computeroutput">native</code> type being
+    passed as a template parameter for the type <code class="computeroutput">safe&lt;int&gt;</code>.
+    This example is slightly contrived in that <code class="computeroutput">safe&lt;int&gt;</code>
+    has <code class="computeroutput">native</code> as it's default promotion parameter so explictiy
+    using <code class="computeroutput">native</code> is not necessary.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
+#include &lt;boost/safe_numerics/native.hpp&gt; 
+int main(){
+    using namespace boost::numeric;
+    // use native promotion policy where C++ standard arithmetic might lead to incorrect results
+    using safe_int8 = safe&lt;std::int8_t, native&gt;;
+    try{
+        safe_int8 x = 127;
+        safe_int8 y = 2;
+        safe_int8 z;
+        // rather than producing and invalid result an exception is thrown
+        z = x + y;
+        assert(false); // never arrive here
+    }
+    catch(std::exception &amp; e){
+        // which can catch here
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+    }
+
+    // When result is an int, C++ promotion rules guarentee that there will be no incorrect result.
+    // In such cases, there is no runtime overhead from using safe types.
+    safe_int8 x = 127;
+    safe_int8 y = 2;
+    safe&lt;int, native&gt; z; // z can now hold the result of the addition of any two 8 bit numbers
+    z = x + y; // is guarenteed correct without any runtime overhead or interrupt.
+
+    return 0;
+}</pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745051008"></a>Notes</h5></div></div></div>
+<p>See Chapter 5, Expressions, C++ Standard</p>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.automatic_policy"></a>automatic</h4></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745049104"></a>Description</h5></div></div></div>
+<p>This type contains the functions to return a type with sufficient
+    capacity to hold the result of a given arithmetic operation.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745047808"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html#promotion_policy">PromotionPolicy</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745046304"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/automatic.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/safe_numerics/automatic.hpp&gt; </code></a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745043968"></a>Example of use</h5></div></div></div>
+<p>The following example illustrates the <code class="computeroutput">automatic</code> type
+    being passed as a template parameter for the type
+    <code class="computeroutput">safe&lt;int&gt;</code>. This example is slightly contrived in that
+    <code class="computeroutput">safe&lt;int&gt;</code> has <code class="computeroutput">native</code> as it's default
+    promotion parameter so explictiy using <code class="computeroutput">native</code> is not
+    necessary.</p>
+<pre class="programlisting">#include &lt;cassert&gt;
+#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
+#include &lt;boost/safe_numerics/native.hpp&gt; 
+int main(){
+    using namespace boost::numeric;
+    // use automatic promotion policy where C++ standard arithmetic might lead to incorrect results
+    using safe_int8 = safe&lt;std::int8_t, automatic&gt;;
+    try{
+        safe_int8 x = 127;
+        safe_int8 y = 2;
+        auto z = x + y; // z will be of safe type at least 9 bits long
+    }
+    catch(std::exception &amp; e){
+        // which can catch here only if
+        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
+    }
+
+    // When result is an int, C++ promotion rules guarentee that there will be no incorrect result.
+    // In such cases, there is no runtime overhead from using safe types.
+    safe_int8 x = 127;
+    safe_int8 y = 2;
+    safe&lt;int, native&gt; z; // z can now hold the result of the addition of any two 8 bit numbers
+    z = x + y; // is guarenteed correct without any runtime overhead or interrupt.
+
+    return 0;
+}</pre>
+</div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.cpp_policy"></a>cpp&lt;int C, int S, int I, int L, int LL&gt;</h4></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745037840"></a>Description</h5></div></div></div>
+<p>This policy is used to promote safe types in arithmetic expressions
+    according the the standard rules in the C++ standard. But rather than
+    using the native C++ standard types supported by the compiler, it uses
+    types whose length in number of bits is specified by the template
+    parameters.</p>
+<p>This policy is useful for running test program which use C++
+    portable integer types but which are destined to run on an an architecture
+    which is different than the one on which the test program is being built
+    and run. This can happen when developing code for embedded systems.
+    Algorithms developed or borrowed from one architecture but destined for
+    another can be tested on ib the desk top.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745035584"></a>Template Parameters</h5></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Parameter</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">C</code></td>
+<td align="left">int</td>
+<td align="left">Number of bits in a char</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">S</code></td>
+<td align="left">int</td>
+<td align="left">Number of bits in a short</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">I</code></td>
+<td align="left">int</td>
+<td align="left">Number of bits in an integer</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">L</code></td>
+<td align="left">int</td>
+<td align="left">Number of bits in a long</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">LL</code></td>
+<td align="left">int</td>
+<td align="left">Number of bits in a long long</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745019520"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745018016"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../examples/example9.cpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/safe_numerics/cpp.hpp&gt; </code></a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm110745015680"></a>Example of Use</h5></div></div></div>
+<p>Consider the following problem. One is developing software which
+    uses a very small microprocessor and a very limited C compiler. The chip
+    is so small, you can't print anything from the code, log, debug or
+    anything else. One debugs this code by using the "burn" and "crash" method
+    - you burn the chip (download the code) run the code, observe the results,
+    make changes and try again. This is a crude method which is usually the
+    one used. But it can be quite time consuming.</p>
+<p>Consider an alternative. Build and compile your code in testable
+    modules. For each module write a test which excercises all the code and
+    makes it work. Finally download your code into the chip and - voila -
+    working product. This sounds great, but there's one problem. Our target
+    processor - in this case a PIC162550 from Microchip Technology is only an
+    8 bit CPU. The compiler we use defines INT as 8 bits. This (and a few
+    other problems), make our algorithm testing environment differ from our
+    target environment. We can address this by defining INT as a safe integer
+    with a range of 8 bits. By using a custom promotion policy, we can force
+    the evaluation of C++ expressions test environment to be the same as that
+    in the target environment. Also in our target environment, we can trap any
+    overflows or other errors. So we can write and test our code on our
+    desktop system and download the code to the target knowing that it just
+    has to work. This is a huge time saver and confidence builder. The
+    following code is taken from a real project which has used this
+    method.</p>
+<pre class="programlisting">#include "../include/safe_integer.hpp"
+#include "../include/cpp.hpp"
+
+//////////////////////////////////////////////////////////////
+// Stepper Motor Control
+
+// emululate evironment for pic162550
+// data widths used by the CCS compiler for pic 16xxx series
+
+using pic16_promotion = boost::numeric::cpp&lt;
+    8,  // char
+    8,  // short - not used by pic 16xxxx
+    8,  // int
+    16, // long
+    32  // long long
+&gt;;
+
+template &lt;typename T&gt; // T is char, int, etc data type
+using safe_t = boost::numeric::safe&lt;
+    T,
+    pic16_promotion,
+    boost::numeric::trap_exception // use for compiling and running tests
+&gt;;
+
+using int8 = safe_t&lt;std::int8_t&gt;;
+using int16 = safe_t&lt;std::int16_t&gt;;
+using int32 = safe_t&lt;std::int32_t&gt;;
+using uint8 = safe_t&lt;std::uint8_t&gt;;
+using uint16 = safe_t&lt;std::uint16_t&gt;;
+using uint32 = safe_t&lt;std::uint32_t&gt;;
+
+////////////////////////////////////////////////////////////////
+// Mock defines, functions etc which are in he "real application
+
+...
+
+// return value in steps
+/*
+Use the formula:
+    stopping dist = v **2 / a / 2
+*/
+uint16 get_stopping_distance(LEMPARAMETER velocity){
+    int32 d;
+    d = velocity;
+    d *= velocity;
+    d /= lem.acceleration;
+    d /= 2;
+    return d;
+}
+
+...</pre>
+<p>Note the usage of the compile time trap policy in order to detect at
+    compile time any possible error conditions. As I write this, this is still
+    being refined. Hopefully this will be available by the time you read this.
+    This example is too long to include in line in this documentation. You can
+    see the whole file at <a href="../../include/cpp.hpp" target="_top"><code class="computeroutput">example.cpp</code></a></p>
+</div>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="safe_unsigned_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
