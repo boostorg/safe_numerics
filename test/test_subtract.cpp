@@ -44,7 +44,7 @@ bool test_subtract(
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = t1 - v2;
+                    t1 - v2;
                 }
                 catch(std::exception){}
                 return false;
@@ -58,7 +58,7 @@ bool test_subtract(
                     << " == "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = t1 - v2;
+                    t1 - v2;
                 }
                 catch(std::exception){}
                 return false;
@@ -83,7 +83,7 @@ bool test_subtract(
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = v1 - t2;
+                    v1 - t2;
                 }
                 catch(std::exception){}
                 return false;
@@ -97,7 +97,7 @@ bool test_subtract(
                     << " == "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = v1 - t2;
+                    v1 - t2;
                 }
                 catch(std::exception){}
                 return false;
@@ -124,7 +124,7 @@ bool test_subtract(
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = t1 - t2;
+                    t1 - t2;
                 }
                 catch(std::exception){}
                 return false;
@@ -138,7 +138,7 @@ bool test_subtract(
                     << " == "<< av1 << " - " << av2
                     << std::endl;
                 try{
-                    result = t1 - t2;
+                    t1 - t2;
                 }
                 catch(std::exception){}
                 return false;

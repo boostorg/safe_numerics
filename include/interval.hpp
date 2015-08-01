@@ -86,8 +86,8 @@ template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator-(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return interval<R>(
-        checked::subtract<R>(static_cast<R>(t.l), static_cast<R>(u.u)),
-        checked::subtract<R>(static_cast<R>(t.u), static_cast<R>(u.l))
+        checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+        checked::subtract<R>(static_cast<T>(t.u), static_cast<U>(u.l))
     );
 }
 

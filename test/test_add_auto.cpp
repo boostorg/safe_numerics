@@ -76,6 +76,56 @@ bool test_add(
         }
     }
     {
+        std::cout << "testing  " << av1 << " + " << "safe<"<< av2 << "> -> ";
+        static_assert(boost::numeric::is_safe<safe_t<T2> >::value, "safe_t not safe!");
+
+        safe_t<T2> t2 = v2;
+
+        using result_type = decltype(v1 + t2);
+        result_type result;
+
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
+
+        try{
+            result = v1 + t2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
+            if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
+                std::cout
+                    << "*** failed to detect error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << std::endl;
+                try{
+                    v1 + t2;
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+        catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
+            if(expected_result == '.'){
+                const std::type_info & ti = typeid(result);
+                int status;
+                std::cout
+                    << "*** erroneously detected error in addition "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << std::endl;
+                try{
+                    v1 + t2;
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+    }
+    {
         std::cout << "testing  safe<" << av1 << "> + safe<" << av2 << "> -> ";
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
