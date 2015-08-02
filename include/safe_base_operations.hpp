@@ -265,14 +265,14 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     typedef addition_result<T, U> ar;
     typedef typename ar::P::exception_policy exception_policy;
     typedef typename ar::type result_type;
+    //typedef print<result_type> p_result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
-    //typedef print<result_type> p_result_type;
-    //typedef print<result_base_type> p_result_base_type;
 
     typedef typename base_type<result_type>::type result_base_type;
+    //typedef print<result_base_type> p_result_base_type;
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
@@ -298,15 +298,16 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception()){
-        result_base_type t_value = base_value(t);
-        result_base_type u_value = base_value(u);
-        return result_type(t_value + u_value);
+        return result_type(
+            static_cast<result_base_type>(base_value(t))
+            + static_cast<result_base_type>(base_value(u))
+        );
     }
 
     // otherwise do the addition checking for overflow
     checked_result<result_base_type> r = checked::add(
-        base_value(std::numeric_limits<result_base_type>::min()),
-        base_value(std::numeric_limits<result_base_type>::max()),
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
         base_value(t),
         base_value(u)
     );
@@ -367,15 +368,16 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception()){
-        result_base_type t_value = base_value(t);
-        result_base_type u_value = base_value(u);
-        return result_type(t_value - u_value);
+        return result_type(
+            static_cast<result_base_type>(base_value(t))
+            - static_cast<result_base_type>(base_value(u))
+        );
     }
 
     // otherwise do the subtraction checking for overflow
     checked_result<result_base_type> r = checked::subtract(
-        base_value(std::numeric_limits<result_base_type>::min()),
-        base_value(std::numeric_limits<result_base_type>::max()),
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
         base_value(t),
         base_value(u)
     );
@@ -413,14 +415,18 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     typedef multiplication_result<T, U> mr;
     typedef typename mr::P::exception_policy exception_policy;
     typedef typename mr::type result_type;
+    // typedef print<result_type> p_result_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
 
     typedef typename base_type<result_type>::type result_base_type;
+    // typedef print<result_base_type> p_result_base_type;
     typedef typename base_type<T>::type t_base_type;
+    // typedef print<t_base_type> p_t_base_type;
     typedef typename base_type<U>::type u_base_type;
+    // typedef print<u_base_type> p_u_base_type;
 
     // filter out case were overflow cannot occur
     SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {

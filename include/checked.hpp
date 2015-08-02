@@ -430,7 +430,9 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
         cast<R>(u) != exception_type::no_exception ?
             cast<R>(u)
         :
-        sizeof(R) >= sizeof(T) + sizeof(U) ?
+        std::numeric_limits<R>::digits
+        >= std::numeric_limits<T>::digits + std::numeric_limits<U>::digits
+        ?
             checked_result<R>(static_cast<R>(t) * static_cast<R>(u))
         :
             detail::multiply<R>(minr, maxr, t, u)

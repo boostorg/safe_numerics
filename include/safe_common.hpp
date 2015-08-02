@@ -12,6 +12,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include <type_traits>
+
 // don't use constexpr so we can debug
 #define SAFE_NUMERIC_CONSTEXPR constexpr
 

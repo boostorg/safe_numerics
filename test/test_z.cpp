@@ -1,20 +1,24 @@
 
-#include "../include/automatic.hpp"
+#include "../include/safe_integer.hpp"
+#include "../include/native.hpp"
 
 int main(){
     using namespace boost::numeric;
+/*
 
-    std::uint64_t t = 0x7ffffffffffffffful;
-    std::int8_t u = 0x01;
+    safe<uint16_t> x = 0xffff;
+    uint16_t y = 0xffff;
 
-    typedef boost::numeric::automatic::subtraction_result<
-        std::uint64_t,
-        std::int8_t,
-        automatic,
+    typedef boost::numeric::native::multiplication_result<
+        decltype(x),
+        decltype(y),
+        native,
         void
     >::type result_type;
+    print<result_type> p_rt;
+    print<decltype(y + y)> p_yy;
 
-    //print<result_type> p_rt;
-
+    x * y;
+*/
     return 0;
 }
