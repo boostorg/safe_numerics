@@ -98,22 +98,22 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
         interval<R>(
             min(
                 min(
-                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
-                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u))
                 ),
                 min(
-                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
-                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                 )
             ),
             max(
                 max(
-                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
-                    checked::multiply<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u))
                 ),
                 max(
-                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
-                    checked::multiply<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                 )
             )
         );
@@ -135,22 +135,22 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interv
             interval<R>(
                 min(
                     min(
-                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
-                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u))
                     ),
                     min(
-                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
-                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                     )
                 ),
                 max(
                     max(
-                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.l)),
-                        checked::divide<R>(static_cast<R>(t.l), static_cast<R>(u.u))
+                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u))
                     ),
                     max(
-                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.l)),
-                        checked::divide<R>(static_cast<R>(t.u), static_cast<R>(u.u))
+                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                     )
                 )
             )

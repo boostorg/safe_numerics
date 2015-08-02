@@ -14,7 +14,7 @@ int main(){
         void
     >::type result_type;
 
-    print<result_type> p_rt;
+    //print<result_type> p_rt;
 
     return 0;
 }

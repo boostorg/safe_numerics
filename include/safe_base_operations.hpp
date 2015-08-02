@@ -439,7 +439,10 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     // if no over/under flow possible
     if(r_interval.no_exception())
-        return result_type(base_value(t) * base_value(u));
+        return result_type(
+            static_cast<result_base_type>(base_value(t))
+            * static_cast<result_base_type>(base_value(u))
+        );
 
     // otherwise do the multiplication checking for overflow
     checked_result<result_base_type>  r = checked::multiply(

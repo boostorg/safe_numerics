@@ -247,24 +247,60 @@ struct automatic {
             E
         >::type type;
     };
+
     template<typename T, typename U, typename P, typename E>
     struct multiplication_result {
-        typedef typename base_type<T>::type t_base_type;
-        typedef typename base_type<U>::type u_base_type;
-        SAFE_NUMERIC_CONSTEXPR static const interval<t_base_type> t = {
+        typedef typename base_type<T>::type base_type_t;
+        typedef typename base_type<U>::type base_type_u;
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        SAFE_NUMERIC_CONSTEXPR static const interval<u_base_type> u = {
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
-        typedef decltype(t_base_type() * u_base_type()) r_base_type;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<r_base_type> r
-            = operator*<r_base_type>(t, u);
+        typedef calculate_max_t<T, U> max_t;
 
-        typedef safe_base<r_base_type, r.l, r.u, P, E> type;
+        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
+            = operator*<max_t>(t, u);
+
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.is_valid() ?
+            static_cast<max_t>(r.l)
+        :
+            std::numeric_limits<max_t>::min()
+        ;
+
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.is_valid() ?
+            static_cast<max_t>(r.u)
+        :
+            std::numeric_limits<max_t>::max()
+        ;
+
+        // typedef typename print<max_t>::type p_max_t;
+        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
+        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
+
+        static_assert(
+            newmin < newmax,
+            "new minimumum must be less than new maximum"
+        );
+
+        static_assert(
+            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
+            "newmin < 0 and unsigned can't happen"
+        );
+
+        typedef typename safe_range<
+            max_t,
+            newmin,
+            newmax,
+            P,
+            E
+        >::type type;
     };
     template<typename T, typename U, typename P, typename E>
     struct division_result {
