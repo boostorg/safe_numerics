@@ -25,10 +25,10 @@ namespace numeric {
 // this would emulate the normal C/C++ behavior of permitting overflows
 // and the like.
 struct ignore_exception {
-    constexpr static void overflow_error(const char * message) {}
-    constexpr static void underflow_error(const char * message) {}
-    constexpr static void range_error(const char * message) {}
-    constexpr static void domain_error(const char * message) {}
+    static void overflow_error(const char * message) {}
+    static void underflow_error(const char * message) {}
+    static void range_error(const char * message) {}
+    static void domain_error(const char * message) {}
 };
 
 // example - if you want to specify specific behavior for particular exception

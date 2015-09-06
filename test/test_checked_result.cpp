@@ -23,7 +23,7 @@ bool test2(){
     checked_result<int> x1(0);
     assert(0 == x1);
     checked_result<int> x2(exception_type::overflow_error);
-    assert(! x2.is_valid());
+    assert(! x2.no_exception());
     return true;
 }
 

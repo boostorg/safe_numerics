@@ -18,7 +18,7 @@ using safe_t = boost::numeric::safe<
 >;
 
 template<class T1, class T2>
-bool test_multiply_auto(
+bool test_divide_auto(
     T1 v1,
     T2 v2,
     const char *av1,
@@ -26,14 +26,14 @@ bool test_multiply_auto(
     char expected_result
 ){
     using namespace boost::numeric;
-    auto unsafe_result = v1 * v2;
+    auto unsafe_result = v1 / v2;
     {
-        std::cout << "testing safe<" << av1 << "> * " << av2 << " -> ";
+        std::cout << "testing  safe<" << av1 << "> / " << av2 << " -> ";
         static_assert(is_safe<safe_t<T1> >::value, "safe_t not safe!");
 
         safe_t<T1> t1 = v1;
 
-        using result_type = decltype(t1 * v2);
+        using result_type = decltype(t1 / v2);
         result_type result;
 
         static_assert(
@@ -42,18 +42,18 @@ bool test_multiply_auto(
         );
 
         try{
-            result = t1 * v2;
+            result = t1 / v2;
             std::cout << std::hex << result << "(" << std::dec << result << ")"
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** failed to detect error in multiplication "
+                    << "*** failed to detect error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    t1 * v2;
+                    t1 / v2;
                 }
                 catch(std::exception){}
                 assert(result != unsafe_result);
@@ -67,11 +67,11 @@ bool test_multiply_auto(
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** erroneously detected error in multiplication "
+                    << "*** erroneously detected error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    t1 * v2;
+                    t1 / v2;
                 }
                 catch(std::exception){}
                 assert(result == unsafe_result);
@@ -85,7 +85,7 @@ bool test_multiply_auto(
 
         safe_t<T2> t2 = v2;
 
-        using result_type = decltype(v1 * t2);
+        using result_type = decltype(v1 / t2);
         result_type result;
 
         static_assert(
@@ -94,18 +94,18 @@ bool test_multiply_auto(
         );
 
         try{
-            result = v1 * t2;
+            result = v1 / t2;
             std::cout << std::hex << result << "(" << std::dec << result << ")"
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** failed to detect error in multiplication "
+                    << "*** failed to detect error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    v1 * t2;
+                    v1 / t2;
                 }
                 catch(std::exception){}
                 assert(result != unsafe_result);
@@ -119,11 +119,11 @@ bool test_multiply_auto(
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** erroneously detected error in multiplication "
+                    << "*** erroneously detected error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    v1 * t2;
+                    v1 / t2;
                 }
                 catch(std::exception){}
                 assert(result == unsafe_result);
@@ -136,7 +136,7 @@ bool test_multiply_auto(
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
 
-        using result_type = decltype(t1 * t2);
+        using result_type = decltype(t1 / t2);
         result_type result;
 
         static_assert(
@@ -145,18 +145,18 @@ bool test_multiply_auto(
         );
 
         try{
-            result = t1 * t2;
+            result = t1 / t2;
             std::cout << std::hex << result << "(" << std::dec << result << ")"
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** failed to detect error in multiplication "
+                    << "*** failed to detect error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    t1 * t2;
+                    t1 / t2;
                 }
                 catch(std::exception){}
                 assert(result != unsafe_result);
@@ -170,11 +170,11 @@ bool test_multiply_auto(
                 const std::type_info & ti = typeid(result);
                 int status;
                 std::cout
-                    << "*** erroneously detected error in multiplication "
+                    << "*** erroneously detected error in division "
                     << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
-                    t1 * t2;
+                    t1 / t2;
                 }
                 catch(std::exception){}
                 assert(result == unsafe_result);
@@ -182,68 +182,62 @@ bool test_multiply_auto(
             }
         }
     }
-    return true; // correct result
+    return true;
 }
 
 #include "test.hpp"
 #include "test_values.hpp"
 
-// note: same test matrix as used in test_checked.  Here we test all combinations
-// safe and unsafe integers.  in test_checked we test all combinations of
-// integer primitives
+// note: These tables presume that the the size of an int is 32 bits.
+// This should be changed for a different architecture or better yet
+// be dynamically adjusted depending on the indicated architecture
 
-const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
+const char *test_division_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
 /* 0*/ "................................",
-/* 1*/ ".............xx..............xxx",
-/* 2*/ ".............xx.............xxxx",
-/* 3*/ "..............x.............xxxx",
-/* 4*/ "................................",
-/* 5*/ ".............xx..............xxx",
-/* 6*/ ".............xx.............xxxx",
-/* 7*/ "..............x.............xxxx",
+/* 1*/ "................................",
+/* 2*/ "................................",
+/* 3*/ ".........................xxxxxxx",
+/* 4*/ ".................................",
+/* 5*/ "................................",
+/* 6*/ "........................xxxxxxxx",
+/* 7*/ "........................xxxxxxxx",
 
 /* 8*/ "................................",
-/* 9*/ ".............xx..............xxx",
-/*10*/ ".............xx.............xxxx",
-/*11*/ "..............x.............xxxx",
+/* 9*/ "................................",
+/*10*/ "..xx..xx..xx............xxxxxxxx",
+/*11*/ "........................xxxxxxxx",
 /*12*/ "................................",
-/*13*/ ".xx..xx..xx..xx..xxx.xxx.xxx.xxx",
-/*14*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxxxxxx",
-/*15*/ "..............x.............xxxx",
+/*13*/ "................................",
+/*14*/ "..xx..xx..xx..xx............xxxx",
+/*15*/ "............................xxxx",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
 /*16*/ "................................",
-/*17*/ ".............xx..............xxx",
-/*18*/ ".............xx..............xxx",
-/*19*/ ".............xx..............xxx",
+/*17*/ "................................",
+/*18*/ "................................",
+/*19*/ "................................",
 /*20*/ "................................",
-/*21*/ ".............xx..............xxx",
-/*22*/ ".............xx..............xxx",
-/*23*/ ".............xx..............xxx",
+/*21*/ "................................",
+/*22*/ "................................",
+/*23*/ "................................",
 
-/*24*/ "................................",
-/*25*/ ".............xx..............xxx",
-/*26*/ ".............xx..............xxx",
-/*27*/ ".............xx..............xxx",
+/*24*/ "..xx..xx..xx....................",
+/*25*/ "..xx..xx..xx....................",
+/*26*/ "..xx..xx..xx....................",
+/*27*/ "..xx..xx..xx....................",
 /*28*/ "..xx..xx..xx..xx................",
-/*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*30*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*31*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx"
+/*29*/ "..xx..xx..xx..xx................",
+/*30*/ "..xx..xx..xx..xx................",
+/*31*/ "..xx..xx..xx..xx................"
 };
 
-#define TEST_PRINT(i1, i2)                \
-    (std::cout << i1 << ',' << i2 << ' '  \
-    << test_multiplication_result[i1][i2] \
-    << std::endl);
-
-
 #define TEST_IMPL(v1, v2, result) \
-    rval &= test_multiply_auto(   \
+    rval &= test_divide_auto(     \
         v1,                       \
         v2,                       \
         BOOST_PP_STRINGIZE(v1),   \
@@ -253,22 +247,15 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    TEST_PRINT(value_index1, value_index2);        \
+    (std::cout << value_index1 << ',' << value_index2 << ','); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_multiplication_result[value_index1][value_index2] \
+        test_division_result[value_index1][value_index2] \
     )
 /**/
 
 int main(int argc, char * argv[]){
-    // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(test_multiplication_result[i][j] != test_multiplication_result[j][i]){
-                std::cout << i << ',' << j << std::endl;
-                return 1;
-            }
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     return ! rval ;

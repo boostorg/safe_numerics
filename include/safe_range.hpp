@@ -14,7 +14,6 @@
 
 #include <cstdint> // intmax_t, uintmax_t
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
-#include <boost/mpl/max.hpp>
 
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"

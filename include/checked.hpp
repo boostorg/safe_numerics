@@ -16,9 +16,11 @@
 // C++ types.
 
 #include <limits>
-#include <type_traits> // is_integral
+#include <type_traits> // is_integral, make_unsigned
 
 #include <boost/utility/enable_if.hpp>
+#include <boost/integer.hpp>
+#include <boost/mpl/if.hpp>
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
@@ -455,42 +457,514 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
 
 ////////////////////////////////
 // safe division on unsafe types
+
 namespace detail {
 
-template<class R>
+template<class R, class T, class U>
 typename boost::enable_if_c<
-    std::is_unsigned<R>::value,
+    ! std::is_signed<T>::value && ! std::is_signed<U>::value,
     checked_result<R>
 >::type
 SAFE_NUMERIC_CONSTEXPR divide(
-    const R & minr,
-    const R & maxr,
-    const R t,
-    const R u
-) {
+    const T & t,
+    const U & u
+){
     return checked_result<R>(t / u);
 }
 
-template<class R>
+template<class R, class T, class U>
 typename boost::enable_if_c<
-    std::is_signed<R>::value,
+    std::is_signed<T>::value && std::is_signed<U>::value,
     checked_result<R>
 >::type
 SAFE_NUMERIC_CONSTEXPR divide(
-    const R & minr,
-    const R & maxr,
-    const R t,
-    const R u
+    const T & t,
+    const U & u
 ){
     return
-        // note presumption of two's complement arithmetic
-        (u < 0 && t == std::numeric_limits<R>::min()) ?
+        (u == -1 && t == std::numeric_limits<R>::min()) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "result cannot be represented"
+            )
+        :
+            checked_result<R>(static_cast<R>(t) / u)
+    ;
+}
+
+template<class R, class T, class U>
+typename boost::enable_if_c<
+    ! std::is_signed<T>::value && std::is_signed<U>::value,
+    checked_result<R>
+>::type
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    return
+        (u >= 0) ?
+            checked_result<R>(t / static_cast<std::make_unsigned_t<U>>(u))
+        :
+        (u == -1) ?
+            (u == std::numeric_limits<R>::min()) ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result cannot be represented"
+                )
+            :
+                checked_result<R>(- (t / -u))
+        :
+        // u < -1
+            checked_result<R>(t / u)
+    ;
+}
+
+template<class R, class T, class U>
+typename boost::enable_if_c<
+    std::is_signed<T>::value && ! std::is_signed<U>::value,
+    checked_result<R>
+>::type
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    return
+        checked_result<R>(t / u);
+    ;
+}
+
+} // detail
+
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    const checked_result<R> rt = cast<R>(t);
+    const checked_result<R> ru = cast<R>(u);
+    return
+        (u == 0) ?
             checked_result<R>(
                 exception_type::domain_error,
                 "divide by zero"
             )
         :
+            detail::divide<R>(
+                static_cast<R>(rt),
+                static_cast<R>(ru)
+    ;
+}
+
+
+#if 0
+
+            checked_result<R>(t / u) // > 0
+        :
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        // (u < 0)
+            (u > -t) ?
+                checked_result<R>(0)
+            :
+            //(u <= -t) ?
+                checked_result<R>(t / u) // < 0
+        : // u unsigned
+            checked_result<R>(
+                exception_type::static_assertion,
+                "impossible to arrive here"
+            )
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        : // u > 0
             checked_result<R>(t / u)
+    ;
+}
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    return
+    (t >= 0) ?
+        (u > t) ?
+            checked_result<R>(0)
+        :
+        (u > 0) ?
+            checked_result<R>(t / u) // > 0
+        :
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        // (u < 0)
+        (std::numeric_limits<U>::is_signed) ?
+            (u > -t) ?
+                checked_result<R>(0)
+            :
+            //(u <= -t) ?
+                checked_result<R>(t / u) // < 0
+        : // u unsigned
+            checked_result<R>(
+                exception_type::static_assertion,
+                "impossible to arrive here"
+            )
+    : (t >= std::numeric_limits<T>::min() / 2) ?
+        (std::numeric_limits<U>::is_signed) ?
+            (u < t) ?
+                checked_result<R>(0)
+            :
+            (u < -1) ?
+                (t == std::numeric_limits<R>::min()) ?
+                    checked_result<R>(
+                        exception_type::domain_error,
+                        "divide by zero"
+                    )
+                :
+                    checked_result<R>(t / u) // > 0
+            :
+            (u == 0) ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "divide by zero"
+                )
+            :
+            // (u > 0)
+                checked_result<R>(-(-t / u))
+                checked_result<R>(static_cast<R>(t))
+        :
+        // u not signed
+            (u == 0) ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "divide by zero"
+                )
+            :
+            //(u > 0)
+                checked_result<R>(-(-t / u))
+        ;
+}
+
+
+            (u < t) ?
+                checked_result<R>(0)
+            :
+            (u < -1) ?
+                checked_result<R>(t / u) // > 0
+            :
+            // only can happen with twos complement machines
+            (u == -1)
+            && t == std::numeric_limits<R>::min() ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result unrepresentable"
+                )
+            :
+            (u == 0) ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "divide by zero"
+                )
+            : // u > 0
+                checked_result<R>(t / u)
+
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR ugt0(
+    const T & t,
+    const U & u
+){
+    //typedef print<std::integral_constant<U, u> > p_u;
+    return checked_result<R>(t / u);
+}
+
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
+    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    return
+    safe_compare::greater_than(t, 0) ? // (t > 0) ?
+        safe_compare::greater_than(u, t) ? // (u > t) ?
+            checked_result<R>(0)
+        :
+        safe_compare::greater_than(u, 0) ? // (u > 0) ?
+            checked_result<R>(t / u) // > 0
+        :
+        safe_compare::equal(u, 0) ? // (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        // (u < 0)
+        (std::numeric_limits<R>::is_signed) ?
+            safe_compare::greater_than(u, -t) ? //(u > -t) ?
+                checked_result<R>(0)
+            :
+            //(u <= -t) ?
+                checked_result<R>(t / u) // < 0
+        :
+            checked_result<R>(
+                exception_type::static_assertion,
+                "impossible to arrive here"
+            )
+    : // (t <= 0)
+        (std::numeric_limits<U>::is_signed) ?
+            safe_compare::less_than(u, t) ? // (u < t) ?
+                checked_result<R>(0)
+            :
+            safe_compare::less_than(u, -1) ? // (u < -1) ?
+                checked_result<R>(t / u) // > 0
+            :
+            // only can happen with twos complement machines
+            safe_compare::equal(u, -1)
+            && safe_compare::equal(t, std::numeric_limits<R>::min()) ?
+            //(u == -1 && t == std::numeric_limits<R>::min()) ?
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result unrepresentable"
+                )
+            :
+            safe_compare::equal(u, 0) ? // (u == 0)
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "divide by zero"
+                )
+            : // u > 0
+                checked_result<R>(checked::cast<R>(t) / u)
+        :
+        // u not signed
+        // (u <= -t) <=> -u >= t
+            safe_compare::greater_than(-u, t) ?
+                checked_result<R>(t / u)
+            :
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result unrepresentable"
+                )
+        ;
+        //: // u > -t <=> -u < t
+         //   checked_result<R>(0);
+            // not cast so that something like
+            // (signed_char)(-128) doesn't get transformed to +128 which
+            // is not representable by a signed char.  Here it will get
+            // transformed to a type (R)(+128).  At compile time R is
+            // std::intmax_t which will hold +128 no problem.
+            // At runtime - R will be some value.  If R can't hold -t then
+            // we want to invoke a runtime trap so let it fail.
+            //checked_result<R>(static_cast<R>(t) / u)
+            //ugt0<R>(t, u
+}
+
+namespace detail {
+
+template<class R>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const R & t,
+    const R & u
+){
+    return
+    (t > 0) ?
+        (u > t) ?
+            checked_result<R>(0)
+        :
+        (u > 0) ?
+            checked_result<R>(t / u) // > 0
+        :
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        (std::numeric_limits<R>::is_signed) ?
+            (u > -t) ?
+                checked_result<R>(0)
+            :
+            //(u <= -t) ?
+                checked_result<R>(t / u) // < 0
+        :
+            checked_result<R>(
+                exception_type::static_assertion,
+                "impossible to arrive here"
+            )
+    : // (t <= 0)
+        (u < t) ?
+            checked_result<R>(0)
+        :
+        (u < -1) ?
+            checked_result<R>(t / u) // > 0
+        :
+        // only can happen with twos complement machines
+        (u == -1 && t == std::numeric_limits<R>::min()) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "result unrepresentable"
+            )
+        :
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        // (u <= -t)
+        (-u > t) ?
+            std::numeric_limits<R>::is_signed ?
+                checked_result<R>(t / u) // < 0
+            :
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result unrepresentable"
+                )
+        :
+        // u > -t
+            checked_result<R>(0)
+    ;
+}
+
+} // detail
+
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const T & t,
+    const U & u
+){
+    const checked_result<R> rt = cast<R>(t);
+    if(! rt.no_exception())
+        return checked_result<R>(rt.m_e, rt.m_msg);
+
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
+        return checked_result<R>(ru.m_e, ru.m_msg);
+    return
+        detail::divide(
+            static_cast<R>(rt),
+            static_cast<R>(ru)
+        );
+}
+
+template<class R, class T, class U>
+checked_result<R>
+SAFE_NUMERIC_CONSTEXPR divide(
+    const R & minr,
+    const R & maxr,
+    const T & t,
+    const U & u
+){
+    return
+    (t > 0) ?
+        safe_compare::greater_than(u,t) ? // u > t
+            checked_result<R>(0)
+        :
+        safe_compare::greater_than(u,0) ? // u > 0
+            checked_result<R>(t / u) // > 0
+        :
+        safe_compare::equal(u, 0) ? // u == 0
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        safe_compare::less_than_equal(-u, t) // u >= -t ie  -u <= t
+        && (! std::numeric_limits<R>::is_signed) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "result unrepresentable"
+            )
+        :
+        //(u < -t) ?
+            checked_result<R>(0)
+    : // (t <= 0)
+        safe_compare::less_than(u,t) ? // u < t
+            checked_result<R>(0)
+        :
+        safe_compare::less_than(u,-1) ? // u < -1
+            checked_result<R>(t / u) // > 0
+        :
+        safe_compare::equal(u, -1)
+        && safe_compare::equal(t, std::numeric_limits<R>::min()) ?
+        //(u == -1 && t == std::numeric_limits<T>::min()) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "result unrepresentable"
+            )
+        :
+        safe_compare::equal(u,0) ? // u == 0
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
+        :
+        // (u <= -t)
+        safe_compare::greater_than(-u, t) ?
+        // (-u > t) ?
+            std::numeric_limits<R>::is_signed ?
+                checked_result<R>(t / u) // < 0
+            :
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result unrepresentable"
+                )
+        :
+        // u > -t
+            checked_result<R>(0)
+    ;
+}
+
+namespace detail {
+
+template<class R, class T, class U>
+typename boost::enable_if_c<
+    ! std::is_signed<T>::value || ! std::is_signed<U>::value,
+    checked_result<R>
+>::type
+SAFE_NUMERIC_CONSTEXPR divide(
+    const R & minr,
+    const R & maxr,
+    const T & t,
+    const U & u
+) {
+    return checked_result<R>(t / u);
+}
+
+template<class R, class T, class U>
+typename boost::enable_if_c<
+    std::is_signed<T>::value && std::is_signed<U>::value,
+    checked_result<R>
+>::type
+SAFE_NUMERIC_CONSTEXPR divide(
+    const R & minr,
+    const R & maxr,
+    const T & t,
+    const U & u
+){
+    return
+        (u == -1 && t == minr)  ? // special case - could overflow !!!
+            checked_result<R>(
+                exception_type::domain_error,
+                "result unrepresentable"
+            )
+        :
+            checked_result<R>(t / u);
         ;
 }
 
@@ -505,22 +979,27 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
 ) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    // typedef print<std::integral_constant<T, t>> p_t;
+    // typedef print<std::integral_constant<U, u> > p_u;
     return
         cast<R>(t) != exception_type::no_exception ?
             cast<R>(t)
         :
-        cast<R>(u) != exception_type::no_exception ?
-            cast<R>(u)
+        // cast<R>(u) != exception_type::no_exception ?
+        //     cast<R>(u)
+        // :
+        (u == 0) ?
+            checked_result<R>(
+                exception_type::domain_error,
+                "divide by zero"
+            )
         :
-            u == 0 ?
-                checked_result<R>(
-                    exception_type::domain_error,
-                    "divide by zero"
-                )
-            :
-                detail::divide<R>(minr, maxr, t, u)
+            detail::divide(minr, maxr, t, u)
+        ;
     ;
 }
+
+/*
 template<class R, class T, class U>
 SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
     const T & t,
@@ -535,9 +1014,13 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> divide(
         )
     ;
 }
+*/
+#endif
 
 ////////////////////////////////
 // safe modulus on unsafe types
+
+/*
 namespace detail {
 
 template<class R>
@@ -618,7 +1101,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> modulus(
         )
     ;
 }
-
+*/
 ///////////////////////////////////
 // shift operations
 
@@ -641,7 +1124,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> check_shift(
     const checked_result<R> ru = cast<R>(u);
     // INT34-C C++ standard paragraph 5.8
     return
-        ( ! ru.is_valid()) ?
+        ( ! ru.no_exception()) ?
             ru
         :
         ( ru < 0) ?
@@ -670,7 +1153,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> left_shift(
 ) {
     const checked_result<R> r = detail::check_shift<R>(t, u);
     return
-        (! r.is_valid()) ?
+        (! r.no_exception()) ?
             r
         :
             checked_result<R>(static_cast<R>(r) << t);
@@ -685,7 +1168,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
 ) {
     const checked_result<R> r = detail::check_shift<R>(t, u);
     return
-        (! r.is_valid()) ?
+        (! r.no_exception()) ?
             r
         :
             checked_result<R>(static_cast<R>(r) >> t);

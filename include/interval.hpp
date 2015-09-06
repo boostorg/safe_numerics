@@ -14,8 +14,10 @@
 
 #include <limits>
 #include <cassert>
+#include <type_traits>
 
 #include <boost/logic/tribool.hpp>
+
 
 #include "checked_result.hpp"
 #include "checked.hpp"
@@ -25,33 +27,71 @@ namespace numeric {
 
 template<typename R>
 struct interval {
+    static_assert(
+        std::is_literal_type< checked_result<R> >::value,
+        "is literal type"
+    );
+
     const checked_result<R> l;
     const checked_result<R> u;
 
 /*
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> get_l() const {
+        return l;
+    }
+    SAFE_NUMERIC_CONSTEXPR checked_result<R> get_u() const {
+        return u;
+    }
+    template<typename T, typename U>
+    SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
+        l(checked::cast<R>(lower)),
+        u(checked::cast<R>(upper))
+    {}
+    SAFE_NUMERIC_CONSTEXPR interval(
+        const R & lower,
+        const R & upper
+    ) :
+        l(checked_result<R>(lower)),
+        u(checked_result<R>(upper))
+    {}
+    SAFE_NUMERIC_CONSTEXPR interval(const interval<R> & rhs) :
+        l(rhs.l),
+        u(rhs.u)
+    {}
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR interval(
+        const T & lower,
+        const T & upper
+    ) :
+        l(checked_result<T>(lower)),
+        u(checked_result<T>(upper))
+    {}
     template<typename T, typename U>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
         l(checked::cast<R>(lower)),
         u(checked::cast<R>(upper))
     {}
 */
-    SAFE_NUMERIC_CONSTEXPR interval(
-        const checked_result<R> & lower,
-        const checked_result<R> & upper
-    ) :
-        l(checked_result<R>(lower)),
-        u(checked_result<R>(upper))
+    template<typename T>
+    SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const T & upper) :
+        l(checked::cast<R>(lower)),
+        u(checked::cast<R>(upper))
     {}
-    SAFE_NUMERIC_CONSTEXPR interval(const R & lower, const R & upper) :
-        l(checked_result<R>(lower)),
-        u(checked_result<R>(upper))
-    {}
-    /*
-    SAFE_NUMERIC_CONSTEXPR interval(const interval<R> & rhs) :
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR interval(const interval<T> & rhs) :
         l(rhs.l),
         u(rhs.u)
     {}
-    */
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR interval(
+        const checked_result<T> & lower,
+        const checked_result<T> & upper
+    ) :
+        //l(checked::cast<R>(lower)),
+        l(lower),
+        //u(checked::cast<R>(upper))
+        u(upper)
+    {}
 
     SAFE_NUMERIC_CONSTEXPR interval() :
         l(std::numeric_limits<R>::min()),
@@ -120,7 +160,10 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator/(const interval<T> & t, const interval<U> & u){
+SAFE_NUMERIC_CONSTEXPR inline interval<R> operator/(
+    const interval<T> & t,
+    const interval<U> & u
+){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return
         (u.l <= 0 && u.u >= 0) ?
@@ -255,7 +298,7 @@ namespace std {
 
 template<typename T>
 std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> & i){
-    os << "[" << i.l << "," << i.u << "]" << std::endl;
+    os << "[" << i.l << "," << i.u << "]";
     return os;
 }
 

@@ -179,7 +179,6 @@ public:
     SAFE_NUMERIC_CONSTEXPR safe_base(const checked_result<T> & t) :
         m_t(static_cast<Stored>(t))
     {}
-    */
     template<class T>
     SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
@@ -187,6 +186,14 @@ public:
         if(! validate(t)){
             E::range_error("Invalid value");
         }
+    }
+    */
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
+        m_t(t)
+    {
+        if(!validate(t))
+            E::range_error("Invalid value");
     }
 
     template<class T, T MinT, T MaxT, class PT, class ET>

@@ -6,8 +6,12 @@
 
 #include <iostream>
 #include <exception>
+#include <cxxabi.h>
 
 #include "../include/safe_integer.hpp"
+
+template <class T>
+using safe_t = boost::numeric::safe<T>;
 
 template<class T1, class T2>
 bool test_divide(
@@ -17,127 +21,159 @@ bool test_divide(
     const char *av2,
     char expected_result
 ){
-    std::cout
-        << "testing  "
-        << av1 << " / " << av2
-        << std::endl;
+    using namespace boost::numeric;
+    auto unsafe_result = v1 / v2;
     {
-        boost::numeric::safe<T1> t1 = v1;
-        // presuming native policy
-        boost::numeric::safe<decltype(v1 / v2)> result;
+        std::cout << "testing  safe<" << av1 << "> / " << av2 << " -> ";
+        static_assert(is_safe<safe_t<T1> >::value, "safe_t not safe!");
+
+        safe_t<T1> t1 = v1;
+
+        using result_type = decltype(t1 / v2);
+        result_type result;
+
+        static_assert(
+            is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
 
         try{
             result = t1 / v2;
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 + v2)>::value,
-                "Expression failed to return safe type"
-            );
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "failed to detect error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " / " << av2
+                    << "*** failed to detect error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 / v2;
                 }
                 catch(std::exception){}
+                assert(result != unsafe_result);
                 return false;
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == '.'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "erroneously detected error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " / " << av2
+                    << "*** erroneously detected error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 / v2;
                 }
                 catch(std::exception){}
+                assert(result == unsafe_result);
                 return false;
             }
         }
     }
     {
-        boost::numeric::safe<T2> t2 = v2;
-        // presuming native policy
-        boost::numeric::safe<decltype(v1 / v2)> result;
+        std::cout << "testing  " << av1 << " * " << "safe<"<< av2 << "> -> ";
+        static_assert(is_safe<safe_t<T2> >::value, "safe_t not safe!");
+
+        safe_t<T2> t2 = v2;
+
+        using result_type = decltype(v1 / t2);
+        result_type result;
+
+        static_assert(
+            is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
 
         try{
             result = v1 / t2;
-            static_assert(
-                boost::numeric::is_safe<decltype(v1 / t2)>::value,
-                "Expression failed to return safe type"
-            );
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "failed to detect error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " / " << av2
+                    << "*** failed to detect error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     v1 / t2;
                 }
                 catch(std::exception){}
+                assert(result != unsafe_result);
                 return false;
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == '.'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "erroneously detected error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " / " << av2
+                    << "*** erroneously detected error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     v1 / t2;
                 }
                 catch(std::exception){}
+                assert(result == unsafe_result);
                 return false;
             }
         }
     }
     {
-        boost::numeric::safe<T1> t1 = v1;
-        boost::numeric::safe<T2> t2 = v2;
+        std::cout << "testing  safe<" << av1 << "> * safe<" << av2 << "> -> ";
+        safe_t<T1> t1 = v1;
+        safe_t<T2> t2 = v2;
 
-        // presuming native policy
-        boost::numeric::safe<decltype(v1 + v2)> result;
+        using result_type = decltype(t1 / t2);
+        result_type result;
+
+        static_assert(
+            is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
 
         try{
             result = t1 / t2;
-
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 + t2)>::value,
-                "Expression failed to return safe type"
-            );
-
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == 'x'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "failed to detect error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " / " << av2
+                    << "*** failed to detect error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 / t2;
                 }
                 catch(std::exception){}
+                // assert(result != unsafe_result);
                 return false;
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+                << std::endl;
             if(expected_result == '.'){
+                const std::type_info & ti = typeid(result);
+                int status;
                 std::cout
-                    << "erroneously detected error in division "
-                    << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " / " << av2
+                    << "*** erroneously detected error in division "
+                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
                     << std::endl;
                 try{
                     t1 / t2;
                 }
                 catch(std::exception){}
+                // assert(result == unsafe_result);
                 return false;
             }
         }
@@ -167,11 +203,11 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 
 /* 8*/ "................................",
 /* 9*/ "................................",
-/*10*/ "..xx..xx..xx............xxxxxxxx",
+/*10*/ "...x...x...x............xxxxxxxx",
 /*11*/ "........................xxxxxxxx",
 /*12*/ "................................",
 /*13*/ "................................",
-/*14*/ "..xx..xx..xx..xx............xxxx",
+/*14*/ "...x...x...x...x...........xxxxx",
 /*15*/ "............................xxxx",
 
 //      0       0       0       0
@@ -207,7 +243,7 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    (std::cout << value_index1 << ',' << value_index2 << '\n'); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \

@@ -485,7 +485,7 @@ typename boost::lazy_enable_if<
     >,
     division_result<T, U>
 >::type
-inline operator/(const T & t, const U & u){
+SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef division_result<T, U> dr;
@@ -497,8 +497,11 @@ inline operator/(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
+    // typedef print<result_base_type> p_result_base_type;
     typedef typename base_type<T>::type t_base_type;
+    // typedef print<t_base_type> p_t_base_type;
     typedef typename base_type<U>::type u_base_type;
+    // typedef print<u_base_type> p_u_base_type;
 
     // filter out case were overflow cannot occur
     SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
@@ -510,17 +513,25 @@ inline operator/(const T & t, const U & u){
             base_value(std::numeric_limits<U>::max())
         };
 
+    // when we divide the temporary intervals above, we'll get a new interval
+    // with the correct range for the result!
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
         = operator/<result_base_type>(t_interval, u_interval);
 
-    // if no over/under flow possible
-    if(r_interval.no_exception())
-        return result_type(base_value(t) / base_value(u));
+    // if no over/under flow or domain error possible
+    if(r_interval.no_exception()
+    // and if the denominator cannot contain zero
+    && (u_interval.l <= 0 && u_interval.u >=0 )
+    )
+        // we can just invoke the operation and return - even at compile
+        // time since this is a constexpr !
+        return result_type(
+            static_cast<result_base_type>(base_value(t))
+            / static_cast<result_base_type>(base_value(u))
+        );
 
     // otherwise do the division checking for overflow
-    checked_result<result_base_type>  r = checked::divide(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
+    checked_result<result_base_type>  r = checked::divide<result_base_type>(
         base_value(t),
         base_value(u)
     );
@@ -532,6 +543,7 @@ inline operator/(const T & t, const U & u){
 
 /////////////////////////////////////////////////////////////////
 // modulus
+/*
 
 template<class T, class U>
 struct modulus_result {
@@ -595,7 +607,7 @@ inline operator%(const T & t, const U & u){
     r.template dispatch<exception_policy>();
     return result_type(static_cast<result_base_type>(r));
 }
-
+*/
 /////////////////////////////////////////////////////////////////
 // comparison
 

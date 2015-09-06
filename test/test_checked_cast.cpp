@@ -24,7 +24,7 @@ bool test_cast(
 
     boost::numeric::checked_result<T2> r2 = boost::numeric::checked::cast<T2>(v1);
 
-    if(expected_result == 'x' && r2.is_valid()){
+    if(expected_result == 'x' && r2.no_exception()){
         std::cout
             << "failed to detect error in construction "
             << t2_name << "<-" << t1_name
@@ -32,7 +32,7 @@ bool test_cast(
         boost::numeric::checked::cast<T2>(v1);
         return false;
     }
-    if(expected_result == '.' && ! r2.is_valid()){
+    if(expected_result == '.' && ! r2.no_exception()){
         std::cout
             << "erroneously emitted error "
             << t2_name << "<-" << t1_name

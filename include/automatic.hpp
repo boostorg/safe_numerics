@@ -19,12 +19,11 @@
 
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
-#include <type_traits> // true_type, false_type
+#include <type_traits> // true_type, false_type, is_same
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/identity.hpp>
 
 #include "safe_common.hpp"
+#include "checked_result.hpp"
 #include "interval.hpp"
 #include "safe_range.hpp"
 
@@ -147,13 +146,13 @@ struct automatic {
         SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
             = operator+<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
             static_cast<max_t>(r.l)
         :
             std::numeric_limits<max_t>::min()
         ;
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
             static_cast<max_t>(r.u)
         :
             std::numeric_limits<max_t>::max()
@@ -209,25 +208,24 @@ struct automatic {
         };
 
         typedef calculate_max_t<T, U> max_t;
+        // typedef typename print<max_t>::type p_max_t;
 
         SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
             = operator-<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
             static_cast<max_t>(r.l)
         :
             std::numeric_limits<max_t>::min()
         ;
+        // typedef print<std::integral_constant<max_t, newmin>> p_newmin;
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
             static_cast<max_t>(r.u)
         :
             std::numeric_limits<max_t>::max()
         ;
-
-        // typedef typename print<max_t>::type p_max_t;
-        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
-        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
+        // typedef print<std::integral_constant<max_t, newmax>> p_newmax;
 
         static_assert(
             newmin < newmax,
@@ -268,13 +266,13 @@ struct automatic {
         SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
             = operator*<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
             static_cast<max_t>(r.l)
         :
             std::numeric_limits<max_t>::min()
         ;
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.is_valid() ?
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
             static_cast<max_t>(r.u)
         :
             std::numeric_limits<max_t>::max()
@@ -304,23 +302,197 @@ struct automatic {
     };
     template<typename T, typename U, typename P, typename E>
     struct division_result {
-        typedef typename base_type<T>::type t_base_type;
-        typedef typename base_type<U>::type u_base_type;
-        SAFE_NUMERIC_CONSTEXPR static const interval<t_base_type> t = {
+        typedef typename base_type<T>::type base_type_t;
+        static_assert(
+            std::is_literal_type< interval<base_type_t> >::value,
+            "interval<base_type_t> is not literal type"
+        );
+        typedef typename base_type<U>::type base_type_u;
+        static_assert(
+            std::is_literal_type< interval<base_type_u> >::value,
+            "interval<base_type_u> is not tliteral type"
+        );
+
+        SAFE_NUMERIC_CONSTEXPR static interval<base_type_t> t(){
+            return interval<base_type_t>(
+                base_value(std::numeric_limits<T>::min()),
+                base_value(std::numeric_limits<T>::max())
+            );
+        };
+        SAFE_NUMERIC_CONSTEXPR static interval<base_type_u> u(){
+            return interval<base_type_u>(
+                base_value(std::numeric_limits<U>::min()),
+                base_value(std::numeric_limits<U>::max())
+            );
+        };
+        /*
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        SAFE_NUMERIC_CONSTEXPR static const interval<u_base_type> u = {
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
-        typedef decltype(t_base_type() / u_base_type()) r_base_type;
+        */
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<r_base_type> r
-            = operator/<r_base_type>(t, u);
+        /*
+        typedef calculate_max_t<T, U> max_t;
+        //typedef print<max_t> p_max_t;
+        */
+        using max_t = typename boost::mpl::if_c<
+            std::numeric_limits<base_type_t>::is_signed
+            || std::numeric_limits<base_type_u>::is_signed,
+            std::intmax_t,
+            std::uintmax_t
+        >::type;
 
-        typedef safe_base<r_base_type, r.l, r.u, P, E> type;
+        template<typename Tx>
+        SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_upper(const interval<Tx> & t){
+            static_assert(
+                std::is_literal_type< interval<Tx> >::value,
+                "interval<Tx> is not literal type"
+            );
+            return interval<Tx>(
+                max(checked_result<Tx>(1), t.l),
+                t.u
+            );
+        }
+        template<typename Tx>
+        SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_lower(const interval<Tx> & t){
+            static_assert(
+                std::is_literal_type< interval<Tx> >::value,
+                "interval<Tx> is not literal type"
+            );
+            return interval<Tx>(
+                t.l,
+                min(checked_result<Tx>(-1), t.u)
+            );
+        }
+
+        // result unsigned
+        template<class R, typename Tx, typename Ux>
+        static typename boost::enable_if_c<
+            ! std::numeric_limits<Ux>::is_signed,
+            const interval<R>
+        >::type
+        SAFE_NUMERIC_CONSTEXPR r(
+            const interval<Tx> & t,
+            const interval<Ux> & u
+        ){
+            if(u.l > 0)
+                return operator/<R>(t, u);
+            else
+                return operator/<R>(t, r_upper(u)) ;
+        };
+
+        // result signed
+        template<class R, typename Tx, typename Ux>
+        static typename boost::enable_if_c<
+            std::numeric_limits<Ux>::is_signed,
+            const interval<R>
+        >::type
+        SAFE_NUMERIC_CONSTEXPR r(
+            const interval<Tx> & t,
+            const interval<Ux> & u
+        ){
+            if(u.l > 0 || u.u < 0){
+                auto retval = operator/<R>(t, u);
+                return retval;
+            }
+            else{
+                auto lower = operator/<R>(t,r_lower(u));
+                auto upper = operator/<R>(t,r_upper(u));
+                return
+                    interval<R>(
+                        min(lower.l, upper.l),
+                        max(lower.u, upper.u)
+                    );
+            }
+        }
+
+        /*
+        template<typename Tx, typename Ux>
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> r(
+            const interval<Tx> & t,
+            const interval<Ux> & u
+        ){
+            typedef print<Tx> p_Tx_t;
+            typedef print<Ux> p_Ux_t;
+            if(std::numeric_limits<Ux>::is_signed){
+                typedef print<max_t> p_max_t;
+                static_assert(
+                    std::numeric_limits<max_t>::is_signed,
+                    "signed type expected"
+                );
+                if(u.l > 0 || u.u < 0){
+                    auto retval = operator/<max_t>(t, u);
+                    // typedef print<decltype(retval)> p_retval;
+                    return retval;
+                    //return operator/<max_t>(t, u);
+                }
+                else{
+                    auto lower = operator/<max_t>(t,r_lower(u));
+                    // typedef print<decltype(lower)> p_lower;
+                    auto upper = operator/<max_t>(t,r_upper(u));
+                    // typedef print<decltype(upper)> p_lower;
+                    return
+                        interval< max_t>(
+                            min(lower.l, upper.l),
+                            max(lower.u, upper.u)
+                        );
+                }
+            }
+            else{ // u is unsigned
+                if(u.l > 0)
+                    return operator/<max_t>(t, u);
+                else
+                    return operator/<max_t>(t, r_upper(u)) ;
+            };
+        };
+        */
+
+        //typedef print<std::integral_constant<bool,  (u.l > 0) >> p_ulgt0;
+        //typedef print<std::integral_constant<bool,  (u.u < 0) >> p_uult0;
+
+        constexpr const static interval<max_t> ni = r<max_t>(t(), u());
+
+        //static_assert(ni.l.no_exception(), "invalid lower bound");
+        //static_assert(ni.u.no_exception(), "invalid upper bound");
+
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = ni.l.no_exception() ?
+            static_cast<max_t>(ni.l)
+        :
+            std::numeric_limits<max_t>::min()
+        ;
+        //typedef print<std::integral_constant<max_t, newmin>> p_newmin;
+
+        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = ni.u.no_exception() ?
+            static_cast<max_t>(ni.u)
+        :
+            std::numeric_limits<max_t>::max()
+        ;
+        //typedef print<std::integral_constant<max_t, newmax>> p_newmax;
+
+        static_assert(
+            newmin <= newmax,
+            "new minimumum must be less than new maximum"
+        );
+
+        static_assert(
+            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
+            "newmin < 0 and unsigned can't happen"
+        );
+
+        typedef typename safe_range<
+            max_t,
+            newmin,
+            newmax,
+            P,
+            E
+        >::type type;
     };
+
     template<typename T, typename U, typename P, typename E>
     struct modulus_result {
         typedef typename base_type<T>::type t_base_type;
