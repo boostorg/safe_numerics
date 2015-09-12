@@ -57,11 +57,6 @@ struct checked_result {
         m_e(exception_type::uninitialized),
         m_r(0)
     {}
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR //explicit// checked_result(const checked_result<T> & t) :
-        m_e(t.m_e),
-        m_r(t.m_r)
-    {}
     */
 
     SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
@@ -76,7 +71,19 @@ struct checked_result {
         m_e(e),
         m_msg(msg)
     {}
-
+    #if 0
+    template<class T>
+    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const checked_result<T> & t) :
+        m_e(t.m_e)
+    {
+        if(t.no_exception())
+            m_r = t.m_r;
+        else{
+            m_msg = t.m_msg;
+        }
+    }
+    #endif
+    
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
        // assert(exception_type::no_exception == m_e);

@@ -333,7 +333,6 @@ class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
 {
     typedef boost::numeric::safe_base<T, Min, Max, P, E> SB;
 public:
-    // these expressions are not SAFE_NUMERIC_CONSTEXPR until C++14 so re-implement them here
     SAFE_NUMERIC_CONSTEXPR static SB min() noexcept {
         return SB(Min);
     }

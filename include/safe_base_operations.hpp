@@ -495,9 +495,29 @@ SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
-
     typedef typename base_type<result_type>::type result_base_type;
+    // typedef print<result_type> p_result_type;
+    /*
+    // note these assertions will trap when using native promotion
+    // policy.  This is because things unsigned char get promoted 
+    // to int when used in operations. comment them out as a reminder
+    // not to assume that unsigned + unsigned -> unsigned
+    static_assert(
+        std::is_signed<result_type>::value ==
+        std::is_signed<result_base_type>::value
+        ,
+        "base_type changed signedness"
+    );
     // typedef print<result_base_type> p_result_base_type;
+    static_assert(
+        std::is_signed<T>::value != std::is_signed<U>::value
+        ||
+        std::is_signed<result_base_type>::value == std::is_signed<T>::value
+        ,
+        "unexpected type for result"
+    );
+    */
+
     typedef typename base_type<T>::type t_base_type;
     // typedef print<t_base_type> p_t_base_type;
     typedef typename base_type<U>::type u_base_type;
@@ -531,13 +551,13 @@ SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
         );
 
     // otherwise do the division checking for overflow
-    checked_result<result_base_type>  r = checked::divide<result_base_type>(
+    checked_result<result_base_type>  r = checked::divide2<result_base_type>(
+        base_value(std::numeric_limits<result_type>::min()),
+        base_value(std::numeric_limits<result_type>::max()),
         base_value(t),
         base_value(u)
     );
-
     r.template dispatch<exception_policy>();
-
     return result_type(static_cast<result_base_type>(r));
 }
 

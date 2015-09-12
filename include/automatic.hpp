@@ -397,8 +397,7 @@ struct automatic {
             const interval<Ux> & u
         ){
             if(u.l > 0 || u.u < 0){
-                auto retval = operator/<R>(t, u);
-                return retval;
+                return operator/<R>(t, u);
             }
             else{
                 auto lower = operator/<R>(t,r_lower(u));
@@ -410,47 +409,6 @@ struct automatic {
                     );
             }
         }
-
-        /*
-        template<typename Tx, typename Ux>
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> r(
-            const interval<Tx> & t,
-            const interval<Ux> & u
-        ){
-            typedef print<Tx> p_Tx_t;
-            typedef print<Ux> p_Ux_t;
-            if(std::numeric_limits<Ux>::is_signed){
-                typedef print<max_t> p_max_t;
-                static_assert(
-                    std::numeric_limits<max_t>::is_signed,
-                    "signed type expected"
-                );
-                if(u.l > 0 || u.u < 0){
-                    auto retval = operator/<max_t>(t, u);
-                    // typedef print<decltype(retval)> p_retval;
-                    return retval;
-                    //return operator/<max_t>(t, u);
-                }
-                else{
-                    auto lower = operator/<max_t>(t,r_lower(u));
-                    // typedef print<decltype(lower)> p_lower;
-                    auto upper = operator/<max_t>(t,r_upper(u));
-                    // typedef print<decltype(upper)> p_lower;
-                    return
-                        interval< max_t>(
-                            min(lower.l, upper.l),
-                            max(lower.u, upper.u)
-                        );
-                }
-            }
-            else{ // u is unsigned
-                if(u.l > 0)
-                    return operator/<max_t>(t, u);
-                else
-                    return operator/<max_t>(t, r_upper(u)) ;
-            };
-        };
-        */
 
         //typedef print<std::integral_constant<bool,  (u.l > 0) >> p_ulgt0;
         //typedef print<std::integral_constant<bool,  (u.u < 0) >> p_uult0;

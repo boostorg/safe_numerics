@@ -17,174 +17,7 @@ using safe_t = boost::numeric::safe<
     boost::numeric::automatic
 >;
 
-template<class T1, class T2>
-bool test_divide_auto(
-    T1 v1,
-    T2 v2,
-    const char *av1,
-    const char *av2,
-    char expected_result
-){
-    using namespace boost::numeric;
-    auto unsafe_result = v1 / v2;
-    {
-        std::cout << "testing  safe<" << av1 << "> / " << av2 << " -> ";
-        static_assert(is_safe<safe_t<T1> >::value, "safe_t not safe!");
-
-        safe_t<T1> t1 = v1;
-
-        using result_type = decltype(t1 / v2);
-        result_type result;
-
-        static_assert(
-            is_safe<result_type>::value,
-            "Expression failed to return safe type"
-        );
-
-        try{
-            result = t1 / v2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == 'x'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    t1 / v2;
-                }
-                catch(std::exception){}
-                assert(result != unsafe_result);
-                return false;
-            }
-        }
-        catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == '.'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    t1 / v2;
-                }
-                catch(std::exception){}
-                assert(result == unsafe_result);
-                return false;
-            }
-        }
-    }
-    {
-        std::cout << "testing  " << av1 << " * " << "safe<"<< av2 << "> -> ";
-        static_assert(is_safe<safe_t<T2> >::value, "safe_t not safe!");
-
-        safe_t<T2> t2 = v2;
-
-        using result_type = decltype(v1 / t2);
-        result_type result;
-
-        static_assert(
-            is_safe<result_type>::value,
-            "Expression failed to return safe type"
-        );
-
-        try{
-            result = v1 / t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == 'x'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    v1 / t2;
-                }
-                catch(std::exception){}
-                assert(result != unsafe_result);
-                return false;
-            }
-        }
-        catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == '.'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    v1 / t2;
-                }
-                catch(std::exception){}
-                assert(result == unsafe_result);
-                return false;
-            }
-        }
-    }
-    {
-        std::cout << "testing  safe<" << av1 << "> * safe<" << av2 << "> -> ";
-        safe_t<T1> t1 = v1;
-        safe_t<T2> t2 = v2;
-
-        using result_type = decltype(t1 / t2);
-        result_type result;
-
-        static_assert(
-            is_safe<result_type>::value,
-            "Expression failed to return safe type"
-        );
-
-        try{
-            result = t1 / t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == 'x'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    t1 / t2;
-                }
-                catch(std::exception){}
-                assert(result != unsafe_result);
-                return false;
-            }
-        }
-        catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
-            if(expected_result == '.'){
-                const std::type_info & ti = typeid(result);
-                int status;
-                std::cout
-                    << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
-                    << std::endl;
-                try{
-                    t1 / t2;
-                }
-                catch(std::exception){}
-                assert(result == unsafe_result);
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
+#include "test_divide.hpp"
 #include "test.hpp"
 #include "test_values.hpp"
 
@@ -199,20 +32,20 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 /* 0*/ "................................",
 /* 1*/ "................................",
 /* 2*/ "................................",
-/* 3*/ ".........................xxxxxxx",
-/* 4*/ ".................................",
+/* 3*/ "................................",
+/* 4*/ "................................",
 /* 5*/ "................................",
-/* 6*/ "........................xxxxxxxx",
-/* 7*/ "........................xxxxxxxx",
+/* 6*/ "................................",
+/* 7*/ "................................",
 
 /* 8*/ "................................",
 /* 9*/ "................................",
-/*10*/ "..xx..xx..xx............xxxxxxxx",
-/*11*/ "........................xxxxxxxx",
+/*10*/ "................................",
+/*11*/ "................................",
 /*12*/ "................................",
 /*13*/ "................................",
-/*14*/ "..xx..xx..xx..xx............xxxx",
-/*15*/ "............................xxxx",
+/*14*/ "...x...x...x...x................",
+/*15*/ "................................",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
@@ -226,18 +59,18 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 /*22*/ "................................",
 /*23*/ "................................",
 
-/*24*/ "..xx..xx..xx....................",
-/*25*/ "..xx..xx..xx....................",
-/*26*/ "..xx..xx..xx....................",
-/*27*/ "..xx..xx..xx....................",
-/*28*/ "..xx..xx..xx..xx................",
-/*29*/ "..xx..xx..xx..xx................",
-/*30*/ "..xx..xx..xx..xx................",
-/*31*/ "..xx..xx..xx..xx................"
+/*24*/ "................................",
+/*25*/ "................................",
+/*26*/ "................................",
+/*27*/ "................................",
+/*28*/ "................................",
+/*29*/ "................................",
+/*30*/ "................................",
+/*31*/ "................................"
 };
 
 #define TEST_IMPL(v1, v2, result) \
-    rval &= test_divide_auto(     \
+    rval &= test_divide(          \
         v1,                       \
         v2,                       \
         BOOST_PP_STRINGIZE(v1),   \
