@@ -12,6 +12,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+#include "checked_result.hpp"
+
 namespace boost {
 namespace numeric {
 
@@ -27,6 +29,11 @@ struct PromotionPolicy {
     typedef typename PP::template modulus_result<T, U, PP, E> mod_type;
     typedef typename PP::template left_shift_result<T, U, PP, E> ls_type;
     typedef typename PP::template right_shift_result<T, U, PP, E> rs_type;
+
+    checked_result<typename base_type<d_type>::type> test(){
+        return PP::template divide<typename base_type<d_type>::type>(0, 0);
+    }
+
 };
 
 } // numeric

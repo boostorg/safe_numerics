@@ -30,8 +30,6 @@ bool test_checked_divide(
     typedef decltype(T1() / T2()) result_type;
 
     checked_result<result_type> result = checked::divide<result_type>(
-        std::numeric_limits<result_type>::min(),
-        std::numeric_limits<result_type>::max(),
         v1,
         v2
     );
@@ -44,8 +42,6 @@ bool test_checked_divide(
             << " != "<< av1 << " / " << av2
             << std::endl;
         result = checked::divide<result_type>(
-            std::numeric_limits<result_type>::min(),
-            std::numeric_limits<result_type>::max(),
             v1,
             v2
         );
@@ -58,8 +54,6 @@ bool test_checked_divide(
             << "erroneously detected error "
             << std::hex << result <<  av1 << " / " << av2 << std::dec << std::endl;
         result = checked::divide<result_type>(
-            std::numeric_limits<result_type>::min(),
-            std::numeric_limits<result_type>::max(),
             v1,
             v2
         );
@@ -142,6 +136,7 @@ int main(int argc, char *argv[]){
     bool rval = true;
 
     TEST_EACH_VALUE_PAIR
+    std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }
 

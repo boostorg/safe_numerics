@@ -15,6 +15,8 @@
 #include <type_traits>
 #include <limits>
 
+#include "checked.hpp"
+
 // policy which creates results types and values equal to that of C++ promotions.
 // When used in conjunction with a desired exception policy, traps errors but
 // does not otherwise alter the results produced by the program using it.
@@ -82,6 +84,25 @@ struct native {
     struct right_shift_result {
         typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
+
+    // forward to correct divide implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static SAFE_NUMERIC_CONSTEXPR divide(
+        const T & t,
+        const U & u
+    ){
+        return checked::divide<R>(t, u);
+    }
+    // forward to correct modulus implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static SAFE_NUMERIC_CONSTEXPR modulus(
+        const T & t,
+        const U & u
+    ){
+        return checked::modulus<R>(t, u);
+    }
 };
 
 } // numeric

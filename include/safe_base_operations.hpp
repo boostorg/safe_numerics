@@ -26,7 +26,6 @@
 
 #include "safe_base.hpp"
 #include "safe_compare.hpp"
-#include "checked.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
 
@@ -146,6 +145,7 @@ operator R () const {
     checked_result<R> r = checked::cast<R>(m_t);
     if(r != exception_type::no_exception)
         E::range_error("conversion not possible");
+
     return static_cast<R>(r);
 }
 
@@ -305,9 +305,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     }
 
     // otherwise do the addition checking for overflow
-    checked_result<result_base_type> r = checked::add(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
+    checked_result<result_base_type> r = checked::add<result_base_type>(
         base_value(t),
         base_value(u)
     );
@@ -375,9 +373,7 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
     }
 
     // otherwise do the subtraction checking for overflow
-    checked_result<result_base_type> r = checked::subtract(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
+    checked_result<result_base_type> r = checked::subtract<result_base_type>(
         base_value(t),
         base_value(u)
     );
@@ -451,9 +447,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
         );
 
     // otherwise do the multiplication checking for overflow
-    checked_result<result_base_type>  r = checked::multiply(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
+    checked_result<result_base_type>  r = checked::multiply<result_base_type>(
         base_value(t),
         base_value(u)
     );
@@ -551,19 +545,18 @@ SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
         );
 
     // otherwise do the division checking for overflow
-    checked_result<result_base_type>  r = checked::divide2<result_base_type>(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(t),
-        base_value(u)
-    );
+    typedef typename dr::P::promotion_policy promotion_policy;
+    checked_result<result_base_type>  r =
+        promotion_policy::template divide<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
     r.template dispatch<exception_policy>();
     return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
 // modulus
-/*
 
 template<class T, class U>
 struct modulus_result {
@@ -600,34 +593,30 @@ inline operator%(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
     SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
-        = operator%<result_base_type>(t_interval, u_interval);
-
-    // if no over/under flow possible
-    if(r_interval.no_exception())
+    // if denominator includes zero
+    if(u_interval.l <= 0 && 0 <= u_interval.u){
+        // no checking necessary
         return result_type(base_value(t) % base_value(u));
+    }
 
     // otherwise do the modulus checking for overflow
-    checked_result<result_base_type>  r = checked::modulus(
-        base_value(std::numeric_limits<result_type>::min()),
-        base_value(std::numeric_limits<result_type>::max()),
-        base_value(t),
-        base_value(u)
-    );
+    typedef modulus_result<T, U> mr;
+    typedef typename mr::P::promotion_policy promotion_policy;
+    checked_result<result_base_type>  r =
+        promotion_policy::template modulus<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
 
     r.template dispatch<exception_policy>();
     return result_type(static_cast<result_base_type>(r));
 }
-*/
+
 /////////////////////////////////////////////////////////////////
 // comparison
 

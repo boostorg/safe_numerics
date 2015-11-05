@@ -30,8 +30,18 @@
 namespace boost {
 namespace numeric {
 
+namespace checked {
+template<class R, class T, class U>
+    checked_result<R>
+    SAFE_NUMERIC_CONSTEXPR divide(
+        const T & t,
+        const U & u
+    );
+} // checked
+
 struct automatic {
 
+/*
     template<class T, class U>
     using calculate_max_t2 =
         typename boost::mpl::if_c<
@@ -40,7 +50,7 @@ struct automatic {
             std::intmax_t,
             std::uintmax_t
         >::type;
-
+*/
     // section 4.13 integer conversion rank
     template<class T>
     using rank =
@@ -126,6 +136,7 @@ struct automatic {
             defer_unsigned_lazily<T, Min, Max, P, E>
         >::type;
 
+    ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U, typename P, typename E>
     struct addition_result {
         typedef typename base_type<T>::type base_type_t;
@@ -192,6 +203,8 @@ struct automatic {
         >::type p_safe_range;
         */
     };
+
+    ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U, typename P, typename E>
     struct subtraction_result {
         typedef typename base_type<T>::type base_type_t;
@@ -246,6 +259,7 @@ struct automatic {
         >::type type;
     };
 
+    ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U, typename P, typename E>
     struct multiplication_result {
         typedef typename base_type<T>::type base_type_t;
@@ -300,6 +314,8 @@ struct automatic {
             E
         >::type type;
     };
+
+    ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U, typename P, typename E>
     struct division_result {
         typedef typename base_type<T>::type base_type_t;
@@ -325,21 +341,7 @@ struct automatic {
                 base_value(std::numeric_limits<U>::max())
             );
         };
-        /*
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-        */
 
-        /*
-        typedef calculate_max_t<T, U> max_t;
-        //typedef print<max_t> p_max_t;
-        */
         using max_t = typename boost::mpl::if_c<
             std::numeric_limits<base_type_t>::is_signed
             || std::numeric_limits<base_type_u>::is_signed,
@@ -451,25 +453,45 @@ struct automatic {
         >::type type;
     };
 
+    // forward to correct divide implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static SAFE_NUMERIC_CONSTEXPR divide(
+        const T & t,
+        const U & u
+    ){
+        return checked::divide_automatic<R>(t, u);
+    }
+
+    ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U, typename P, typename E>
     struct modulus_result {
-        typedef typename base_type<T>::type t_base_type;
-        typedef typename base_type<U>::type u_base_type;
-        SAFE_NUMERIC_CONSTEXPR static const interval<t_base_type> t = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-        SAFE_NUMERIC_CONSTEXPR static const interval<u_base_type> u = {
+        typedef typename base_type<T>::type base_type_t;
+        static_assert(
+            std::is_literal_type< interval<base_type_t> >::value,
+            "interval<base_type_t> is not literal type"
+        );
+        typedef typename base_type<U>::type base_type_u;
+        static_assert(
+            std::is_literal_type< interval<base_type_u> >::value,
+            "interval<base_type_u> is not tliteral type"
+        );
+        using max_t = typename boost::mpl::if_c<
+            std::numeric_limits<base_type_t>::is_signed
+            || std::numeric_limits<base_type_u>::is_signed,
+            std::intmax_t,
+            std::uintmax_t
+        >::type;
+
+        typedef typename safe_range<
+            max_t,
             base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-        typedef decltype(t_base_type() % u_base_type()) r_base_type;
-
-        SAFE_NUMERIC_CONSTEXPR static const interval<r_base_type> r
-            = operator%<r_base_type>(t, u);
-
-        typedef safe_base<r_base_type, r.l, r.u, P, E> type;
+            base_value(std::numeric_limits<U>::max()),
+            P,
+            E
+        >::type type;
     };
+
     template<typename T, typename U, typename P, typename E>    
     struct left_shift_result {
         typedef typename base_type<T>::type t_base_type;

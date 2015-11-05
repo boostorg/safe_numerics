@@ -16,14 +16,46 @@
 #include <cassert>
 #include <type_traits>
 
+
 #include <boost/logic/tribool.hpp>
 
 
 #include "checked_result.hpp"
 #include "checked.hpp"
 
+// from stack overflow
+// http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
+
 namespace boost {
 namespace numeric {
+
+template<typename T>
+T&& vmin(T&& val)
+{
+    return std::forward<T>(val);
+}
+
+template<typename T0, typename T1, typename... Ts>
+auto vmin(T0&& val1, T1&& val2, Ts&&... vs)
+{
+    return (val1 < val2) ?
+        vmin(val1, std::forward<Ts>(vs)...) :
+        vmin(val2, std::forward<Ts>(vs)...);
+}
+
+template<typename T>
+T&& vmax(T&& val)
+{
+    return std::forward<T>(val);
+}
+
+template<typename T0, typename T1, typename... Ts>
+auto vmax(T0&& val1, T1&& val2, Ts&&... vs)
+{
+    return (val1 > val2) ?
+        vmax(val1, std::forward<Ts>(vs)...) :
+        vmax(val2, std::forward<Ts>(vs)...);
+}
 
 template<typename R>
 struct interval {
@@ -105,7 +137,7 @@ struct interval {
     // other inteval t
     template<typename T>
     SAFE_NUMERIC_CONSTEXPR bool includes(const interval<T> & t) const {
-        // not very tricky algebra here.  the <= and >= operators
+        // note very tricky algebra here.  the <= and >= operators
         // on checked_result yield tribool.  If either argument is an exception
         // condition, he result is indeterminate.  The result of && on two
         // tribools is indeterminant if either is indeterminate.
@@ -136,25 +168,17 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return
         interval<R>(
-            min(
-                min(
-                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u))
-                ),
-                min(
-                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                )
+            vmin(
+                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
             ),
-            max(
-                max(
-                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                    checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u))
-                ),
-                max(
-                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                    checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                )
+            vmin(
+                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
             )
         );
 }
@@ -176,25 +200,17 @@ SAFE_NUMERIC_CONSTEXPR inline interval<R> operator/(
             )
         :
             interval<R>(
-                min(
-                    min(
-                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u))
-                    ),
-                    min(
-                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                    )
+                vmin(
+                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                 ),
-                max(
-                    max(
-                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                        checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u))
-                    ),
-                    max(
-                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                        checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                    )
+                vmax(
+                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
                 )
             )
         ;
