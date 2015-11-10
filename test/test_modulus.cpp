@@ -36,7 +36,7 @@ bool test_modulus(
             
             if(expected_result != '.'){
                 std::cout
-                    << "failed to detect error in division "
+                    << "failed to detect error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
@@ -50,7 +50,7 @@ bool test_modulus(
         catch(std::exception){
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in division "
+                    << "erroneously detected error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " % " << av2
                     << std::endl;
@@ -77,7 +77,7 @@ bool test_modulus(
             
             if(expected_result != '.'){
                 std::cout
-                    << "failed to detect error in division "
+                    << "failed to detect error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
@@ -91,7 +91,7 @@ bool test_modulus(
         catch(std::exception){
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in division "
+                    << "erroneously detected error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " % " << av2
                     << std::endl;
@@ -115,7 +115,7 @@ bool test_modulus(
 
             if(expected_result != '.'){
                 std::cout
-                    << "failed to detect error in division "
+                    << "failed to detect error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
@@ -129,7 +129,7 @@ bool test_modulus(
         catch(std::exception){
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in division "
+                    << "erroneously detected error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " % " << av2
                     << std::endl;

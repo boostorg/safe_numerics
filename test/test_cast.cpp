@@ -121,5 +121,6 @@ int main(int argc, char *argv[]){
         EACH_TYPE1,
         nothing
     )
+    std::cout << (rval ? "success!" : "failure") << std::endl;
     return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }
