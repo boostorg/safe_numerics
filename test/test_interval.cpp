@@ -37,7 +37,7 @@ bool test3(){
     interval<std::uint64_t> u;
     std::cout << "u = " << u;
     using max_t = unsigned long long;
-    interval< max_t> r = operator+<max_t>(t, u);
+    interval<checked_result<max_t>> r = operator+<max_t>(t, u);
     std::cout << "r = " << r << std::endl;
     return true;
 }
@@ -56,7 +56,7 @@ namespace test4 {
             "interval<Tx> is not literal type"
         );
         return interval<Tx>(
-            vmax(checked_result<Tx>(1), t.l),
+            vmax(static_cast<Tx>(1), t.l),
             t.u
         );
     }
@@ -68,12 +68,12 @@ namespace test4 {
         );
         return interval<Tx>(
             t.l,
-            vmin(checked_result<Tx>(-1), t.u)
+            vmin(static_cast<Tx>(-1), t.u)
         );
     }
 
     template<typename Tx, typename Ux>
-    SAFE_NUMERIC_CONSTEXPR static const interval<max_t> r(
+    SAFE_NUMERIC_CONSTEXPR static const interval<checked_result<max_t> > r(
         const interval<Tx> & t,
         const interval<Ux> & u
     ){
@@ -90,7 +90,7 @@ namespace test4 {
                 auto upper = operator/<max_t>(t,r_upper(u));
                 // typedef print<decltype(upper)> p_lower;
                 return
-                    interval< max_t>(
+                    interval<checked_result<max_t> >(
                         vmin(lower.l, upper.l),
                         vmax(lower.u, upper.u)
                     );
@@ -121,7 +121,7 @@ namespace test4 {
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
             << u;
-        const interval<max_t> rx = r(t, u);
+        const interval<checked_result<max_t> > rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -143,7 +143,7 @@ namespace test4 {
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
             << u;
-        const interval<max_t> rx = r(t, u);
+        const interval<checked_result<max_t> > rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -165,7 +165,7 @@ namespace test4 {
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
             << u;
-        const interval<max_t> rx = r(t, u);
+        const interval<checked_result<max_t> > rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -197,7 +197,7 @@ namespace test4 {
             << u_interval
             << std::endl;
         using R = decltype(U() * T());
-        const interval<R> r_interval
+        const interval<checked_result<R> > r_interval
             = operator*<R>(t_interval, u_interval);
         std::cout
             << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
