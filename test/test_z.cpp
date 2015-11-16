@@ -56,14 +56,19 @@ using safe_t = boost::numeric::safe<
 
 int main(){
     using namespace boost::numeric;
-
+    {
+        const safe_t<std::int64_t> t = (std::int64_t)0x8000000000000000;
+        const std::uint8_t u = (std::uint8_t)0x01;
+        auto z = t * u;
+        std::cout << z << std::endl;
+    }
+    /*
     {
         const safe_t<std::int64_t> t = (std::int64_t)0x8000000000000000;
         const safe_t<std::uint64_t> u = (std::uint64_t)0x8000000000000000;
         auto z = t / u;
         std::cout << z << std::endl;
     }
-    /*
     {
         const safe_t<std::uint8_t> t = 10;
         const std::uint8_t u = 2;

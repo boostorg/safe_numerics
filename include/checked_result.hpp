@@ -52,12 +52,12 @@ struct checked_result {
             (m_msg = r.m_msg), 0
         ;
     }
+    */
     // don't permit construction without initial value;
     SAFE_NUMERIC_CONSTEXPR explicit checked_result() :
         m_e(exception_type::uninitialized),
         m_r(0)
     {}
-    */
 
     SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
         m_e(exception_type::no_exception),
@@ -83,30 +83,30 @@ struct checked_result {
         }
     }
     #endif
-    
+
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
        // assert(exception_type::no_exception == m_e);
         return m_r;
     }
+
     /*
     SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
         return m_e;
     }
+    */
     SAFE_NUMERIC_CONSTEXPR operator const char *() const {
         // assert(exception_type::no_exception != m_e);
         return m_msg;
     }
-    */
 
     template<class T>
     SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(const checked_result<T> & t) const {
         return
-            (m_e == exception_type::no_exception
-            || t.m_e == exception_type::no_exception) ?
-                boost::logic::tribool::indeterminate_value
-            :
+            (this->no_exception() && t.no_exception()) ?
                 safe_compare::less_than(m_r, t.m_r)
+            :
+                boost::logic::tribool::indeterminate_value
             ;
     }
     template<class T>
@@ -115,12 +115,11 @@ struct checked_result {
     }
     template<class T>
     SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(const checked_result<T> & t) const {
-        return !
-            (m_e == exception_type::no_exception
-            || t.m_e == exception_type::no_exception) ?
-                boost::logic::tribool::indeterminate_value
-            :
+        return
+            (this->no_exception() && t.no_exception()) ?
                 safe_compare::greater_than(m_r, t.m_r)
+            :
+                boost::logic::tribool::indeterminate_value
             ;
     }
     template<class T>
@@ -131,13 +130,14 @@ struct checked_result {
     SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator==(const checked_result<T> & t) const {
         return ! operator>(t);
     }
-
+/*
     SAFE_NUMERIC_CONSTEXPR bool operator==(const exception_type & et) const {
         return m_e == et;
     }
     SAFE_NUMERIC_CONSTEXPR bool operator!=(const exception_type & et) const {
         return m_e != et;
     }
+*/
     SAFE_NUMERIC_CONSTEXPR bool no_exception() const {
         return m_e == exception_type::no_exception;
     }
@@ -184,6 +184,8 @@ struct checked_result {
         case exception_type::domain_error:
             EP::domain_error(m_msg);
             break;
+        case exception_type::uninitialized:
+            EP::domain_error(m_msg);
         case exception_type::no_exception:
             break;
         default:
@@ -192,6 +194,7 @@ struct checked_result {
     }
 };
 
+/*
 template<typename R>
 SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
     const checked_result<R> & t,
@@ -232,6 +235,28 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(
         ;
 }
 
+template<typename R>
+SAFE_NUMERIC_CONSTEXPR inline const bool operator<(
+    const checked_result<R> & t,
+    const checked_result<R> & u
+){
+    return
+        (t.m_e == exception_type::no_exception
+        && u.m_e == exception_type::no_exception) ?
+            t.m_r < u.m_r ?
+                t
+            :
+                u
+        :
+            checked_result<R>(
+                exception_type::range_error,
+                "Can't compare values without values"
+            )
+        ;
+}
+*/
+
+
 } // numeric
 } // boost
 
@@ -242,8 +267,11 @@ SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(
 namespace std {
 
 template<typename R>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<R> & r){
-    if(r == boost::numeric::exception_type::no_exception)
+std::ostream & operator<<(
+    std::ostream & os,
+    const boost::numeric::checked_result<R> & r
+){
+    if(r.no_exception())
         os << static_cast<R>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);
@@ -251,8 +279,11 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_resul
 }
 
 template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<std::int8_t> & r){
-    if(r == boost::numeric::exception_type::no_exception)
+std::ostream & operator<<(
+    std::ostream & os,
+    const boost::numeric::checked_result<std::int8_t> & r
+){
+    if(r.no_exception())
         os << static_cast<std::int16_t>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);
@@ -260,8 +291,11 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_resul
 }
 
 template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::checked_result<std::uint8_t> & r){
-    if(r == boost::numeric::exception_type::no_exception)
+std::ostream & operator<<(
+    std::ostream & os,
+    const boost::numeric::checked_result<std::uint8_t> & r
+){
+    if(r.no_exception())
         os << static_cast<std::uint16_t>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);

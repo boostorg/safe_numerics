@@ -75,7 +75,7 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
                 << "copy constructor altered value "
                 << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << v1 << "))"
                 << std::endl;
-            boost::numeric::safe<T1> s1(s1x);
+            //boost::numeric::safe<T1> s1(s1x);
             return false;
         }
     }
@@ -86,7 +86,7 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
             << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << v1 << "))"
             << std::endl;
         try{
-            boost::numeric::safe<T1> s1(s1x);
+            //boost::numeric::safe<T1> s1(s1x);
         }
         catch(std::exception){}
         return false;

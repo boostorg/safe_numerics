@@ -143,8 +143,8 @@ template<
 SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
 operator R () const {
     checked_result<R> r = checked::cast<R>(m_t);
-    if(r != exception_type::no_exception)
-        E::range_error("conversion not possible");
+    if(! r.no_exception())
+        E::range_error(r);
 
     return static_cast<R>(r);
 }
@@ -272,7 +272,7 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
-    //typedef print<result_base_type> p_result_base_type;
+    // typedef print<result_base_type> p_result_base_type;
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
@@ -412,6 +412,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     typedef typename mr::P::exception_policy exception_policy;
     typedef typename mr::type result_type;
     // typedef print<result_type> p_result_type;
+
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
@@ -438,6 +439,10 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     // with the correct range for the  product!
     SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
         = operator*<result_base_type>(t_interval, u_interval);
+
+        // typedef typename print<max_t>::type p_max_t;
+        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
+        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
 
     // if no over/under flow possible
     if(r_interval.no_exception())
@@ -598,8 +603,8 @@ inline operator%(const T & t, const U & u){
             base_value(std::numeric_limits<U>::max())
         };
 
-    // if denominator includes zero
-    if(u_interval.l <= 0 && 0 <= u_interval.u){
+    // if denominator excludes zero
+    if(u_interval.l > 0 || 0 > u_interval.u){
         // no checking necessary
         return result_type(base_value(t) % base_value(u));
     }

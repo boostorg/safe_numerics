@@ -22,7 +22,7 @@ bool test2(){
     using namespace boost::numeric;
     checked_result<int> x1(0);
     assert(0 == x1);
-    checked_result<int> x2(exception_type::overflow_error);
+    checked_result<int> x2(exception_type::overflow_error, "exception message");
     assert(! x2.no_exception());
     return true;
 }

@@ -23,6 +23,7 @@
 #include <boost/mpl/if.hpp>
 
 #include "safe_common.hpp"
+#include "checked.hpp"
 
 // forward declaration - safe type
 template<
@@ -182,6 +183,16 @@ struct cpp {
     struct division_result {
         typedef typename safe_type_promotion<T, U, P, E>::type type;
     };
+    // forward to correct divide implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static SAFE_NUMERIC_CONSTEXPR divide(
+        const T & t,
+        const U & u
+    ){
+        return checked::divide<R>(t, u);
+    }
+
     template<typename T, typename U, typename P, typename E>
     struct modulus_result {
         typedef typename safe_type_promotion<T, U, P, E>::type type;

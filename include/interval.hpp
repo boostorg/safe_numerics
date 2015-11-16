@@ -15,7 +15,7 @@
 #include <limits>
 #include <cassert>
 #include <type_traits>
-
+#include <utility>
 
 #include <boost/logic/tribool.hpp>
 
@@ -29,33 +29,78 @@
 namespace boost {
 namespace numeric {
 
-template<typename T>
-T&& vmin(T&& val)
+template <typename T>
+constexpr const checked_result<T> & vmin(
+    const checked_result<T> & a,
+    const checked_result<T> & b
+)      //this is an overload, not specialization
 {
-    return std::forward<T>(val);
+    return
+    (! a.no_exception()) ?
+        a :
+    (! b.no_exception()) ?
+        b :
+    (a < b) ? a : b;
 }
 
-template<typename T0, typename T1, typename... Ts>
-auto vmin(T0&& val1, T1&& val2, Ts&&... vs)
-{
-    return (val1 < val2) ?
-        vmin(val1, std::forward<Ts>(vs)...) :
-        vmin(val2, std::forward<Ts>(vs)...);
+template <typename T, typename ... Ts>
+constexpr const checked_result<T> & vmin(
+    const checked_result<T> & a,
+    const checked_result<T> & b,
+    const checked_result<Ts> & ... vs
+){
+    return vmin(vmin(a, b), vs ...);
 }
 
-template<typename T>
-T&& vmax(T&& val)
+template <typename T>
+constexpr const checked_result<T> & vmax(
+    const checked_result<T> & a,
+    const checked_result<T> & b
+)      //this is an overload, not specialization
 {
-    return std::forward<T>(val);
+    return
+    (! a.no_exception()) ?
+        a :
+    (! b.no_exception()) ?
+        b :
+    (a < b) ? b : a;
 }
 
-template<typename T0, typename T1, typename... Ts>
-auto vmax(T0&& val1, T1&& val2, Ts&&... vs)
-{
-    return (val1 > val2) ?
-        vmax(val1, std::forward<Ts>(vs)...) :
-        vmax(val2, std::forward<Ts>(vs)...);
+template <typename T, typename ... Ts>
+constexpr const checked_result<T> & vmax(
+    const checked_result<T> & a,
+    const checked_result<T> & b,
+    const checked_result<Ts> & ... vs
+){
+    return vmax(vmax(a, b), vs ...);
 }
+
+/*
+template <typename T>
+constexpr const T & vmax(const T & a, const T & b)      //this is an overload, not specialization
+{
+   return (a < b) ? b : a;
+}
+
+template <typename T, typename ... Ts>
+constexpr const T & vmax(const T & a, const T & b, const Ts & ... vs)
+{
+    return vmax(vmax(a, b), vs ...);
+}
+
+template <typename T>
+constexpr bool is_valid(){
+    return true;
+}
+
+template <typename T, typename ... Ts>
+constexpr bool is_valid(const checked_result<T> & t, const checked_result<Ts> & ... ts){
+    return t.no_exception() ?
+        false
+    :
+        is_valid(ts ...);
+}
+*/
 
 template<typename R>
 struct interval {
@@ -130,8 +175,7 @@ struct interval {
         u(std::numeric_limits<R>::max())
     {}
     SAFE_NUMERIC_CONSTEXPR bool no_exception() const {
-        return l == exception_type::no_exception
-        && u == exception_type::no_exception ;
+        return l.no_exception() && u.no_exception();
     }
     // return true if this interval contains every point found in some
     // other inteval t
@@ -174,7 +218,7 @@ SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interv
                 checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
                 checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
             ),
-            vmin(
+            vmax(
                 checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
                 checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
                 checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
@@ -217,23 +261,47 @@ SAFE_NUMERIC_CONSTEXPR inline interval<R> operator/(
 }
 
 template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR interval<R> mod1(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return
+        interval<R>(
+            vmin(
+                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
+            ),
+            vmax(
+                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
+                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
+                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
+                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
+            )
+        );
+}
+
+template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // adapted from / operator above
-    return
-        (u.l <= 0) ?
-            interval<R>(
-                checked_result<R>(0),
-                checked_result<R>(
-                    exception_type::domain_error,
-                    "interval divisor includes zero"
-                )
-            )
-        :
-            interval<R>(checked_result<R>(0), max(u.u, u.l))
-        ;
+    interval<R> i[4];
+    if(t.l < 0 && u.l < 0)
+        i[0] = mod1(interval<R>(t.l, -1), interval<R>(u.l, -1));
+    if(t.l > 0 && u.l < 0)
+        i[1] = mod1(interval<R>(t.l, t.u), interval<R>(u.l, -1));
+    if(t.l < 0 && u.l > 0)
+        i[2] = mod1(interval<R>(t.l, -1), interval<R>(u.l, u.u));
+    if(t.l > 0 && u.l > 0)
+        i[3] = mod1(interval<R>(t.l, t.u), interval<R>(u.l, u.u));
+
+    return interval<R>(
+        vmin(i[0].l, i[1].l, i[2].l, i[3].l),
+        vmax(i[0].l, i[1].l, i[2].l, i[3].l)
+    );
+
 }
 
 template<typename T, typename U>

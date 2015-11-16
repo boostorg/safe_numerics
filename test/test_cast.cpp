@@ -27,7 +27,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
                 << t2_name << "<-" << t1_name
                 << std::endl;
             try{
-                static_cast<boost::numeric::safe<T2> >(v1);
+                s2 = static_cast<boost::numeric::safe<T2> >(v1);
             }
             catch(std::exception){}
             return false;
@@ -40,7 +40,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
                 << t1_name << "<-" << t2_name
                 << std::endl;
             try{
-                static_cast<boost::numeric::safe<T2> >(v1);
+                s2 = static_cast<boost::numeric::safe<T2> >(v1);
             }
             catch(std::exception){}
             return false;
@@ -59,7 +59,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
                 << t2_name << "<-" << t1_name
                 << std::endl;
             try{
-                static_cast<T2>(s1);
+                t2 = static_cast<T2>(s1);
             }
             catch(std::exception){}
             return false;
@@ -72,7 +72,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
                 << t1_name << "<-" << t2_name
                 << std::endl;
             try{
-                static_cast<T2>(s1);
+                t2 = static_cast<T2>(s1);
             }
             catch(std::exception){}
             return false;

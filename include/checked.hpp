@@ -153,10 +153,10 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
-        rt != exception_type::no_exception ?
+        (! rt.no_exception()) ?
             rt
         :
-        ru != exception_type::no_exception ?
+        (! ru.no_exception()) ?
             ru
         :
             detail::add<R>(t, u)
@@ -220,15 +220,13 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> subtract(
 ) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return
-        cast<R>(t) != exception_type::no_exception ?
-            cast<R>(t)
-        :
-        cast<R>(u) != exception_type::no_exception ?
-            cast<R>(u)
-        :
-            detail::subtract<R>(t, u)
-    ;
+    checked_result<R> rt(cast<R>(t));
+    if(! rt.no_exception() )
+        return rt;
+    checked_result<R> ru(cast<R>(u));
+    if(! ru.no_exception() )
+        return ru;
+    return detail::subtract<R>(t, u);
 }
 
 ////////////////////////////////////////////////////
@@ -373,20 +371,13 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
 ) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return
-        cast<R>(t) != exception_type::no_exception ?
-            cast<R>(t)
-        :
-        cast<R>(u) != exception_type::no_exception ?
-            cast<R>(u)
-        :
-        std::numeric_limits<R>::digits
-        >= std::numeric_limits<T>::digits + std::numeric_limits<U>::digits
-        ?
-            checked_result<R>(static_cast<R>(t) * static_cast<R>(u))
-        :
-            detail::multiply<R>(t, u)
-    ;
+    checked_result<R> rt(cast<R>(t));
+    if(! rt.no_exception() )
+        return rt;
+    checked_result<R> ru(cast<R>(u));
+    if(! ru.no_exception() )
+        return ru;
+    return detail::multiply<R>(t, u);
 }
 
 ////////////////////////////////
@@ -550,7 +541,7 @@ SAFE_NUMERIC_CONSTEXPR modulus(
         (u < 0 && t == std::numeric_limits<R>::min()) ?
             checked_result<R>(
                 exception_type::domain_error,
-                "divide by zero"
+                "result cannot be represented"
             )
         :
             checked_result<R>(t % u)
@@ -573,12 +564,18 @@ SAFE_NUMERIC_CONSTEXPR modulus(
             "denominator is zero"
         );
 
-    checked_result<R> rt = cast<R>(t);
-    if(cast<R>(t) != exception_type::no_exception)
+    // note the following will flag as erroneous certain operations which
+    // appear to be correct.  In particular (std::int8_t) % (std::uint32)
+    // where the denominator = 1 will yield the correct result even though
+    // it entails inverting the sign of the numerator.  We'll consider it
+    // an error inspite of the fact it yields a zero as one would expect
+    // in this specific case.
+    const checked_result<R> rt = cast<R>(t);
+    if(! rt.no_exception())
         return rt;
 
-    checked_result<R> ru = cast<R>(u);
-    if(cast<R>(u) != exception_type::no_exception)
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
         return ru;
 
     return detail::modulus(
@@ -673,17 +670,15 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_or(
         && std::is_integral<U>::value && std::is_signed<T>::value,
         "only intrinsic unsigned integers permitted"
     );
-    const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
-    return
-        rt != exception_type::no_exception ?
-            rt
-        :
-        ru != exception_type::no_exception ?
-            ru
-        :
-            static_cast<R>(ru) | static_cast<R>(rt)
-    ;
+    if(! rt.no_exception())
+        return rt;
+
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
+        return ru;
+
+    return static_cast<R>(ru) | static_cast<R>(rt);
 }
 
 template<class R, class T, class U>
@@ -696,17 +691,15 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_and(
         && std::is_integral<U>::value && std::is_signed<T>::value,
         "only intrinsic unsigned integers permitted"
     );
-    const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
-    return
-        rt != exception_type::no_exception ?
-            rt
-        :
-        ru != exception_type::no_exception ?
-            ru
-        :
-            static_cast<R>(ru) & static_cast<R>(rt)
-    ;
+    if(! rt.no_exception())
+        return rt;
+
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
+        return ru;
+
+    return static_cast<R>(ru) & static_cast<R>(rt);
 }
 
 template<class R, class T, class U>
@@ -719,17 +712,15 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_xor(
         && std::is_integral<U>::value && std::is_signed<T>::value,
         "only intrinsic unsigned integers permitted"
     );
-    const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
-    return
-        rt != exception_type::no_exception ?
-            rt
-        :
-        ru != exception_type::no_exception ?
-            ru
-        :
-            static_cast<R>(ru) ^ static_cast<R>(rt)
-    ;
+    if(! rt.no_exception())
+        return rt;
+
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
+        return ru;
+
+    return static_cast<R>(ru) ^ static_cast<R>(rt);
 }
 
 } // checked

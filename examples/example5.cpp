@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]){
     std::cout << "Not using safe numerics" << std::endl;
     int i_array[37];
 
-    unsigned int i_index = 43;
+    // unsigned int i_index = 43;
     // the following corrupts memory.
     // This may or may not be detected at run time.
     // i_array[i_index] = 84; // comment this out so it can be tested!

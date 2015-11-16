@@ -30,27 +30,7 @@
 namespace boost {
 namespace numeric {
 
-namespace checked {
-template<class R, class T, class U>
-    checked_result<R>
-    SAFE_NUMERIC_CONSTEXPR divide(
-        const T & t,
-        const U & u
-    );
-} // checked
-
 struct automatic {
-
-/*
-    template<class T, class U>
-    using calculate_max_t2 =
-        typename boost::mpl::if_c<
-            std::numeric_limits<T>::is_signed
-            || std::numeric_limits<U>::is_signed,
-            std::intmax_t,
-            std::uintmax_t
-        >::type;
-*/
     // section 4.13 integer conversion rank
     template<class T>
     using rank =
@@ -100,7 +80,7 @@ struct automatic {
                 std::intmax_t,
                 std::uintmax_t
             >::type,
-        // clause 2 - otherwise if the rank of he unsigned type exceeds
+        // clause 2 - otherwise if the rank of the unsigned type exceeds
         // the rank of the of the maximum signed type
         typename boost::mpl::if_c<
             (rank< select_unsigned<T, U>>::value
@@ -169,9 +149,9 @@ struct automatic {
             std::numeric_limits<max_t>::max()
         ;
 
-        //typedef typename print<max_t>::type p_max_t;
-        //typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
-        //typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
+        // typedef typename print<max_t>::type p_max_t;
+        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
+        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
 
         static_assert(
             newmin < newmax,
@@ -190,18 +170,6 @@ struct automatic {
             P,
             E
         >::type type;
-
-        /*
-        typedef typename print<
-            typename safe_range<
-                max_t,
-                newmin,
-                newmax,
-                P,
-                E
-            >::type
-        >::type p_safe_range;
-        */
     };
 
     ///////////////////////////////////////////////////////////////////////
@@ -276,9 +244,13 @@ struct automatic {
         };
 
         typedef calculate_max_t<T, U> max_t;
+        // typedef print<max_t> p_max_t;
 
         SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
             = operator*<max_t>(t, u);
+
+        // typedef print<std::integral_constant<max_t, r.l>> p_r_l;
+        // typedef print<std::integral_constant<max_t, r.u>> p_r_u;
 
         SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
             static_cast<max_t>(r.l)
@@ -292,9 +264,8 @@ struct automatic {
             std::numeric_limits<max_t>::max()
         ;
 
-        // typedef typename print<max_t>::type p_max_t;
-        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
-        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
+        // typedef print<std::integral_constant<max_t, newmin>> p_newmin;
+        // typedef print<std::integral_constant<max_t, newmax>> p_newmax;
 
         static_assert(
             newmin < newmax,
@@ -329,13 +300,13 @@ struct automatic {
             "interval<base_type_u> is not tliteral type"
         );
 
-        SAFE_NUMERIC_CONSTEXPR static interval<base_type_t> t(){
+        constexpr static interval<base_type_t> t(){
             return interval<base_type_t>(
                 base_value(std::numeric_limits<T>::min()),
                 base_value(std::numeric_limits<T>::max())
             );
         };
-        SAFE_NUMERIC_CONSTEXPR static interval<base_type_u> u(){
+        constexpr static interval<base_type_u> u(){
             return interval<base_type_u>(
                 base_value(std::numeric_limits<U>::min()),
                 base_value(std::numeric_limits<U>::max())
@@ -356,7 +327,7 @@ struct automatic {
                 "interval<Tx> is not literal type"
             );
             return interval<Tx>(
-                max(checked_result<Tx>(1), t.l),
+                vmax(checked_result<Tx>(1), t.l),
                 t.u
             );
         }
@@ -368,7 +339,7 @@ struct automatic {
             );
             return interval<Tx>(
                 t.l,
-                min(checked_result<Tx>(-1), t.u)
+                vmin(checked_result<Tx>(-1), t.u)
             );
         }
 
@@ -406,8 +377,8 @@ struct automatic {
                 auto upper = operator/<R>(t,r_upper(u));
                 return
                     interval<R>(
-                        min(lower.l, upper.l),
-                        max(lower.u, upper.u)
+                        vmin(lower.l, upper.l),
+                        vmax(lower.u, upper.u)
                     );
             }
         }
@@ -483,6 +454,9 @@ struct automatic {
             std::uintmax_t
         >::type;
 
+        //typedef print<max_t> p_max_t;
+        //typedef print<typename base_type<U>::type > p_U_t;
+
         typedef typename safe_range<
             max_t,
             base_value(std::numeric_limits<U>::min()),
@@ -492,7 +466,18 @@ struct automatic {
         >::type type;
     };
 
-    template<typename T, typename U, typename P, typename E>    
+    // forward to correct modulus implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static SAFE_NUMERIC_CONSTEXPR modulus(
+        const T & t,
+        const U & u
+    ){
+        return checked::modulus<R>(t, u);
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+    template<typename T, typename U, typename P, typename E>
     struct left_shift_result {
         typedef typename base_type<T>::type t_base_type;
         typedef typename base_type<U>::type u_base_type;
