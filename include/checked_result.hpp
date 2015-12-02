@@ -52,12 +52,12 @@ struct checked_result {
             (m_msg = r.m_msg), 0
         ;
     }
-    */
     // don't permit construction without initial value;
     SAFE_NUMERIC_CONSTEXPR explicit checked_result() :
         m_e(exception_type::uninitialized),
         m_r(0)
     {}
+    */
 
     SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
         m_e(exception_type::no_exception),
@@ -86,7 +86,7 @@ struct checked_result {
 
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
-       // assert(exception_type::no_exception == m_e);
+        // assert(exception_type::no_exception == m_e);
         return m_r;
     }
 
@@ -256,6 +256,12 @@ SAFE_NUMERIC_CONSTEXPR inline const bool operator<(
 }
 */
 
+// C++ does not (yet) permit constexpr lambdas.  So create some
+// constexpr predicates to be used by constexpr algorthms.
+template<typename R>
+constexpr bool no_exception(const checked_result<R> & cr){
+    return cr.no_exception();
+}
 
 } // numeric
 } // boost

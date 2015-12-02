@@ -80,7 +80,7 @@ const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << std::endl); \
+    (std::cout << value_index1 << ',' << value_index2 << ' '); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \

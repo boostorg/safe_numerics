@@ -15,10 +15,12 @@
 #include <limits>
 #include <cassert>
 #include <type_traits>
-#include <utility>
+#include <cstdlib> // quick_exit
+#include <array>
+#include <algorithm>
+#include <initializer_list>
 
 #include <boost/logic/tribool.hpp>
-
 
 #include "checked_result.hpp"
 #include "checked.hpp"
@@ -29,79 +31,6 @@
 namespace boost {
 namespace numeric {
 
-template <typename T>
-constexpr const checked_result<T> & vmin(
-    const checked_result<T> & a,
-    const checked_result<T> & b
-)      //this is an overload, not specialization
-{
-    return
-    (! a.no_exception()) ?
-        a :
-    (! b.no_exception()) ?
-        b :
-    (a < b) ? a : b;
-}
-
-template <typename T, typename ... Ts>
-constexpr const checked_result<T> & vmin(
-    const checked_result<T> & a,
-    const checked_result<T> & b,
-    const checked_result<Ts> & ... vs
-){
-    return vmin(vmin(a, b), vs ...);
-}
-
-template <typename T>
-constexpr const checked_result<T> & vmax(
-    const checked_result<T> & a,
-    const checked_result<T> & b
-)      //this is an overload, not specialization
-{
-    return
-    (! a.no_exception()) ?
-        a :
-    (! b.no_exception()) ?
-        b :
-    (a < b) ? b : a;
-}
-
-template <typename T, typename ... Ts>
-constexpr const checked_result<T> & vmax(
-    const checked_result<T> & a,
-    const checked_result<T> & b,
-    const checked_result<Ts> & ... vs
-){
-    return vmax(vmax(a, b), vs ...);
-}
-
-/*
-template <typename T>
-constexpr const T & vmax(const T & a, const T & b)      //this is an overload, not specialization
-{
-   return (a < b) ? b : a;
-}
-
-template <typename T, typename ... Ts>
-constexpr const T & vmax(const T & a, const T & b, const Ts & ... vs)
-{
-    return vmax(vmax(a, b), vs ...);
-}
-
-template <typename T>
-constexpr bool is_valid(){
-    return true;
-}
-
-template <typename T, typename ... Ts>
-constexpr bool is_valid(const checked_result<T> & t, const checked_result<Ts> & ... ts){
-    return t.no_exception() ?
-        false
-    :
-        is_valid(ts ...);
-}
-*/
-
 template<typename R>
 struct interval {
     static_assert(
@@ -109,74 +38,29 @@ struct interval {
         "is literal type"
     );
 
-    const checked_result<R> l;
-    const checked_result<R> u;
+    const R l;
+    const R u;
 
-/*
-    SAFE_NUMERIC_CONSTEXPR checked_result<R> get_l() const {
-        return l;
-    }
-    SAFE_NUMERIC_CONSTEXPR checked_result<R> get_u() const {
-        return u;
-    }
-    template<typename T, typename U>
-    SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
-        l(checked::cast<R>(lower)),
-        u(checked::cast<R>(upper))
-    {}
-    SAFE_NUMERIC_CONSTEXPR interval(
-        const R & lower,
-        const R & upper
-    ) :
-        l(checked_result<R>(lower)),
-        u(checked_result<R>(upper))
-    {}
-    SAFE_NUMERIC_CONSTEXPR interval(const interval<R> & rhs) :
-        l(rhs.l),
-        u(rhs.u)
-    {}
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR interval(
-        const T & lower,
-        const T & upper
-    ) :
-        l(checked_result<T>(lower)),
-        u(checked_result<T>(upper))
-    {}
-    template<typename T, typename U>
-    SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const U & upper) :
-        l(checked::cast<R>(lower)),
-        u(checked::cast<R>(upper))
-    {}
-*/
     template<typename T>
     SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const T & upper) :
-        l(checked::cast<R>(lower)),
-        u(checked::cast<R>(upper))
+        l(lower),
+        u(upper)
+    {}
+    template<typename T>
+    SAFE_NUMERIC_CONSTEXPR interval(const std::pair<T, T> & p) :
+        l(p.first),
+        u(p.second)
     {}
     template<class T>
     SAFE_NUMERIC_CONSTEXPR interval(const interval<T> & rhs) :
         l(rhs.l),
         u(rhs.u)
     {}
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR interval(
-        const checked_result<T> & lower,
-        const checked_result<T> & upper
-    ) :
-        //l(checked::cast<R>(lower)),
-        l(lower),
-        //u(checked::cast<R>(upper))
-        u(upper)
-    {}
-
     SAFE_NUMERIC_CONSTEXPR interval() :
         l(std::numeric_limits<R>::min()),
         u(std::numeric_limits<R>::max())
     {}
-    SAFE_NUMERIC_CONSTEXPR bool no_exception() const {
-        return l.no_exception() && u.no_exception();
-    }
+
     // return true if this interval contains every point found in some
     // other inteval t
     template<typename T>
@@ -189,119 +73,235 @@ struct interval {
     }
 };
 
-template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator+(const interval<T> & t, const interval<U> & u){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return interval<R>(
-        checked::add<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-        checked::add<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-    );
+namespace {
+
+template<typename R>
+constexpr checked_result<interval<R>> failed_result(
+    exception_type::domain_error,
+    "indefinite interval"
+);
+
+// create constexpr versions of stl algorthms which are not (yet)
+// constexpr.
+template<class InputIt, class UnaryPredicate>
+constexpr InputIt find_if_not(InputIt first, InputIt last, UnaryPredicate q)
+{
+    for (; first != last; ++first) {
+        if (!q(*first)) {
+            return first;
+        }
+    }
+    return last;
 }
 
-template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator-(const interval<T> & t, const interval<U> & u){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return interval<R>(
-        checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-        checked::subtract<R>(static_cast<T>(t.u), static_cast<U>(u.l))
-    );
+template<class InputIt, class T>
+constexpr InputIt find(InputIt first, InputIt last, const T& value)
+{
+    for (; first != last; ++first) {
+        if (*first == value) {
+            return first;
+        }
+    }
+    return last;
 }
 
-template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator*(const interval<T> & t, const interval<U> & u){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return
-        interval<R>(
-            vmin(
-                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            ),
-            vmax(
-                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                checked::multiply<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                checked::multiply<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            )
-        );
-}
-
-template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR inline interval<R> operator/(
-    const interval<T> & t,
-    const interval<U> & u
+template<typename R>
+constexpr bool less_than(
+    const checked_result<R> & x,
+    const checked_result<R> & y
 ){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return
-        (u.l <= 0 && u.u >= 0) ?
-            interval<R>(
-                checked_result<R>(0),
-                checked_result<R>(
-                    exception_type::domain_error,
-                    "interval divisor includes zero"
-                )
-            )
+    return x < y;
+}
+
+template<typename R>
+constexpr checked_result<interval<R>> select(
+    const std::initializer_list<checked_result<R>> & acr
+){
+    typename std::initializer_list<checked_result<R>>::const_iterator const e =         find_if_not(
+            acr.begin(),
+            acr.end(),
+            no_exception<R>
+        );
+    return (acr.end() == e) ?
+        checked_result<interval<R>>(
+            interval<R>(std::minmax(acr, less_than<R>))
+        )
         :
-            interval<R>(
-                vmin(
-                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                ),
-                vmax(
-                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                    checked::divide<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                    checked::divide<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-                )
-            )
+        failed_result<R>// throw assert_failure([]{assert(!"input not in range");})
         ;
 }
 
+}  // namespace
+
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> mod1(
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> add(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    checked_result<R> lower = checked::add<R>(static_cast<T>(t.l), static_cast<U>(u.l));
+    if(! lower.no_exception())
+        return failed_result<R>;
+    checked_result<R> upper = checked::add<R>(static_cast<T>(t.u), static_cast<U>(u.u));
+    if(! upper.no_exception())
+        return failed_result<R>;
+    return interval<R>(lower, upper);
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> subtract(const interval<T> & t, const interval<U> & u){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    checked_result<R> lower = checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u));
+    if(! lower.no_exception())
+        return failed_result<R>;
+    checked_result<R> upper = checked::subtract<R>(static_cast<T>(t.u), static_cast<U>(u.l));
+    if(! upper.no_exception())
+        return failed_result<R>;
+    return interval<R>(lower, upper);
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> multiply(const interval<T> & t, const interval<U> & u){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+
+    return select<R>(
+        std::initializer_list<checked_result<R>> {
+            checked::multiply<R>(t.l, u.l),
+            checked::multiply<R>(t.l, u.u),
+            checked::multiply<R>(t.u, u.l),
+            checked::multiply<R>(t.u, u.u)
+        }
+    );
+}
+
+// divide two intervals.  BUT don't consider the possibility that the
+// denominator might contain a zero.
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide_nz(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    return select<R>( (u.u < 0 || u.l > 0) ?
+        std::initializer_list<checked_result<R>> {
+            checked::divide<R>(t.l, u.l),
+            checked::divide<R>(t.l, u.u),
+            checked::divide<R>(t.u, u.l),
+            checked::divide<R>(t.u, u.u)
+        }
+    :
+        std::initializer_list<checked_result<R>> {
+            checked::divide<R>(t.l, u.l),
+            checked::divide<R>(t.l, -1),
+            checked::divide<R>(t.u, u.l),
+            checked::divide<R>(t.u, -1),
+            checked::divide<R>(t.l, 1),
+            checked::divide<R>(t.l, u.u),
+            checked::divide<R>(t.u, 1),
+            checked::divide<R>(t.u, u.u)
+        }
+    );
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    if(u.l <= 0 && u.u >= 0)
+        return checked_result<interval<R>>(
+            exception_type::domain_error,
+            "interval divisor includes zero"
+        );
+    return divide_nz<R>(t, u);
+}
+
+/*
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> mod1(
     const interval<T> & t,
     const interval<U> & u
 ){
     return
         interval<R>(
-            vmin(
+            std::min(std::initializer_list<R>(
                 checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
                 checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
                 checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
                 checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            ),
-            vmax(
+            )),
+            std::max(std::initializer_list<R>(
                 checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
                 checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
                 checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
                 checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            )
+            ))
         );
 }
+*/
+
+// from http://en.cppreference.com/w/cpp/algorithm/find
+
+/*
+
+    return (acr.end() == e) ?
+        checked_result<interval<R>>(interval<R>(
+            std::max(acr, less_than<R>)
+        ))
+    :
+        failed_result<R>;
+        checked_result<interval<R>>(interval<R>(
+            std::minmax(
+                acr,
+                [](
+                    const checked_result<R> & x,
+                    const checked_result<R> & y
+                ) -> bool {
+                    return static_cast<R>(x) < static_cast<R>(y);
+                }
+            )
+        ))
+*/
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR interval<R> operator%(
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus_nz(
     const interval<T> & t,
     const interval<U> & u
 ){
-    interval<R> i[4];
-    if(t.l < 0 && u.l < 0)
-        i[0] = mod1(interval<R>(t.l, -1), interval<R>(u.l, -1));
-    if(t.l > 0 && u.l < 0)
-        i[1] = mod1(interval<R>(t.l, t.u), interval<R>(u.l, -1));
-    if(t.l < 0 && u.l > 0)
-        i[2] = mod1(interval<R>(t.l, -1), interval<R>(u.l, u.u));
-    if(t.l > 0 && u.l > 0)
-        i[3] = mod1(interval<R>(t.l, t.u), interval<R>(u.l, u.u));
-
-    return interval<R>(
-        vmin(i[0].l, i[1].l, i[2].l, i[3].l),
-        vmax(i[0].l, i[1].l, i[2].l, i[3].l)
+    return select<R>( (u.u < 0 || u.l > 0) ?
+        std::initializer_list<checked_result<R>> {
+            checked::modulus<R>(t.l, u.l),
+            checked::modulus<R>(t.l, u.u),
+            checked::modulus<R>(t.u, u.l),
+            checked::modulus<R>(t.u, u.u)
+        }
+    :
+        std::initializer_list<checked_result<R>> {
+            checked::modulus<R>(t.l, u.l),
+            checked::modulus<R>(t.l, -1),
+            checked::modulus<R>(t.u, u.l),
+            checked::modulus<R>(t.u, 1),
+            checked::modulus<R>(t.l, 1),
+            checked::modulus<R>(t.l, u.u),
+            checked::modulus<R>(t.u, 1),
+            checked::modulus<R>(t.u, u.u)
+        }
     );
+}
 
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
+    if(u.l <= 0 && u.u >= 0)
+        return checked_result<interval<R>>(
+            exception_type::domain_error,
+            "interval modulus includes zero"
+        );
+    return modulus_nz<R>(t, u);
 }
 
 template<typename T, typename U>
@@ -310,9 +310,6 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
     const interval<U> & u
 ){
     return
-        (! t.no_exception() || ! u.no_exception()) ?
-            boost::logic::indeterminate
-        :
         // if every element in t is less than every element in u
         safe_compare::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
             boost::logic::tribool(true)
@@ -332,9 +329,6 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
     const interval<U> & u
 ){
     return
-        (! t.no_exception() || ! u.no_exception()) ?
-            boost::logic::indeterminate
-        :
         // if every element in t is greater than every element in u
         safe_compare::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
             boost::logic::tribool(true)
@@ -383,6 +377,18 @@ namespace std {
 template<typename T>
 std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> & i){
     os << "[" << i.l << "," << i.u << "]";
+    return os;
+}
+
+template<>
+std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<unsigned char> & i){
+    os << "[" << (unsigned)i.l << "," << (unsigned)i.u << "]";
+    return os;
+}
+
+template<>
+std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<signed char> & i){
+    os << "[" << (int)i.l << "," << (int)i.u << "]";
     return os;
 }
 

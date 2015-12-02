@@ -272,7 +272,6 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
-    // typedef print<result_base_type> p_result_base_type;
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
@@ -293,8 +292,8 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
 
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
-    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
-        = operator+<result_base_type>(t_interval, u_interval);
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+        = add<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
     if(r_interval.no_exception()){
@@ -361,8 +360,8 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
-        = operator-<result_base_type>(t_interval, u_interval);
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+        = subtract<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
     if(r_interval.no_exception()){
@@ -437,8 +436,8 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
 
     // when we multiply the temporary intervals above, we'll get a new interval
     // with the correct range for the  product!
-    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
-        = operator*<result_base_type>(t_interval, u_interval);
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+        = multiply<result_base_type>(t_interval, u_interval);
 
         // typedef typename print<max_t>::type p_max_t;
         // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
@@ -534,8 +533,8 @@ SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
 
     // when we divide the temporary intervals above, we'll get a new interval
     // with the correct range for the result!
-    SAFE_NUMERIC_CONSTEXPR const interval<result_base_type> r_interval
-        = operator/<result_base_type>(t_interval, u_interval);
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+        { divide<result_base_type>(t_interval, u_interval) };
 
     // if no over/under flow or domain error possible
     if(r_interval.no_exception()
@@ -594,7 +593,6 @@ inline operator%(const T & t, const U & u){
     );
 
     typedef typename base_type<result_type>::type result_base_type;
-    typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
@@ -609,11 +607,14 @@ inline operator%(const T & t, const U & u){
         return result_type(base_value(t) % base_value(u));
     }
 
+    using t_type = decltype(base_value(t) % base_value(u));
+
     // otherwise do the modulus checking for overflow
     typedef modulus_result<T, U> mr;
     typedef typename mr::P::promotion_policy promotion_policy;
-    checked_result<result_base_type>  r =
-        promotion_policy::template modulus<result_base_type>(
+
+    checked_result<t_type>  r =
+        promotion_policy::template modulus<t_type>(
             base_value(t),
             base_value(u)
         );

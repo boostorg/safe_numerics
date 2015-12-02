@@ -34,7 +34,7 @@ bool test_checked_add(
             v2
         );
 
-    if(result == exception_type::no_exception
+    if(result.no_exception()
     && expected_result != '.'){
         std::cout
             << "failed to detect error in addition "
@@ -48,7 +48,7 @@ bool test_checked_add(
         return false;
     }
     else
-    if(result != exception_type::no_exception
+    if(! result.no_exception()
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "
@@ -127,7 +127,7 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    (std::cout << std::dec << value_index1 << ',' << value_index2 << ','); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
@@ -144,6 +144,7 @@ int main(int argc, char *argv[]){
     bool rval = true;
 
     TEST_EACH_VALUE_PAIR
+    std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }
 

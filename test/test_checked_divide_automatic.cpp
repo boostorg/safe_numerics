@@ -8,7 +8,9 @@
 #include <cxxabi.h>
 #include <cstdlib>   // EXIT_SUCCESS
 #include <iostream>
+#include <boost/integer.hpp> // int_t<bits>::fast
 
+#include "../include/automatic.hpp" // bits
 #include "../include/checked_result.hpp"
 #include "../include/checked.hpp"
 
@@ -27,36 +29,33 @@ bool test_checked_divide(
         << av1 << " / " << av2
         << std::endl;
 
-    typedef decltype(T1() / T2()) result_type;
+    using result_type = typename boost::mpl::if_c<
+        std::numeric_limits<T1>::is_signed
+        || std::numeric_limits<T2>::is_signed,
+        std::intmax_t,
+        std::uintmax_t
+    >::type;
 
-    checked_result<result_type> result = checked::divide<result_type>(
-        v1,
-        v2
-    );
+    checked_result<result_type> result
+        = checked::divide_automatic<result_type>(v1, v2);
 
-    if(result == exception_type::no_exception
+    if(result.no_exception()
     && expected_result != '.'){
         std::cout
             << "failed to detect error in division "
             << std::hex << "0x" << result << "(" << std::dec << result << ")"
             << " != "<< av1 << " / " << av2
             << std::endl;
-        result = checked::divide<result_type>(
-            v1,
-            v2
-        );
+        result = checked::divide_automatic<result_type>(v1, v2);
         return false;
     }
     else
-    if(result != exception_type::no_exception
+    if(! result.no_exception()
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "
             << std::hex << result <<  av1 << " / " << av2 << std::dec << std::endl;
-        result = checked::divide<result_type>(
-            v1,
-            v2
-        );
+        result = checked::divide_automatic<result_type>(v1, v2);
         return false;
     }
     return true; // correct result
@@ -75,21 +74,21 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 //      01234567890123456789012345678901
 /* 0*/ "................................",
 /* 1*/ "................................",
-/* 2*/ "........................xxxxxxxx",
-/* 3*/ "........................xxxxxxxx",
-/* 4*/ ".................................",
+/* 2*/ "................................",
+/* 3*/ "................................",
+/* 4*/ "................................",
 /* 5*/ "................................",
-/* 6*/ "........................xxxxxxxx",
-/* 7*/ "........................xxxxxxxx",
+/* 6*/ "................................",
+/* 7*/ "................................",
 
 /* 8*/ "................................",
 /* 9*/ "................................",
-/*10*/ "...x...x...x............xxxxxxxx",
-/*11*/ "........................xxxxxxxx",
+/*10*/ "................................",
+/*11*/ "................................",
 /*12*/ "................................",
 /*13*/ "................................",
-/*14*/ "...x...x...x...x............xxxx",
-/*15*/ "............................xxxx",
+/*14*/ "...x...x...x...x................",
+/*15*/ "................................",
 
 //      0       0       0       0
 //      01234567012345670123456701234567
@@ -103,14 +102,14 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 /*22*/ "................................",
 /*23*/ "................................",
 
-/*24*/ "..xx..xx..xx....................",
-/*25*/ "..xx..xx..xx....................",
-/*26*/ "..xx..xx..xx....................",
-/*27*/ "..xx..xx..xx....................",
-/*28*/ "..xx..xx..xx..xx................",
-/*29*/ "..xx..xx..xx..xx................",
-/*30*/ "..xx..xx..xx..xx................",
-/*31*/ "..xx..xx..xx..xx................"
+/*24*/ "................................",
+/*25*/ "................................",
+/*26*/ "................................",
+/*27*/ "................................",
+/*28*/ "................................",
+/*29*/ "................................",
+/*30*/ "xxxxxxxxxxxxxxxx................",
+/*31*/ "xxxxxxxxxxxxxxxx................"
 };
 
 #define TEST_IMPL(v1, v2, result) \

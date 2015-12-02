@@ -132,41 +132,24 @@ struct automatic {
             base_value(std::numeric_limits<U>::max())
         };
 
-        typedef  calculate_max_t<T, U> max_t;
+        typedef calculate_max_t<T, U> max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
-            = operator+<max_t>(t, u);
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+            = add<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
-            static_cast<max_t>(r.l)
-        :
-            std::numeric_limits<max_t>::min()
-        ;
+        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
-            static_cast<max_t>(r.u)
-        :
-            std::numeric_limits<max_t>::max()
-        ;
-
-        // typedef typename print<max_t>::type p_max_t;
-        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
-        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
-
-        static_assert(
-            newmin < newmax,
-            "new minimumum must be less than new maximum"
-        );
-
-        static_assert(
-            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
-            "newmin < 0 and unsigned can't happen"
-        );
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+            r.no_exception() ?
+                static_cast<interval<max_t>>(r)
+            :
+                default_interval
+            ;
 
         typedef typename safe_range<
             max_t,
-            newmin,
-            newmax,
+            result_interval.l,
+            result_interval.u,
             P,
             E
         >::type type;
@@ -189,39 +172,23 @@ struct automatic {
         };
 
         typedef calculate_max_t<T, U> max_t;
-        // typedef typename print<max_t>::type p_max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
-            = operator-<max_t>(t, u);
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+            = subtract<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
-            static_cast<max_t>(r.l)
-        :
-            std::numeric_limits<max_t>::min()
-        ;
-        // typedef print<std::integral_constant<max_t, newmin>> p_newmin;
+        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
-            static_cast<max_t>(r.u)
-        :
-            std::numeric_limits<max_t>::max()
-        ;
-        // typedef print<std::integral_constant<max_t, newmax>> p_newmax;
-
-        static_assert(
-            newmin < newmax,
-            "new minimumum must be less than new maximum"
-        );
-
-        static_assert(
-            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
-            "newmin < 0 and unsigned can't happen"
-        );
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+            r.no_exception() ?
+                static_cast<interval<max_t>>(r)
+            :
+                default_interval
+            ;
 
         typedef typename safe_range<
             max_t,
-            newmin,
-            newmax,
+            result_interval.l,
+            result_interval.u,
             P,
             E
         >::type type;
@@ -246,47 +213,41 @@ struct automatic {
         typedef calculate_max_t<T, U> max_t;
         // typedef print<max_t> p_max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> r
-            = operator*<max_t>(t, u);
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+            {multiply<max_t>(t, u)};
 
-        // typedef print<std::integral_constant<max_t, r.l>> p_r_l;
-        // typedef print<std::integral_constant<max_t, r.u>> p_r_u;
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = r.l.no_exception() ?
-            static_cast<max_t>(r.l)
-        :
-            std::numeric_limits<max_t>::min()
-        ;
-
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = r.u.no_exception() ?
-            static_cast<max_t>(r.u)
-        :
-            std::numeric_limits<max_t>::max()
-        ;
-
-        // typedef print<std::integral_constant<max_t, newmin>> p_newmin;
-        // typedef print<std::integral_constant<max_t, newmax>> p_newmax;
-
-        static_assert(
-            newmin < newmax,
-            "new minimumum must be less than new maximum"
-        );
-
-        static_assert(
-            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
-            "newmin < 0 and unsigned can't happen"
-        );
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+            r.no_exception() ?
+                static_cast<interval<max_t>>(r)
+            :
+                default_interval
+            ;
 
         typedef typename safe_range<
             max_t,
-            newmin,
-            newmax,
+            result_interval.l,
+            result_interval.u,
             P,
             E
         >::type type;
     };
 
     ///////////////////////////////////////////////////////////////////////
+    template<class T, class U>
+    constexpr static int bits(){
+        // figure number of bits in quotient
+        return std::min(
+            std::numeric_limits<T>::digits
+            + 1  // one guard bit to cover u == -1 & t = numeric_limits<T>::min()
+            + 1  // one sign bit
+            ,
+            std::numeric_limits<std::intmax_t>::digits
+            + 1  // one sign bit
+        );
+    }
+
     template<typename T, typename U, typename P, typename E>
     struct division_result {
         typedef typename base_type<T>::type base_type_t;
@@ -300,125 +261,43 @@ struct automatic {
             "interval<base_type_u> is not tliteral type"
         );
 
-        constexpr static interval<base_type_t> t(){
-            return interval<base_type_t>(
+        constexpr static interval<base_type_t> t {
+            interval<base_type_t>(
                 base_value(std::numeric_limits<T>::min()),
                 base_value(std::numeric_limits<T>::max())
-            );
+            )
         };
-        constexpr static interval<base_type_u> u(){
-            return interval<base_type_u>(
+        constexpr static interval<base_type_u> u {
+            interval<base_type_u>(
                 base_value(std::numeric_limits<U>::min()),
                 base_value(std::numeric_limits<U>::max())
-            );
+            )
         };
 
-        using max_t = typename boost::mpl::if_c<
+        using base_type_r = typename boost::mpl::if_c<
             std::numeric_limits<base_type_t>::is_signed
             || std::numeric_limits<base_type_u>::is_signed,
             std::intmax_t,
             std::uintmax_t
         >::type;
 
-        template<typename Tx>
-        SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_upper(const interval<Tx> & t){
-            static_assert(
-                std::is_literal_type< interval<Tx> >::value,
-                "interval<Tx> is not literal type"
-            );
-            return interval<Tx>(
-                vmax(checked_result<Tx>(1), t.l),
-                t.u
-            );
-        }
-        template<typename Tx>
-        SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_lower(const interval<Tx> & t){
-            static_assert(
-                std::is_literal_type< interval<Tx> >::value,
-                "interval<Tx> is not literal type"
-            );
-            return interval<Tx>(
-                t.l,
-                vmin(checked_result<Tx>(-1), t.u)
-            );
-        }
-
-        // result unsigned
-        template<class R, typename Tx, typename Ux>
-        static typename boost::enable_if_c<
-            ! std::numeric_limits<Ux>::is_signed,
-            const interval<R>
-        >::type
-        SAFE_NUMERIC_CONSTEXPR r(
-            const interval<Tx> & t,
-            const interval<Ux> & u
-        ){
-            if(u.l > 0)
-                return operator/<R>(t, u);
-            else
-                return operator/<R>(t, r_upper(u)) ;
+        SAFE_NUMERIC_CONSTEXPR static checked_result<interval<base_type_r>> r {
+            divide_nz<base_type_r>(t, u)
         };
 
-        // result signed
-        template<class R, typename Tx, typename Ux>
-        static typename boost::enable_if_c<
-            std::numeric_limits<Ux>::is_signed,
-            const interval<R>
-        >::type
-        SAFE_NUMERIC_CONSTEXPR r(
-            const interval<Tx> & t,
-            const interval<Ux> & u
-        ){
-            if(u.l > 0 || u.u < 0){
-                return operator/<R>(t, u);
-            }
-            else{
-                auto lower = operator/<R>(t,r_lower(u));
-                auto upper = operator/<R>(t,r_upper(u));
-                return
-                    interval<R>(
-                        vmin(lower.l, upper.l),
-                        vmax(lower.u, upper.u)
-                    );
-            }
-        }
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> default_interval{};
 
-        //typedef print<std::integral_constant<bool,  (u.l > 0) >> p_ulgt0;
-        //typedef print<std::integral_constant<bool,  (u.u < 0) >> p_uult0;
-
-        constexpr const static interval<max_t> ni = r<max_t>(t(), u());
-
-        //static_assert(ni.l.no_exception(), "invalid lower bound");
-        //static_assert(ni.u.no_exception(), "invalid upper bound");
-
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmin = ni.l.no_exception() ?
-            static_cast<max_t>(ni.l)
-        :
-            std::numeric_limits<max_t>::min()
-        ;
-        //typedef print<std::integral_constant<max_t, newmin>> p_newmin;
-
-        SAFE_NUMERIC_CONSTEXPR static const max_t newmax = ni.u.no_exception() ?
-            static_cast<max_t>(ni.u)
-        :
-            std::numeric_limits<max_t>::max()
-        ;
-        //typedef print<std::integral_constant<max_t, newmax>> p_newmax;
-
-        static_assert(
-            newmin <= newmax,
-            "new minimumum must be less than new maximum"
-        );
-
-        static_assert(
-            std::numeric_limits<max_t>::min() >= 0 || std::is_signed<max_t>::value,
-            "newmin < 0 and unsigned can't happen"
-        );
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> result_interval {
+            r.no_exception() ?
+                static_cast<interval<base_type_r>>(r)
+            :
+                default_interval
+         };
 
         typedef typename safe_range<
-            max_t,
-            newmin,
-            newmax,
+            base_type_r,
+            result_interval.l,
+            result_interval.u,
             P,
             E
         >::type type;
@@ -447,20 +326,35 @@ struct automatic {
             std::is_literal_type< interval<base_type_u> >::value,
             "interval<base_type_u> is not tliteral type"
         );
-        using max_t = typename boost::mpl::if_c<
-            std::numeric_limits<base_type_t>::is_signed
-            || std::numeric_limits<base_type_u>::is_signed,
-            std::intmax_t,
-            std::uintmax_t
-        >::type;
 
-        //typedef print<max_t> p_max_t;
-        //typedef print<typename base_type<U>::type > p_U_t;
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        using base_type_r = std::make_unsigned_t<base_type_u>;
+
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval<base_type_r>> r
+            { modulus_nz<base_type_r>(t, u) };
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> default_interval{};
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> result_interval =
+            r.no_exception() ?
+                static_cast<interval<base_type_r>>(r)
+            :
+                default_interval
+            ;
 
         typedef typename safe_range<
-            max_t,
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max()),
+            base_type_r,
+            result_interval.l,
+            result_interval.u,
             P,
             E
         >::type type;

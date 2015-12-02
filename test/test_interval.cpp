@@ -3,20 +3,37 @@
 #include <ostream>
 #include <cstdint>
 #include <cxxabi.h>
+#include <algorithm> // max, min
 
 #include "../include/interval.hpp"
 #include <boost/logic/tribool_io.hpp>
+
+/*
+namespace boost {
+namespace numeric {
+namespace {
+
+template<typename R>
+constexpr checked_result<interval<R>> failed_result(
+    exception_type::domain_error,
+    "indefinte interval"
+);
+
+}  // namespace
+}  // numeric
+}  // boosat
+*/
 
 bool test1(){
     using namespace boost::numeric;
     std::cout << "test1" << std::endl;
     interval<std::int16_t> x = {-64, 63};
-    std::cout << "x = " << x;
+    std::cout << "x = " << x << std::endl;
     interval<std::int16_t> y(-128, 126);
-    std::cout << "y = " << y;
-    assert(operator+<std::int16_t>(x,x) == y);
-    std::cout << "x + x =" << operator+<std::int16_t>(x, x);
-    std::cout << "x - x = " << operator-<std::int16_t>(x, x);
+    std::cout << "y = " << y << std::endl;
+    assert(static_cast<interval<std::int16_t>>(add<std::int16_t>(x,x)) == y);
+    std::cout << "x + x =" << add<std::int16_t>(x, x) << std::endl;
+    std::cout << "x - x = " << subtract<std::int16_t>(x, x) << std::endl;
     return true;
 }
 
@@ -24,7 +41,7 @@ bool test2(){
     using namespace boost::numeric;
     std::cout << "test2" << std::endl;
     boost::numeric::interval<std::int16_t> x = {-64, 63};
-    std::cout << "x = " << x;
+    std::cout << "x = " << x << std::endl;
     std::cout << std::boolalpha << "(x == x) = " << (x == x) << std::endl;
     return true;
 }
@@ -33,11 +50,11 @@ bool test3(){
     using namespace boost::numeric;
     std::cout << "test3" << std::endl;
     interval<std::int8_t> t;
-    std::cout << "t = " << t;
+    std::cout << "t = " << t << std::endl;
     interval<std::uint64_t> u;
-    std::cout << "u = " << u;
+    std::cout << "u = " << u << std::endl;
     using max_t = unsigned long long;
-    interval<checked_result<max_t>> r = operator+<max_t>(t, u);
+    interval< max_t> r = add<max_t>(t, u);
     std::cout << "r = " << r << std::endl;
     return true;
 }
@@ -56,7 +73,7 @@ namespace test4 {
             "interval<Tx> is not literal type"
         );
         return interval<Tx>(
-            vmax(static_cast<Tx>(1), t.l),
+            std::max(Tx(1), t.l),
             t.u
         );
     }
@@ -68,60 +85,58 @@ namespace test4 {
         );
         return interval<Tx>(
             t.l,
-            vmin(static_cast<Tx>(-1), t.u)
+            std::min(Tx(-1), t.u)
         );
     }
 
     template<typename Tx, typename Ux>
-    SAFE_NUMERIC_CONSTEXPR static const interval<checked_result<max_t> > r(
+    SAFE_NUMERIC_CONSTEXPR static const checked_result<interval<max_t>> r(
         const interval<Tx> & t,
         const interval<Ux> & u
     ){
         if(std::numeric_limits<Ux>::is_signed){
             if(u.l > 0 || u.u < 0){
-                auto retval = operator/<max_t>(t, u);
-                // typedef print<decltype(retval)> p_retval;
-                return retval;
-                //return operator/<max_t>(t, u);
+                return divide<max_t>(t, u);
             }
             else{
-                auto lower = operator/<max_t>(t,r_lower(u));
-                // typedef print<decltype(lower)> p_lower;
-                auto upper = operator/<max_t>(t,r_upper(u));
-                // typedef print<decltype(upper)> p_lower;
+                checked_result<interval<max_t>> lower = divide<max_t>(t,r_lower(u));
+                if(! lower.no_exception())
+                    return failed_result<max_t>;
+                checked_result<interval<max_t>> upper = divide<max_t>(t,r_upper(u));
+                if(! upper.no_exception())
+                    return failed_result<max_t>;
+                const interval< max_t> & il = lower;
+                const interval< max_t> & iu = upper;
                 return
-                    interval<checked_result<max_t> >(
-                        vmin(lower.l, upper.l),
-                        vmax(lower.u, upper.u)
+                    interval< max_t>(
+                        std::min(il.l, iu.l),
+                        std::max(il.u, iu.u)
                     );
-                /*
-                */
-                // return t;
             }
         }
         else{ // u is unsigned
             if(u.l > 0)
-                return operator/<max_t>(t, u);
+                return divide<max_t>(t, u);
             else
-                return operator/<max_t>(t, r_upper(u)) ;
+                return divide<max_t>(t, r_upper(u)) ;
         };
     };
 
     bool test1(){
         using namespace boost::numeric;
         int status;
-        std::cout << "test4::test1" << std::endl;
+        std::cout << "test4::test1 int8_t / int8_t new range ignoring zero" << std::endl;
         const interval<std::int8_t> t;
         std::cout
             << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
             << " t = "
-            << t;
+            << t << std::endl;
         const interval<std::int8_t> u;
         std::cout
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
-            << u;
-        const interval<checked_result<max_t> > rx = r(t, u);
+            << u << std::endl;
+        const interval<max_t> rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -132,18 +147,18 @@ namespace test4 {
     bool test2(){
         using namespace boost::numeric;
         int status;
-        std::cout << "test4::test2" << std::endl;
+        std::cout << "test4::test2 int8_t / int64_t new range ignoring zero" << std::endl;
         const interval<std::int8_t> t;
         std::cout
             << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
             << " t = "
-            << t;
+            << t << std::endl;
         const interval<std::int64_t> u;
         std::cout
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
-            << u;
-        const interval<checked_result<max_t> > rx = r(t, u);
+            << u << std::endl;
+        const interval<max_t> rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -154,18 +169,18 @@ namespace test4 {
     bool test3(){
         using namespace boost::numeric;
         int status;
-        std::cout << "test4::test3" << std::endl;
+        std::cout << "test4::test3  int8_t / int64_t new range ignoring zer0" << std::endl;
         const interval<std::int8_t> t;
         std::cout
             << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
             << " t = "
-            << t;
+            << t << std::endl;
         const interval<std::uint64_t> u;
         std::cout
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
-            << u;
-        const interval<checked_result<max_t> > rx = r(t, u);
+            << u << std::endl;
+        const interval<max_t> rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "
@@ -177,7 +192,7 @@ namespace test4 {
     bool test4(){
         using namespace boost::numeric;
         int status;
-        std::cout << "test4::test4" << std::endl;
+        std::cout << "test4::test4 multiply" << std::endl;
         const interval<T> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
@@ -197,8 +212,8 @@ namespace test4 {
             << u_interval
             << std::endl;
         using R = decltype(U() * T());
-        const interval<checked_result<R> > r_interval
-            = operator*<R>(t_interval, u_interval);
+        const checked_result<interval<R> > r_interval
+            = multiply<R>(t_interval, u_interval);
         std::cout
             << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
             << " r_interval = "
@@ -206,7 +221,81 @@ namespace test4 {
             << std::endl;
         return true;
     }
-}
+    template<typename T, typename U>
+    bool test5(){
+        using namespace boost::numeric;
+        int status;
+        std::cout << "test4::test4 divide_nz" << std::endl;
+        const interval<T> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+            << " t_interval = "
+            << t_interval
+            << std::endl;
+        const interval<U> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+            << " u_interval = "
+            << u_interval
+            << std::endl;
+        using R = decltype(U() * T());
+        const checked_result<interval<R> > r_interval
+            = divide_nz<R>(t_interval, u_interval);
+        std::cout
+            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+            << " r_interval = "
+            << r_interval
+            << std::endl;
+        return true;
+    }
+    template<typename T, typename U>
+    bool test6(){
+        using namespace boost::numeric;
+        int status;
+        std::cout << "test4::test4 subtract" << std::endl;
+        const interval<T> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+            << " t_interval = "
+            << t_interval
+            << std::endl;
+        const interval<U> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+            << " u_interval = "
+            << u_interval
+            << std::endl;
+        using R = decltype(U() * T());
+        const checked_result<interval<R> > r_interval
+            = subtract<R>(t_interval, u_interval);
+        std::cout
+            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+            << " r_interval = "
+            << r_interval
+            << std::endl;
+        return true;
+    }
+    template<typename T, typename U>
+    bool test(){
+        return
+            test4<T, U>() &&
+            test5<T, U>() &&
+            test6<T, U>()
+        ;
+    }
+} // test4
 
 int main(){
     bool rval = (
@@ -216,9 +305,12 @@ int main(){
         test4::test1() &&
         test4::test2() &&
         test4::test3() &&
-        test4::test4<std::int32_t, std::uint8_t>() &&
-        test4::test4<std::int8_t, std::int8_t>() &&
-        test4::test4<std::int64_t, std::uint8_t>()
+        test4::test<std::int8_t, std::int8_t>() &&
+        test4::test<std::int8_t, std::uint8_t>() &&
+        test4::test<std::uint8_t, std::int16_t>() &&
+        test4::test<std::int32_t, std::uint8_t>() &&
+        test4::test<std::int32_t, std::int8_t>() &&
+        test4::test<std::int64_t, std::uint8_t>()
     );
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return rval ? EXIT_SUCCESS : EXIT_FAILURE;

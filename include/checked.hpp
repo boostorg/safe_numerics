@@ -20,7 +20,6 @@
 #include <algorithm> // std::max
 
 #include <boost/utility/enable_if.hpp>
-#include <boost/integer.hpp>
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
@@ -443,25 +442,9 @@ SAFE_NUMERIC_CONSTEXPR divide(
 
 namespace detail_automatic {
 
-    template<class T, class U>
-    constexpr static int bits(){
-        // n is number of bits including sign
-        return std::min(
-            std::max(
-                std::numeric_limits<T>::digits,
-                std::numeric_limits<U>::digits
-            )
-            + 1  // one guard bit to cover u == -1 & t = numeric_limits<T>::min()
-            + 1  // one sign bit
-            ,
-            std::numeric_limits<std::intmax_t>::digits
-            + 1  // one sign bit
-        );
-    }
-
     template<class R, class T, class U>
     typename boost::enable_if_c<
-        !std::numeric_limits<U>::is_signed,
+        ! std::numeric_limits<U>::is_signed,
         checked_result<R>
     >::type
     SAFE_NUMERIC_CONSTEXPR divide(
@@ -480,17 +463,18 @@ namespace detail_automatic {
         const T & t,
         const U & u
     ){
-        using t_type = typename boost::int_t<bits<T, U>()>::fast;
-        if(std::numeric_limits<T>::digits == std::numeric_limits<t_type>::digits){
-            if(u == -1 && t == std::numeric_limits<T>::min())
-                return
-                    checked_result<R>(
-                        exception_type::domain_error,
-                        "result cannot be represented"
-                    )
-                ;
-        }
-        return cast<t_type>(t) / cast<t_type>(u);
+        if(u == -1 && t == std::numeric_limits<R>::min())
+            return
+                checked_result<R>(
+                    exception_type::domain_error,
+                    "result cannot be represented"
+                )
+            ;
+        checked_result<R> tx = checked::cast<R>(t);
+        if(! tx.no_exception())
+            return tx;
+        return static_cast<R>(tx) / u;
+
     }
 
 } // detail_automatic
@@ -513,42 +497,15 @@ SAFE_NUMERIC_CONSTEXPR divide_automatic(
 ////////////////////////////////
 // safe modulus on unsafe types
 
-namespace detail {
-
-template<class R>
-typename boost::enable_if_c<
-    std::is_unsigned<R>::value,
-    checked_result<R>
->::type
-SAFE_NUMERIC_CONSTEXPR modulus(
-    const R t,
-    const R u
-) {
-    return checked_result<R>(t % u);
+template<class T>
+constexpr std::make_unsigned_t<T>
+abs(const T & t){
+    return (t < 0 && t != std::numeric_limits<T>::min()) ?
+        -t
+    :
+        t
+    ;
 }
-
-template<class R>
-typename boost::enable_if_c<
-    std::is_signed<R>::value,
-    checked_result<R>
->::type
-SAFE_NUMERIC_CONSTEXPR modulus(
-    const R t,
-    const R u
-){
-    return
-        // note presumption of two's complement arithmetic
-        (u < 0 && t == std::numeric_limits<R>::min()) ?
-            checked_result<R>(
-                exception_type::domain_error,
-                "result cannot be represented"
-            )
-        :
-            checked_result<R>(t % u)
-        ;
-}
-
-} // namespace detail
 
 template<class R, class T, class U>
 checked_result<R>
@@ -564,24 +521,7 @@ SAFE_NUMERIC_CONSTEXPR modulus(
             "denominator is zero"
         );
 
-    // note the following will flag as erroneous certain operations which
-    // appear to be correct.  In particular (std::int8_t) % (std::uint32)
-    // where the denominator = 1 will yield the correct result even though
-    // it entails inverting the sign of the numerator.  We'll consider it
-    // an error inspite of the fact it yields a zero as one would expect
-    // in this specific case.
-    const checked_result<R> rt = cast<R>(t);
-    if(! rt.no_exception())
-        return rt;
-
-    const checked_result<R> ru = cast<R>(u);
-    if(! ru.no_exception())
-        return ru;
-
-    return detail::modulus(
-        static_cast<R>(rt),
-        static_cast<R>(ru)
-    );
+    return cast<R>(abs(t) % abs(u));
 }
 
 ///////////////////////////////////
