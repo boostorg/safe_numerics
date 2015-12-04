@@ -217,53 +217,6 @@ SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide(
     return divide_nz<R>(t, u);
 }
 
-/*
-template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> mod1(
-    const interval<T> & t,
-    const interval<U> & u
-){
-    return
-        interval<R>(
-            std::min(std::initializer_list<R>(
-                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            )),
-            std::max(std::initializer_list<R>(
-                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.l)),
-                checked::modulus<R>(static_cast<T>(t.l), static_cast<U>(u.u)),
-                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.l)),
-                checked::modulus<R>(static_cast<T>(t.u), static_cast<U>(u.u))
-            ))
-        );
-}
-*/
-
-// from http://en.cppreference.com/w/cpp/algorithm/find
-
-/*
-
-    return (acr.end() == e) ?
-        checked_result<interval<R>>(interval<R>(
-            std::max(acr, less_than<R>)
-        ))
-    :
-        failed_result<R>;
-        checked_result<interval<R>>(interval<R>(
-            std::minmax(
-                acr,
-                [](
-                    const checked_result<R> & x,
-                    const checked_result<R> & y
-                ) -> bool {
-                    return static_cast<R>(x) < static_cast<R>(y);
-                }
-            )
-        ))
-*/
-
 template<typename R, typename T, typename U>
 SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus_nz(
     const interval<T> & t,
@@ -302,6 +255,32 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus(
             "interval modulus includes zero"
         );
     return modulus_nz<R>(t, u);
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> left_shift(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return select<R>( std::initializer_list<checked_result<R>> {
+        checked::left_shift<R>(t.l, u.l),
+        checked::left_shift<R>(t.l, u.u),
+        checked::left_shift<R>(t.u, u.l),
+        checked::left_shift<R>(t.u, u.u)
+    });
+}
+
+template<typename R, typename T, typename U>
+SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> right_shift(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return select<R>( std::initializer_list<checked_result<R>> {
+        checked::right_shift<R>(t.l, u.l),
+        checked::right_shift<R>(t.l, u.u),
+        checked::right_shift<R>(t.u, u.l),
+        checked::right_shift<R>(t.u, u.u)
+    });
 }
 
 template<typename T, typename U>

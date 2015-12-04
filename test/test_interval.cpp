@@ -288,11 +288,45 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
+    bool test7(){
+        using namespace boost::numeric;
+        int status;
+        std::cout << "test4::test4 left shift" << std::endl;
+        const interval<T> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+            << " t_interval = "
+            << t_interval
+            << std::endl;
+        const interval<U> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+        std::cout
+            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+            << " u_interval = "
+            << u_interval
+            << std::endl;
+        using R = T;
+        const checked_result<interval<R> > r_interval
+            = left_shift<R>(t_interval, u_interval);
+        std::cout
+            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+            << " r_interval = "
+            << r_interval
+            << std::endl;
+        return true;
+    }
+    template<typename T, typename U>
     bool test(){
         return
             test4<T, U>() &&
             test5<T, U>() &&
-            test6<T, U>()
+            test6<T, U>() &&
+            test7<T, U>()
         ;
     }
 } // test4

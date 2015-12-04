@@ -439,10 +439,6 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
         = multiply<result_base_type>(t_interval, u_interval);
 
-        // typedef typename print<max_t>::type p_max_t;
-        // typedef typename print<std::integral_constant<max_t, newmin>>::type p_newmin;
-        // typedef typename print<std::integral_constant<max_t, newmax>>::type p_newmax;
-
     // if no over/under flow possible
     if(r_interval.no_exception())
         return result_type(
@@ -451,7 +447,7 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
         );
 
     // otherwise do the multiplication checking for overflow
-    checked_result<result_base_type>  r = checked::multiply<result_base_type>(
+    const checked_result<result_base_type>  r = checked::multiply<result_base_type>(
         base_value(t),
         base_value(u)
     );
@@ -626,10 +622,6 @@ inline operator%(const T & t, const U & u){
 /////////////////////////////////////////////////////////////////
 // comparison
 
-// note: not really correct.  Should subject both t and u to type
-// promotion to R.  Then interval::operator< can be simpler
-// as can checked::less_than.  This is a relic of the previous system
-// still to do.
 template<class T, class U>
 typename boost::lazy_enable_if<
     boost::mpl::or_<
@@ -807,15 +799,35 @@ SAFE_NUMERIC_CONSTEXPR inline operator<<(const T & t, const U & u){
         "Promotion failed to return safe type"
     );
 
-    // note: it's possible to trap some sitations at compile and skip
-    // the error checking.  Maybe later - for now check all the time.
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
 
-     const checked_result<result_base_type> r = {
-        checked::left_shift<result_base_type>(base_value(t), base_value(u))
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval {
+        left_shift<result_base_type>(t_interval, u_interval)
     };
 
+    // if it's impossible to create an invalid result
+    if(r_interval.no_exception())
+        // just return the normal calcuation
+        return result_type(t << u);
+
+    const checked_result<result_base_type> r = checked::left_shift<result_base_type>(
+        base_value(t),
+        base_value(u)
+    );
+
     r.template dispatch<exception_policy>();
-    return static_cast<result_type>(static_cast<result_base_type>(r));
+    return result_type(static_cast<result_base_type>(r));
 }
 
 template<class T, class U>
@@ -842,23 +854,43 @@ typename boost::lazy_enable_if_c<
 >::type
 SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
     // INT13-CPP
-    typedef right_shift_result<T, U> lsr;
-    typedef typename lsr::P::exception_policy exception_policy;
-    typedef typename lsr::type result_type;
+    typedef right_shift_result<T, U> rsr;
+    typedef typename rsr::P::exception_policy exception_policy;
+    typedef typename rsr::type result_type;
     typedef typename base_type<result_type>::type result_base_type;
     static_assert(
         boost::numeric::is_safe<result_type>::value,
         "Promotion failed to return safe type"
     );
+    typedef typename base_type<T>::type t_base_type;
+    typedef typename base_type<U>::type u_base_type;
 
-    // note: it's possible to trap some sitations at compile and skip
-    // the error checking.  May later - for now check all the time.
+    // filter out case were overflow cannot occur
+    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
 
-    const checked_result<result_base_type> r = {
-        checked::right_shift<result_base_type>(base_value(t), base_value(u))
+    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval {
+        right_shift<result_base_type>(t_interval, u_interval)
     };
+
+    // if it's impossible to create an invalid result
+    if(r_interval.no_exception())
+        // just return the normal calcuation
+        return result_type(t >> u);
+
+    const checked_result<result_base_type> r = checked::right_shift<result_base_type>(
+        base_value(t),
+        base_value(u)
+    );
+
     r.template dispatch<exception_policy>();
-    return static_cast<result_type>(static_cast<result_base_type>(r));
+    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////

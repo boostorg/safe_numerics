@@ -44,6 +44,8 @@ cast(
     std::numeric_limits<R>::is_signed ?
         // T is signed
         std::numeric_limits<T>::is_signed ?
+            // INT32-C Ensure that operations on signed
+            // integers do not overflow
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -58,6 +60,8 @@ cast(
             :
                 checked_result<R>(t)
         : // T is unsigned
+            // INT30-C Ensure that unsigned integer operations
+            // do not wrap
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -67,6 +71,8 @@ cast(
                 checked_result<R>(t)
     : // std::numeric_limits<R>::is_signed
         // T is signed
+        // INT32-C Ensure that operations on signed
+        // integers do not overflow
         ! std::numeric_limits<T>::is_signed ?
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
@@ -108,6 +114,7 @@ namespace detail {
         const R u
     ) {
         return
+            // INT30-C. Ensure that unsigned integer operations do not wrap
             std::numeric_limits<R>::max() - u < t ?
                 checked_result<R>(
                     exception_type::overflow_error,
@@ -129,6 +136,7 @@ namespace detail {
         const R u
     ) {
         return
+            // INT32-C. Ensure that operations on signed integers do not result in overflow
             ((u > 0) && (t > (std::numeric_limits<R>::max() - u)))
             || ((u < 0) && (t < (std::numeric_limits<R>::min() - u))) ?
                 checked_result<R>(
@@ -176,7 +184,7 @@ SAFE_NUMERIC_CONSTEXPR subtract(
     const R t,
     const R u
 ) {
-    // INT30-C
+    // INT30-C. Ensure that unsigned integer operations do not wrap
     return
         t < u ?
             checked_result<R>(
@@ -199,6 +207,7 @@ SAFE_NUMERIC_CONSTEXPR subtract(
     const R u
 ) { // INT32-C
     return
+        // INT32-C. Ensure that operations on signed integers do not result in overflow
         ((u > 0) && (t < (std::numeric_limits<R>::min() + u)))
         || ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
             checked_result<R>(
@@ -529,40 +538,39 @@ SAFE_NUMERIC_CONSTEXPR modulus(
 
 namespace detail {
 
-template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> check_shift(
+template<class T, class U>
+SAFE_NUMERIC_CONSTEXPR checked_result<U> check_shift(
     const T & t,
     const U & u
 ) {
-    // INT13-CPP C++ standard paragraph 5.8
-    static_assert(
-        std::numeric_limits<T>::is_integer,
-        "shift operation can only be applied to integers"
-    );
-    static_assert(
-        std::numeric_limits<U>::is_integer,
-        "number of bits to shift must be an integer"
-    );
-    const checked_result<R> ru = cast<R>(u);
-    // INT34-C C++ standard paragraph 5.8
-    return
-        ( ! ru.no_exception()) ?
-            ru
-        :
-        ( ru < 0) ?
-            checked_result<R>(
-               exception_type::domain_error,
-               "shifting negative amount is undefined behavior"
-            )
-        :
-        ( ru > std::numeric_limits<T>::digits) ?
-            checked_result<R>(
-               exception_type::domain_error,
-               "shifting more bits than available is undefined behavior"
-            )
-        :
-            checked_result<R>(0)
-    ;
+    if(! std::numeric_limits<T>::is_integer){
+        return checked_result<U>(
+            exception_type::domain_error,
+            "shift operation can only be applied to integers"
+        );
+    }
+    if(! std::numeric_limits<U>::is_integer){
+        return checked_result<U>(
+            exception_type::domain_error,
+            "number of bits to shift must be an integer"
+        );
+    }
+    // INT34-CPP C++ standard paragraph 5.8
+    if(u < 0){
+        return checked_result<U>(
+           exception_type::domain_error,
+           "shifting negative amount is undefined behavior"
+        );
+    }
+    // INT34-CPP C++ standard paragraph 5.8
+    if(u > std::numeric_limits<T>::digits){
+        return checked_result<U>(
+           exception_type::domain_error,
+           "shifting more bits than available is undefined behavior"
+        );
+    }
+
+    return u;
 }
 
 } // detail
@@ -573,13 +581,30 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> left_shift(
     const T & t,
     const U & u
 ) {
-    const checked_result<R> r = detail::check_shift<R>(t, u);
-    return
-        (! r.no_exception()) ?
-            r
-        :
-            checked_result<R>(static_cast<R>(r) << t);
-        ;
+    const checked_result<U> ux = detail::check_shift(t, u);
+    if(! ux.no_exception())
+        return checked_result<R>(ux.m_e, ux.m_msg);
+
+    //static_assert(u >= 0, "u cannot be negative");
+    const checked_result<R> rx = cast<R>(t);
+    if(! rx.no_exception())
+        return rx;
+
+    R r = static_cast<R>(rx);
+    if(r < 0){
+        U ui = u;
+        while(ui-- > 0){
+            r <<= 1;
+            if(r >= 0){
+                return checked_result<R>(
+                   exception_type::domain_error,
+                   "shifting negative values off left is undefined"
+                );
+            }
+        }
+        return r;
+    }
+    return checked_result<R>(r << u);
 }
 
 // right shift
@@ -588,13 +613,21 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
     const T & t,
     const U & u
 ) {
-    const checked_result<R> r = detail::check_shift<R>(t, u);
-    return
-        (! r.no_exception()) ?
-            r
-        :
-            checked_result<R>(static_cast<R>(r) >> t);
-        ;
+    const checked_result<U> ux = detail::check_shift(t, u);
+    if(! ux.no_exception())
+        return checked_result<R>(ux.m_e, ux.m_msg);
+
+    const checked_result<R> rx = cast<R>(t);
+    if(! rx.no_exception())
+        return rx;
+
+    if(t < 0)
+        return checked_result<R>(
+           exception_type::domain_error,
+           "right shift cannot be applied to negative number"
+        );
+
+    return checked_result<R>(static_cast<R>(rx) >> ux);
 }
 
 ///////////////////////////////////

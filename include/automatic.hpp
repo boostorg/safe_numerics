@@ -383,14 +383,32 @@ struct automatic {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
-        typedef decltype(t_base_type() << u_base_type()) r_base_type;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<r_base_type> r
-            = operator<<<r_base_type>(t, u);
+        typedef calculate_max_t<T, U> max_t;
 
-        typedef safe_base<r_base_type, r.l, r.u, P, E> type;
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+            = left_shift<max_t>(t, u);
+
+        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+            r.no_exception() ?
+                static_cast<interval<max_t>>(r)
+            :
+                default_interval
+            ;
+
+        typedef typename safe_range<
+            max_t,
+            result_interval.l,
+            result_interval.u,
+            P,
+            E
+        >::type type;
     };
-    template<typename T, typename U, typename P, typename E>    
+
+    ///////////////////////////////////////////////////////////////////////
+    template<typename T, typename U, typename P, typename E>
     struct right_shift_result {
         typedef typename base_type<T>::type t_base_type;
         typedef typename base_type<U>::type u_base_type;
@@ -402,12 +420,28 @@ struct automatic {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
-        typedef decltype(t_base_type() >> u_base_type()) r_base_type;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<r_base_type> r
-            = operator>><r_base_type>(t, u);
+        typedef calculate_max_t<T, U> max_t;
 
-        typedef safe_base<r_base_type, r.l, r.u, P, E> type;
+        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+            = right_shift<max_t>(t, u);
+
+        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+
+        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+            r.no_exception() ?
+                static_cast<interval<max_t>>(r)
+            :
+                default_interval
+            ;
+
+        typedef typename safe_range<
+            max_t,
+            result_interval.l,
+            result_interval.u,
+            P,
+            E
+        >::type type;
     };
 };
 
