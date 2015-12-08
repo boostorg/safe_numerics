@@ -2,12 +2,13 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe">
-  <title>safe&lt;T, PP, EP&gt;</title>
+  <title>safe&lt;T, PP = boost::numeric::native, EP =
+  boost::numeric::throw_exception&gt;</title>
 
   <section>
     <title>Description</title>
 
-    <para>A <code>safe&lt;T, PP, EP&gt;</code> can be used anywhere a type T
+    <para>A <code>safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guarenteed to return
     an arithmetically correct value or trap in some way.</para>
   </section>
@@ -55,7 +56,7 @@
             <entry><code>PP</code></entry>
 
             <entry>A type which specifes the result type of an expression
-            using safe types. </entry>
+            using safe types.</entry>
           </row>
 
           <row>
@@ -119,7 +120,7 @@
             Policy&lt;EP&gt;</link></link></entry>
 
             <entry><para>Default value is <link
-            linkend="safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</link></para></entry>
+            linkend="safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</link></para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -183,19 +184,20 @@
       arithmetic type. Behavior of this program could vary according to the
       machine architecture in question.</para>
 
-      <para><programlisting>#include &lt;iostream&gt;
-#include &lt;stdexcept&gt; // std::runtime_error
+      <para><programlisting>#include &lt;exception&gt;
+#include &lt;iostream&gt;
 #include &lt;boost/numeric/safe.hpp&gt;
 
 void f(){
+    using namespace boost::numeric;
     safe&lt;int&gt; j;
     try {
         safe&lt;int&gt; i;
         std::cin &gt;&gt; i;  // could overflow !
         j = i * i;      // could overflow
     }
-    catch(std::runtime_error &amp; re){
-       std::cout &lt;&lt; re.what() &lt;&lt; std::endl;
+    catch(std::exception &amp; e){
+       std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
     }
     std::cout &lt;&lt; j;
 }</programlisting></para>
@@ -210,17 +212,18 @@ void f(){
       exception policy.</para>
 
       <para>The following program will emit a compile error at any statement
-      which might possibly result in incorrect behavior. </para>
+      which might possibly result in incorrect behavior.</para>
 
       <para>This is because there is no way to guarantee that the expression i
       * i will return an arithmetically correct result. Since we know that the
       program cannot compile if there is any possibility of arithmetic error,
       we can dispense with the exception handling used above.</para>
 
-      <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
-#include &lt;iostream&gt;
+      <para><programlisting>#include &lt;iostream&gt;
+#include &lt;boost/numeric/safe.hpp&gt;
+
 void f(){
-    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;t; 
+    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::throw_exception&gt;; 
     safe_int i;
     std::cin &gt;&gt; i;  // could throw exception here !!!
     safe_int j;

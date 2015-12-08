@@ -74,7 +74,7 @@
 
     <programlisting>#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
 
-int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
+safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   return x + y; // throw exception if correct result cannot be returned
 }
 </programlisting>
@@ -151,12 +151,12 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         </listitem>
 
         <listitem>
-          <para>Trap any possible arithmetic errors at compile time</para>
+          <para>Trap some arithmetic errors at compile time</para>
         </listitem>
 
         <listitem>
-          <para>Ranged integer types to permit enforcement of other program
-          requirements.</para>
+          <para>Enforce of other program requirements using ranged integer
+          types.</para>
         </listitem>
 
         <listitem>
@@ -169,7 +169,7 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     <title>Requirements</title>
 
     <para>This library is composed entirely of C++ Headers. I requires a
-    compiler compatible with the C++11 standard.</para>
+    compiler compatible with the C++14 standard.</para>
 
     <para>The following Boost Libraries must be installed in order to use this
     library</para>
@@ -184,23 +184,11 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         </listitem>
 
         <listitem>
-          <para>limits</para>
-        </listitem>
-
-        <listitem>
           <para>config</para>
         </listitem>
 
         <listitem>
           <para>concept checking</para>
-        </listitem>
-
-        <listitem>
-          <para>type traits</para>
-        </listitem>
-
-        <listitem>
-          <para>integer traits</para>
         </listitem>
       </itemizedlist></para>
   </section>

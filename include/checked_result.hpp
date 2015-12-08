@@ -9,13 +9,9 @@
 #ifndef BOOST_NUMERIC_CHECKED_RESULT
 #define BOOST_NUMERIC_CHECKED_RESULT
 
-#include <cstddef> //nullptr_t
-#include <cassert>
 #include <boost/logic/tribool.hpp>
 
 #include "safe_common.hpp" // SAFE_NUMERIC_CONSTEXPR
-#include "exception_policies.hpp"
-#include "concept/exception_policy.hpp"
 #include "safe_compare.hpp"
 
 namespace boost {
@@ -33,31 +29,27 @@ enum class exception_type {
 
 template<typename R>
 struct checked_result {
-// poor man's variant which supports SAFE_NUMERIC_CONSTEXPR
     exception_type m_e;
     union {
         R m_r;
         char const * m_msg;
     };
     // constructors
-    // breaks add/subtract etc.!!!
-    // perhaps because defining a copy constructure suppresses implicite move?
+    // can't select constructor based on the current status of another
+    // checked_result object.
     /*
     SAFE_NUMERIC_CONSTEXPR checked_result(const checked_result<R> & r) :
         m_e(r.m_e)
     {
-        (m_e == exception_type::no_exception) ?
+        (no_exception()) ?
             (m_r = r.m_r), 0
         :
             (m_msg = r.m_msg), 0
         ;
     }
-    // don't permit construction without initial value;
-    SAFE_NUMERIC_CONSTEXPR explicit checked_result() :
-        m_e(exception_type::uninitialized),
-        m_r(0)
-    {}
     */
+    // don't permit construction without initial value;
+    checked_result() = delete;
 
     SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
         m_e(exception_type::no_exception),
@@ -71,18 +63,6 @@ struct checked_result {
         m_e(e),
         m_msg(msg)
     {}
-    #if 0
-    template<class T>
-    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const checked_result<T> & t) :
-        m_e(t.m_e)
-    {
-        if(t.no_exception())
-            m_r = t.m_r;
-        else{
-            m_msg = t.m_msg;
-        }
-    }
-    #endif
 
     // accesors
     SAFE_NUMERIC_CONSTEXPR operator R() const {
@@ -90,11 +70,6 @@ struct checked_result {
         return m_r;
     }
 
-    /*
-    SAFE_NUMERIC_CONSTEXPR operator exception_type() const {
-        return m_e;
-    }
-    */
     SAFE_NUMERIC_CONSTEXPR operator const char *() const {
         // assert(exception_type::no_exception != m_e);
         return m_msg;
@@ -142,32 +117,6 @@ struct checked_result {
         return m_e == exception_type::no_exception;
     }
 
-/*
-    template<class EP>
-    void
-    dispatch() const {
-        switch(m_e){
-        case exception_type::overflow_error:
-            EP::overflow_error(m_msg);
-            break;
-        case exception_type::underflow_error:
-            EP::underflow_error(m_msg);
-            break;
-        case exception_type::range_error:
-            EP::range_error(m_msg);
-            break;
-        case exception_type::domain_error:
-            EP::domain_error(m_msg);
-            break;
-        case exception_type::no_exception:
-            break;
-        default:
-            break;
-        }
-    }
-};
-*/
-
     template<class EP>
     SAFE_NUMERIC_CONSTEXPR void
     dispatch() const {
@@ -194,68 +143,6 @@ struct checked_result {
     }
 };
 
-/*
-template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> min(
-    const checked_result<R> & t,
-    const checked_result<R> & u
-){
-    return
-        (t.m_e == exception_type::no_exception
-        && u.m_e == exception_type::no_exception) ?
-            t.m_r < u.m_r ?
-                t
-            :
-                u
-        :
-            checked_result<R>(
-                exception_type::range_error,
-                "Can't compare values without values"
-            )
-        ;
-}
-
-template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const checked_result<R> max(
-    const checked_result<R> & t,
-    const checked_result<R> & u
-){
-    return
-        (t.m_e == exception_type::no_exception
-        && u.m_e == exception_type::no_exception) ?
-            t.m_r < u.m_r ?
-                u
-            :
-                t
-        :
-            checked_result<R>(
-                exception_type::range_error,
-                "Can't compare values without values"
-            )
-        ;
-}
-
-template<typename R>
-SAFE_NUMERIC_CONSTEXPR inline const bool operator<(
-    const checked_result<R> & t,
-    const checked_result<R> & u
-){
-    return
-        (t.m_e == exception_type::no_exception
-        && u.m_e == exception_type::no_exception) ?
-            t.m_r < u.m_r ?
-                t
-            :
-                u
-        :
-            checked_result<R>(
-                exception_type::range_error,
-                "Can't compare values without values"
-            )
-        ;
-}
-*/
-
 // C++ does not (yet) permit constexpr lambdas.  So create some
 // constexpr predicates to be used by constexpr algorthms.
 template<typename R>
@@ -266,7 +153,6 @@ constexpr bool no_exception(const checked_result<R> & cr){
 } // numeric
 } // boost
 
-//#include <iosfwd>
 #include <ostream>
 #include <istream>
 

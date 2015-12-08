@@ -32,7 +32,7 @@
 
         <tbody>
           <row>
-            <entry><code>T, U</code></entry>
+            <entry><code>T, U, V</code></entry>
 
             <entry>A type that is a model of the Numeric</entry>
           </row>

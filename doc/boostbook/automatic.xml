@@ -29,34 +29,20 @@
 
     <para>The following example illustrates the <code>automatic</code> type
     being passed as a template parameter for the type
-    <code>safe&lt;int&gt;</code>. This example is slightly contrived in that
-    <code>safe&lt;int&gt;</code> has <code>native</code> as it's default
-    promotion parameter so explictiy using <code>native</code> is not
-    necessary.</para>
+    <code>safe&lt;int&gt;</code>. </para>
 
-    <programlisting>#include &lt;cassert&gt;
-#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
-#include &lt;boost/safe_numerics/native.hpp&gt; 
+    <programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
+#include &lt;boost/safe_numerics/automatic.hpp&gt;
+ 
 int main(){
     using namespace boost::numeric;
     // use automatic promotion policy where C++ standard arithmetic might lead to incorrect results
-    using safe_int8 = safe&lt;std::int8_t, automatic&gt;;
-    try{
-        safe_int8 x = 127;
-        safe_int8 y = 2;
-        auto z = x + y; // z will be of safe type at least 9 bits long
-    }
-    catch(std::exception &amp; e){
-        // which can catch here only if
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-    }
+    using safe_t = safe&lt;std::int8_t, automatic&gt;;
 
-    // When result is an int, C++ promotion rules guarentee that there will be no incorrect result.
     // In such cases, there is no runtime overhead from using safe types.
-    safe_int8 x = 127;
-    safe_int8 y = 2;
-    safe&lt;int, native&gt; z; // z can now hold the result of the addition of any two 8 bit numbers
-    z = x + y; // is guarenteed correct without any runtime overhead or interrupt.
+    safe_t x = 127;
+    safe_t y = 2;
+    auto z = x + y; // z is guarenteed correct without any runtime overhead or interrupt.
 
     return 0;
 }</programlisting>

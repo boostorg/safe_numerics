@@ -12,7 +12,7 @@
 
     <para>More specifically, a type T is Integer if there exists
     specialization of <code>std::numeric_limits&lt;T&gt; for which
-    std::numeric_limits&lt;T&gt;.is_integer</code> is equal to
+    std::numeric_limits&lt;T&gt;:: is_integer</code> is equal to
     <code>true</code>. See the documentation for standard library class
     numeric_limits. The standard library includes such specializations for all
     the primitive numeric types. Note that this concept is distinct from the
@@ -50,7 +50,8 @@
 
           <tbody>
             <row>
-              <entry><code>std::numeric_limits&lt;T&gt;.is_integer</code></entry>
+              <entry><code>std::numeric_limits&lt;T&gt;
+              is_integer</code></entry>
 
               <entry>true</entry>
             </row>

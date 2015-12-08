@@ -4,24 +4,23 @@
 
 #include "../include/safe_integer.hpp"
 
-void detected_msg(bool detected){
-    std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
-}
-
 int main(int argc, const char * argv[]){
     std::cout << "example 2:";
     std::cout << "undetected overflow in data type" << std::endl;
+    // problem: undetected overflow
+    std::cout << "Not using safe numerics" << std::endl;
     try{
         int x = INT_MAX;
         // the following silently produces an incorrect result
         ++x;
         std::cout << x << " != " << INT_MAX << " + 1" << std::endl;
-        detected_msg(false);
+        std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){
-        assert(false); // never arrive here
+        std::cout << "error detected!" << std::endl;
     }
     // solution: replace int with safe<int>
+    std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;
         safe<int> x = INT_MAX;
@@ -31,7 +30,7 @@ int main(int argc, const char * argv[]){
     }
     catch(std::exception & e){
         std::cout << e.what() << std::endl;
-        detected_msg(true);
+        std::cout << "error detected!" << std::endl;
     }
     return 0;
 }

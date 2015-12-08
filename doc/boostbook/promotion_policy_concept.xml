@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.promotion_policy">
-  <title id="promotion_policy">PromotionPolicy&lt;PP&gt;</title>
+  <title id="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</title>
 
   <section>
     <title>Description</title>
@@ -64,8 +64,8 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
           <row>
             <entry><code>EP</code></entry>
 
-            <entry>A type that full fills the requirements of an
-            ExceptionPollicy</entry>
+            <entry>A type that full fills the requirements of an <link
+            linkend="safe_numerics.exception_policy">ExceptionPollicy</link></entry>
           </row>
         </tbody>
       </tgroup>
@@ -171,9 +171,9 @@ auto sz = sx + y; // includes code which traps overflows at runtime</programlist
 
         <para>The type of sz will be safe&lt; type of z &gt;.</para>
 
-        <para>This policy is found in the header file <ulink
-        url="../../include/concept/promotion_policy.hpp"><code>#include
-        &lt;safe_numerics/include/native.hpp&gt;</code></ulink></para>
+        <para>This policy is documented in <link
+        linkend="safe_numerics.native_policy">Promotion Policies -
+        native</link>.</para>
       </listitem>
 
       <listitem id="safe_numerics.promotion_policy.models.automatic">
@@ -196,18 +196,19 @@ safe_unsigned_range&lt;1, 4&gt; a;
 safe_unsigned_range&lt;2, 4&gt; b;
 auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</programlisting></para>
 
-        <para>Type sz will be a SafeNumeric type which is guaranteed to hold
-        he result of x + y. In this case that will be a long int (or perhaps a
-        long ong) depending upon the compiler and machine architecture. In
-        this case, there will be no need for any special checking on the
-        result and there can be no overflow.</para>
+        <para>Type sz will be a <link
+        linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
+        which is guaranteed to hold he result of x + y. In this case that will
+        be a long int (or perhaps a long ong) depending upon the compiler and
+        machine architecture. In this case, there will be no need for any
+        special checking on the result and there can be no overflow.</para>
 
         <para>Type of c will be a signed caracter as that type can be
         guarenteed to hold the sum so no overflow checking is done.</para>
 
-        <para>This policy is found in the header file <ulink
-        url="../../include/concept/promotion_policy.hpp"><code>#include
-        &lt;safe_numerics/include/automatic.hpp&gt;</code></ulink></para>
+        <para>This policy is documented in <link
+        linkend="safe_numerics.automatic_policy">Promotion Policies -
+        automatic</link></para>
       </listitem>
     </itemizedlist>
   </section>

@@ -184,8 +184,6 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
     <para>Note the usage of the compile time trap policy in order to detect at
     compile time any possible error conditions. As I write this, this is still
     being refined. Hopefully this will be available by the time you read this.
-    This example is too long to include in line in this documentation. You can
-    see the whole file at <ulink
-    url="../../include/cpp.hpp"><code>example.cpp</code></ulink></para>
+    </para>
   </section>
 </section>

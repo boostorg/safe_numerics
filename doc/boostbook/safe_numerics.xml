@@ -39,9 +39,9 @@
 
     <para>This library really an re-implementation the facilities provided by
     <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
-    Library</ulink> using <ulink url="www.boost.org">Boost</ulink>. I found
-    this library very well done in every way. My main usage was to run unit
-    tests for my embedded systems projects on my PC. Still, I had a few
+    Library</ulink> using <ulink url="www.boost.org">Boost and C++14</ulink>.
+    I found this library very well done in every way. My main usage was to run
+    unit tests for my embedded systems projects on my PC. Still, I had a few
     issues.</para>
 
     <itemizedlist>
@@ -76,7 +76,7 @@
     <para>This version addresses these issues. It exploits <ulink
     url="www.boost.org">Boost</ulink> facilities such as template
     metaprogramming to reduce the number of lines of source code to
-    approximately 1500. It exploits the Boost Preprocessor Library to generate
+    approximately 4400. It exploits the Boost Preprocessor Library to generate
     exhaustive tests.</para>
 
     <para>All concepts, types and functions documented are declared in the
@@ -157,7 +157,7 @@
           <para>Is this really necessary? If I'm writing the program with the
           requisite care and competence, problems noted in the introduction
           will never arise. Should they arise, they should be fixed "at the
-          source" and with a "bandaid" to cover up bad practice.</para>
+          source" and not with a "bandaid" to cover up bad practice.</para>
         </question>
 
         <answer>
@@ -231,9 +231,9 @@
 
       <qandaentry>
         <question>
-          <para>It looks like it presumes two's complement arithmetic at the
-          hardware level. So this library is not portable - correct? What
-          about other hardware architectures?</para>
+          <para>It looks like the implementation presumes two's complement
+          arithmetic at the hardware level. So this library is not portable -
+          correct? What about other hardware architectures?</para>
         </question>
 
         <answer>

@@ -207,6 +207,13 @@
           </tbody>
         </tgroup>
       </informaltable></para>
+
+    <para>The key fact documented in the above table is that the result of any
+    binary operation where one or both of the operands is a SafeNumeric type
+    is also a SafeNumeric type. Also note that all the expressions in the
+    above table are <code>constexpr</code> expressions. So that if they are
+    invoked with constant values, the result will be available a compile
+    time.</para>
   </section>
 
   <section>

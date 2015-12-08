@@ -5,7 +5,7 @@
   <title>Tutorial and Motivating Examples</title>
 
   <section id="safe_numerics.tutorial.1">
-    <title>Arithmetic operations can yield incorrect results.</title>
+    <title>Arithmetic Operations Can Yield Incorrect Results.</title>
 
     <para>When some operation results in a result which exceeds the capacity
     of a data variable to hold it, the result is undefined. This is called
@@ -29,36 +29,30 @@
   </section>
 
   <section id="safe_numerics.tutorial.2">
-    <title>Undetected overflow</title>
+    <title>Undetected Overflow</title>
 
     <para>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</para>
 
     <programlisting><xi:include href="../../examples/example2.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
-  </section>
 
-  <section id="safe_numerics.tutorial.3">
-    <title>Undetected underflow</title>
-
-    <para>A variation of the above is when a value is incremented/decremented
-    beyond it's domain. This is a common problem with for loops.</para>
-
-    <programlisting><xi:include href="../../examples/example3.cpp"
-        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+    <para>When variables of unsigned integer type are decremented below zero,
+    they "roll over" to the highest possible unsigned version of that integer
+    type. This is a common problem which is generally never detected.</para>
   </section>
 
   <section id="safe_numerics.tutorial.4">
-    <title>Implicit conversions change data values</title>
+    <title>Implicit Conversions Change Data Values</title>
 
-    <para>A simple assignment or arithmetic expression will generally convert
-    all the terms to the same type. Sometimes this can silently change values.
-    For example, when a signed data variable contains a negative type,
-    assigning to a unsigned type will be permitted by any C/C++ compiler but
-    will be treated as large unsigned value. Most modern compilers will emit a
-    compile time warning when this conversion is performed. The user may then
-    decide to change some data types or apply a <code>static_cast</code>. This
-    is less than satisfactory for two reasons:</para>
+    <para>A simple assignment or arithmetic expression will convert all the
+    terms to the same type. Sometimes this can silently change values. For
+    example, when a signed data variable contains a negative type, assigning
+    to a unsigned type will be permitted by any C/C++ compiler but will be
+    treated as large unsigned value. Most modern compilers will emit a compile
+    time warning when this conversion is performed. The user may then decide
+    to change some data types or apply a <code>static_cast</code>. This is
+    less than satisfactory for two reasons:</para>
 
     <para><itemizedlist>
         <listitem>
@@ -67,13 +61,9 @@
         </listitem>
 
         <listitem>
-          <para>Littering one's program with <code>static_cast</code><code>
-          </code>makes it more difficult to read.</para>
-        </listitem>
-
-        <listitem>
           <para>We may believe that our signed type will never contain a
-          negative value. If we ignore the any compiler warnings or use a
+          negative value. <code>static_cast</code> changes the data type - not
+          the data value. If we ignore the any compiler warnings or use a
           <code>static_cast</code> to suppress them, we'll fail to detect a
           program error when it is committed. This is aways a risk with
           casts.</para>
@@ -87,7 +77,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.5">
-    <title>Array index value can exceed array limits</title>
+    <title>Array Index Value Can Exceed Array Limits</title>
 
     <para>Using an intrinsic C++ array, it's very easy to exceed array limits.
     This can fail to be detected when it occurs and create bugs which are hard
@@ -95,34 +85,47 @@
     would be to use safe_unsigned_range;</para>
 
     <para><programlisting><xi:include href="../../examples/example5.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Collections
+    like standard arrays, vectors do array index checking in some function
+    calls and not in others so this may not be the best example. However it
+    does illustrate the usage of <code>safe_range&lt;T&gt;</code> for
+    assigning legal range to variables. This will guarentee that under no
+    circumstances will the variable contain a value outside of the specified
+    range. </para>
   </section>
 
   <section id="safe_numerics.tutorial.6">
-    <title>Checking of initialization values can be easily overlooked</title>
+    <title>Checking of Input Values Can Be Easily Overlooked</title>
 
     <para>It's way too easy to overlook the checking of parameters received
     from outside the current program.<programlisting><xi:include
           href="../../examples/example6.cpp" parse="text"
           xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Without
     safe integer, one will have to insert new code every time an integer
-    variable is retrieved. This is a tedious and error prone procedure.</para>
+    variable is retrieved. This is a tedious and error prone procedure. Here
+    we have used program input. But in fact this problem can occur with any
+    externally produced input.</para>
   </section>
 
   <section id="safe_numerics.tutorial.7">
-    <title>Parameter checking is too expensive</title>
+    <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has
     been much written about it has been proposed as an addition to the C++
     language <citation>Garcia</citation><citation>Crowl &amp;
-    Ottosen</citation>. It (mostly depends upon runtime checking of parameter
-    values upon entry to every function and thus slows the program down. This
-    undermines the main motivation for using C++ in the first place! One
-    popular scheme for addressing this issue is to enable parameter checking
-    only during debugging and testing. This defeats the guarentee of
-    correctness which we are seeking here! This library has facilities which,
-    in many cases, can check guarentee parameter requirements with no runtime
-    overhead. Consider the following example:</para>
+    Ottosen</citation>. It (mostly) depends upon runtime checking of parameter
+    and object values upon entry to and exit from every function. This can
+    slow the program down considerably which in turn undermines the main
+    motivation for using C++ in the first place! One popular scheme for
+    addressing this issue is to enable parameter checking only during
+    debugging and testing which defeats the guarentee of correctness which we
+    are seeking here! Programming by Contract will never be accepted by
+    programmers as long as it is associated with significant additional
+    runtime cost.</para>
+
+    <para>The Safe Numerics Library has facilities which, in many cases, can
+    check guarentee parameter requirements with little or no runtime overhead.
+    Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../examples/example7.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
@@ -137,7 +140,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.8">
-    <title>Eliminate runtime cost</title>
+    <title>Eliminate Runtime Cost</title>
 
     <para>Our system works by checking arithmetic operations whenever they
     could result in an erroneous result. The C++ standard describes how binary
@@ -163,12 +166,18 @@
     <para>So the result of the sum of two integer types will result in another
     integer type. If the values are large, they will exceed the size that the
     resulting integer type can hold. This is what we call "overflow". Standard
-    C++ just truncates the result to fit into the result type - which makes
-    the result arithmetically incorrect. Up until now, we've focused on
-    detecting when this happens and invoking an interrupt or other kind of
-    error handler. But now we look at another option. Using the "automatic"
-    type promotion policy, we can change the rules of C++ arithmetic for safe
-    types to something like the following:</para>
+    C/C++ just truncates the result to fit into the result type - which makes
+    the result arithmetically incorrect. This behavior is consistent with the
+    default <link
+    linkend="safe_numerics.promotion_policy.models.native">"native" type
+    promotion policy</link>. Up until now, we've focused on detecting when
+    this happens and invoking an interrupt or other kind of error handler.
+    </para>
+
+    <para>But now we look at another option. Using the <link
+    linkend="safe_numerics.promotion_policy.models.automatic">"automatic" type
+    promotion policy</link>, we can change the rules of C++ arithmetic for
+    safe types to something like the following:</para>
 
     <para><itemizedlist>
         <listitem>
@@ -180,12 +189,12 @@
 
         <listitem>
           <para>For any binary operation on these types, we can calculate the
-          interval of the result.</para>
+          interval of the result at compile time.</para>
         </listitem>
 
         <listitem>
-          <para>From this we can determine a new safe type which can be
-          guarenteed to hold the result.</para>
+          <para>From this interval we can determine a new safe type which can
+          be guarenteed to hold the result.</para>
         </listitem>
 
         <listitem>
@@ -195,13 +204,13 @@
 
         <listitem>
           <para>The only error checking we need to do is when safe values are
-          initialized, but this we would have to do in any case. So we've
-          eliminated arithmetically incorrect results while incurring zero
-          runtime overhead for error checking.</para>
+          initialized or assigned, but this we would have to do in any case.
+          So we've eliminated arithmetically incorrect results while incurring
+          zero runtime overhead for error checking.</para>
         </listitem>
       </itemizedlist></para>
 
-    <para>In sort, given a binary operation, we promote the constituent types
+    <para>In short, given a binary operation, we promote the constituent types
     to a larger result type which can't overflow. This is a fundamental
     deparature from the C++ Standard behavior.</para>
 
@@ -217,6 +226,29 @@
     works.</para>
 
     <para><programlisting><xi:include href="../../examples/example8.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>The
+    above program produces the following output:</para>
+
+    <para><programlisting>example 8: eliminate runtime overhead
+x&lt;signed char&gt;[-24,82] = 1
+y&lt;signed char&gt;[-24,82] = 2
+(x + y)&lt;short&gt;[-48,164] = 3
+(x - y)&lt;signed char&gt;[-106,106] = -1</programlisting>Variables x and y
+    are stored as 8 bit signed integers with range specied as -24 to 82. The
+    result of x + y could be any value in the range -48 to 164. Since this
+    result can't be stored in an 8 bit signed integer, a 16 bit signed integer
+    is allocated. The result x - y could range from -106 to 106 so will fit in
+    an 8 bit signed integer is allocated. Binary operations with safe numeric
+    using automatic type promotion will produce other safe numeric types with
+    template parameters appropriate to hold the result. The resultant safe
+    types may have smaller or larger ranges than the parameters of the binary
+    operation.</para>
+
+    <para>We've used simple expressions in this illustration. But since binary
+    operations on safe types result in other safe types, expressions can be
+    made arbitrarily elaborate - just as they can be with intrinsic integer
+    types. That is, safe integer types are drop in replacements for intrinsic
+    integer types. We are guarenteed never to produce an incorrect result
+    regardless of how elaborate the expression might be.</para>
   </section>
 </section>

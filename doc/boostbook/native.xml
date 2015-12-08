@@ -45,7 +45,8 @@ void int f(safe_int x, safe_int y){
     <title>Header</title>
 
     <para><code><ulink url="../../include/native.hpp"><code>#include
-    &lt;boost/safe_numerics/native.hpp&gt; </code></ulink></code></para>
+    &lt;boost/safe_numerics/include/native.hpp&gt;
+    </code></ulink></code></para>
   </section>
 
   <section>

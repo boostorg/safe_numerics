@@ -5,6 +5,7 @@
 
 #include "../include/safe_range.hpp"
 
+// NOT using safe numerics - enforce program contract explicitly
 // return total number of minutes
 unsigned int convert(
     const unsigned int & hours,
@@ -21,6 +22,7 @@ unsigned int convert(
     return hours * 60 + minutes;
 }
 
+// Use safe numeric to enforce program contract automatically
 // define convient typenames for hours and minutes hh:mm
 using hours_t = boost::numeric::safe_unsigned_range<0, 23>;
 using minutes_t = boost::numeric::safe_unsigned_range<0, 59>;
@@ -86,26 +88,27 @@ int main(int argc, const char * argv[]){
 
     try {
         // the following will never throw as the values meet requirements.
-        hours_t hours(10);
-        minutes_t minutes(17);
+        const hours_t hours(10);
+        const minutes_t minutes(17);
+
+        // note zero runtime overhead once values are constructed
 
         // the following will never throw because it cannot be called with
         // invalid parameters
-        safe_convert(hours, minutes);
+        safe_convert(hours, minutes); // zero runtime overhead
 
         // since safe types can be converted to their underlying unsafe types
         // we can still call an unsafe function with safe types
-        convert(hours, minutes);
+        convert(hours, minutes); // zero (almost) runtime overhead
 
         // since unsafe types can be implicitly converted to corresponding
         // safe types we can just pass the unsafe types.  checkin will occur
         // when the safe type is constructed.
-        safe_convert(10, 17);
+        safe_convert(10, 17); // runtime cost in creating parameters
 
-        // note zero runtime overhead once values are constructed
     }
     catch(std::exception e){
-        assert(false); // can never arrive here !!!
+        std::cout << "error detected!" << std::endl;
     }
 
     return 0;
