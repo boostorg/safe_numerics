@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Parameter checking is too expensive</title>
+<title>Programming by Contract is Too Slow</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="6.html" title="Checking of initialization values can be easily overlooked">
-<link rel="next" href="8.html" title="Eliminate runtime cost">
+<link rel="prev" href="6.html" title="Checking of Input Values Can Be Easily Overlooked">
+<link rel="next" href="8.html" title="Eliminate Runtime Cost">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -19,18 +19,22 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.7"></a>Parameter checking is too expensive</h3></div></div></div>
+<a name="safe_numerics.tutorial.7"></a>Programming by Contract is Too Slow</h3></div></div></div>
 <p>Programming by Contract is a highly regarded technique. There has
     been much written about it has been proposed as an addition to the C++
-    language [<a class="citation" href="bibliography.html#idm110741747440"><span class="citation">Garcia</span></a>][<span class="citation">Crowl &amp;
-    Ottosen</span>]. It (mostly depends upon runtime checking of parameter
-    values upon entry to every function and thus slows the program down. This
-    undermines the main motivation for using C++ in the first place! One
-    popular scheme for addressing this issue is to enable parameter checking
-    only during debugging and testing. This defeats the guarentee of
-    correctness which we are seeking here! This library has facilities which,
-    in many cases, can check guarentee parameter requirements with no runtime
-    overhead. Consider the following example:</p>
+    language [<a class="citation" href="bibliography.html#idm241514229680"><span class="citation">Garcia</span></a>][<span class="citation">Crowl &amp;
+    Ottosen</span>]. It (mostly) depends upon runtime checking of parameter
+    and object values upon entry to and exit from every function. This can
+    slow the program down considerably which in turn undermines the main
+    motivation for using C++ in the first place! One popular scheme for
+    addressing this issue is to enable parameter checking only during
+    debugging and testing which defeats the guarentee of correctness which we
+    are seeking here! Programming by Contract will never be accepted by
+    programmers as long as it is associated with significant additional
+    runtime cost.</p>
+<p>The Safe Numerics Library has facilities which, in many cases, can
+    check guarentee parameter requirements with little or no runtime overhead.
+    Consider the following example:</p>
 <pre class="programlisting">#include &lt;cassert&gt;
 #include &lt;stdexcept&gt;
 #include &lt;sstream&gt;
@@ -38,6 +42,7 @@
 
 #include "../include/safe_range.hpp"
 
+// NOT using safe numerics - enforce program contract explicitly
 // return total number of minutes
 unsigned int convert(
     const unsigned int &amp; hours,
@@ -54,6 +59,7 @@ unsigned int convert(
     return hours * 60 + minutes;
 }
 
+// Use safe numeric to enforce program contract automatically
 // define convient typenames for hours and minutes hh:mm
 using hours_t = boost::numeric::safe_unsigned_range&lt;0, 23&gt;;
 using minutes_t = boost::numeric::safe_unsigned_range&lt;0, 59&gt;;
@@ -119,26 +125,27 @@ int main(int argc, const char * argv[]){
 
     try {
         // the following will never throw as the values meet requirements.
-        hours_t hours(10);
-        minutes_t minutes(17);
+        const hours_t hours(10);
+        const minutes_t minutes(17);
+
+        // note zero runtime overhead once values are constructed
 
         // the following will never throw because it cannot be called with
         // invalid parameters
-        safe_convert(hours, minutes);
+        safe_convert(hours, minutes); // zero runtime overhead
 
         // since safe types can be converted to their underlying unsafe types
         // we can still call an unsafe function with safe types
-        convert(hours, minutes);
+        convert(hours, minutes); // zero (almost) runtime overhead
 
         // since unsafe types can be implicitly converted to corresponding
         // safe types we can just pass the unsafe types.  checkin will occur
         // when the safe type is constructed.
-        safe_convert(10, 17);
+        safe_convert(10, 17); // runtime cost in creating parameters
 
-        // note zero runtime overhead once values are constructed
     }
     catch(std::exception e){
-        assert(false); // can never arrive here !!!
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
 
     return 0;

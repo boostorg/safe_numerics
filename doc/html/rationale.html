@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="exception_safety.html" title="Exception Safety">
+<link rel="prev" href="index.html" title="Performance Tests">
 <link rel="next" href="pending_issues.html" title="Pending Issues">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,34 +15,34 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale and FAQ</h2></div></div></div>
 <div class="qandaset">
-<a name="idm110744953664"></a><dl>
-<dt>1. <a href="rationale.html#idm110744953184">Is this really necessary? If I'm writing the program with the
+<a name="idm241516990400"></a><dl>
+<dt>1. <a href="rationale.html#idm241516989904">Is this really necessary? If I'm writing the program with the
           requisite care and competence, problems noted in the introduction
           will never arise. Should they arise, they should be fixed "at the
-          source" and with a "bandaid" to cover up bad practice.</a>
+          source" and not with a "bandaid" to cover up bad practice.</a>
 </dt>
-<dt>2. <a href="rationale.html#idm110744950160">Why is Boost.Convert not used?</a>
+<dt>2. <a href="rationale.html#idm241516986592">Why is Boost.Convert not used?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm110744948160">Why is the library named "safe ..." rather than something like
+<dt>3. <a href="rationale.html#idm241516984592">Why is the library named "safe ..." rather than something like
           "checked ..." ?</a>
 </dt>
-<dt>4. <a href="rationale.html#idm110744945792">Given that the library is called "numerics" why is floating
+<dt>4. <a href="rationale.html#idm241516982224">Given that the library is called "numerics" why is floating
           point arithmetic not addressed?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm110744943472">Isn't putting a defensive check just before any potential
+<dt>5. <a href="rationale.html#idm241516979904">Isn't putting a defensive check just before any potential
           undefined behavior is often considered a bad practice?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm110744940080">It looks like it presumes two's complement arithmetic at the
-          hardware level. So this library is not portable - correct? What
-          about other hardware architectures?</a>
+<dt>6. <a href="rationale.html#idm241516976304">It looks like the implementation presumes two's complement
+          arithmetic at the hardware level. So this library is not portable -
+          correct? What about other hardware architectures?</a>
 </dt>
-<dt>7. <a href="rationale.html#idm110744937760">Why do you specialize numeric_limits for "safe" types? Do you
+<dt>7. <a href="rationale.html#idm241516973968">Why do you specialize numeric_limits for "safe" types? Do you
           need it?</a>
 </dt>
 </dl>
@@ -52,12 +52,12 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744953184"></a><a name="idm110744952928"></a><p><b>1.</b></p>
+<a name="idm241516989904"></a><a name="idm241516989648"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Is this really necessary? If I'm writing the program with the
           requisite care and competence, problems noted in the introduction
           will never arise. Should they arise, they should be fixed "at the
-          source" and with a "bandaid" to cover up bad practice.</p></td>
+          source" and not with a "bandaid" to cover up bad practice.</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
@@ -68,7 +68,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744950160"></a><a name="idm110744949904"></a><p><b>2.</b></p>
+<a name="idm241516986592"></a><a name="idm241516986336"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is Boost.Convert not used?</p></td>
 </tr>
@@ -79,7 +79,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744948160"></a><a name="idm110744947904"></a><p><b>3.</b></p>
+<a name="idm241516984592"></a><a name="idm241516984336"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
           "checked ..." ?</p></td>
@@ -94,7 +94,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744945792"></a><a name="idm110744945536"></a><p><b>4.</b></p>
+<a name="idm241516982224"></a><a name="idm241516981968"></a><p><b>4.</b></p>
 </td>
 <td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
           point arithmetic not addressed?</p></td>
@@ -111,7 +111,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744943472"></a><a name="idm110744943216"></a><p><b>5.</b></p>
+<a name="idm241516979904"></a><a name="idm241516979648"></a><p><b>5.</b></p>
 </td>
 <td align="left" valign="top"><p>Isn't putting a defensive check just before any potential
           undefined behavior is often considered a bad practice?</p></td>
@@ -126,11 +126,11 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744940080"></a><a name="idm110744939824"></a><p><b>6.</b></p>
+<a name="idm241516976304"></a><a name="idm241516976048"></a><p><b>6.</b></p>
 </td>
-<td align="left" valign="top"><p>It looks like it presumes two's complement arithmetic at the
-          hardware level. So this library is not portable - correct? What
-          about other hardware architectures?</p></td>
+<td align="left" valign="top"><p>It looks like the implementation presumes two's complement
+          arithmetic at the hardware level. So this library is not portable -
+          correct? What about other hardware architectures?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
@@ -140,7 +140,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm110744937760"></a><a name="idm110744937504"></a><p><b>7.</b></p>
+<a name="idm241516973968"></a><a name="idm241516973712"></a><p><b>7.</b></p>
 </td>
 <td align="left" valign="top"><p>Why do you specialize numeric_limits for "safe" types? Do you
           need it?</p></td>
@@ -164,7 +164,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="pending_issues.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

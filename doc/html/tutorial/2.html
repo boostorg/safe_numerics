@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Undetected overflow</title>
+<title>Undetected Overflow</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="1.html" title="Arithmetic operations can yield incorrect results.">
-<link rel="next" href="3.html" title="Undetected underflow">
+<link rel="prev" href="1.html" title="Arithmetic Operations Can Yield Incorrect Results.">
+<link rel="next" href="4.html" title="Implicit Conversions Change Data Values">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,11 +15,11 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="3.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="4.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.2"></a>Undetected overflow</h3></div></div></div>
+<a name="safe_numerics.tutorial.2"></a>Undetected Overflow</h3></div></div></div>
 <p>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</p>
 <pre class="programlisting">#include &lt;cassert&gt;
@@ -28,24 +28,23 @@
 
 #include "../include/safe_integer.hpp"
 
-void detected_msg(bool detected){
-    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
-}
-
 int main(int argc, const char * argv[]){
     std::cout &lt;&lt; "example 2:";
     std::cout &lt;&lt; "undetected overflow in data type" &lt;&lt; std::endl;
+    // problem: undetected overflow
+    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
     try{
         int x = INT_MAX;
         // the following silently produces an incorrect result
         ++x;
         std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
-        detected_msg(false);
+        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
     }
     catch(std::exception){
-        assert(false); // never arrive here
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
     // solution: replace int with safe&lt;int&gt;
+    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
     try{
         using namespace boost::numeric;
         safe&lt;int&gt; x = INT_MAX;
@@ -55,11 +54,14 @@ int main(int argc, const char * argv[]){
     }
     catch(std::exception &amp; e){
         std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        detected_msg(true);
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
     return 0;
 }
 </pre>
+<p>When variables of unsigned integer type are decremented below zero,
+    they "roll over" to the highest possible unsigned version of that integer
+    type. This is a common problem which is generally never detected.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -69,7 +71,7 @@ int main(int argc, const char * argv[]){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="3.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="4.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

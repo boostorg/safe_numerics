@@ -32,6 +32,11 @@
         converted to the specified integer type. In other words,
         <code class="computeroutput">strtoi</code> aready contains the exact functionality that
         <code class="computeroutput">safe&lt;int&gt;</code> provides.</p></li>
+<li class="listitem"><p>Although care was taking to make the library portable, it's
+        likely that at least some parts of the implementation - particularly
+        <code class="computeroutput">checked</code> arithmetic - likely depend upon two complement
+        representation of integers. Hence the library is probably not
+        currently portable to other architectures. </p></li>
 </ul></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

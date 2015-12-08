@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="tutorial/8.html" title="Eliminate runtime cost">
+<link rel="prev" href="tutorial/8.html" title="Eliminate Runtime Cost">
 <link rel="next" href="concepts.html" title="Type Requirements">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -22,9 +22,9 @@
 <a name="safe_numerics.notes"></a>Notes</h2></div></div></div>
 <p>This library really an re-implementation the facilities provided by
     <a href="http://safeint.codeplex.com" target="_top">David LeBlanc's SafeInt
-    Library</a> using <a href="www.boost.org" target="_top">Boost</a>. I found
-    this library very well done in every way. My main usage was to run unit
-    tests for my embedded systems projects on my PC. Still, I had a few
+    Library</a> using <a href="www.boost.org" target="_top">Boost and C++14</a>.
+    I found this library very well done in every way. My main usage was to run
+    unit tests for my embedded systems projects on my PC. Still, I had a few
     issues.</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>It was a lot of code in one header - 6400 lines. Very unwieldy
@@ -39,7 +39,7 @@
 </ul></div>
 <p>This version addresses these issues. It exploits <a href="www.boost.org" target="_top">Boost</a> facilities such as template
     metaprogramming to reduce the number of lines of source code to
-    approximately 1500. It exploits the Boost Preprocessor Library to generate
+    approximately 4400. It exploits the Boost Preprocessor Library to generate
     exhaustive tests.</p>
 <p>All concepts, types and functions documented are declared in the
     namespace <code class="computeroutput">boost::numeric</code>.</p>

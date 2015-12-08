@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="safe.html" title="safe&lt;T, PP, EP&gt;">
+<link rel="prev" href="safe.html" title="safe&lt;T, PP = boost::numeric::native, EP = boost::numeric::throw_exception&gt;">
 <link rel="next" href="promotion_policies.html" title="Promotion Policies">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_unsigned_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745109408">Description</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745106752">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745099712">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745092912">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745074416">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745072176">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745070112">Header</a></span></dt>
-<dt><span class="section"><a href="safe_unsigned_range.html#idm110745068128">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517164016">Description</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517161056">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517153728">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517146640">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517126224">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517123632">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517121344">Header</a></span></dt>
+<dt><span class="section"><a href="safe_unsigned_range.html#idm241517119248">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745109408"></a>Description</h4></div></div></div>
+<a name="idm241517164016"></a>Description</h4></div></div></div>
 <p>This type holds a signed or unsigned integer in the closed range
     [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
@@ -43,7 +43,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745106752"></a>Notation</h4></div></div></div>
+<a name="idm241517161056"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745099712"></a>Associated Types</h4></div></div></div>
+<a name="idm241517153728"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -84,7 +84,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745092912"></a>Template Parameters</h4></div></div></div>
+<a name="idm241517146640"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -123,20 +123,20 @@
 <td align="left"><code class="computeroutput">EP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">Exception
             Policy&lt;EP&gt;</a></a></td>
-<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</a></p></td>
+<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</a></p></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745074416"></a>Model of</h4></div></div></div>
+<a name="idm241517126224"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745072176"></a>Valid Expressions</h4></div></div></div>
+<a name="idm241517123632"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -145,16 +145,18 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745070112"></a>Header</h4></div></div></div>
+<a name="idm241517121344"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745068128"></a>Example of use</h4></div></div></div>
+<a name="idm241517119248"></a>Example of use</h4></div></div></div>
 <pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
 
-void f(boost::numeric::safe_unsigned_range&lt;7, 24&gt; i){
+void f(){
+    using namespace boost::numeric;
+    safe_unsigned_range&lt;7, 24&gt; i
     // since the range is included in [0,255], the underlying type of i 
     // will be an unsigned char.
     i = 0;  // throws out_of_range exception
@@ -163,10 +165,12 @@ void f(boost::numeric::safe_unsigned_range&lt;7, 24&gt; i){
     i = -1; // throws out_of_range exception
     std::uint8_t j = 4;
     auto k = i + j;
-        // These types use default promotion policy so standard C++ type promotion rules 
-        // will be used in evaluating expressions.   C++ type promotion rules mandate
-        // that the result of k = i + j when both are unsigned char types, will be another
-        // unsigned char type.
+
+    // the range of i is [7, 24] and the range of j is [0,255]
+    // if either or both types are safe types, the result is a safe type
+    // determined by promotion policy.  With the default native promotion policy
+    // k will be safe&lt;unsigned int&gt;
+    static_assert(std::is_same&lt;decltype(k), safe&lt;unsigned int&gt;);
   }</pre>
 </div>
 </div>

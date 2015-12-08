@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.promotion_policy">
-  <title id="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</title>
+  <title>PromotionPolicy&lt;PP&gt;</title>
 
   <section>
     <title>Description</title>

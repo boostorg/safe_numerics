@@ -14,7 +14,8 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="promotion_policy">PromotionPolicy</link></para>
+    <para><link
+    linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
   </section>
 
   <section>
@@ -29,7 +30,7 @@
 
     <para>The following example illustrates the <code>automatic</code> type
     being passed as a template parameter for the type
-    <code>safe&lt;int&gt;</code>. </para>
+    <code>safe&lt;int&gt;</code>.</para>
 
     <programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
 #include &lt;boost/safe_numerics/automatic.hpp&gt;
