@@ -5,4 +5,4 @@ Arithmetic operations in C++ are NOT guarenteed to yield a correct mathematical 
 
 Additionally, we define data types safe_signed_range<MIN, MAX> and safe_unsigned_range<MIN, MAX> which will throw an exception if an attempt is made to store a result which is outside the closed range [MIN, MAX]
 
-Browse documentation <a href=http://htmlpreview.github.com/?https://raw.github.com/robertramey/safe_numerics/master/doc/html/index.html>here</a>
+Browse documentation <a href=http://htmlpreview.github.io/?https://github.com/robertramey/safe_numerics/master/doc/html/index.html>here</a>
