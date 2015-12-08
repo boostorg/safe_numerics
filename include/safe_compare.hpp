@@ -39,7 +39,7 @@ namespace detail {
     template<bool TS, bool US>
     struct less_than {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return t < u;
         }
     };
@@ -48,7 +48,7 @@ namespace detail {
     template<>
     struct less_than<false, true> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (u < 0) ?
                     false
@@ -64,7 +64,7 @@ namespace detail {
     template<>
     struct less_than<true, false> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (t < 0) ?
                     true
@@ -79,7 +79,7 @@ namespace detail {
 } // detail
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool less_than(const T & lhs, const U & rhs) {
+constexpr bool less_than(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return detail::less_than<
@@ -89,7 +89,7 @@ SAFE_NUMERIC_CONSTEXPR bool less_than(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool greater_than_equal(const T & lhs, const U & rhs) {
+constexpr bool greater_than_equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return less_than(rhs, lhs);
@@ -100,7 +100,7 @@ namespace detail {
     template<bool TS, bool US>
     struct greater_than {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return t > u;
         }
     };
@@ -109,7 +109,7 @@ namespace detail {
     template<>
     struct greater_than<false, true> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (u < 0) ?
                     true
@@ -125,7 +125,7 @@ namespace detail {
     template<>
     struct greater_than<true, false> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (t < 0) ?
                     false
@@ -140,7 +140,7 @@ namespace detail {
 } // detail
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool greater_than(const T & lhs, const U & rhs) {
+constexpr bool greater_than(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return detail::greater_than<
@@ -150,7 +150,7 @@ SAFE_NUMERIC_CONSTEXPR bool greater_than(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool less_than_equal(const T & lhs, const U & rhs) {
+constexpr bool less_than_equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return greater_than(rhs, lhs);
@@ -161,7 +161,7 @@ namespace detail {
     template<bool TS, bool US>
     struct equal {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return t == u;
         }
     };
@@ -170,7 +170,7 @@ namespace detail {
     template<>
     struct equal<false, true> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (u < 0) ?
                     false
@@ -186,7 +186,7 @@ namespace detail {
     template<>
     struct equal<true, false> {
         template<class T, class U>
-        SAFE_NUMERIC_CONSTEXPR static bool invoke(const T & t, const U & u){
+        constexpr static bool invoke(const T & t, const U & u){
             return
                 (t < 0) ?
                     false
@@ -201,7 +201,7 @@ namespace detail {
 } // detail
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool equal(const T & lhs, const U & rhs) {
+constexpr bool equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return detail::equal<
@@ -211,7 +211,7 @@ SAFE_NUMERIC_CONSTEXPR bool equal(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR bool not_equal(const T & lhs, const U & rhs) {
+constexpr bool not_equal(const T & lhs, const U & rhs) {
     static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
     static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return ! detail::equal<

@@ -42,21 +42,21 @@ struct interval {
     const R u;
 
     template<typename T>
-    SAFE_NUMERIC_CONSTEXPR interval(const T & lower, const T & upper) :
+    constexpr interval(const T & lower, const T & upper) :
         l(lower),
         u(upper)
     {}
     template<typename T>
-    SAFE_NUMERIC_CONSTEXPR interval(const std::pair<T, T> & p) :
+    constexpr interval(const std::pair<T, T> & p) :
         l(p.first),
         u(p.second)
     {}
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR interval(const interval<T> & rhs) :
+    constexpr interval(const interval<T> & rhs) :
         l(rhs.l),
         u(rhs.u)
     {}
-    SAFE_NUMERIC_CONSTEXPR interval() :
+    constexpr interval() :
         l(std::numeric_limits<R>::min()),
         u(std::numeric_limits<R>::max())
     {}
@@ -64,7 +64,7 @@ struct interval {
     // return true if this interval contains every point found in some
     // other inteval t
     template<typename T>
-    SAFE_NUMERIC_CONSTEXPR bool includes(const interval<T> & t) const {
+    constexpr bool includes(const interval<T> & t) const {
         // note very tricky algebra here.  the <= and >= operators
         // on checked_result yield tribool.  If either argument is an exception
         // condition, he result is indeterminate.  The result of && on two
@@ -134,7 +134,7 @@ constexpr checked_result<interval<R>> select(
 }  // namespace
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> add(
+constexpr checked_result<interval<R>> add(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -149,7 +149,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> add(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> subtract(const interval<T> & t, const interval<U> & u){
+constexpr checked_result<interval<R>> subtract(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     checked_result<R> lower = checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u));
     if(! lower.no_exception())
@@ -161,7 +161,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> subtract(const interval<T> & 
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> multiply(const interval<T> & t, const interval<U> & u){
+constexpr checked_result<interval<R>> multiply(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
 
     return select<R>(
@@ -177,7 +177,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> multiply(const interval<T> & 
 // divide two intervals.  BUT don't consider the possibility that the
 // denominator might contain a zero.
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide_nz(
+constexpr inline checked_result<interval<R>> divide_nz(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -204,7 +204,7 @@ SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide_nz(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide(
+constexpr inline checked_result<interval<R>> divide(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -218,7 +218,7 @@ SAFE_NUMERIC_CONSTEXPR inline checked_result<interval<R>> divide(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus_nz(
+constexpr checked_result<interval<R>> modulus_nz(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -244,7 +244,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus_nz(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus(
+constexpr checked_result<interval<R>> modulus(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -258,7 +258,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> modulus(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> left_shift(
+constexpr checked_result<interval<R>> left_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -271,7 +271,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> left_shift(
 }
 
 template<typename R, typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> right_shift(
+constexpr checked_result<interval<R>> right_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -284,7 +284,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<interval<R>> right_shift(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
+constexpr boost::logic::tribool operator<(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -303,7 +303,7 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
+constexpr boost::logic::tribool operator>(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -322,7 +322,7 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR bool operator==(
+constexpr bool operator==(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -331,7 +331,7 @@ SAFE_NUMERIC_CONSTEXPR bool operator==(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<=(
+constexpr boost::logic::tribool operator<=(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -339,7 +339,7 @@ SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<=(
 }
 
 template<typename T, typename U>
-SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>=(
+constexpr boost::logic::tribool operator>=(
     const interval<T> & t,
     const interval<U> & u
 ){

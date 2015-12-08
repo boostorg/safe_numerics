@@ -37,7 +37,7 @@ namespace numeric {
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
-SAFE_NUMERIC_CONSTEXPR bool safe_base<Stored, Min, Max, P, E>::
+constexpr bool safe_base<Stored, Min, Max, P, E>::
 validate(const T & t) const {
     static_assert(! is_safe<T>::value, "catch dumb mistake");
     // INT08-C
@@ -59,13 +59,13 @@ validate(const T & t) const {
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T MinT, T MaxT, class PT, class ET>
-SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
+constexpr safe_base<Stored, Min, Max, P, E>::
 safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
-    SAFE_NUMERIC_CONSTEXPR const interval<T> t_interval = {
+    constexpr const interval<T> t_interval = {
         MinT,
         MaxT
     };
-    SAFE_NUMERIC_CONSTEXPR const interval<Stored> this_interval = {
+    constexpr const interval<Stored> this_interval = {
         Min,
         Max
     };
@@ -86,15 +86,15 @@ safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T MinT, T MaxT, class PT, class ET>
-SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E> &
+constexpr safe_base<Stored, Min, Max, P, E> &
 safe_base<Stored, Min, Max, P, E>::
 operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
-    SAFE_NUMERIC_CONSTEXPR const interval<T> t_interval = {
+    constexpr const interval<T> t_interval = {
         MinT,
         MaxT
     };
     // typedef print<decltype(t_interval)> pt_interval;
-    SAFE_NUMERIC_CONSTEXPR const interval<Stored> this_interval = {
+    constexpr const interval<Stored> this_interval = {
         Min,
         Max
     };
@@ -140,7 +140,7 @@ template<
         int
     >::type
 >
-SAFE_NUMERIC_CONSTEXPR safe_base<Stored, Min, Max, P, E>::
+constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
     checked_result<R> r = checked::cast<R>(m_t);
     if(! r.no_exception())
@@ -259,7 +259,7 @@ typename boost::lazy_enable_if<
     >,
     addition_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
+constexpr inline operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef addition_result<T, U> ar;
@@ -280,19 +280,19 @@ SAFE_NUMERIC_CONSTEXPR inline operator+(const T & t, const U & u){
     // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
     // Use base_value(T) ( which equals MIN ) to create a new interval. Same
     // for MAX.  Now
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval(
+    constexpr const interval<t_base_type> t_interval(
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         );
 
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+    constexpr const checked_result<interval<result_base_type>> r_interval
         = add<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
@@ -335,7 +335,7 @@ typename boost::lazy_enable_if<
     >,
     subtraction_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
+constexpr operator-(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef subtraction_result<T, U> sr;
@@ -351,16 +351,16 @@ SAFE_NUMERIC_CONSTEXPR operator-(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+    constexpr const checked_result<interval<result_base_type>> r_interval
         = subtract<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
@@ -404,7 +404,7 @@ typename boost::lazy_enable_if<
     >,
     multiplication_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
+constexpr operator*(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef multiplication_result<T, U> mr;
@@ -425,18 +425,18 @@ SAFE_NUMERIC_CONSTEXPR operator*(const T & t, const U & u){
     // typedef print<u_base_type> p_u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
     // when we multiply the temporary intervals above, we'll get a new interval
     // with the correct range for the  product!
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+    constexpr const checked_result<interval<result_base_type>> r_interval
         = multiply<result_base_type>(t_interval, u_interval);
 
     // if no over/under flow possible
@@ -479,7 +479,7 @@ typename boost::lazy_enable_if<
     >,
     division_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
+constexpr operator/(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef division_result<T, U> dr;
@@ -518,18 +518,18 @@ SAFE_NUMERIC_CONSTEXPR operator/(const T & t, const U & u){
     // typedef print<u_base_type> p_u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
     // when we divide the temporary intervals above, we'll get a new interval
     // with the correct range for the result!
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval
+    constexpr const checked_result<interval<result_base_type>> r_interval
         { divide<result_base_type>(t_interval, u_interval) };
 
     // if no over/under flow or domain error possible
@@ -592,7 +592,7 @@ inline operator%(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
@@ -630,21 +630,21 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator<(const T & lhs, const U & rhs) {
+constexpr operator<(const T & lhs, const U & rhs) {
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+    constexpr const boost::logic::tribool r =
         t_interval < u_interval;
 
     return
@@ -666,21 +666,21 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator>(const T & lhs, const U & rhs) {
+constexpr operator>(const T & lhs, const U & rhs) {
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const boost::logic::tribool r =
+    constexpr const boost::logic::tribool r =
         t_interval > u_interval;
 
     return
@@ -702,16 +702,16 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator==(const T & lhs, const U & rhs) {
+constexpr operator==(const T & lhs, const U & rhs) {
     typedef typename base_type<T>::type t_base_type;
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
@@ -735,7 +735,7 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator!=(const T & lhs, const U & rhs) {
+constexpr operator!=(const T & lhs, const U & rhs) {
     return ! (lhs == rhs);
 }
 
@@ -747,7 +747,7 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator>=(const T & lhs, const U & rhs) {
+constexpr operator>=(const T & lhs, const U & rhs) {
     return ! ( rhs < lhs );
 }
 
@@ -759,7 +759,7 @@ typename boost::lazy_enable_if<
     >,
     boost::mpl::identity<bool>
 >::type
-SAFE_NUMERIC_CONSTEXPR operator<=(const T & lhs, const U & rhs) {
+constexpr operator<=(const T & lhs, const U & rhs) {
     return ! ( rhs > lhs );
 }
 
@@ -788,7 +788,7 @@ typename boost::lazy_enable_if_c<
     ),
     left_shift_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator<<(const T & t, const U & u){
+constexpr inline operator<<(const T & t, const U & u){
     // INT13-CPP
     typedef left_shift_result<T, U> lsr;
     typedef typename lsr::P::exception_policy exception_policy;
@@ -803,16 +803,16 @@ SAFE_NUMERIC_CONSTEXPR inline operator<<(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval {
+    constexpr const checked_result<interval<result_base_type>> r_interval {
         left_shift<result_base_type>(t_interval, u_interval)
     };
 
@@ -852,7 +852,7 @@ typename boost::lazy_enable_if_c<
     ),
     right_shift_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
+constexpr inline operator>>(const T & t, const U & u){
     // INT13-CPP
     typedef right_shift_result<T, U> rsr;
     typedef typename rsr::P::exception_policy exception_policy;
@@ -866,16 +866,16 @@ SAFE_NUMERIC_CONSTEXPR inline operator>>(const T & t, const U & u){
     typedef typename base_type<U>::type u_base_type;
 
     // filter out case were overflow cannot occur
-    SAFE_NUMERIC_CONSTEXPR const interval<t_base_type> t_interval = {
+    constexpr const interval<t_base_type> t_interval = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-    SAFE_NUMERIC_CONSTEXPR const interval<u_base_type> u_interval = {
+    constexpr const interval<u_base_type> u_interval = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-    SAFE_NUMERIC_CONSTEXPR const checked_result<interval<result_base_type>> r_interval {
+    constexpr const checked_result<interval<result_base_type>> r_interval {
         right_shift<result_base_type>(t_interval, u_interval)
     };
 
@@ -916,7 +916,7 @@ typename boost::lazy_enable_if<
     >,
     or_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator|(const T & t, const U & u){
+constexpr inline operator|(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef or_result<T, U> or_;
@@ -959,7 +959,7 @@ typename boost::lazy_enable_if<
     >,
     or_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator&(const T & t, const U & u){
+constexpr inline operator&(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef or_result<T, U> and_;
@@ -1002,7 +1002,7 @@ typename boost::lazy_enable_if<
     >,
     or_result<T, U>
 >::type
-SAFE_NUMERIC_CONSTEXPR inline operator^(const T & t, const U & u){
+constexpr inline operator^(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     // only if one of the types is a safe type. Verify this here
     typedef or_result<T, U> xor_;

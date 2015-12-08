@@ -11,7 +11,7 @@
 
 #include <boost/logic/tribool.hpp>
 
-#include "safe_common.hpp" // SAFE_NUMERIC_CONSTEXPR
+#include "safe_common.hpp" // constexpr
 #include "safe_compare.hpp"
 
 namespace boost {
@@ -38,7 +38,7 @@ struct checked_result {
     // can't select constructor based on the current status of another
     // checked_result object.
     /*
-    SAFE_NUMERIC_CONSTEXPR checked_result(const checked_result<R> & r) :
+    constexpr checked_result(const checked_result<R> & r) :
         m_e(r.m_e)
     {
         (no_exception()) ?
@@ -51,12 +51,12 @@ struct checked_result {
     // don't permit construction without initial value;
     checked_result() = delete;
 
-    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(const R & r) :
+    constexpr /*explicit*/ checked_result(const R & r) :
         m_e(exception_type::no_exception),
         m_r(r)
     {}
 
-    SAFE_NUMERIC_CONSTEXPR /*explicit*/ checked_result(
+    constexpr /*explicit*/ checked_result(
         exception_type e,
         const char * msg
     ) :
@@ -65,18 +65,18 @@ struct checked_result {
     {}
 
     // accesors
-    SAFE_NUMERIC_CONSTEXPR operator R() const {
+    constexpr operator R() const {
         // assert(exception_type::no_exception == m_e);
         return m_r;
     }
 
-    SAFE_NUMERIC_CONSTEXPR operator const char *() const {
+    constexpr operator const char *() const {
         // assert(exception_type::no_exception != m_e);
         return m_msg;
     }
 
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator<(const checked_result<T> & t) const {
+    constexpr boost::logic::tribool operator<(const checked_result<T> & t) const {
         return
             (this->no_exception() && t.no_exception()) ?
                 safe_compare::less_than(m_r, t.m_r)
@@ -85,11 +85,11 @@ struct checked_result {
             ;
     }
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>=(const checked_result<T> & t) const {
+    constexpr boost::logic::tribool operator>=(const checked_result<T> & t) const {
         return ! operator<(t);
     }
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator>(const checked_result<T> & t) const {
+    constexpr boost::logic::tribool operator>(const checked_result<T> & t) const {
         return
             (this->no_exception() && t.no_exception()) ?
                 safe_compare::greater_than(m_r, t.m_r)
@@ -98,27 +98,27 @@ struct checked_result {
             ;
     }
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR boost::logic::tribool  operator<=(const checked_result<T> & t) const {
+    constexpr boost::logic::tribool  operator<=(const checked_result<T> & t) const {
         return ! operator>(t) && ! operator<(t);
     }
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR boost::logic::tribool operator==(const checked_result<T> & t) const {
+    constexpr boost::logic::tribool operator==(const checked_result<T> & t) const {
         return ! operator>(t);
     }
 /*
-    SAFE_NUMERIC_CONSTEXPR bool operator==(const exception_type & et) const {
+    constexpr bool operator==(const exception_type & et) const {
         return m_e == et;
     }
-    SAFE_NUMERIC_CONSTEXPR bool operator!=(const exception_type & et) const {
+    constexpr bool operator!=(const exception_type & et) const {
         return m_e != et;
     }
 */
-    SAFE_NUMERIC_CONSTEXPR bool no_exception() const {
+    constexpr bool no_exception() const {
         return m_e == exception_type::no_exception;
     }
 
     template<class EP>
-    SAFE_NUMERIC_CONSTEXPR void
+    constexpr void
     dispatch() const {
         switch(m_e){
         case exception_type::overflow_error:
@@ -233,10 +233,10 @@ class numeric_limits<boost::numeric::checked_result<R> >
 {
     typedef boost::numeric::checked_result<R> this_type;
 public:
-    SAFE_NUMERIC_CONSTEXPR static this_type min() noexcept {
+    constexpr static this_type min() noexcept {
         return this_type(std::numeric_limits<R>::min());
     }
-    SAFE_NUMERIC_CONSTEXPR static this_type max() noexcept {
+    constexpr static this_type max() noexcept {
         return this_type(std::numeric_limits<R>::max());
     }
 };

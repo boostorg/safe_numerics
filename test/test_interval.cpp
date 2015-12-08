@@ -67,7 +67,7 @@ namespace test4 {
     // typedef typename print<max_t>::type p_max_t;
 
     template<typename Tx>
-    SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_upper(const interval<Tx> & t){
+    constexpr static const interval<Tx> r_upper(const interval<Tx> & t){
         static_assert(
             std::is_literal_type< interval<Tx> >::value,
             "interval<Tx> is not literal type"
@@ -78,7 +78,7 @@ namespace test4 {
         );
     }
     template<typename Tx>
-    SAFE_NUMERIC_CONSTEXPR static const interval<Tx> r_lower(const interval<Tx> & t){
+    constexpr static const interval<Tx> r_lower(const interval<Tx> & t){
         static_assert(
             std::is_literal_type< interval<Tx> >::value,
             "interval<Tx> is not literal type"
@@ -90,7 +90,7 @@ namespace test4 {
     }
 
     template<typename Tx, typename Ux>
-    SAFE_NUMERIC_CONSTEXPR static const checked_result<interval<max_t>> r(
+    constexpr static const checked_result<interval<max_t>> r(
         const interval<Tx> & t,
         const interval<Ux> & u
     ){

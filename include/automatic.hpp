@@ -122,24 +122,24 @@ struct automatic {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
+        constexpr static const interval<base_type_t> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
+        constexpr static const interval<base_type_u> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
         typedef calculate_max_t<T, U> max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+        constexpr static const checked_result<interval< max_t>> r
             = add<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+        constexpr static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+        constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
@@ -161,24 +161,24 @@ struct automatic {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
+        constexpr static const interval<base_type_t> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
+        constexpr static const interval<base_type_u> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
         typedef calculate_max_t<T, U> max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+        constexpr static const checked_result<interval< max_t>> r
             = subtract<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+        constexpr static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+        constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
@@ -200,12 +200,12 @@ struct automatic {
         typedef typename base_type<T>::type base_type_t;
         typedef typename base_type<U>::type base_type_u;
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t = {
+        constexpr static const interval<base_type_t> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u = {
+        constexpr static const interval<base_type_u> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
@@ -213,12 +213,12 @@ struct automatic {
         typedef calculate_max_t<T, U> max_t;
         // typedef print<max_t> p_max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+        constexpr static const checked_result<interval< max_t>> r
             {multiply<max_t>(t, u)};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> default_interval{};
+        constexpr static const interval<max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+        constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
@@ -281,13 +281,13 @@ struct automatic {
             std::uintmax_t
         >::type;
 
-        SAFE_NUMERIC_CONSTEXPR static checked_result<interval<base_type_r>> r {
+        constexpr static checked_result<interval<base_type_r>> r {
             divide_nz<base_type_r>(t, u)
         };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> default_interval{};
+        constexpr static const interval<base_type_r> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> result_interval {
+        constexpr static const interval<base_type_r> result_interval {
             r.no_exception() ?
                 static_cast<interval<base_type_r>>(r)
             :
@@ -306,7 +306,7 @@ struct automatic {
     // forward to correct divide implementation
     template<class R, class T, class U>
     checked_result<R>
-    static SAFE_NUMERIC_CONSTEXPR divide(
+    static constexpr divide(
         const T & t,
         const U & u
     ){
@@ -327,24 +327,24 @@ struct automatic {
             "interval<base_type_u> is not tliteral type"
         );
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_t> t {
+        constexpr static const interval<base_type_t> t {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_u> u {
+        constexpr static const interval<base_type_u> u {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
         using base_type_r = std::make_unsigned_t<base_type_u>;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval<base_type_r>> r
+        constexpr static const checked_result<interval<base_type_r>> r
             { modulus_nz<base_type_r>(t, u) };
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> default_interval{};
+        constexpr static const interval<base_type_r> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<base_type_r> result_interval =
+        constexpr static const interval<base_type_r> result_interval =
             r.no_exception() ?
                 static_cast<interval<base_type_r>>(r)
             :
@@ -363,7 +363,7 @@ struct automatic {
     // forward to correct modulus implementation
     template<class R, class T, class U>
     checked_result<R>
-    static SAFE_NUMERIC_CONSTEXPR modulus(
+    static constexpr modulus(
         const T & t,
         const U & u
     ){
@@ -375,23 +375,23 @@ struct automatic {
     struct left_shift_result {
         typedef typename base_type<T>::type t_base_type;
         typedef typename base_type<U>::type u_base_type;
-        SAFE_NUMERIC_CONSTEXPR static const interval<t_base_type> t = {
+        constexpr static const interval<t_base_type> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        SAFE_NUMERIC_CONSTEXPR static const interval<u_base_type> u = {
+        constexpr static const interval<u_base_type> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
         typedef calculate_max_t<T, U> max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+        constexpr static const checked_result<interval< max_t>> r
             = left_shift<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+        constexpr static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+        constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
@@ -412,23 +412,23 @@ struct automatic {
     struct right_shift_result {
         typedef typename base_type<T>::type t_base_type;
         typedef typename base_type<U>::type u_base_type;
-        SAFE_NUMERIC_CONSTEXPR static const interval<t_base_type> t = {
+        constexpr static const interval<t_base_type> t = {
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        SAFE_NUMERIC_CONSTEXPR static const interval<u_base_type> u = {
+        constexpr static const interval<u_base_type> u = {
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
         typedef calculate_max_t<T, U> max_t;
 
-        SAFE_NUMERIC_CONSTEXPR static const checked_result<interval< max_t>> r
+        constexpr static const checked_result<interval< max_t>> r
             = right_shift<max_t>(t, u);
 
-        SAFE_NUMERIC_CONSTEXPR static const interval< max_t> default_interval{};
+        constexpr static const interval< max_t> default_interval{};
 
-        SAFE_NUMERIC_CONSTEXPR static const interval<max_t> result_interval =
+        constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :

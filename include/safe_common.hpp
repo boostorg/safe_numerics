@@ -14,9 +14,6 @@
 
 #include <type_traits>
 
-// don't use constexpr so we can debug
-#define SAFE_NUMERIC_CONSTEXPR constexpr
-
 namespace boost {
 namespace numeric {
 
@@ -31,7 +28,7 @@ struct base_type {
 };
 
 template<class T>
-SAFE_NUMERIC_CONSTEXPR const typename base_type<T>::type & base_value(const T & t) {
+constexpr const typename base_type<T>::type & base_value(const T & t) {
     return static_cast<const typename base_type<T>::type & >(t);
 }
 

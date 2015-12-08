@@ -36,7 +36,7 @@ namespace checked {
 // safe casting on primitive types
 
 template<class R, class T>
-SAFE_NUMERIC_CONSTEXPR checked_result<R>
+constexpr checked_result<R>
 cast(
     const T & t
 ) {
@@ -109,7 +109,7 @@ namespace detail {
         typename std::is_unsigned<R>,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR add(
+    constexpr add(
         const R t,
         const R u
     ) {
@@ -131,7 +131,7 @@ namespace detail {
         typename std::is_signed<R>,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR add(
+    constexpr add(
         const R t,
         const R u
     ) {
@@ -151,7 +151,7 @@ namespace detail {
 } // namespace detail
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> add(
+constexpr checked_result<R> add(
     const T & t,
     const U & u
 ) {
@@ -180,7 +180,7 @@ typename boost::enable_if<
     typename std::is_unsigned<R>,
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR subtract(
+constexpr subtract(
     const R t,
     const R u
 ) {
@@ -202,7 +202,7 @@ typename boost::enable_if<
     typename std::is_signed<R>,
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR subtract(
+constexpr subtract(
     const R t,
     const R u
 ) { // INT32-C
@@ -222,7 +222,7 @@ SAFE_NUMERIC_CONSTEXPR subtract(
 } // namespace detail
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> subtract(
+constexpr checked_result<R> subtract(
     const T & t,
     const U & u
 ) {
@@ -248,7 +248,7 @@ typename boost::enable_if_c<
     std::is_unsigned<R>::value && (sizeof(R) <= (sizeof(std::uintmax_t) / 2)),
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR multiply(
+constexpr multiply(
     const R t,
     const R u
 ) {
@@ -272,7 +272,7 @@ typename boost::enable_if_c<
     std::is_unsigned<R>::value && (sizeof(R) > sizeof(std::uintmax_t) / 2),
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR multiply(
+constexpr multiply(
     const R t,
     const R u
 ) {
@@ -294,7 +294,7 @@ typename boost::enable_if_c<
     std::is_signed<R>::value && (sizeof(R) <= (sizeof(std::intmax_t) / 2)),
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR multiply(
+constexpr multiply(
     const R t,
     const R u
 ) {
@@ -329,7 +329,7 @@ typename boost::enable_if_c<
     std::is_signed<R>::value && (sizeof(R) > (sizeof(std::intmax_t) / 2)),
     checked_result<R>
 >::type
-SAFE_NUMERIC_CONSTEXPR multiply(
+constexpr multiply(
     const R t,
     const R u
 ) { // INT32-C
@@ -373,7 +373,7 @@ SAFE_NUMERIC_CONSTEXPR multiply(
 } // namespace detail
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> multiply(
+constexpr checked_result<R> multiply(
     const T & t,
     const U & u
 ) {
@@ -398,7 +398,7 @@ namespace detail {
         !std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR divide(
+    constexpr divide(
         const R & t,
         const R & u
     ){
@@ -410,7 +410,7 @@ namespace detail {
         std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR divide(
+    constexpr divide(
         const R & t,
         const R & u
     ){
@@ -428,7 +428,7 @@ namespace detail {
 
 template<class R, class T, class U>
 checked_result<R>
-SAFE_NUMERIC_CONSTEXPR divide(
+constexpr divide(
     const T & t,
     const U & u
 ){
@@ -456,7 +456,7 @@ namespace detail_automatic {
         ! std::numeric_limits<U>::is_signed,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR divide(
+    constexpr divide(
         const T & t,
         const U & u
     ){
@@ -468,7 +468,7 @@ namespace detail_automatic {
         std::numeric_limits<U>::is_signed,
         checked_result<R>
     >::type
-    SAFE_NUMERIC_CONSTEXPR divide(
+    constexpr divide(
         const T & t,
         const U & u
     ){
@@ -490,7 +490,7 @@ namespace detail_automatic {
 
 template<class R, class T, class U>
 checked_result<R>
-SAFE_NUMERIC_CONSTEXPR divide_automatic(
+constexpr divide_automatic(
     const T & t,
     const U & u
 ){
@@ -518,7 +518,7 @@ abs(const T & t){
 
 template<class R, class T, class U>
 checked_result<R>
-SAFE_NUMERIC_CONSTEXPR modulus(
+constexpr modulus(
     const T & t,
     const U & u
 ) {
@@ -539,7 +539,7 @@ SAFE_NUMERIC_CONSTEXPR modulus(
 namespace detail {
 
 template<class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<U> check_shift(
+constexpr checked_result<U> check_shift(
     const T & t,
     const U & u
 ) {
@@ -577,7 +577,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<U> check_shift(
 
 // left shift
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> left_shift(
+constexpr checked_result<R> left_shift(
     const T & t,
     const U & u
 ) {
@@ -609,7 +609,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> left_shift(
 
 // right shift
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
+constexpr checked_result<R> right_shift(
     const T & t,
     const U & u
 ) {
@@ -634,7 +634,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> right_shift(
 // bitwise operations
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_or(
+constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
 ) {
@@ -655,7 +655,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_or(
 }
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_and(
+constexpr checked_result<R> bitwise_and(
     const T & t,
     const U & u
 ) {
@@ -676,7 +676,7 @@ SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_and(
 }
 
 template<class R, class T, class U>
-SAFE_NUMERIC_CONSTEXPR checked_result<R> bitwise_xor(
+constexpr checked_result<R> bitwise_xor(
     const T & t,
     const U & u
 ) {

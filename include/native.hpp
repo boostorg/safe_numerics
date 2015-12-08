@@ -88,7 +88,7 @@ struct native {
     // forward to correct divide implementation
     template<class R, class T, class U>
     checked_result<R>
-    static SAFE_NUMERIC_CONSTEXPR divide(
+    static constexpr divide(
         const T & t,
         const U & u
     ){
@@ -97,7 +97,7 @@ struct native {
     // forward to correct modulus implementation
     template<class R, class T, class U>
     checked_result<R>
-    static SAFE_NUMERIC_CONSTEXPR modulus(
+    static constexpr modulus(
         const T & t,
         const U & u
     ){

@@ -97,7 +97,7 @@ template<
     class P,
     class E
 >
-SAFE_NUMERIC_CONSTEXPR T base_value(
+constexpr T base_value(
     const safe_base<T, Min, Max, P, E>  & st
 ) {
     return static_cast<T>(st);
@@ -163,23 +163,23 @@ class safe_base {
     friend class safe_base;
 
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR bool validate(const T & t) const;
+    constexpr bool validate(const T & t) const;
 
 public:
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    SAFE_NUMERIC_CONSTEXPR explicit safe_base() {}
+    constexpr explicit safe_base() {}
 
     // don't need to do any validation here because result has already
     // been checked
     /*
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const checked_result<T> & t) :
+    constexpr safe_base(const checked_result<T> & t) :
         m_t(static_cast<Stored>(t))
     {}
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
+    constexpr safe_base(const T & t) :
         m_t(static_cast<Stored>(t))
     {
         if(! validate(t)){
@@ -188,7 +188,7 @@ public:
     }
     */
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const T & t) :
+    constexpr safe_base(const T & t) :
         m_t(t)
     {
         if(!validate(t))
@@ -196,7 +196,7 @@ public:
     }
 
     template<class T, T MinT, T MaxT, class PT, class ET>
-    SAFE_NUMERIC_CONSTEXPR safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t);
+    constexpr safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t);
     
     // note: Rule of Five.  Don't specify custom destructor,
     // custom move, custom copy, custom assignment, custom
@@ -214,10 +214,10 @@ public:
             int
         >::type = 0
     >
-    SAFE_NUMERIC_CONSTEXPR operator R () const;
+    constexpr operator R () const;
 
     /*
-    SAFE_NUMERIC_CONSTEXPR operator Stored () const {
+    constexpr operator Stored () const {
         return m_t;
     }
     */
@@ -225,7 +225,7 @@ public:
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
-    SAFE_NUMERIC_CONSTEXPR safe_base & operator=(const T & rhs){
+    constexpr safe_base & operator=(const T & rhs){
         if(! validate(rhs)){
             static_assert(std::is_literal_type<T>::value, "expecting a literal");
             E::range_error(
@@ -237,7 +237,7 @@ public:
     }
     
     template<class T, T MinT, T MaxT, class PT, class ET>
-    SAFE_NUMERIC_CONSTEXPR safe_base &
+    constexpr safe_base &
     operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
 
     template<class T>
@@ -332,10 +332,10 @@ class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
 {
     typedef boost::numeric::safe_base<T, Min, Max, P, E> SB;
 public:
-    SAFE_NUMERIC_CONSTEXPR static SB min() noexcept {
+    constexpr static SB min() noexcept {
         return SB(Min);
     }
-    SAFE_NUMERIC_CONSTEXPR static SB max() noexcept {
+    constexpr static SB max() noexcept {
         return SB(Max);
     }
 };
