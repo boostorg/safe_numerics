@@ -148,7 +148,11 @@
     strong guarantee.</para>
   </section>
 
+<<<<<<< HEAD
   <section>
+=======
+  <section id="safe_numerics.library_implementation">
+>>>>>>> develop
     <title>Library Implementation</title>
 
     <para>The Safe Numerics library is implemented in terms of some more
@@ -162,19 +166,31 @@
     It is thought that they may be useful outside of the context of the Safe
     Numerics library. For all these reasons, they are documented here.</para>
 
+<<<<<<< HEAD
     <section>
+=======
+    <section id="safe_numerics.checked_result">
+>>>>>>> develop
       <title>Checked_Result&lt;R&gt;</title>
 
       <para>To Do</para>
     </section>
 
+<<<<<<< HEAD
     <section>
+=======
+    <section id="safe_numerics.checked_integer_arithmetic">
+>>>>>>> develop
       <title>Checked Integer Arithmetic</title>
 
       <para>To Do</para>
     </section>
 
+<<<<<<< HEAD
     <section>
+=======
+    <section id="safe_numerics.interval_arithmetic">
+>>>>>>> develop
       <title>Interval Arithmetic</title>
 
       <para>To Do</para>
@@ -318,7 +334,7 @@
 
       <listitem>
         <para>Conversions to safe integer types from floating point types is
-        not checked.</para>
+        not explicitly addressed.</para>
       </listitem>
 
       <listitem>
@@ -326,16 +342,22 @@
         <code>strtoi</code> etc. DO check for valid input and throw the
         exception <code>std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
-        <code>strtoi</code> aready contains the exact functionality that
+        <code>strtoi</code> already contains the exact functionality that
         <code>safe&lt;int&gt;</code> provides.</para>
       </listitem>
 
       <listitem>
         <para>Although care was taking to make the library portable, it's
         likely that at least some parts of the implementation - particularly
+<<<<<<< HEAD
         <code>checked</code> arithmetic - likely depend upon two complement
         representation of integers. Hence the library is probably not
         currently portable to other architectures. </para>
+=======
+        <code>checked</code> arithmetic - depend upon twos complement
+        representation of integers. Hence the library is probably not
+        currently portable to other architectures.</para>
+>>>>>>> develop
       </listitem>
     </itemizedlist>
   </section>

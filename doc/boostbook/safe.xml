@@ -9,7 +9,7 @@
     <title>Description</title>
 
     <para>A <code>safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
-    can be used. Any expression which uses this type is guarenteed to return
+    can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or trap in some way.</para>
   </section>
 
@@ -223,7 +223,7 @@ void f(){
 #include &lt;boost/numeric/safe.hpp&gt;
 
 void f(){
-    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::throw_exception&gt;; 
+    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;; 
     safe_int i;
     std::cin &gt;&gt; i;  // could throw exception here !!!
     safe_int j;

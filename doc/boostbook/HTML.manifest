@@ -21,10 +21,17 @@
 ../html/promotion_policies.html
 ../html/exception_policies.html
 ../html/exception_safety.html
+<<<<<<< HEAD
 ../html/index.html
 ../html/index.html
 ../html/index.html
 ../html/index.html
+=======
+../html/library_implementation.html
+../html/checked_result.html
+../html/checked_integer_arithmetic.html
+../html/interval_arithmetic.html
+>>>>>>> develop
 ../html/index.html
 ../html/rationale.html
 ../html/pending_issues.html

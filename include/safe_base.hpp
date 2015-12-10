@@ -171,22 +171,6 @@ public:
     // default constructor
     constexpr explicit safe_base() {}
 
-    // don't need to do any validation here because result has already
-    // been checked
-    /*
-    template<class T>
-    constexpr safe_base(const checked_result<T> & t) :
-        m_t(static_cast<Stored>(t))
-    {}
-    template<class T>
-    constexpr safe_base(const T & t) :
-        m_t(static_cast<Stored>(t))
-    {
-        if(! validate(t)){
-            E::range_error("Invalid value");
-        }
-    }
-    */
     template<class T>
     constexpr safe_base(const T & t) :
         m_t(t)

@@ -14,8 +14,12 @@
   <section>
     <title>Model of</title>
 
+<<<<<<< HEAD
     <para><link
     linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
+=======
+    <para><link linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
+>>>>>>> develop
   </section>
 
   <section>
