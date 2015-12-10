@@ -1,12 +1,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Eliminate runtime cost</title>
+<title>Eliminate Runtime Cost</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="7.html" title="Parameter checking is too expensive">
+<link rel="prev" href="7.html" title="Programming by Contract is Too Slow">
 <link rel="next" href="../notes.html" title="Notes">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -19,7 +19,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.8"></a>Eliminate runtime cost</h3></div></div></div>
+<a name="safe_numerics.tutorial.8"></a>Eliminate Runtime Cost</h3></div></div></div>
 <p>Our system works by checking arithmetic operations whenever they
     could result in an erroneous result. The C++ standard describes how binary
     operations on different integer types are handled. Here is a simplified
@@ -34,29 +34,32 @@
 <p>So the result of the sum of two integer types will result in another
     integer type. If the values are large, they will exceed the size that the
     resulting integer type can hold. This is what we call "overflow". Standard
-    C++ just truncates the result to fit into the result type - which makes
-    the result arithmetically incorrect. Up until now, we've focused on
-    detecting when this happens and invoking an interrupt or other kind of
-    error handler. But now we look at another option. Using the "automatic"
-    type promotion policy, we can change the rules of C++ arithmetic for safe
-    types to something like the following:</p>
+    C/C++ just truncates the result to fit into the result type - which makes
+    the result arithmetically incorrect. This behavior is consistent with the
+    default <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">"native" type
+    promotion policy</a>. Up until now, we've focused on detecting when
+    this happens and invoking an interrupt or other kind of error handler.
+    </p>
+<p>But now we look at another option. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic">"automatic" type
+    promotion policy</a>, we can change the rules of C++ arithmetic for
+    safe types to something like the following:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>for any C++ numeric types, we know from
           <code class="computeroutput">std::numeric::limits</code> what the maximum and minimum
           values that a variable can be - this defines a closed
           interval.</p></li>
 <li class="listitem"><p>For any binary operation on these types, we can calculate the
-          interval of the result.</p></li>
-<li class="listitem"><p>From this we can determine a new safe type which can be
-          guarenteed to hold the result.</p></li>
+          interval of the result at compile time.</p></li>
+<li class="listitem"><p>From this interval we can determine a new safe type which can
+          be guarenteed to hold the result.</p></li>
 <li class="listitem"><p>Since the result type is guarenteed to hold the result, there
           is no need to check for errors - they can't happen !!!</p></li>
 <li class="listitem"><p>The only error checking we need to do is when safe values are
-          initialized, but this we would have to do in any case. So we've
-          eliminated arithmetically incorrect results while incurring zero
-          runtime overhead for error checking.</p></li>
+          initialized or assigned, but this we would have to do in any case.
+          So we've eliminated arithmetically incorrect results while incurring
+          zero runtime overhead for error checking.</p></li>
 </ul></div>
-<p>In sort, given a binary operation, we promote the constituent types
+<p>In short, given a binary operation, we promote the constituent types
     to a larger result type which can't overflow. This is a fundamental
     deparature from the C++ Standard behavior.</p>
 <p>If the interval of the result cannot be contained in the largest
@@ -73,10 +76,46 @@
 #include &lt;ostream&gt;
 #include &lt;iostream&gt;
 #include &lt;cxxabi.h&gt;
+#include &lt;typeinfo&gt;
 
 #include "../include/safe_range.hpp"
 #include "../include/automatic.hpp"
 
+// create an output manipulator which prints variable type and limits
+// as well as value
+template&lt;typename T&gt;
+struct formatted_impl {
+    const T &amp; m_t;
+    formatted_impl(const T &amp; t) :
+        m_t(t)
+    {}
+    template &lt;class charT, class Traits&gt;
+    friend std::basic_ostream&lt;charT,Traits&gt; &amp;
+    operator&lt;&lt;(
+        std::basic_ostream&lt;charT,Traits&gt; &amp; os,
+        const formatted_impl&lt;T&gt; &amp; f
+    ){
+        int status;
+        return os
+            &lt;&lt; "&lt;"
+            &lt;&lt; abi::__cxa_demangle(
+                typeid(boost::numeric::base_value(m_t)).name(),0,0,&amp;status
+            )
+            &lt;&lt; "&gt;["
+            &lt;&lt; std::numeric_limits&lt;T&gt;::min() &lt;&lt; ","
+            &lt;&lt; std::numeric_limits&lt;T&gt;::max() &lt;&lt; "] = "
+            &lt;&lt; f.m_t;
+    }
+};
+
+template&lt;typename T&gt;
+auto formatted(const T &amp; t){
+    return formatted_impl&lt;T&gt;(t);
+}
+
+// create a type for holding small integers which implement automatic
+// type promotion to larger types to guarentee correct results with
+// zero runtime overhead !
 template &lt;
     std::intmax_t Min,
     std::intmax_t Max
@@ -87,64 +126,21 @@ using safe_t = boost::numeric::safe_signed_range&lt;
     boost::numeric::automatic,
     boost::numeric::throw_exception
 &gt;;
-
-// I can't figure out how to overload os &lt;&lt; for safe_t
-// we use the following workaround there
-
-// wrap a safe_t in a "formatted" wrapper
-template&lt;typename T&gt;
-struct formatted {
-    using wrapped_type = T;
-    const T &amp; m_t;
-    formatted(const T &amp; t) :
-        m_t(t)
-    {}
-};
-
-template&lt;typename T&gt;
-auto make_formatted(const T &amp; t){
-    return formatted&lt;T&gt;(t);
-}
-
-// now (fully) specialize output of safe types wrapped in formatted
-template&lt;
-    class T,
-    T Min,
-    T Max,
-    class P, // promotion polic
-    class E  // exception policy
-&gt;
-std::ostream &amp; operator&lt;&lt;(
-    std::ostream &amp; os,
-    const formatted&lt;boost::numeric::safe_base&lt;T, Min, Max, P, E&gt;&gt; &amp; f
-){
-    using safe_type = typename formatted&lt;boost::numeric::safe_base&lt;T, Min, Max, P, E&gt; &gt;::wrapped_type;
-    return os
-        &lt;&lt; "["
-        &lt;&lt; std::numeric_limits&lt;safe_type&gt;::min() &lt;&lt; ","
-        &lt;&lt; std::numeric_limits&lt;safe_type&gt;::max() &lt;&lt; "] = "
-        &lt;&lt; f.m_t;
-}
+using small_integer_t = safe_t&lt;-24, 82&gt;;
 
 int main(int argc, const char * argv[]){
     // problem: checking of externally produced value can be overlooked
     std::cout &lt;&lt; "example 8: ";
-    std::cout &lt;&lt; "eliminate runtime overhead"
-    &lt;&lt; std::endl;
+    std::cout &lt;&lt; "eliminate runtime overhead" &lt;&lt; std::endl;
 
     try{
-        int status;
-        const safe_t&lt;-64, 63&gt; x(1);
-        std::cout &lt;&lt; abi::__cxa_demangle(typeid(x).name(),0,0,&amp;status) &lt;&lt; '\n';
-
-        std::cout &lt;&lt; "x" &lt;&lt; make_formatted(x) &lt;&lt; std::endl;
-        safe_t&lt;-64, 63&gt; y;
-        y = 2;
-        std::cout &lt;&lt; "y" &lt;&lt; make_formatted(y) &lt;&lt; std::endl;
-        auto z = x + y;
-        std::cout &lt;&lt; "(x + y)" &lt;&lt; make_formatted(z) &lt;&lt; std::endl;
-
-        std::cout &lt;&lt; "(x - y)" &lt;&lt; make_formatted(x - y) &lt;&lt; std::endl;
+        const small_integer_t x(1);
+        std::cout &lt;&lt; "x" &lt;&lt; formatted(x) &lt;&lt; std::endl;
+        small_integer_t y = 2;
+        std::cout &lt;&lt; "y" &lt;&lt; formatted(y) &lt;&lt; std::endl;
+        auto z = x + y;  // zero runtime overhead !
+        std::cout &lt;&lt; "(x + y)" &lt;&lt; formatted(z) &lt;&lt; std::endl;
+        std::cout &lt;&lt; "(x - y)" &lt;&lt; formatted(x - y) &lt;&lt; std::endl;
     }
     catch(std::exception e){
         // none of the above should trap. Mark failure if they do
@@ -155,6 +151,29 @@ int main(int argc, const char * argv[]){
     return 0;
 }
 </pre>
+<p>The
+    above program produces the following output:</p>
+<pre class="programlisting">example 8: eliminate runtime overhead
+x&lt;signed char&gt;[-24,82] = 1
+y&lt;signed char&gt;[-24,82] = 2
+(x + y)&lt;short&gt;[-48,164] = 3
+(x - y)&lt;signed char&gt;[-106,106] = -1</pre>
+<p>Variables x and y
+    are stored as 8 bit signed integers with range specied as -24 to 82. The
+    result of x + y could be any value in the range -48 to 164. Since this
+    result can't be stored in an 8 bit signed integer, a 16 bit signed integer
+    is allocated. The result x - y could range from -106 to 106 so will fit in
+    an 8 bit signed integer is allocated. Binary operations with safe numeric
+    using automatic type promotion will produce other safe numeric types with
+    template parameters appropriate to hold the result. The resultant safe
+    types may have smaller or larger ranges than the parameters of the binary
+    operation.</p>
+<p>We've used simple expressions in this illustration. But since binary
+    operations on safe types result in other safe types, expressions can be
+    made arbitrarily elaborate - just as they can be with intrinsic integer
+    types. That is, safe integer types are drop in replacements for intrinsic
+    integer types. We are guarenteed never to produce an incorrect result
+    regardless of how elaborate the expression might be.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

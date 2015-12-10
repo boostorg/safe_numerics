@@ -24,7 +24,7 @@
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.summary">Summary</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm110745502544">Features</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm531041966144">Features</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.requirements">Requirements</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.scope">Scope</a></span></dt>
 </dl></div>
@@ -61,7 +61,7 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm110746514176"><span class="citation">INT32-C</span></a>]</a> seems
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm531035784128"><span class="citation">INT32-C</span></a>]</a> seems
     to recommend the following approach.</p>
 <pre class="programlisting">int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
@@ -93,7 +93,7 @@
     as:</p>
 <pre class="programlisting">#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
 
-int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
+safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   return x + y; // throw exception if correct result cannot be returned
 }
 </pre>
@@ -139,7 +139,7 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm110745502544"></a>Features</h3></div></div></div>
+<a name="idm531041966144"></a>Features</h3></div></div></div>
 <p>Operation of safe types is determined by template parameters which
     specify a pair of <a class="link" href="promotion_policies.html" title="Promotion Policies">policy
     classes</a> which specify the behavior for type promotion and error
@@ -150,9 +150,9 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
           guarenteed to hold the expression's results.</p></li>
 <li class="listitem"><p>Ability to use custom integer sizes to implement cross
           platform code testing</p></li>
-<li class="listitem"><p>Trap any possible arithmetic errors at compile time</p></li>
-<li class="listitem"><p>Ranged integer types to permit enforcement of other program
-          requirements.</p></li>
+<li class="listitem"><p>Trap some arithmetic errors at compile time</p></li>
+<li class="listitem"><p>Enforce of other program requirements using ranged integer
+          types.</p></li>
 <li class="listitem"><p>Among others.</p></li>
 </ul></div>
 </div>
@@ -160,17 +160,14 @@ int f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.introduction.requirements"></a>Requirements</h3></div></div></div>
 <p>This library is composed entirely of C++ Headers. I requires a
-    compiler compatible with the C++11 standard.</p>
+    compiler compatible with the C++14 standard.</p>
 <p>The following Boost Libraries must be installed in order to use this
     library</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>mpl</p></li>
 <li class="listitem"><p>integer</p></li>
-<li class="listitem"><p>limits</p></li>
 <li class="listitem"><p>config</p></li>
 <li class="listitem"><p>concept checking</p></li>
-<li class="listitem"><p>type traits</p></li>
-<li class="listitem"><p>integer traits</p></li>
 </ul></div>
 </div>
 <div class="section">

@@ -25,13 +25,18 @@
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>The library is currently limited to integers.</p></li>
 <li class="listitem"><p>Conversions to safe integer types from floating point types is
-        not checked.</p></li>
+        not explicitly addressed.</p></li>
 <li class="listitem"><p>Note that standard library stream conversion functions such as
         <code class="computeroutput">strtoi</code> etc. DO check for valid input and throw the
         exception <code class="computeroutput">std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
-        <code class="computeroutput">strtoi</code> aready contains the exact functionality that
+        <code class="computeroutput">strtoi</code> already contains the exact functionality that
         <code class="computeroutput">safe&lt;int&gt;</code> provides.</p></li>
+<li class="listitem"><p>Although care was taking to make the library portable, it's
+        likely that at least some parts of the implementation - particularly
+        <code class="computeroutput">checked</code> arithmetic - depend upon twos complement
+        representation of integers. Hence the library is probably not
+        currently portable to other architectures.</p></li>
 </ul></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

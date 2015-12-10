@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Implicit conversions change data values</title>
+<title>Implicit Conversions Change Data Values</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="3.html" title="Undetected underflow">
-<link rel="next" href="5.html" title="Array index value can exceed array limits">
+<link rel="prev" href="2.html" title="Undetected Overflow">
+<link rel="next" href="5.html" title="Array Index Value Can Exceed Array Limits">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,54 +15,50 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="3.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.4"></a>Implicit conversions change data values</h3></div></div></div>
-<p>A simple assignment or arithmetic expression will generally convert
-    all the terms to the same type. Sometimes this can silently change values.
-    For example, when a signed data variable contains a negative type,
-    assigning to a unsigned type will be permitted by any C/C++ compiler but
-    will be treated as large unsigned value. Most modern compilers will emit a
-    compile time warning when this conversion is performed. The user may then
-    decide to change some data types or apply a <code class="computeroutput">static_cast</code>. This
-    is less than satisfactory for two reasons:</p>
+<a name="safe_numerics.tutorial.4"></a>Implicit Conversions Change Data Values</h3></div></div></div>
+<p>A simple assignment or arithmetic expression will convert all the
+    terms to the same type. Sometimes this can silently change values. For
+    example, when a signed data variable contains a negative type, assigning
+    to a unsigned type will be permitted by any C/C++ compiler but will be
+    treated as large unsigned value. Most modern compilers will emit a compile
+    time warning when this conversion is performed. The user may then decide
+    to change some data types or apply a <code class="computeroutput">static_cast</code>. This is
+    less than satisfactory for two reasons:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>It may be unwieldy to change all the types to signed or
           unsigned.</p></li>
-<li class="listitem"><p>Littering one's program with <code class="computeroutput">static_cast</code><code class="computeroutput">
-          </code>makes it more difficult to read.</p></li>
 <li class="listitem"><p>We may believe that our signed type will never contain a
-          negative value. If we ignore the any compiler warnings or use a
+          negative value. <code class="computeroutput">static_cast</code> changes the data type - not
+          the data value. If we ignore the any compiler warnings or use a
           <code class="computeroutput">static_cast</code> to suppress them, we'll fail to detect a
           program error when it is committed. This is aways a risk with
           casts.</p></li>
 </ul></div>
 <p>This solution is simple, Just replace instances of the <code class="computeroutput">int
     </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
-<pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;exception&gt;
+<pre class="programlisting">#include &lt;exception&gt;
 #include &lt;iostream&gt;
 
 #include "../include/safe_integer.hpp"
-
-void detected_msg(bool detected){
-    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
-}
 
 int main(int argc, const char * argv[]){
     std::cout &lt;&lt; "example 4: ";
     std::cout &lt;&lt; "implicit conversions change data values" &lt;&lt; std::endl;
     std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    // problem: implicit conversions change data values
     try{
         int x = -1000;
         // the following silently produces an incorrect result
         char y = x;
-        detected_msg(false);
+        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; (int)y &lt;&lt; std::endl;
+        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
     }
     catch(std::exception){
-        assert(false); // never arrive here
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl; // never arrive here
     }
     // solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;
     std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
@@ -71,14 +67,13 @@ int main(int argc, const char * argv[]){
         safe&lt;int&gt; x = -1000;
         // throws exception when conversion change data value
         safe&lt;char&gt; y1(x);
-        safe&lt;char&gt; y3 = x;
-        safe&lt;char&gt; y = {x};
-        y = x;
-        assert(false); // never arrive here
+        safe&lt;char&gt; y2 = x;
+        safe&lt;char&gt; y3 = {x};
+        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
     }
     catch(std::exception &amp; e){
         std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        detected_msg(true);
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
     return 0;
 }
@@ -92,7 +87,7 @@ int main(int argc, const char * argv[]){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="3.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

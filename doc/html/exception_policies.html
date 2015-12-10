@@ -21,36 +21,36 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception_policies"></a>Exception Policies</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="exception_policies.html#idm110745010288">throw_exception</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm110745001136">ignore_exception</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm110744993008">no_exception_support&lt;O, U = O, R =O, D = O&gt;</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm110744964320">trap_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm531041457776">throw_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm531041448368">ignore_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm531041439952">no_exception_support&lt;O, U = O, R =O, D = O&gt;</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm531041410304">trap_exception</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745010288"></a>throw_exception</h4></div></div></div>
+<a name="idm531041457776"></a>throw_exception</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745009648"></a>Description</h5></div></div></div>
+<a name="idm531041457136"></a>Description</h5></div></div></div>
 <p>This exception policy throws a an exception derived from
     <code class="computeroutput">std::exception</code> any time some operation would result in an
     incorrect result. This is the default exception handling policy.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745007760"></a>Model of</h5></div></div></div>
+<a name="idm531041455184"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745006256"></a>Header</h5></div></div></div>
+<a name="idm531041453632"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policies.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745003904"></a>Example of use</h5></div></div></div>
+<a name="idm531041451184"></a>Example of use</h5></div></div></div>
 <p>This example is somewhat contrived as throw_exception is the default
     for safe types. Hence it usually is not necessarily to request it
     explicitly.</p>
@@ -68,10 +68,10 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745001136"></a>ignore_exception</h4></div></div></div>
+<a name="idm531041448368"></a>ignore_exception</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745000400"></a>Description</h5></div></div></div>
+<a name="idm531041447584"></a>Description</h5></div></div></div>
 <p>This exception policy can be used to just ignore conditions which
     generate incorrect arithmetic results and continue processing. Programs
     using this policy along with the <a class="link" href="promotion_policies.html#safe_numerics.native_policy" title="native">native</a> promotion policy
@@ -79,28 +79,28 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744998464"></a>Model of</h5></div></div></div>
+<a name="idm531041445600"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744996960"></a>Header</h5></div></div></div>
+<a name="idm531041444048"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744994608"></a>Example of use</h5></div></div></div>
+<a name="idm531041441600"></a>Example of use</h5></div></div></div>
 <pre class="programlisting">safe&lt;int, native, ignore_exception&gt; st(4);</pre>
 </div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110744993008"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
+<a name="idm531041439952"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744992368"></a>Description</h5></div></div></div>
+<a name="idm531041439264"></a>Description</h5></div></div></div>
 <p>This exception policy can be used in an environment where one cannot
     or does not want to use exceptions.</p>
 <p>Parameters are pointers to static functions which are invoked for
@@ -111,7 +111,7 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744989248"></a>Template Parameters</h5></div></div></div>
+<a name="idm531041436000"></a>Template Parameters</h5></div></div></div>
 <p>Function objects to be invoked are specified for each error
     condition are specified via template parameters.</p>
 <div class="informaltable"><table class="table">
@@ -157,19 +157,19 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744970592"></a>Model of</h5></div></div></div>
+<a name="idm531041416816"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744969088"></a>Header</h5></div></div></div>
+<a name="idm531041415264"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744966736"></a>Example of use</h5></div></div></div>
+<a name="idm531041412816"></a>Example of use</h5></div></div></div>
 <p>[A code fragment involving the type.]</p>
 <pre class="programlisting">void overflow(const char * msg);
 void underflow(const char * msg);
@@ -188,29 +188,29 @@ safe&lt;int, native, ep&gt; st(4);</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110744964320"></a>trap_exception</h4></div></div></div>
+<a name="idm531041410304"></a>trap_exception</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744963680"></a>Description</h5></div></div></div>
+<a name="idm531041409664"></a>Description</h5></div></div></div>
 <p>This exception policy will trap at compile time any operation could
     result in a runtime exception. It can be used in an evironment which can
     tolerate neither arithmetic errors nor runtime overhead.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744962320"></a>Model of</h5></div></div></div>
+<a name="idm531041408304"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744960944"></a>Header</h5></div></div></div>
+<a name="idm531041406880"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110744958592"></a>Example of use</h5></div></div></div>
+<a name="idm531041404480"></a>Example of use</h5></div></div></div>
 <p>The following </p>
 <pre class="programlisting">#include "../../include/safe_integer.hpp"
 #include "../../include/automatic.hpp"

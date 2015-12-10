@@ -30,7 +30,7 @@
 <a name="safe_numerics.native_policy"></a>native</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745064880"></a>Description</h5></div></div></div>
+<a name="idm531041511616"></a>Description</h5></div></div></div>
 <p>This type contains the functions to return a safe type corresponding
     to the C++ type resulting for a given arithmetic operation.</p>
 <p>Usage of this policy with safe types will produce the exact same
@@ -41,8 +41,8 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745062864"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html#promotion_policy">PromotionPolicy</a></p>
+<a name="idm531041509600"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 <p>As an example of how this works consider C++ rules from section 5 of
     the standard - "usual arithmetic conversions".</p>
 <pre class="programlisting">void int f(int x, int y){
@@ -60,13 +60,14 @@ void int f(safe_int x, safe_int y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745058544"></a>Header</h5></div></div></div>
+<a name="idm531041505088"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/native.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/native.hpp&gt; </code></a></code></p>
+    &lt;boost/safe_numerics/include/native.hpp&gt;
+    </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745056208"></a>Example of use</h5></div></div></div>
+<a name="idm531041502736"></a>Example of use</h5></div></div></div>
 <p>The following example illustrates the <code class="computeroutput">native</code> type being
     passed as a template parameter for the type <code class="computeroutput">safe&lt;int&gt;</code>.
     This example is slightly contrived in that <code class="computeroutput">safe&lt;int&gt;</code>
@@ -104,7 +105,7 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745051008"></a>Notes</h5></div></div></div>
+<a name="idm531041497136"></a>Notes</h5></div></div></div>
 <p>See Chapter 5, Expressions, C++ Standard</p>
 </div>
 </div>
@@ -113,53 +114,39 @@ int main(){
 <a name="safe_numerics.automatic_policy"></a>automatic</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745049104"></a>Description</h5></div></div></div>
+<a name="idm531041495056"></a>Description</h5></div></div></div>
 <p>This type contains the functions to return a type with sufficient
     capacity to hold the result of a given arithmetic operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745047808"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html#promotion_policy">PromotionPolicy</a></p>
+<a name="idm531041493760"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745046304"></a>Header</h5></div></div></div>
+<a name="idm531041492304"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/automatic.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/automatic.hpp&gt; </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745043968"></a>Example of use</h5></div></div></div>
+<a name="idm531041489920"></a>Example of use</h5></div></div></div>
 <p>The following example illustrates the <code class="computeroutput">automatic</code> type
     being passed as a template parameter for the type
-    <code class="computeroutput">safe&lt;int&gt;</code>. This example is slightly contrived in that
-    <code class="computeroutput">safe&lt;int&gt;</code> has <code class="computeroutput">native</code> as it's default
-    promotion parameter so explictiy using <code class="computeroutput">native</code> is not
-    necessary.</p>
-<pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
-#include &lt;boost/safe_numerics/native.hpp&gt; 
+    <code class="computeroutput">safe&lt;int&gt;</code>. </p>
+<pre class="programlisting">#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
+#include &lt;boost/safe_numerics/automatic.hpp&gt;
+ 
 int main(){
     using namespace boost::numeric;
     // use automatic promotion policy where C++ standard arithmetic might lead to incorrect results
-    using safe_int8 = safe&lt;std::int8_t, automatic&gt;;
-    try{
-        safe_int8 x = 127;
-        safe_int8 y = 2;
-        auto z = x + y; // z will be of safe type at least 9 bits long
-    }
-    catch(std::exception &amp; e){
-        // which can catch here only if
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-    }
+    using safe_t = safe&lt;std::int8_t, automatic&gt;;
 
-    // When result is an int, C++ promotion rules guarentee that there will be no incorrect result.
     // In such cases, there is no runtime overhead from using safe types.
-    safe_int8 x = 127;
-    safe_int8 y = 2;
-    safe&lt;int, native&gt; z; // z can now hold the result of the addition of any two 8 bit numbers
-    z = x + y; // is guarenteed correct without any runtime overhead or interrupt.
+    safe_t x = 127;
+    safe_t y = 2;
+    auto z = x + y; // z is guarenteed correct without any runtime overhead or interrupt.
 
     return 0;
 }</pre>
@@ -170,7 +157,7 @@ int main(){
 <a name="safe_numerics.cpp_policy"></a>cpp&lt;int C, int S, int I, int L, int LL&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745037840"></a>Description</h5></div></div></div>
+<a name="idm531041484944"></a>Description</h5></div></div></div>
 <p>This policy is used to promote safe types in arithmetic expressions
     according the the standard rules in the C++ standard. But rather than
     using the native C++ standard types supported by the compiler, it uses
@@ -185,7 +172,7 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745035584"></a>Template Parameters</h5></div></div></div>
+<a name="idm531041482688"></a>Template Parameters</h5></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -228,18 +215,18 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745019520"></a>Model of</h5></div></div></div>
+<a name="idm531041466384"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745018016"></a>Header</h5></div></div></div>
+<a name="idm531041464832"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../examples/example9.cpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/cpp.hpp&gt; </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745015680"></a>Example of Use</h5></div></div></div>
+<a name="idm531041462448"></a>Example of Use</h5></div></div></div>
 <p>Consider the following problem. One is developing software which
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
@@ -317,8 +304,7 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
 <p>Note the usage of the compile time trap policy in order to detect at
     compile time any possible error conditions. As I write this, this is still
     being refined. Hopefully this will be available by the time you read this.
-    This example is too long to include in line in this documentation. You can
-    see the whole file at <a href="../../include/cpp.hpp" target="_top"><code class="computeroutput">example.cpp</code></a></p>
+    </p>
 </div>
 </div>
 </div>

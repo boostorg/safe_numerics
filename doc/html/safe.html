@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>safe&lt;T, PP, EP&gt;</title>
+<title>safe&lt;T, PP = boost::numeric::native, EP = boost::numeric::throw_exception&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
@@ -19,27 +19,28 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
+<a name="safe_numerics.safe"></a>safe&lt;T, PP = boost::numeric::native, EP =
+  boost::numeric::throw_exception&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#idm110745162496">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745160560">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745153440">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745146688">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745130800">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745128560">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745126496">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm110745124496">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041611520">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041609488">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041602320">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041595472">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041578896">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041576464">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041574256">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm531041572256">Examples of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745162496"></a>Description</h4></div></div></div>
-<p>A <code class="computeroutput">safe&lt;T, PP, EP&gt;</code> can be used anywhere a type T
-    can be used. Any expression which uses this type is guarenteed to return
+<a name="idm531041611520"></a>Description</h4></div></div></div>
+<p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
+    can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745160560"></a>Notation</h4></div></div></div>
+<a name="idm531041609488"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -58,7 +59,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745153440"></a>Associated Types</h4></div></div></div>
+<a name="idm531041602320"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -68,7 +69,7 @@
 <tr>
 <td align="left"><code class="computeroutput">PP</code></td>
 <td align="left">A type which specifes the result type of an expression
-            using safe types. </td>
+            using safe types.</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
@@ -80,7 +81,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745146688"></a>Template Parameters</h4></div></div></div>
+<a name="idm531041595472"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -108,7 +109,7 @@
 <td><code class="computeroutput">EP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">Exception
             Policy&lt;EP&gt;</a></a></td>
-<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::throw_exception</a></p></td>
+<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</a></p></td>
 </tr>
 </tbody>
 </table></div>
@@ -116,13 +117,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745130800"></a>Model of</h4></div></div></div>
+<a name="idm531041578896"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745128560"></a>Valid Expressions</h4></div></div></div>
+<a name="idm531041576464"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -131,13 +132,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745126496"></a>Header</h4></div></div></div>
+<a name="idm531041574256"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm110745124496"></a>Examples of use</h4></div></div></div>
+<a name="idm531041572256"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -156,45 +157,47 @@
     the C++ ones.</p>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745121408"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
+<a name="idm531041569168"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
 <p>The following program will throw an exception and emit a error
       message at runtime if any of several events result in an incorrect
       arithmetic type. Behavior of this program could vary according to the
       machine architecture in question.</p>
-<pre class="programlisting">#include &lt;iostream&gt;
-#include &lt;stdexcept&gt; // std::runtime_error
+<pre class="programlisting">#include &lt;exception&gt;
+#include &lt;iostream&gt;
 #include &lt;boost/numeric/safe.hpp&gt;
 
 void f(){
+    using namespace boost::numeric;
     safe&lt;int&gt; j;
     try {
         safe&lt;int&gt; i;
         std::cin &gt;&gt; i;  // could overflow !
         j = i * i;      // could overflow
     }
-    catch(std::runtime_error &amp; re){
-       std::cout &lt;&lt; re.what() &lt;&lt; std::endl;
+    catch(std::exception &amp; e){
+       std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
     }
     std::cout &lt;&lt; j;
 }</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745118480"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
+<a name="idm531041566384"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
 <p>In some instance catching an error at run time is not sufficient.
       We want to be sure that the program can never fail. To achieve this, use
       the trap_exception exception policy rather than the default throw
       exception policy.</p>
 <p>The following program will emit a compile error at any statement
-      which might possibly result in incorrect behavior. </p>
+      which might possibly result in incorrect behavior.</p>
 <p>This is because there is no way to guarantee that the expression i
       * i will return an arithmetically correct result. Since we know that the
       program cannot compile if there is any possibility of arithmetic error,
       we can dispense with the exception handling used above.</p>
-<pre class="programlisting">#include &lt;boost/numeric/safe.hpp&gt;
-#include &lt;iostream&gt;
+<pre class="programlisting">#include &lt;iostream&gt;
+#include &lt;boost/numeric/safe.hpp&gt;
+
 void f(){
-    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;t; 
+    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;; 
     safe_int i;
     std::cin &gt;&gt; i;  // could throw exception here !!!
     safe_int j;
@@ -203,7 +206,7 @@ void f(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm110745114464"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm531041562288"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic. This can be justified
       by the observ</p>

@@ -20,7 +20,7 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="promotion_policy">PromotionPolicy</link></para>
+    <para><link linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
 
     <para>As an example of how this works consider C++ rules from section 5 of
     the standard - "usual arithmetic conversions".</para>

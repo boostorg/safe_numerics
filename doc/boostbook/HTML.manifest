@@ -3,7 +3,6 @@
 ../html/tutorial.html
 ../html/tutorial/1.html
 ../html/tutorial/2.html
-../html/tutorial/3.html
 ../html/tutorial/4.html
 ../html/tutorial/5.html
 ../html/tutorial/6.html
@@ -22,6 +21,11 @@
 ../html/promotion_policies.html
 ../html/exception_policies.html
 ../html/exception_safety.html
+../html/library_implementation.html
+../html/checked_result.html
+../html/checked_integer_arithmetic.html
+../html/interval_arithmetic.html
+../html/index.html
 ../html/rationale.html
 ../html/pending_issues.html
 ../html/change_log.html

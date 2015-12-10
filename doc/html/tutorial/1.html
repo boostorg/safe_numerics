@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Arithmetic operations can yield incorrect results.</title>
+<title>Arithmetic Operations Can Yield Incorrect Results.</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
 <link rel="prev" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="next" href="2.html" title="Undetected overflow">
+<link rel="next" href="2.html" title="Undetected Overflow">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -19,7 +19,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.1"></a>Arithmetic operations can yield incorrect results.</h3></div></div></div>
+<a name="safe_numerics.tutorial.1"></a>Arithmetic Operations Can Yield Incorrect Results.</h3></div></div></div>
 <p>When some operation results in a result which exceeds the capacity
     of a data variable to hold it, the result is undefined. This is called
     "overflow". Since word size can differ between machines, code which
@@ -37,30 +37,25 @@
 
 #include "../include/safe_integer.hpp"
 
-void detected_msg(bool detected){
-    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
-}
-
 int main(int argc, const char * argv[]){
     std::cout &lt;&lt; "example 1:";
     std::cout &lt;&lt; "undetected erroneous expression evaluation" &lt;&lt; std::endl;
     std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
+    // problem: arithmetic operations can yield incorrect results.
     try{
         char x = 127;
         char y = 2;
         char z;
         // this produces an invalid result !
         z = x + y;
-        // it is the wrong result !!!
-        assert(z != 129);
         // but assert fails to detect it since C++ implicitly
         // converts variables to int before evaluating he expression!
         assert(z != x + y);
         std::cout &lt;&lt; static_cast&lt;int&gt;(z) &lt;&lt; " != " &lt;&lt; x + y &lt;&lt; std::endl;
-        detected_msg(false);
+        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
     }
     catch(std::exception){
-        assert(false); // never arrive here
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
     // solution: replace char with safe&lt;char&gt;
     std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
@@ -71,12 +66,10 @@ int main(int argc, const char * argv[]){
         safe&lt;char&gt; z;
         // rather than producing and invalid result an exception is thrown
         z = x + y;
-        assert(false); // never arrive here
     }
     catch(std::exception &amp; e){
         // which can catch here
         std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        detected_msg(true);
     }
     return 0;
 }

@@ -42,6 +42,18 @@
 
             <entry>An object of type modeling Numeric</entry>
           </row>
+
+          <row>
+            <entry><code>os</code></entry>
+
+            <entry>An object of type std::base_ostreami</entry>
+          </row>
+
+          <row>
+            <entry><code>is</code></entry>
+
+            <entry>An object of type std::base_istream</entry>
+          </row>
         </tbody>
       </tgroup>
     </informaltable>
@@ -81,9 +93,9 @@
         <title>General</title>
 
         <tgroup cols="2">
-          <colspec align="left"/>
+          <colspec align="left" colwidth="406*"/>
 
-          <colspec align="left"/>
+          <colspec align="left" colwidth="594*"/>
 
           <thead>
             <row>
@@ -106,6 +118,18 @@
               </code></entry>
 
               <entry>true</entry>
+            </row>
+
+            <row>
+              <entry><code><entry>os &lt;&lt; T</entry></code></entry>
+
+              <entry>os &amp;i</entry>
+            </row>
+
+            <row>
+              <entry><code><entry>is &gt;&gt; T</entry></code></entry>
+
+              <entry>is &amp;</entry>
             </row>
           </tbody>
         </tgroup>

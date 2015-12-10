@@ -148,6 +148,52 @@
     strong guarantee.</para>
   </section>
 
+  <section id="safe_numerics.library_implementation">
+    <title>Library Implementation</title>
+
+    <para>The Safe Numerics library is implemented in terms of some more
+    fundamental software components described here. It is not necessary to
+    know about these components to use the library. The information has been
+    included to help those who want to understand how the library works so
+    they can extend it, correct bugs in it, or understand it's limitations.
+    These components are also interesting in their own right. They are not
+    dependend upon anything in the Safe Numerics library. Rather it's the
+    other way around. The Safe Numerics library depends upon these components.
+    It is thought that they may be useful outside of the context of the Safe
+    Numerics library. For all these reasons, they are documented here.</para>
+
+    <section id="safe_numerics.checked_result">
+      <title>Checked_Result&lt;R&gt;</title>
+
+      <para>To Do</para>
+    </section>
+
+    <section id="safe_numerics.checked_integer_arithmetic">
+      <title>Checked Integer Arithmetic</title>
+
+      <para>To Do</para>
+    </section>
+
+    <section id="safe_numerics.interval_arithmetic">
+      <title>Interval Arithmetic</title>
+
+      <para>To Do</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Performance Tests</title>
+
+    <para>Our goal creating facilities which make it possible write programs
+    known to be correct. But we also want programmers to actually use the
+    facilities we provide here. This won't happen if using these facilities
+    impacts performance to a significant degree. Although we've take
+    precautions to avoid doing this, the only real way to know is to create
+    and run some tests.</para>
+
+    <para>To Do</para>
+  </section>
+
   <section id="safe_numerics.rationale">
     <title>Rationale and FAQ</title>
 
@@ -272,7 +318,7 @@
 
       <listitem>
         <para>Conversions to safe integer types from floating point types is
-        not checked.</para>
+        not explicitly addressed.</para>
       </listitem>
 
       <listitem>
@@ -280,8 +326,16 @@
         <code>strtoi</code> etc. DO check for valid input and throw the
         exception <code>std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
-        <code>strtoi</code> aready contains the exact functionality that
+        <code>strtoi</code> already contains the exact functionality that
         <code>safe&lt;int&gt;</code> provides.</para>
+      </listitem>
+
+      <listitem>
+        <para>Although care was taking to make the library portable, it's
+        likely that at least some parts of the implementation - particularly
+        <code>checked</code> arithmetic - depend upon twos complement
+        representation of integers. Hence the library is probably not
+        currently portable to other architectures.</para>
       </listitem>
     </itemizedlist>
   </section>

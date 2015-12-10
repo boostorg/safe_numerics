@@ -22,7 +22,7 @@
 </h3></div></div>
 <div><p class="copyright">Copyright &#169; 2012 Robert Ramey</p></div>
 <div><div class="legalnotice">
-<a name="idm110743750080"></a><p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<a name="idm531041989472"></a><p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></div>
 </div></div>
@@ -34,20 +34,19 @@
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.summary">Summary</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm110745502544">Features</a></span></dt>
+<dt><span class="section"><a href="introduction.html#idm531041966144">Features</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.requirements">Requirements</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.scope">Scope</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="tutorial.html">Tutorial and Motivating Examples</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="tutorial/1.html">Arithmetic operations can yield incorrect results.</a></span></dt>
-<dt><span class="section"><a href="tutorial/2.html">Undetected overflow</a></span></dt>
-<dt><span class="section"><a href="tutorial/3.html">Undetected underflow</a></span></dt>
-<dt><span class="section"><a href="tutorial/4.html">Implicit conversions change data values</a></span></dt>
-<dt><span class="section"><a href="tutorial/5.html">Array index value can exceed array limits</a></span></dt>
-<dt><span class="section"><a href="tutorial/6.html">Checking of initialization values can be easily overlooked</a></span></dt>
-<dt><span class="section"><a href="tutorial/7.html">Parameter checking is too expensive</a></span></dt>
-<dt><span class="section"><a href="tutorial/8.html">Eliminate runtime cost</a></span></dt>
+<dt><span class="section"><a href="tutorial/1.html">Arithmetic Operations Can Yield Incorrect Results.</a></span></dt>
+<dt><span class="section"><a href="tutorial/2.html">Undetected Overflow</a></span></dt>
+<dt><span class="section"><a href="tutorial/4.html">Implicit Conversions Change Data Values</a></span></dt>
+<dt><span class="section"><a href="tutorial/5.html">Array Index Value Can Exceed Array Limits</a></span></dt>
+<dt><span class="section"><a href="tutorial/6.html">Checking of Input Values Can Be Easily Overlooked</a></span></dt>
+<dt><span class="section"><a href="tutorial/7.html">Programming by Contract is Too Slow</a></span></dt>
+<dt><span class="section"><a href="tutorial/8.html">Eliminate Runtime Cost</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="notes.html">Notes</a></span></dt>
 <dt><span class="section"><a href="concepts.html">Type Requirements</a></span></dt>
@@ -60,13 +59,21 @@
 </dl></dd>
 <dt><span class="section"><a href="types.html">Types</a></span></dt>
 <dd><dl>
-<dt><span class="section"><a href="safe.html">safe&lt;T, PP, EP&gt;</a></span></dt>
+<dt><span class="section"><a href="safe.html">safe&lt;T, PP = boost::numeric::native, EP =
+  boost::numeric::throw_exception&gt;</a></span></dt>
 <dt><span class="section"><a href="safe_unsigned_range.html">safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</a></span></dt>
 <dt><span class="section"><a href="promotion_policies.html">Promotion Policies</a></span></dt>
 <dt><span class="section"><a href="exception_policies.html">Exception Policies</a></span></dt>
 </dl></dd>
 <dt><span class="section"><a href="exception_safety.html">Exception Safety</a></span></dt>
+<dt><span class="section"><a href="library_implementation.html">Library Implementation</a></span></dt>
+<dd><dl>
+<dt><span class="section"><a href="checked_result.html">Checked_Result&lt;R&gt;</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html">Checked Integer Arithmetic</a></span></dt>
+<dt><span class="section"><a href="interval_arithmetic.html">Interval Arithmetic</a></span></dt>
+</dl></dd>
+<dt><span class="section"><a href="index.html">Performance Tests</a></span></dt>
 <dt><span class="section"><a href="rationale.html">Rationale and FAQ</a></span></dt>
 <dt><span class="section"><a href="pending_issues.html">Pending Issues</a></span></dt>
 <dt><span class="section"><a href="change_log.html">Change Log</a></span></dt>

@@ -1,13 +1,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Array index value can exceed array limits</title>
+<title>Array Index Value Can Exceed Array Limits</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="4.html" title="Implicit conversions change data values">
-<link rel="next" href="6.html" title="Checking of initialization values can be easily overlooked">
+<link rel="prev" href="4.html" title="Implicit Conversions Change Data Values">
+<link rel="next" href="6.html" title="Checking of Input Values Can Be Easily Overlooked">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -19,13 +19,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.5"></a>Array index value can exceed array limits</h3></div></div></div>
+<a name="safe_numerics.tutorial.5"></a>Array Index Value Can Exceed Array Limits</h3></div></div></div>
 <p>Using an intrinsic C++ array, it's very easy to exceed array limits.
     This can fail to be detected when it occurs and create bugs which are hard
     to find. There are several ways to address this, but one of the simplest
     would be to use safe_unsigned_range;</p>
-<pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;stdexcept&gt;
+<pre class="programlisting">#include &lt;stdexcept&gt;
 #include &lt;iostream&gt;
 
 #include "../include/safe_range.hpp"
@@ -39,32 +38,39 @@ int main(int argc, const char * argv[]){
     std::cout &lt;&lt; "example 5: ";
     std::cout &lt;&lt; "array index values can exceed array bounds" &lt;&lt; std::endl;
     std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-    int i_array[37];
+    std::array&lt;int, 37&gt; i_array;
 
-    unsigned int i_index = 43;
+    // unsigned int i_index = 43;
     // the following corrupts memory.
     // This may or may not be detected at run time.
     // i_array[i_index] = 84; // comment this out so it can be tested!
-    detected_msg(false);
+    std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
 
     // solution: replace unsigned array index with safe_unsigned_range
     std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
     try{
         using namespace boost::numeric;
-        safe_unsigned_range&lt;0, sizeof(i_array)/sizeof(int) - 1&gt; i_index;
+        using i_index_t = safe_unsigned_range&lt;0, i_array.size() - 1&gt;;
+        i_index_t i_index;
         i_index = 36; // this works fine
         i_array[i_index] = 84;
-        i_index = 37; // throw exception here!
-        i_array[i_index] = 84; // so we never arrive here
-        assert(false);
+        i_index = 43; // throw exception here!
+        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl; // so we never arrive here
     }
     catch(std::exception &amp; e){
         std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        detected_msg(true);
+        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
     }
     return 0;
 }
 </pre>
+<p>Collections
+    like standard arrays, vectors do array index checking in some function
+    calls and not in others so this may not be the best example. However it
+    does illustrate the usage of <code class="computeroutput">safe_range&lt;T&gt;</code> for
+    assigning legal range to variables. This will guarentee that under no
+    circumstances will the variable contain a value outside of the specified
+    range. </p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

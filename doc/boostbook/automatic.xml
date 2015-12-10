@@ -14,7 +14,7 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="promotion_policy">PromotionPolicy</link></para>
+    <para><link linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
   </section>
 
   <section>
