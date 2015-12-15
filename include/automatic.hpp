@@ -211,7 +211,7 @@ struct automatic {
         };
 
         typedef calculate_max_t<T, U> max_t;
-        // typedef print<max_t> p_max_t;
+        // typedef print_type<max_t> p_max_t;
 
         constexpr static const checked_result<interval< max_t>> r
             {multiply<max_t>(t, u)};

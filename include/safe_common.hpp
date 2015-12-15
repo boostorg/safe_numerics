@@ -43,23 +43,17 @@ struct get_exception_policy {
 };
 
 // used for debugging
-// usage - typedef print<T> pt;
+// usage - print_type<T>;
 // provokes error message with name of type T
+// from Effective Modern C++, by Scott Meyers - item 4
 
-template<typename Tx>
-struct print_impl {
-    typedef typename Tx::error_message type;
-};
-
-template<typename Tx>
-using print = typename print_impl<Tx>::type;
+template<typename T>
+struct print_type;
 
 template<int N> 
 struct print_value
 {
    enum test : char { value = N + 256 };
-   //char operator()() { return N + 256; } //deliberately causing overflow
-   // static_assert(N == 0, "value of N");
 };
 
 } // numeric

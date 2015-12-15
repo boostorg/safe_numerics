@@ -53,7 +53,7 @@ bool test1(){
         "this range should be unsigned"
     );
 
-    //typedef ::print<t2>::type p_t2;
+    //typedef ::print_type<t2>::type p_t2;
 
     return true;
 }
