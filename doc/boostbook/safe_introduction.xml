@@ -79,7 +79,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 }
 </programlisting>
 
-    <para>The addition expression is checked at runtime or (if possible) or
+    <para>The addition expression is checked at runtime or (if possible) at
     compile time to trap any possible errors resulting from incorrect
     arithmetic behavior. This will permit one to write arithmetic expressions
     that cannot produce an erroneous result. Instead, one and only one of the
@@ -168,7 +168,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   <section id="safe_numerics.introduction.requirements">
     <title>Requirements</title>
 
-    <para>This library is composed entirely of C++ Headers. I requires a
+    <para>This library is composed entirely of C++ Headers. It requires a
     compiler compatible with the C++14 standard.</para>
 
     <para>The following Boost Libraries must be installed in order to use this
