@@ -7,11 +7,14 @@
   <section id="safe_numerics.tutorial.1">
     <title>Arithmetic Operations Can Yield Incorrect Results.</title>
 
-    <para>When some operation results in a result which exceeds the capacity
-    of a data variable to hold it, the result is undefined. This is called
-    "overflow". Since word size can differ between machines, code which
-    produces correct results in one set of circumstances may fail when
-    re-compiled on a machine with different hardware. When this occurs, Most
+    <para>When some operation on signed integer types results in a result which
+    exceeds the capacity of a data variable to hold it, the result is undefined.
+    In the case of unsigned integer types a similar situation results in a value
+    wrap as per modulo arithmetic. In either case the result is different than in
+    integer number arithmetic in the mathematical sense. This is called "overflow".
+    Since word size can differ between machines, code which produces mathematically
+    correct results in one set of circumstances may fail when re-compiled on a
+    machine with different hardware. When this occurs, Most
     C++ compilers will continue to execute with no indication that the results
     are wrong. It is the programmer's responsibility to ensure such undefined
     behavior is avoided.</para>
