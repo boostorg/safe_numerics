@@ -25,6 +25,8 @@ namespace numeric {
 // this would emulate the normal C/C++ behavior of permitting overflows
 // and the like.
 struct ignore_exception {
+    constexpr static void no_error(const char * message) {}
+    constexpr static void uninitialized_error(const char * message) {}
     constexpr static void overflow_error(const char * message) {}
     constexpr static void underflow_error(const char * message) {}
     constexpr static void range_error(const char * message) {}
@@ -36,12 +38,20 @@ struct ignore_exception {
 // exception support and you want to trap "exceptions" by calling your own
 // special functions.
 template<
+    void (*NO_EXCEPTION)(const char *),
+    void (*UNINITIALIZED)(const char *),
     void (*OVERFLOW)(const char *),
     void (*UNDERFLOW)(const char *) = *OVERFLOW,
     void (*RANGE)(const char *) = *OVERFLOW,
     void (*DOMAIN)(const char *) = *OVERFLOW
 >
 struct no_exception_support {
+    constexpr static void no_error(const char * message) {
+        NO_EXCEPTION(message);
+    }
+    constexpr static void uninitialized_error(const char * message) {
+        UNINITIALIZED(message);
+    }
     constexpr static void overflow_error(const char * message) {
         OVERFLOW(message);
     }
@@ -57,7 +67,13 @@ struct no_exception_support {
 };
 
 // If an exceptional condition is detected at runtime throw the exception.
+// map our exception list to the ones in stdexcept
 struct throw_exception {
+    constexpr static void no_error(const char * message) {
+    }
+    constexpr static void unintialized_error(const char * message) {
+        throw std::invalid_argument(message);
+    }
     constexpr static void overflow_error(const char * message) {
         throw std::overflow_error(message);
     }
@@ -65,7 +81,7 @@ struct throw_exception {
         throw std::underflow_error(message);
     }
     constexpr static void range_error(const char * message) {
-        throw std::domain_error(message);
+        throw std::range_error(message);
     }
     constexpr static void domain_error(const char * message) {
         throw std::domain_error(message);
@@ -76,6 +92,7 @@ struct throw_exception {
 // would otherwise trap at runtime.  Hence expressions such as i/j
 // will trap at compile time unless j can be guaranteed to not be zero.
 
+/*
 struct trap_exception {
     template<class T>
     constexpr static void overflow_error(const T *) {
@@ -94,6 +111,47 @@ struct trap_exception {
         static_assert(std::is_void<T>::value, "domain_error");
     }
 };
+
+template<typename T>
+bool noconstexpr(const T & t){
+    return false;
+}
+
+struct trap_exception {
+    template<class T>
+    constexpr static bool overflow_error(const T & t) {
+        return noconstexpr(t);
+        //static_assert(noconstexpr(t), "overflow_error");
+    }
+    template<class T>
+    constexpr static void underflow_error(const T & t) {
+        noconstexpr(t);
+        //static_assert(std::is_void<T>::value, "underflow_error");
+    }
+    template<class T>
+    constexpr static void range_error(const T & t) {
+        noconstexpr(t);
+        //static_assert(std::is_void<T>::value, "range_error");
+    }
+    template<class T>
+    constexpr static void domain_error(const T & t) {
+        noconstexpr(t);
+        //static_assert(std::is_void<T>::value, "domain_error");
+    }
+};
+*/
+
+// meant to be trap the case where a program MIGHT throw an exception
+struct trap_exception {
+/*
+
+    constexpr static void range_error(const char * message) {
+        throw std::range_error(message);
+    }
+    constexpr static void domain_error(const char * message) {
+        //static_assert(std::is_void<T>::value, "domain_error");
+    }
+*/};
 
 } // namespace numeric
 } // namespace boost

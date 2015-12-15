@@ -165,23 +165,28 @@ class safe_base {
     template<class T>
     constexpr bool validate(const T & t) const;
 
+    template<class T>
+    constexpr Stored validated_cast(const T & t) const;
+
 public:
+
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
     constexpr explicit safe_base() {}
 
     template<class T>
-    constexpr safe_base(const T & t) :
-        m_t(t)
-    {
-        if(!validate(t))
-            E::range_error("Invalid value");
-    }
+    constexpr safe_base(const T & t);
 
-    template<class T, T MinT, T MaxT, class PT, class ET>
-    constexpr safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t);
-    
+    constexpr safe_base(const safe_base & rhs) :
+        m_t(rhs.m_t)
+    {}
+
+    constexpr safe_base(const Stored & rhs) :
+        m_t(rhs)
+    {}
+
+                
     // note: Rule of Five.  Don't specify custom destructor,
     // custom move, custom copy, custom assignment, custom
     // move assignment.  Let the compiler build the defaults.
@@ -200,12 +205,6 @@ public:
     >
     constexpr operator R () const;
 
-    /*
-    constexpr operator Stored () const {
-        return m_t;
-    }
-    */
-    
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
@@ -314,7 +313,7 @@ template<
 class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
     : public std::numeric_limits<T>
 {
-    typedef boost::numeric::safe_base<T, Min, Max, P, E> SB;
+    using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
 public:
     constexpr static SB min() noexcept {
         return SB(Min);

@@ -1,31 +1,29 @@
-//
-//  checked_result.hpp
-//  SafeIntegers
-//
-//  Created by Robert Ramey on 2/26/15.
-//
-//
-
 #ifndef BOOST_NUMERIC_CHECKED_RESULT
 #define BOOST_NUMERIC_CHECKED_RESULT
 
+// MS compatible compilers support #pragma once
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma once
+#endif
+
+//  Copyright (c) 2012 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+// contains operations for doing checked aritmetic on NATIVE
+// C++ types.
+
+#include <cassert>
 #include <boost/logic/tribool.hpp>
 
-#include "safe_common.hpp" // constexpr
+#include "safe_common.hpp"
 #include "safe_compare.hpp"
+#include "exception.hpp"
 
 namespace boost {
 namespace numeric {
-
-enum class exception_type {
-    no_exception,
-    overflow_error,
-    underflow_error,
-    range_error,
-    domain_error,
-    uninitialized,
-    static_assertion
-};
 
 template<typename R>
 struct checked_result {
@@ -36,7 +34,7 @@ struct checked_result {
     };
     // constructors
     // can't select constructor based on the current status of another
-    // checked_result object.
+    // checked_result object. So no copy constructor
     /*
     constexpr checked_result(const checked_result<R> & r) :
         m_e(r.m_e)
@@ -66,12 +64,12 @@ struct checked_result {
 
     // accesors
     constexpr operator R() const {
-        // assert(exception_type::no_exception == m_e);
+        assert(no_exception());
         return m_r;
     }
 
     constexpr operator const char *() const {
-        // assert(exception_type::no_exception != m_e);
+        assert(! no_exception());
         return m_msg;
     }
 
@@ -102,46 +100,26 @@ struct checked_result {
         return ! operator>(t) && ! operator<(t);
     }
     template<class T>
+    constexpr boost::logic::tribool operator!=(const checked_result<T> & t) const {
+        return operator<(t) || operator>(t);
+    }
+    template<class T>
     constexpr boost::logic::tribool operator==(const checked_result<T> & t) const {
-        return ! operator>(t);
+        return ! operator!=(t);
     }
-/*
-    constexpr bool operator==(const exception_type & et) const {
-        return m_e == et;
-    }
-    constexpr bool operator!=(const exception_type & et) const {
-        return m_e != et;
-    }
-*/
     constexpr bool no_exception() const {
         return m_e == exception_type::no_exception;
     }
-
-    template<class EP>
-    constexpr void
-    dispatch() const {
-        switch(m_e){
-        case exception_type::overflow_error:
-            EP::overflow_error(m_msg);
-            break;
-        case exception_type::underflow_error:
-            EP::underflow_error(m_msg);
-            break;
-        case exception_type::range_error:
-            EP::range_error(m_msg);
-            break;
-        case exception_type::domain_error:
-            EP::domain_error(m_msg);
-            break;
-        case exception_type::uninitialized:
-            EP::domain_error(m_msg);
-        case exception_type::no_exception:
-            break;
-        default:
-            break;
-        }
+    constexpr bool exception() const {
+        return m_e != exception_type::no_exception;
     }
 };
+
+template<class EP, typename R>
+constexpr void
+dispatch(const checked_result<R> &cr){
+    dispatch<EP>(cr.m_e, cr.m_msg);
+}
 
 // C++ does not (yet) permit constexpr lambdas.  So create some
 // constexpr predicates to be used by constexpr algorthms.
@@ -243,4 +221,4 @@ public:
 
 } // std
 
-#endif  // BOOST_NUMERIC_CHECKED_CHECKED_RESULT
+#endif  // BOOST_NUMERIC_CHECKED_RESULT

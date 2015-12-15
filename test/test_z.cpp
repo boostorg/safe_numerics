@@ -41,6 +41,7 @@ int main(){
 }
 #endif
 
+#if 0
 #include <iostream>
 #include <cstdint>
 #include <type_traits>
@@ -144,3 +145,23 @@ int main(){
     */
     return 0;
 }
+#endif
+
+#include <iostream>
+#include <cstdint>
+
+using namespace std;
+
+int main(){
+    int8_t x = 100;
+    int y = x * x;
+    cout << y << endl;
+
+    uint32_t z1 = 100;
+    int8_t z2 = -100;
+    auto y2 = z1 * z2;
+    cout << y2 << endl;
+
+    return 0;
+}
+

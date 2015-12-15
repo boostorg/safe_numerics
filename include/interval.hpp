@@ -326,8 +326,16 @@ constexpr bool operator==(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // every element in t can only equal every element in u if and only if
+    // intervals have the same limits
     return (t.l == u.l && t.u == u.u) ;
+}
+
+template<typename T, typename U>
+constexpr bool operator!=(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return ! t == u;
 }
 
 template<typename T, typename U>

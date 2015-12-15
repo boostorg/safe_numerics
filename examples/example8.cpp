@@ -50,30 +50,34 @@ template <
 using safe_t = boost::numeric::safe_signed_range<
     Min,
     Max,
-    boost::numeric::automatic,
+    boost::numeric::native,
     boost::numeric::throw_exception
 >;
 using small_integer_t = safe_t<-24, 82>;
 
+inline void f(const small_integer_t & x, const small_integer_t & y){
+    x + y;
+    small_integer_t z = x + y;  // zero runtime overhead !
+    std::cout << "(x + y)" << formatted(z) << std::endl;
+    std::cout << "(x + y)" << formatted(x + y) << std::endl;
+    std::cout << "(x - y)" << formatted(x - y) << std::endl;
+}
+
 int main(int argc, const char * argv[]){
-    // problem: checking of externally produced value can be overlooked
+    // problem: guarantee correct behavior with zero runtime overhead
     std::cout << "example 8: ";
     std::cout << "eliminate runtime overhead" << std::endl;
-
     try{
-        const small_integer_t x(1);
-        std::cout << "x" << formatted(x) << std::endl;
+        small_integer_t x { 1 };
         small_integer_t y = 2;
+        std::cout << "x" << formatted(x) << std::endl;
         std::cout << "y" << formatted(y) << std::endl;
-        auto z = x + y;  // zero runtime overhead !
-        std::cout << "(x + y)" << formatted(z) << std::endl;
-        std::cout << "(x - y)" << formatted(x - y) << std::endl;
+        f(x, y);
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return false;
     }
-
     return 0;
 }

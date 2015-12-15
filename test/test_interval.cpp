@@ -5,24 +5,10 @@
 #include <cxxabi.h>
 #include <algorithm> // max, min
 
-#include "../include/interval.hpp"
 #include <boost/logic/tribool_io.hpp>
 
-/*
-namespace boost {
-namespace numeric {
-namespace {
-
-template<typename R>
-constexpr checked_result<interval<R>> failed_result(
-    exception_type::domain_error,
-    "indefinte interval"
-);
-
-}  // namespace
-}  // numeric
-}  // boosat
-*/
+#include "../include/checked_result.hpp"
+#include "../include/interval.hpp"
 
 bool test1(){
     using namespace boost::numeric;
@@ -54,7 +40,7 @@ bool test3(){
     interval<std::uint64_t> u;
     std::cout << "u = " << u << std::endl;
     using max_t = unsigned long long;
-    interval< max_t> r = add<max_t>(t, u);
+    checked_result<interval< max_t>> r = add<max_t>(t, u);
     std::cout << "r = " << r << std::endl;
     return true;
 }
@@ -101,10 +87,10 @@ namespace test4 {
             else{
                 checked_result<interval<max_t>> lower = divide<max_t>(t,r_lower(u));
                 if(! lower.no_exception())
-                    return failed_result<max_t>;
+                    return lower;
                 checked_result<interval<max_t>> upper = divide<max_t>(t,r_upper(u));
                 if(! upper.no_exception())
-                    return failed_result<max_t>;
+                    return upper;
                 const interval< max_t> & il = lower;
                 const interval< max_t> & iu = upper;
                 return
@@ -180,7 +166,7 @@ namespace test4 {
             << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
             << " u = "
             << u << std::endl;
-        const interval<max_t> rx = r(t, u);
+        const checked_result<interval<max_t>> rx = r(t, u);
         std::cout
             << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
             << " rx = "

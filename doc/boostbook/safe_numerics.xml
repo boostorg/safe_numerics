@@ -80,7 +80,7 @@
     exhaustive tests.</para>
 
     <para>All concepts, types and functions documented are declared in the
-    namespace <code>boost::numeric</code>.</para>
+    name space <code>boost::numeric</code>.</para>
   </section>
 
   <section id="safe_numerics.concepts">
@@ -102,7 +102,7 @@
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
-  <section id="safe_numerics.types">
+  <section id="safe_numerics.promotion_policies">
     <title>Types</title>
 
     <xi:include href="safe.xml" xpointer="element(/1)"
@@ -157,28 +157,22 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand it's limitations.
     These components are also interesting in their own right. They are not
-    dependend upon anything in the Safe Numerics library. Rather it's the
+    dependent upon anything in the Safe Numerics library. Rather it's the
     other way around. The Safe Numerics library depends upon these components.
     It is thought that they may be useful outside of the context of the Safe
     Numerics library. For all these reasons, they are documented here.</para>
 
-    <section id="safe_numerics.checked_result">
-      <title>Checked_Result&lt;R&gt;</title>
+    <xi:include href="exception_type.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-      <para>To Do</para>
-    </section>
+    <xi:include href="checked_result.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <section id="safe_numerics.checked_integer_arithmetic">
-      <title>Checked Integer Arithmetic</title>
+    <xi:include href="checked.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-      <para>To Do</para>
-    </section>
-
-    <section id="safe_numerics.interval_arithmetic">
-      <title>Interval Arithmetic</title>
-
-      <para>To Do</para>
-    </section>
+    <xi:include href="interval.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
   <section>
@@ -203,7 +197,7 @@
           <para>Is this really necessary? If I'm writing the program with the
           requisite care and competence, problems noted in the introduction
           will never arise. Should they arise, they should be fixed "at the
-          source" and not with a "bandaid" to cover up bad practice.</para>
+          source" and not with a "band aid" to cover up bad practice.</para>
         </question>
 
         <answer>
@@ -285,7 +279,7 @@
         <answer>
           <para>As far as is known as of this writing, the library does not
           presume that the underlying hardware is two's compliment. However,
-          this has yet to be verified in a rigorus way.</para>
+          this has yet to be verified in a rigorous way.</para>
         </answer>
       </qandaentry>
 
@@ -351,7 +345,7 @@
 
     <biblioentry>
       <author>
-        <surname>Lawerence Crowl</surname>
+        <surname>Lawrence Crowl</surname>
       </author>
 
       <title>
@@ -374,7 +368,7 @@
 
     <biblioentry>
       <author>
-        <surname>Lawerence Crowl</surname>
+        <surname>Lawrence Crowl</surname>
       </author>
 
       <author>

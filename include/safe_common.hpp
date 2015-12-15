@@ -54,6 +54,13 @@ struct print_impl {
 template<typename Tx>
 using print = typename print_impl<Tx>::type;
 
+template<int N> 
+struct print_value
+{
+   enum test : char { value = N + 256 };
+   //char operator()() { return N + 256; } //deliberately causing overflow
+   // static_assert(N == 0, "value of N");
+};
 
 } // numeric
 } // boost

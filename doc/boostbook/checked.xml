@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section>
+  <title>Checked Integer Arithmetic</title>
+
+  <section>
+    <title>Synopsis</title>
+
+    <programlisting>// safe casting on primitive types
+template&lt;class R, class T&gt;
+constexpr checked_result&lt;R&gt;
+checked::cast(const T &amp; t);
+
+// safe addition on primitive types
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::add(const T &amp; t, const U &amp; u);
+
+// safe subtraction on primitive types
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::subtract(const T &amp; t, const U &amp; u);
+
+// safe multiplication on primitive types
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::multiply(const T &amp; t, const U &amp; u);
+
+// safe division on unsafe types
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::divide(const T &amp; t, const U &amp; u);
+
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::divide_automatic(const T &amp; t, const U &amp; u);
+
+// safe modulus on unsafe types
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt;
+checked::modulus(const T &amp; t, const U &amp; u);
+
+// left shift
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt; 
+checked::left_shift(const T &amp; t, const U &amp; u);
+
+// right shift
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt; 
+checked::right_shift(const T &amp; t, const U &amp; u);
+
+// bitwise operations
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt; 
+checked::bitwise_or(const T &amp; t, const U &amp; u);
+
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt; 
+checked::bitwise_and(const T &amp; t, const U &amp; u);
+
+template&lt;class R, class T, class U&gt;
+constexpr checked_result&lt;R&gt; 
+checked::bitwise_xor(const T &amp; t, const U &amp; u);
+</programlisting>
+  </section>
+
+  <section>
+    <title>Description</title>
+
+    <para>Perform binary operations on arithmetic types. Return either a valid
+    result or an error code. Under no circumstances should an incorrect result
+    be returned.</para>
+  </section>
+
+  <section>
+    <title>Type requirements</title>
+
+    <para>All template parameters of the functions must model <link
+    linkend="safe_numerics.integer">Integer</link> type requirements.</para>
+  </section>
+
+  <section>
+    <title>Complexity</title>
+
+    <para>Each function performs one and only one arithmetic operation</para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code>#include "checked.hpp" </code></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <para>[A code fragment that illustrates how to use the function.]</para>
+
+    <programlisting>#include "checked.hpp"
+
+checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
+</programlisting>
+  </section>
+
+  <section>
+    <title>Notes</title>
+
+    <para>Footnotes (if any) that are referred to by other parts of the
+    page.</para>
+  </section>
+
+  <section>
+    <title>See Also</title>
+
+    <para><link
+    linkend="safenumerics.checked_result">checked_result&lt;typename
+    R&gt;</link></para>
+  </section>
+</section>

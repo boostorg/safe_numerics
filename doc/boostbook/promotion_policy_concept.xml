@@ -199,12 +199,12 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
         <para>Type sz will be a <link
         linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
         which is guaranteed to hold he result of x + y. In this case that will
-        be a long int (or perhaps a long ong) depending upon the compiler and
+        be a long int (or perhaps a long long) depending upon the compiler and
         machine architecture. In this case, there will be no need for any
         special checking on the result and there can be no overflow.</para>
 
-        <para>Type of c will be a signed caracter as that type can be
-        guarenteed to hold the sum so no overflow checking is done.</para>
+        <para>Type of c will be a signed character as that type can be
+        guaranteed to hold the sum so no overflow checking is done.</para>
 
         <para>This policy is documented in <link
         linkend="safe_numerics.automatic_policy">Promotion Policies -

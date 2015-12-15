@@ -358,7 +358,7 @@ int8_t f(safe&lt;int8_t&gt; i){
         <title>Header</title>
 
         <para><filename><ulink url="../../include/safe_integer.hpp">#include
-        &lt;boost/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
+        &lt;safe&gt;</ulink></filename></para>
       </section>
 
       <section>

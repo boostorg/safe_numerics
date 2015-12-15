@@ -49,7 +49,7 @@
           <row>
             <entry><code>O</code></entry>
 
-            <entry><code/></entry>
+            <entry/>
 
             <entry>void (*O)(const char *)</entry>
 

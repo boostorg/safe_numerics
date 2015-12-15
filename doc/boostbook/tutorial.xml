@@ -89,9 +89,9 @@
     like standard arrays, vectors do array index checking in some function
     calls and not in others so this may not be the best example. However it
     does illustrate the usage of <code>safe_range&lt;T&gt;</code> for
-    assigning legal range to variables. This will guarentee that under no
+    assigning legal range to variables. This will guarantee that under no
     circumstances will the variable contain a value outside of the specified
-    range. </para>
+    range.</para>
   </section>
 
   <section id="safe_numerics.tutorial.6">
@@ -130,13 +130,13 @@
     <para><programlisting><xi:include href="../../examples/example7.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
 
-    <para>In the example above the function convert incurrs significant
-    runtime cost every time the function is called. By using "safe" types,
-    this cost is moved to moment when the parameters are constructed.
-    Depending on how the program is constructed, this may totally eliminate
-    extraneous computions for parameter requirement type checking. In this
-    scenario, there is no reason to suppress the checking for release mode and
-    our program can be guarenteed to be always arithmetically correct.</para>
+    <para>In the example above the function convert incurs significant runtime
+    cost every time the function is called. By using "safe" types, this cost
+    is moved to moment when the parameters are constructed. Depending on how
+    the program is constructed, this may totally eliminate extraneous
+    computations for parameter requirement type checking. In this scenario,
+    there is no reason to suppress the checking for release mode and our
+    program can be guaranteed to be always arithmetically correct.</para>
   </section>
 
   <section id="safe_numerics.tutorial.8">
@@ -171,8 +171,8 @@
     default <link
     linkend="safe_numerics.promotion_policy.models.native">"native" type
     promotion policy</link>. Up until now, we've focused on detecting when
-    this happens and invoking an interrupt or other kind of error handler.
-    </para>
+    this happens and invoking an interrupt or other kind of error
+    handler.</para>
 
     <para>But now we look at another option. Using the <link
     linkend="safe_numerics.promotion_policy.models.automatic">"automatic" type
@@ -194,11 +194,11 @@
 
         <listitem>
           <para>From this interval we can determine a new safe type which can
-          be guarenteed to hold the result.</para>
+          be guaranteed to hold the result.</para>
         </listitem>
 
         <listitem>
-          <para>Since the result type is guarenteed to hold the result, there
+          <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!!</para>
         </listitem>
 
@@ -212,7 +212,7 @@
 
     <para>In short, given a binary operation, we promote the constituent types
     to a larger result type which can't overflow. This is a fundamental
-    deparature from the C++ Standard behavior.</para>
+    departure from the C++ Standard behavior.</para>
 
     <para>If the interval of the result cannot be contained in the largest
     type that the machine can handle (usually 64 bits these days), the largest
@@ -234,7 +234,7 @@ x&lt;signed char&gt;[-24,82] = 1
 y&lt;signed char&gt;[-24,82] = 2
 (x + y)&lt;short&gt;[-48,164] = 3
 (x - y)&lt;signed char&gt;[-106,106] = -1</programlisting>Variables x and y
-    are stored as 8 bit signed integers with range specied as -24 to 82. The
+    are stored as 8 bit signed integers with range specified as -24 to 82. The
     result of x + y could be any value in the range -48 to 164. Since this
     result can't be stored in an 8 bit signed integer, a 16 bit signed integer
     is allocated. The result x - y could range from -106 to 106 so will fit in
@@ -248,7 +248,7 @@ y&lt;signed char&gt;[-24,82] = 2
     operations on safe types result in other safe types, expressions can be
     made arbitrarily elaborate - just as they can be with intrinsic integer
     types. That is, safe integer types are drop in replacements for intrinsic
-    integer types. We are guarenteed never to produce an incorrect result
+    integer types. We are guaranteed never to produce an incorrect result
     regardless of how elaborate the expression might be.</para>
   </section>
 </section>

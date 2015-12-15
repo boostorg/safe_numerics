@@ -7,12 +7,12 @@
   <?dbhtml stop-chunking?>
 
   <para>All data types, type requirements, function and meta function names
-  are found in the namespase boost::numeric . In order to make this document
-  more readable, we have omitted this namespace qualifier.<note>
-      <para>Library code in this document resides in the namespace
-      <code>boost::numeric</code>. This namespace has generally been
+  are found in the name space boost::numeric . In order to make this document
+  more readable, we have omitted this name space qualifier.<note>
+      <para>Library code in this document resides in the name space
+      <code>boost::numeric</code>. This name space has generally been
       eliminated from text, code and examples in order to avoid
-      cludder.</para>
+      clutter.</para>
     </note></para>
 
   <section id="safe_numerics.introduction.problem">
@@ -79,7 +79,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 }
 </programlisting>
 
-    <para>The addition expression is checked at runtime or (if possible) or
+    <para>The addition expression is checked at runtime or (if possible) at
     compile time to trap any possible errors resulting from incorrect
     arithmetic behavior. This will permit one to write arithmetic expressions
     that cannot produce an erroneous result. Instead, one and only one of the
@@ -142,7 +142,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     <para><itemizedlist>
         <listitem>
           <para>Use custom type promotion so that expressions return types
-          guarenteed to hold the expression's results.</para>
+          guaranteed to hold the expression's results.</para>
         </listitem>
 
         <listitem>
@@ -168,7 +168,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   <section id="safe_numerics.introduction.requirements">
     <title>Requirements</title>
 
-    <para>This library is composed entirely of C++ Headers. I requires a
+    <para>This library is composed entirely of C++ Headers. It requires a
     compiler compatible with the C++14 standard.</para>
 
     <para>The following Boost Libraries must be installed in order to use this
@@ -190,7 +190,16 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>concept checking</para>
         </listitem>
-      </itemizedlist></para>
+
+        <listitem>
+          <para>tribool</para>
+        </listitem>
+
+        <listitem>
+          <para>enable_if</para>
+        </listitem>
+      </itemizedlist>In order to run the test suite, the following the Boost
+    Preprocessor library is also required.</para>
   </section>
 
   <section id="safe_numerics.introduction.scope">
