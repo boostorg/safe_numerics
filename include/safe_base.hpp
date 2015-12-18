@@ -112,7 +112,7 @@ template<
 >
 std::ostream & operator<<(
     std::ostream & os,
-    const boost::numeric::safe_base<T, Min, Max, P, E> & t
+    const safe_base<T, Min, Max, P, E> & t
 );
 
 template<
@@ -124,8 +124,12 @@ template<
 >
 std::istream & operator>>(
     std::istream & is,
-    boost::numeric::safe_base<T, Min, Max, P, E> & t
+    safe_base<T, Min, Max, P, E> & t
 );
+
+template<
+    std::intmax_t N>
+class safe_literal;
 
 /////////////////////////////////////////////////////////////////
 // Main implementation
@@ -168,6 +172,9 @@ class safe_base {
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
 
+    template<std::intmax_t N>
+    constexpr Stored validated_cast(const safe_literal<N> & t) const;
+
 public:
 
     ////////////////////////////////////////////////////////////
@@ -186,6 +193,8 @@ public:
         m_t(rhs)
     {}
 
+    //template<std::intmax_t N>
+    //constexpr safe_base(const safe_literal<N> & rhs);
                 
     // note: Rule of Five.  Don't specify custom destructor,
     // custom move, custom copy, custom assignment, custom

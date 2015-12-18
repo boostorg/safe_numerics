@@ -25,6 +25,7 @@
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
 
 #include "safe_base.hpp"
+#include "safe_literal.hpp"
 #include "safe_compare.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
@@ -35,28 +36,52 @@ namespace numeric {
 /////////////////////////////////////////////////////////////////
 // validation
 
+template<typename E>
+struct validate_detail {
+    struct exception_possible {
+        template<typename Min, typename Max, typename T>
+        constexpr static bool check_value(
+            const Min & min,
+            const Max & max,
+            const T & t
+        ){
+            // INT08-C
+            bool validated =
+                ! safe_compare::less_than(
+                    max,
+                    base_value(t)
+                )
+                &&
+                ! safe_compare::less_than(
+                    base_value(t),
+                    min
+                );
+            if(! validated)
+                E::range_error("Value out of range for this safe type");
+            return validated;
+        }
+        constexpr static void domain_error(){
+            E::domain_error("Stored type cannot hold argument");
+        }
+
+    };
+    struct exception_not_possible {
+        template<typename Min, typename Max, typename T>
+        constexpr static bool check_value(
+            const Min & min,
+            const Max & max,
+            const T & t
+        ){
+            return true;
+        }
+        constexpr static void domain_error(){}
+    };
+};
+
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
 constexpr bool safe_base<Stored, Min, Max, P, E>::
 validate(const T & t) const {
-    // INT08-C
-    bool validated =
-        ! safe_compare::less_than(
-            Max,
-            base_value(t)
-        )
-        &&
-        ! safe_compare::less_than(
-            base_value(t),
-            Min
-        );
-    return validated;
-}
-
-template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T>
-constexpr Stored safe_base<Stored, Min, Max, P, E>::
-validated_cast(const T & t) const {
     constexpr const interval<typename base_type<T>::type> t_interval(
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
@@ -67,20 +92,40 @@ validated_cast(const T & t) const {
         indeterminate(t_interval < this_interval),
         "safe type cannot be constructed with this type"
     );
-    // if the argument interval is contained in this interval
-    if(! this_interval.includes(t_interval)){
+
+    return boost::mpl::if_c<
+        this_interval.includes(t_interval),
+        typename validate_detail<E>::exception_not_possible,
+        typename validate_detail<E>::exception_possible
+    >::type::check_value(Min, Max, t);
+}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T>
+constexpr Stored safe_base<Stored, Min, Max, P, E>::
+validated_cast(const T & t) const {
+    if(validate(t)){
         checked_result<Stored> r = checked::cast<Stored>(base_value(t));
         if(!r.no_exception()){
             E::domain_error("Stored type cannot hold argument");
         }
-        return r;
     }
-    else{
-        // we have to validate the value we're initializing with
-        if(! validate(t))
-            E::range_error("Value out of range for this safe type");
-        return checked::cast<Stored>(base_value(t));
+    return static_cast<Stored>(t);
+}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<std::intmax_t N>
+constexpr Stored safe_base<Stored, Min, Max, P, E>::
+validated_cast(const safe_literal<N> & t) const {
+    if(validate(t)){
+        constexpr checked_result<Stored> r = checked::cast<Stored>(N);
+        boost::mpl::if_c<
+            r.no_exception(),
+            typename validate_detail<E>::exception_not_possible,
+            typename validate_detail<E>::exception_possible
+        >::type::domain_error();
     }
+    return static_cast<Stored>(N);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -154,74 +199,78 @@ operator R () const {
 
 template<class T, class U>
 struct common_policies {
-    static_assert(
-        boost::mpl::or_<
-            is_safe<T>,
-            is_safe<U>
-        >::value,
+    static_assert(is_safe<T>::value || is_safe<U>::value,
         "at least one type must be a safe type"
     );
 
+    using t_promotion_policy = typename get_promotion_policy<T>::type;
+    using u_promotion_policy = typename get_promotion_policy<U>::type;
+    using t_exception_policy = typename get_exception_policy<T>::type;
+    using u_exception_policy = typename get_exception_policy<U>::type;
+
     static_assert(
-        boost::mpl::or_<
-            std::is_same<
-                typename get_promotion_policy<T>::type,
-                typename get_promotion_policy<U>::type
-            >,
-            std::is_same<
-                typename get_promotion_policy<T>::type,
-                void
-            >,
-            std::is_same<
-                void,
-                typename get_promotion_policy<U>::type
-            >
-        >::value,
+        std::is_same<t_promotion_policy, u_promotion_policy>::value
+        ||std::is_same<t_promotion_policy, void>::value
+        ||std::is_same<void, u_promotion_policy>::value,
         "if the promotion policies are different, one must be void!"
     );
 
     static_assert(
-        boost::mpl::or_<
-            std::is_same<
-                typename get_exception_policy<T>::type,
-                typename get_exception_policy<U>::type
-            >,
-            std::is_same<
-                typename get_exception_policy<T>::type,
-                void
-            >,
-            std::is_same<
-                void,
-                typename get_exception_policy<U>::type
-            >
-        >::value,
+        ! std::is_same<t_promotion_policy, void>::value
+        || !std::is_same<void, u_promotion_policy>::value,
+        "at least one promotion polcy must be non void"
+    );
+
+    static_assert(
+        ! (std::is_same<t_promotion_policy, void>::value
+        && std::is_same<void, u_promotion_policy>::value),
+        "at least one promotion policy must not be void"
+    );
+
+    static_assert(
+        std::is_same<t_exception_policy, u_exception_policy>::value
+        || std::is_same<t_exception_policy, void>::value
+        || std::is_same<void, u_exception_policy>::value,
         "if the exception policies are different, one must be void!"
     );
 
-    // now we've verified that there is no conflict between policies
-    // return the one from the first safe type
-    typedef
-        typename boost::mpl::if_<
-            is_safe<T>,
-            T,
-        typename boost::mpl::if_<
-            is_safe<U>,
-            U,
+    static_assert(
+        ! (std::is_same<t_exception_policy, void>::value
+        && std::is_same<void, u_exception_policy>::value),
+        "at least one promotion policy must not be void"
+    );
+
+    using promotion_policy =
+        typename boost::mpl::if_c<
+            ! std::is_same<void, u_promotion_policy>::value,
+            u_promotion_policy,
+        typename boost::mpl::if_c<
+            ! std::is_same<void, t_promotion_policy>::value,
+            t_promotion_policy,
         //
             void
-        >::type >::type safe_type;
+        >::type >::type;
 
     static_assert(
-        is_safe<safe_type>::value,
-        "is_safe<safe_type>::value"
-    );
-    static_assert(
-        ! std::is_same<void, safe_type>::value,
-        "asdfafs"
+        ! std::is_same<void, promotion_policy>::value,
+        "promotion_policy is void"
     );
 
-    typedef typename get_promotion_policy<safe_type>::type promotion_policy;
-    typedef typename get_exception_policy<safe_type>::type exception_policy;
+    using exception_policy =
+        typename boost::mpl::if_c<
+            !std::is_same<void, u_exception_policy>::value,
+            u_exception_policy,
+        typename boost::mpl::if_c<
+            !std::is_same<void, t_exception_policy>::value,
+            t_exception_policy,
+        //
+            void
+        >::type >::type;
+
+    static_assert(
+        !std::is_same<void, exception_policy>::value,
+        "exception_policy is void"
+    );
 };
 
 // Note: the following global operators will be only found via
@@ -235,6 +284,7 @@ struct common_policies {
 template<class T, class U>
 struct addition_result {
     using P = common_policies<T, U>;
+
     using type = typename P::promotion_policy::template addition_result<
         T,
         U,

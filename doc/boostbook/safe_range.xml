@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.safe_unsigned_range">
+<section id="safe_numerics.safe_range">
   <title>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
 

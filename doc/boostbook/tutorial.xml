@@ -118,13 +118,13 @@
     slow the program down considerably which in turn undermines the main
     motivation for using C++ in the first place! One popular scheme for
     addressing this issue is to enable parameter checking only during
-    debugging and testing which defeats the guarentee of correctness which we
+    debugging and testing which defeats the guarantee of correctness which we
     are seeking here! Programming by Contract will never be accepted by
     programmers as long as it is associated with significant additional
     runtime cost.</para>
 
     <para>The Safe Numerics Library has facilities which, in many cases, can
-    check guarentee parameter requirements with little or no runtime overhead.
+    check guarantee parameter requirements with little or no runtime overhead.
     Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../examples/example7.cpp"
@@ -137,118 +137,5 @@
     computations for parameter requirement type checking. In this scenario,
     there is no reason to suppress the checking for release mode and our
     program can be guaranteed to be always arithmetically correct.</para>
-  </section>
-
-  <section id="safe_numerics.tutorial.8">
-    <title>Eliminate Runtime Cost</title>
-
-    <para>Our system works by checking arithmetic operations whenever they
-    could result in an erroneous result. The C++ standard describes how binary
-    operations on different integer types are handled. Here is a simplified
-    version of the rules:</para>
-
-    <itemizedlist>
-      <listitem>
-        <para>promote any operand smaller than int to an int or unsigned
-        int.</para>
-      </listitem>
-
-      <listitem>
-        <para>if the signed operand is larger than the signed one, the result
-        will be signed, otherwise the result will be unsigned.</para>
-      </listitem>
-
-      <listitem>
-        <para>expand the smaller operand to the size of the larger one</para>
-      </listitem>
-    </itemizedlist>
-
-    <para>So the result of the sum of two integer types will result in another
-    integer type. If the values are large, they will exceed the size that the
-    resulting integer type can hold. This is what we call "overflow". Standard
-    C/C++ just truncates the result to fit into the result type - which makes
-    the result arithmetically incorrect. This behavior is consistent with the
-    default <link
-    linkend="safe_numerics.promotion_policy.models.native">"native" type
-    promotion policy</link>. Up until now, we've focused on detecting when
-    this happens and invoking an interrupt or other kind of error
-    handler.</para>
-
-    <para>But now we look at another option. Using the <link
-    linkend="safe_numerics.promotion_policy.models.automatic">"automatic" type
-    promotion policy</link>, we can change the rules of C++ arithmetic for
-    safe types to something like the following:</para>
-
-    <para><itemizedlist>
-        <listitem>
-          <para>for any C++ numeric types, we know from
-          <code>std::numeric::limits</code> what the maximum and minimum
-          values that a variable can be - this defines a closed
-          interval.</para>
-        </listitem>
-
-        <listitem>
-          <para>For any binary operation on these types, we can calculate the
-          interval of the result at compile time.</para>
-        </listitem>
-
-        <listitem>
-          <para>From this interval we can determine a new safe type which can
-          be guaranteed to hold the result.</para>
-        </listitem>
-
-        <listitem>
-          <para>Since the result type is guaranteed to hold the result, there
-          is no need to check for errors - they can't happen !!!</para>
-        </listitem>
-
-        <listitem>
-          <para>The only error checking we need to do is when safe values are
-          initialized or assigned, but this we would have to do in any case.
-          So we've eliminated arithmetically incorrect results while incurring
-          zero runtime overhead for error checking.</para>
-        </listitem>
-      </itemizedlist></para>
-
-    <para>In short, given a binary operation, we promote the constituent types
-    to a larger result type which can't overflow. This is a fundamental
-    departure from the C++ Standard behavior.</para>
-
-    <para>If the interval of the result cannot be contained in the largest
-    type that the machine can handle (usually 64 bits these days), the largest
-    available integer type with the correct result sign is used. So even with
-    our "automatic" type promotion scheme, it's still possible to overflow. In
-    this case, and only this case, is runtime error checking code generated.
-    Depending on the application, it should be rare to generate error checking
-    code, and even more rare to actually invoke it.</para>
-
-    <para>This small example illustrates how to use type promotion and how it
-    works.</para>
-
-    <para><programlisting><xi:include href="../../examples/example8.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>The
-    above program produces the following output:</para>
-
-    <para><programlisting>example 8: eliminate runtime overhead
-x&lt;signed char&gt;[-24,82] = 1
-y&lt;signed char&gt;[-24,82] = 2
-(x + y)&lt;short&gt;[-48,164] = 3
-(x - y)&lt;signed char&gt;[-106,106] = -1</programlisting>Variables x and y
-    are stored as 8 bit signed integers with range specified as -24 to 82. The
-    result of x + y could be any value in the range -48 to 164. Since this
-    result can't be stored in an 8 bit signed integer, a 16 bit signed integer
-    is allocated. The result x - y could range from -106 to 106 so will fit in
-    an 8 bit signed integer is allocated. Binary operations with safe numeric
-    using automatic type promotion will produce other safe numeric types with
-    template parameters appropriate to hold the result. The resultant safe
-    types may have smaller or larger ranges than the parameters of the binary
-    operation.</para>
-
-    <para>We've used simple expressions in this illustration. But since binary
-    operations on safe types result in other safe types, expressions can be
-    made arbitrarily elaborate - just as they can be with intrinsic integer
-    types. That is, safe integer types are drop in replacements for intrinsic
-    integer types. We are guaranteed never to produce an incorrect result
-    regardless of how elaborate the expression might be.</para>
   </section>
 </section>

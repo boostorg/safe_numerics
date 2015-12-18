@@ -49,7 +49,8 @@ endif()
 # But wait - there's more.
 # if both lib.a and lib.dylib both exist in the library directory, Xcode will
 # automatically chose the *.dylib one - and there's nothing you can do to fix this.
-# So my recommendation is 
+# So my recommendation is
+
 # a) to place the compiled libraries in two different directories
 #    - e.g. stage/lib-static/*.a and stage/lib-shared/*.dylib
 #    and set the CMake variable Boost_LIBRARY_DIR to point to one or the other.
@@ -73,7 +74,7 @@ endif()
 #    purposes AND you're linking to dynamic linked versions of other boost libraries,
 #    you'll have to set the environmental variable DYLD_,
 
-# d) If your test code uses other boost libraries which are not header only, You'll
+# e) If your test code uses other boost libraries which are not header only, You'll
 #    have to set the environmental variable DYLD_LIBRARY_PATH to the directory which
 #    contains the *.dylib files for Boost libraries.  Unfortunately, it turns out
 #    that it's not at all obvious how to do this and as far as I can tell, it can't
@@ -195,6 +196,11 @@ foreach(file_path ${example_list})
   # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
+
+set_target_properties(example81 example84 PROPERTIES
+    EXCLUDE_FROM_ALL TRUE
+    EXCLUDE_FROM_DEFAULT_BUILD TRUE
+)
 
 # end examples targets
 ####################

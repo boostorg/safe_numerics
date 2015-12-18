@@ -45,10 +45,14 @@ struct get_exception_policy {
 // used for debugging
 // usage - print_type<T>;
 // provokes error message with name of type T
-// from Effective Modern C++, by Scott Meyers - item 4
 
-template<typename T>
-struct print_type;
+template<typename Tx>
+struct print_impl {
+    typedef typename Tx::error_message type;
+};
+
+template<typename Tx>
+using print_type = typename print_impl<Tx>::type;
 
 template<int N> 
 struct print_value
