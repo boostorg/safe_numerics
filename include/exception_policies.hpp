@@ -92,66 +92,10 @@ struct throw_exception {
 // would otherwise trap at runtime.  Hence expressions such as i/j
 // will trap at compile time unless j can be guaranteed to not be zero.
 
-/*
-struct trap_exception {
-    template<class T>
-    constexpr static void overflow_error(const T *) {
-        static_assert(std::is_void<T>::value, "overflow_error");
-    }
-    template<class T>
-    constexpr static void underflow_error(const T *) {
-        static_assert(std::is_void<T>::value, "underflow_error");
-    }
-    template<class T>
-    constexpr static void range_error(const T *) {
-        static_assert(std::is_void<T>::value, "range_error");
-    }
-    template<class T>
-    constexpr static void domain_error(const T *) {
-        static_assert(std::is_void<T>::value, "domain_error");
-    }
-};
-
-template<typename T>
-bool noconstexpr(const T & t){
-    return false;
-}
-
-struct trap_exception {
-    template<class T>
-    constexpr static bool overflow_error(const T & t) {
-        return noconstexpr(t);
-        //static_assert(noconstexpr(t), "overflow_error");
-    }
-    template<class T>
-    constexpr static void underflow_error(const T & t) {
-        noconstexpr(t);
-        //static_assert(std::is_void<T>::value, "underflow_error");
-    }
-    template<class T>
-    constexpr static void range_error(const T & t) {
-        noconstexpr(t);
-        //static_assert(std::is_void<T>::value, "range_error");
-    }
-    template<class T>
-    constexpr static void domain_error(const T & t) {
-        noconstexpr(t);
-        //static_assert(std::is_void<T>::value, "domain_error");
-    }
-};
-*/
 
 // meant to be trap the case where a program MIGHT throw an exception
 struct trap_exception {
-/*
-
-    constexpr static void range_error(const char * message) {
-        throw std::range_error(message);
-    }
-    constexpr static void domain_error(const char * message) {
-        //static_assert(std::is_void<T>::value, "domain_error");
-    }
-*/};
+};
 
 } // namespace numeric
 } // namespace boost

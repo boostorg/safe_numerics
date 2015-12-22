@@ -13,8 +13,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <cstdint> // intmax_t, uintmax_t
-#include <boost/integer.hpp> // (u)int_t<>::least, exact
 
+#include "utility.hpp"
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"
 #include "native.hpp"
@@ -26,49 +26,19 @@
 namespace boost {
 namespace numeric {
 
-namespace detail {
-    constexpr int ulog(boost::uintmax_t x){
-        unsigned i = 0;
-        for(; x > 0; ++i)
-            x >>= 1;
-        return i;
-    }
-    constexpr int log(std::intmax_t x){
-        if(x < 0)
-            x = ~x;
-        return ulog(x) + 1;
-    }
-    template<
-        std::intmax_t MIN,
-        std::intmax_t MAX
-    >
-    using signed_stored_type = typename boost::int_t<
-        std::max(log(MIN), log(MAX))
-    >::least ;
-
-    template<
-        std::uintmax_t MIN,
-        std::uintmax_t MAX
-    >
-    using unsigned_stored_type = typename boost::uint_t<
-        std::max(ulog(MIN), ulog(MAX))
-    >::least ;
-
-} // detail
-
 /////////////////////////////////////////////////////////////////
 // safe_signed_range
 
 template <
-    std::intmax_t MIN,
-    std::intmax_t MAX,
+    std::intmax_t Min,
+    std::intmax_t Max,
     class P = native,
     class E = throw_exception
 >
 using safe_signed_range = safe_base<
-    typename detail::signed_stored_type<MIN, MAX>,
-    static_cast<typename detail::signed_stored_type<MIN, MAX> >(MIN),
-    static_cast<typename detail::signed_stored_type<MIN, MAX> >(MAX),
+    typename boost::numeric::signed_stored_type<Min, Max>,
+    static_cast<typename boost::numeric::signed_stored_type<Min, Max> >(Min),
+    static_cast<typename boost::numeric::signed_stored_type<Min, Max> >(Max),
     P,
     E
 >;
@@ -77,15 +47,15 @@ using safe_signed_range = safe_base<
 // safe_unsigned_range
 
 template <
-    std::uintmax_t MIN,
-    std::uintmax_t MAX,
+    std::uintmax_t Min,
+    std::uintmax_t Max,
     class P = native,
     class E = throw_exception
 >
 using safe_unsigned_range = safe_base<
-    typename detail::unsigned_stored_type<MIN, MAX>,
-    static_cast<typename detail::unsigned_stored_type<MIN, MAX> >(MIN),
-    static_cast<typename detail::unsigned_stored_type<MIN, MAX> >(MAX),
+    typename boost::numeric::unsigned_stored_type<Min, Max>,
+    static_cast<typename boost::numeric::unsigned_stored_type<Min, Max> >(Min),
+    static_cast<typename boost::numeric::unsigned_stored_type<Min, Max> >(Max),
     P,
     E
 >;

@@ -5,7 +5,7 @@
   <title>Tutorial and Motivating Examples</title>
 
   <section id="safe_numerics.tutorial.1">
-    <title>Arithmetic Operations Can Yield Incorrect Results.</title>
+    <title>Arithmetic Expressions Can Yield Incorrect Results.</title>
 
     <para>When some operation results in a result which exceeds the capacity
     of a data variable to hold it, the result is undefined. This is called
@@ -29,7 +29,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.2">
-    <title>Undetected Overflow</title>
+    <title>Arithmetic Operations can Overflow Silently</title>
 
     <para>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</para>
@@ -74,6 +74,30 @@
     </code>with <code>safe&lt;int&gt;</code>.<programlisting><xi:include
           href="../../examples/example4.cpp" parse="text"
           xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+  </section>
+
+  <section id="safe_numerics.tutorial.10">
+    <title>Mixing Data Types Can Create Subtle Errors</title>
+
+    <para>C++ contains signed and unsigned integer types. In spite of their
+    names, they function differently which often produces surprising results
+    for some operands. Program errors from this behavior can be exceedingly
+    difficult to find. This has lead to recommendations of various ad hoc
+    "rules" to avoid these problems. It's not always easy to apply these
+    "rules" to existing code without creating even more bugs. Here is a
+    typical example of this problem:</para>
+
+    <para><programlisting><xi:include href="../../examples/example10.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Here
+    is the output of the above program:<programlisting>example 10: mixing types produces surprising results
+Not using safe numerics
+10000
+4294957296
+Using safe numerics
+10000
+detected error:converted negative value to unsigned
+</programlisting>This solution is simple, Just replace instances of the
+    <code>int</code>with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
   <section id="safe_numerics.tutorial.5">

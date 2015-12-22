@@ -20,55 +20,46 @@
 namespace boost {
 namespace numeric {
 
-template<std::intmax_t N>
-class safe_literal;
+template<typename T, T N>
+class safe_literal_impl;
 
-template<std::intmax_t N>
-struct is_safe<safe_literal<N> > : public std::true_type
+template<typename T, T N>
+struct is_safe<safe_literal_impl<T, N> > : public std::true_type
 {};
 
-template<std::intmax_t N>
-struct base_type<safe_literal<N> > {
-    typedef std::intmax_t type;
+template<typename T, T N>
+struct base_type<safe_literal_impl<T, N> > {
+    using type = T;
 };
 
-template<std::intmax_t N>
-constexpr std::intmax_t base_value(
-    const safe_literal<N>  & st
+template<typename T, T N>
+constexpr T base_value(
+    const safe_literal_impl<T, N>  & st
 ) {
     return N;
 }
 
-template<std::intmax_t N>
+template<typename T, T N>
 std::ostream & operator<<(
     std::ostream & os,
-    const safe_literal<N> & t
+    const safe_literal_impl<T, N> & t
 );
 
-template<std::intmax_t N>
-class safe_literal {
-    std::intmax_t m_t;
+template<typename T, T N>
+class safe_literal_impl {
+    T m_t;
 
-    friend std::ostream & operator<< <N> (
+    friend std::ostream & operator<< <T, N> (
         std::ostream & os,
-        const safe_literal & t
+        const safe_literal_impl & t
     );
-
-    template<
-        class StoredX,
-        StoredX MinX,
-        StoredX MaxX,
-        class PX, // promotion polic
-        class EX  // exception policy
-    >
-    friend class safe_base;
 
 public:
 
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    constexpr safe_literal() :
+    constexpr safe_literal_impl() :
         m_t(N)
     {}
 
@@ -88,6 +79,12 @@ public:
         return m_t;
     }
 };
+
+template<std::intmax_t N>
+using safe_literal = safe_literal_impl<std::intmax_t, N>;
+
+template<std::uintmax_t N>
+using safe_unsigned_literal = safe_literal_impl<std::uintmax_t, N>;
 
 } // numeric
 } // boost

@@ -28,8 +28,9 @@ using input_safe_t = safe_signed_range<
 // function arguments can never be outside of limits
 auto f(const safe_t & x, const safe_t & y){
     auto z = x + y;  // we know that this cannot fail
-    std::cout << "(x + y)" << safe_format(x + y) << std::endl;
-    std::cout << "(x - y)" << safe_format(x - y) << std::endl;
+    std::cout << "z = " << safe_format(z) << std::endl;
+    std::cout << "(x + y) = " << safe_format(x + y) << std::endl;
+    std::cout << "(x - y) = " << safe_format(x - y) << std::endl;
     return z;
 }
 

@@ -21,16 +21,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="promotion_policy.html#idm531041697168">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm531041693600">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm531041684992">Associated Types</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm531041679536">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm531041662336">Header</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm531041660256">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm473861772336">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm473861768912">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm473861760544">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm473861742896">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm473861740864">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041697168"></a>Description</h4></div></div></div>
+<a name="idm473861772336"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
@@ -45,7 +44,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041693600"></a>Notation</h4></div></div></div>
+<a name="idm473861768912"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -70,22 +69,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041684992"></a>Associated Types</h4></div></div></div>
-<div class="informaltable"><table class="table">
-<colgroup>
-<col align="left">
-<col align="left">
-</colgroup>
-<tbody><tr>
-<td align="left"><code class="computeroutput">EP</code></td>
-<td align="left">A type that full fills the requirements of an <a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPollicy</a>
-</td>
-</tr></tbody>
-</table></div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041679536"></a>Valid Expressions</h4></div></div></div>
+<a name="idm473861760544"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="informaltable"><table class="table">
@@ -99,38 +83,39 @@ auto z = x + y</pre>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><code class="computeroutput">PP::addition_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::addition_result&lt;T,
+              U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::subtraction_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::subtraction_result&lt;T,
+              U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::multiplication_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::multiplication_result&lt;T,
+              U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::division_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::division_result&lt;T,
+              U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::modulus_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::modulus_result&lt;T, U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::left_shift_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::left_shift_result&lt;T&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::right_shift_result&lt;T, U, PP,
-              EP&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::right_shift_result&lt;T&gt;::type</code></td>
+<td align="left">unspecified Numeric type</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP::bitwise_result&lt;T&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 </tbody>
@@ -138,14 +123,14 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041662336"></a>Header</h4></div></div></div>
+<a name="idm473861742896"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm531041660256"></a>Models</h4></div></div></div>
+<a name="idm473861740864"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
@@ -182,11 +167,11 @@ safe_unsigned_range&lt;2, 4&gt; b;
 auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</pre>
 <p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
         which is guaranteed to hold he result of x + y. In this case that will
-        be a long int (or perhaps a long ong) depending upon the compiler and
+        be a long int (or perhaps a long long) depending upon the compiler and
         machine architecture. In this case, there will be no need for any
         special checking on the result and there can be no overflow.</p>
-<p>Type of c will be a signed caracter as that type can be
-        guarenteed to hold the sum so no overflow checking is done.</p>
+<p>Type of c will be a signed character as that type can be
+        guaranteed to hold the sum so no overflow checking is done.</p>
 <p>This policy is documented in <a class="link" href="promotion_policies.html#safe_numerics.automatic_policy" title="automatic">Promotion Policies -
         automatic</a></p>
 </li>

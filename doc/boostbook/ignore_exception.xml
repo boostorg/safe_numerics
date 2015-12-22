@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
-  <title id="safe_numerics.ignore_exception">ignore_exception</title>
+<section id="safenumerics.ignore_exception">
+  <title>ignore_exception</title>
 
   <section>
     <title>Description</title>

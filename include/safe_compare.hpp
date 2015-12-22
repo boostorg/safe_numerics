@@ -80,8 +80,6 @@ namespace detail {
 
 template<class T, class U>
 constexpr bool less_than(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return detail::less_than<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed
@@ -89,71 +87,18 @@ constexpr bool less_than(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-constexpr bool greater_than_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+constexpr bool greater_than(const T & lhs, const U & rhs) {
     return less_than(rhs, lhs);
 }
 
-namespace detail { 
-    // both arguments unsigned or signed
-    template<bool TS, bool US>
-    struct greater_than {
-        template<class T, class U>
-        constexpr static bool invoke(const T & t, const U & u){
-            return t > u;
-        }
-    };
-
-    // T unsigned, U signed
-    template<>
-    struct greater_than<false, true> {
-        template<class T, class U>
-        constexpr static bool invoke(const T & t, const U & u){
-            return
-                (u < 0) ?
-                    true
-                :
-                    greater_than<false, false>::invoke(
-                        t,
-                        static_cast<const typename make_unsigned<U>::type &>(u)
-                    )
-                ;
-        }
-    };
-    // T signed, U unsigned
-    template<>
-    struct greater_than<true, false> {
-        template<class T, class U>
-        constexpr static bool invoke(const T & t, const U & u){
-            return
-                (t < 0) ?
-                    false
-                :
-                    greater_than<false, false>::invoke(
-                        static_cast<const typename make_unsigned<T>::type &>(t),
-                        u
-                    )
-                ;
-        }
-    };
-} // detail
-
 template<class T, class U>
-constexpr bool greater_than(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return detail::greater_than<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
+constexpr bool greater_than_equal(const T & lhs, const U & rhs) {
+    return ! less_than(lhs, rhs);
 }
 
 template<class T, class U>
 constexpr bool less_than_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
-    return greater_than(rhs, lhs);
+    return ! greater_than(lhs, rhs);
 }
 
 namespace detail { 
@@ -202,8 +147,6 @@ namespace detail {
 
 template<class T, class U>
 constexpr bool equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return detail::equal<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed
@@ -212,8 +155,6 @@ constexpr bool equal(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 constexpr bool not_equal(const T & lhs, const U & rhs) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
     return ! detail::equal<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed

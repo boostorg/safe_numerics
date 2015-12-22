@@ -22,6 +22,7 @@
 #include <boost/integer.hpp> // integer type selection
 #include <boost/mpl/if.hpp>
 
+#include "utility.hpp"
 #include "safe_common.hpp"
 #include "checked.hpp"
 
@@ -150,38 +151,27 @@ struct cpp {
             typename std::make_signed< select_signed<T, U> >
         >::type >::type >::type >::type;
 
-    template<typename T, typename U, typename P, typename E>
-    struct safe_type_promotion {
-        using base_type_t = typename base_type<T>::type;
-        using base_type_u = typename base_type<U>::type;
-        using result_base_type = usual_arithmetic_conversions<
-            integral_promotion<base_type_t>,
-            integral_promotion<base_type_u>
-        >;
-        using type = safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        >;
-    };
+    template<typename T, typename U>
+    using result_type = usual_arithmetic_conversions<
+        integral_promotion<typename base_type<T>::type>,
+        integral_promotion<typename base_type<U>::type>
+    >;
 
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct addition_result {
-       using type = typename  safe_type_promotion<T, U, P, E>::type;
+       using type = typename result_type<T, U>::type;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct subtraction_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct multiplication_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct division_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
     };
     // forward to correct divide implementation
     template<class R, class T, class U>
@@ -193,17 +183,30 @@ struct cpp {
         return checked::divide<R>(t, u);
     }
 
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct modulus_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
     };
-    template<typename T, typename U, typename P, typename E>
+    // forward to correct modulus implementation
+    template<class R, class T, class U>
+    checked_result<R>
+    static constexpr modulus(
+        const T & t,
+        const U & u
+    ){
+        return checked::modulus<R>(t, u);
+    }
+    template<typename T, typename U>
     struct left_shift_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct right_shift_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+       using type = typename result_type<T, U>::type;
+    };
+    template<typename T, typename U>
+    struct bitwise_result {
+       using type = typename result_type<T, U>::type;
     };
 };
 

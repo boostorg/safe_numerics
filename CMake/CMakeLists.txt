@@ -197,7 +197,7 @@ foreach(file_path ${example_list})
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
-set_target_properties(example81 example84 PROPERTIES
+set_target_properties(example81 example9 PROPERTIES
     EXCLUDE_FROM_ALL TRUE
     EXCLUDE_FROM_DEFAULT_BUILD TRUE
 )

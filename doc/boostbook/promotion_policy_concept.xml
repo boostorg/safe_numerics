@@ -52,27 +52,6 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
   </section>
 
   <section>
-    <title>Associated Types</title>
-
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left"/>
-
-        <colspec align="left" colwidth="3*"/>
-
-        <tbody>
-          <row>
-            <entry><code>EP</code></entry>
-
-            <entry>A type that full fills the requirements of an <link
-            linkend="safe_numerics.exception_policy">ExceptionPollicy</link></entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-  </section>
-
-  <section>
     <title>Valid Expressions</title>
 
     <para>Any operations which result in integers which cannot be represented
@@ -92,50 +71,53 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
 
           <tbody>
             <row>
-              <entry><code>PP::addition_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::addition_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::subtraction_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::subtraction_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::multiplication_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::multiplication_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::division_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::division_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::modulus_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::modulus_result&lt;T, U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::left_shift_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::left_shift_result&lt;T&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::right_shift_result&lt;T, U, PP,
-              EP&gt;::type</code></entry>
+              <entry><code>PP::right_shift_result&lt;T&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::bitwise_result&lt;T&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>

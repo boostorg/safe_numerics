@@ -5,7 +5,7 @@
 #include "../include/automatic.hpp"
 
 int test_log(){
-    using namespace boost::numeric::detail;
+    using namespace boost::numeric;
     assert(ulog(127) == 7);
     assert(ulog(128) == 8);
     assert(ulog(129) == 8);

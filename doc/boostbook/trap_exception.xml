@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
+<section id="safe_numerics.trap_exception">
   <title>trap_exception</title>
 
   <section>
     <title>Description</title>
 
-    <para>This exception policy will trap at compile time any operation could
-    result in a runtime exception. It can be used in an evironment which can
-    tolerate neither arithmetic errors nor runtime overhead.</para>
+    <para>This exception policy will trap at compile time any operation
+    <emphasis><emphasis role="bold">COULD</emphasis></emphasis> result in a
+    runtime exception. It can be used in an environment which can tolerate
+    neither arithmetic errors nor runtime overhead. Usage of this policy will
+    almost always require altering one's program to avoid exceptions.</para>
   </section>
 
   <section>
@@ -30,7 +32,7 @@
   <section>
     <title>Example of use</title>
 
-    <para>The following </para>
+    <para>The following</para>
 
     <programlisting>#include "../../include/safe_integer.hpp"
 #include "../../include/automatic.hpp"

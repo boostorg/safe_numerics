@@ -127,9 +127,8 @@ std::istream & operator>>(
     safe_base<T, Min, Max, P, E> & t
 );
 
-template<
-    std::intmax_t N>
-class safe_literal;
+template<typename T, T N>
+class safe_literal_impl;
 
 /////////////////////////////////////////////////////////////////
 // Main implementation
@@ -166,39 +165,58 @@ class safe_base {
     >
     friend class safe_base;
 
-    template<class T>
-    constexpr bool validate(const T & t) const;
+    friend class std::numeric_limits<
+        safe_base<Stored, Min, Max, P, E>
+    >;
+
+    //template<class T>
+    //constexpr bool validate(const T & t) const;
 
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
 
-    template<std::intmax_t N>
-    constexpr Stored validated_cast(const safe_literal<N> & t) const;
+    template<typename T, T N>
+    constexpr Stored validated_cast(const safe_literal_impl<T, N> & t) const;
+
+protected:
 
 public:
-
     ////////////////////////////////////////////////////////////
     // constructors
-    // default constructor
-    constexpr explicit safe_base() {}
 
-    template<class T>
-    constexpr safe_base(const T & t);
-
-    constexpr safe_base(const safe_base & rhs) :
-        m_t(rhs.m_t)
+    constexpr explicit safe_base(const Stored & rhs, std::false_type);
+    /*
+    constexpr explicit safe_base(const Stored & rhs) :
+        m_t(validated_cast(rhs))
     {}
-
-    constexpr safe_base(const Stored & rhs) :
+    constexpr explicit safe_base(validated_wrapper && rhs) :
         m_t(rhs)
     {}
+*/
+    // default constructor
+    constexpr explicit safe_base() {
+        // this permits creating of invalid instances.  This is inline
+        // with C++ built-in but violates the premises of the whole library
+        // choice are:
+        // do nothing - violates premise of he library that all safe objects
+        // are valid
+        // initialize to valid value - violates C++ behavior of types.
+        // add "initialized" flag.  Preserves fixes the above, but doubles
+        // "overhead"
+        // still pending on this.
+    }
 
-    //template<std::intmax_t N>
-    //constexpr safe_base(const safe_literal<N> & rhs);
-                
-    // note: Rule of Five.  Don't specify custom destructor,
-    // custom move, custom copy, custom assignment, custom
-    // move assignment.  Let the compiler build the defaults.
+    template<class T>
+    constexpr /*explicit*/ safe_base(const T & t);
+
+    //constexpr safe_base(const safe_base & rhs) :
+    //    m_t(rhs.m_t)
+    //{}
+
+    // note: Rule of Five.  Don't specify
+    // custom destructor, custom destructor, custom assignment
+    // custom move, custom move assignment
+    // Let the compiler build the defaults.
 public:
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
@@ -213,18 +231,13 @@ public:
         >::type = 0
     >
     constexpr operator R () const;
+    constexpr operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
     constexpr safe_base & operator=(const T & rhs){
-        if(! validate(rhs)){
-            static_assert(std::is_literal_type<T>::value, "expecting a literal");
-            E::range_error(
-                "Invalid value passed on assignment"
-            );
-        }
-        m_t = static_cast<Stored>(rhs);
+        m_t = validated_cast(rhs);
         return *this;
     }
     
@@ -325,10 +338,10 @@ class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
     using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
 public:
     constexpr static SB min() noexcept {
-        return SB(Min);
+        return SB(Min, std::false_type());
     }
     constexpr static SB max() noexcept {
-        return SB(Max);
+        return SB(Max, std::false_type());
     }
 };
 

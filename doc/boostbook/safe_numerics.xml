@@ -105,13 +105,16 @@
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
-  <section id="safe_numerics.promotion_policies">
+  <section id="safe_numerics.types">
     <title>Types</title>
 
     <xi:include href="safe.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
     <xi:include href="safe_range.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="safe_literal.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
     <section id="safe_numerics.promotion_policies">
@@ -133,13 +136,13 @@
       <xi:include href="throw_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+      <xi:include href="trap_exception.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
       <xi:include href="ignore_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="no_exception_support.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-      <xi:include href="trap_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </section>
   </section>
@@ -178,7 +181,7 @@
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
-  <section>
+  <section id="safe_numerics.performance_tests">
     <title>Performance Tests</title>
 
     <para>Our goal creating facilities which make it possible write programs
@@ -323,16 +326,23 @@
         <code>strtoi</code> etc. DO check for valid input and throw the
         exception <code>std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
-        <code>strtoi</code> already contains the exact functionality that
+        <code>strtoi</code> already contains some of the functionality that
         <code>safe&lt;int&gt;</code> provides.</para>
       </listitem>
 
       <listitem>
         <para>Although care was taking to make the library portable, it's
         likely that at least some parts of the implementation - particularly
-        <code>checked</code> arithmetic - depend upon twos complement
+        <code>checked</code> arithmetic - depend upon two's complement
         representation of integers. Hence the library is probably not
         currently portable to other architectures.</para>
+      </listitem>
+
+      <listitem>
+        <para>Currently the library permits a safe&lt;int&gt; value to be
+        unitialized. This supports the goal of "drop-in" replacement of C++/C
+        built-in types with safe counter parts. On the other hand, this breaks
+        the "always valid" guarantee.</para>
       </listitem>
     </itemizedlist>
   </section>

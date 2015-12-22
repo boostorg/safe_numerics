@@ -69,7 +69,19 @@ struct interval {
         // on checked_result yield tribool.  If either argument is an exception
         // condition, he result is indeterminate.  The result of && on two
         // tribools is indeterminant if either is indeterminate.
-        return l <= t.l && u >= t.u ;
+        return
+            safe_compare::less_than_equal(l, t.l)
+            &&
+            safe_compare::greater_than_equal(u, t.u)
+        ;
+    }
+    template<typename T>
+    constexpr bool includes(const T & t) const {
+        return
+            ! safe_compare::less_than(u,t)
+            &&
+            ! safe_compare::less_than(t,l)
+        ;
     }
 };
 

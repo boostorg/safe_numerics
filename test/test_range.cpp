@@ -2,23 +2,24 @@
 #include <cassert>
 #include <limits>
 
+#include "../include/utility.hpp"
 #include "../include/safe_range.hpp"
 
 template<typename T>
 void display_ulog(T Max){
     std::cout
         << "ulog(" << Max << ") = "
-        << boost::numeric::detail::ulog(Max) << std::endl;
+        << boost::numeric::ulog(Max) << std::endl;
 }
 template<typename T>
 void display_log(T Max){
     std::cout
         << "log(" << Max << ") = "
-        << boost::numeric::detail::log(Max) << std::endl;
+        << boost::numeric::log(Max) << std::endl;
 }
 
 bool test_log(){
-    using namespace boost::numeric::detail;
+    using namespace boost::numeric;
     assert(ulog(127) == 7); // 7 bits
     assert(ulog(127) == 7); // 7 bits
     assert(ulog(128) == 8); // 8 bits
@@ -42,7 +43,7 @@ bool test_log(){
 
 bool test1(){
     using namespace boost::numeric;
-    typedef detail::signed_stored_type<-256, 254> t1;
+    typedef signed_stored_type<-256, 254> t1;
 
     safe_signed_range<-128, 127> s1(1);
     safe_signed_range<-256, 254> s2(2);
