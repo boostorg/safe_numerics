@@ -8,17 +8,17 @@
     <title>Description</title>
 
     <para>This policy is used to promote safe types in arithmetic expressions
-    according the the standard rules in the C++ standard. But rather than
-    using the native C++ standard types supported by the compiler, it uses
-    types whose length in number of bits is specified by the template
+    according the standard rules in the C++ standard. But rather than using
+    the native C++ standard types supported by the compiler, it uses types
+    whose length in number of bits is specified by the template
     parameters.</para>
 
     <para>This policy is useful for running test program which use C++
-    portable integer types but which are destined to run on an an architecture
+    portable integer types but which are destined to run on an architecture
     which is different than the one on which the test program is being built
     and run. This can happen when developing code for embedded systems.
     Algorithms developed or borrowed from one architecture but destined for
-    another can be tested on ib the desk top.</para>
+    another can be tested on the desk top.</para>
   </section>
 
   <section>
@@ -113,8 +113,8 @@
     one used. But it can be quite time consuming.</para>
 
     <para>Consider an alternative. Build and compile your code in testable
-    modules. For each module write a test which excercises all the code and
-    makes it work. Finally download your code into the chip and - voila -
+    modules. For each module write a test which exercises all the code and
+    makes it work. Finally download your code into the chip and - voilà -
     working product. This sounds great, but there's one problem. Our target
     processor - in this case a PIC162550 from Microchip Technology is only an
     8 bit CPU. The compiler we use defines INT as 8 bits. This (and a few
@@ -183,7 +183,7 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
 
     <para>Note the usage of the compile time trap policy in order to detect at
     compile time any possible error conditions. As I write this, this is still
-    being refined. Hopefully this will be available by the time you read this.
-    </para>
+    being refined. Hopefully this will be available by the time you read
+    this.</para>
   </section>
 </section>

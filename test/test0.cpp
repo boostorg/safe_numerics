@@ -106,7 +106,8 @@ bool test4(){
     return true;
 }
 
-#include <boost/cstdint.hpp>
+//#include <boost/cstdint.hpp>
+#include <cstdint>
 
 bool test5(){
     std::cout << "test5" << std::endl;
@@ -133,13 +134,15 @@ bool test5(){
 }
 
 int main(int argc, char *argv[]){
-    return (
+    bool rval = (
         test1() &&
         test2() &&
         test3() &&
         test4() &&
         test5()
-    ) ? EXIT_SUCCESS : EXIT_FAILURE;
+    );
+    std::cout << (rval ? "success!" : "failure") << std::endl;
+    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 

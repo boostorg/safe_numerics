@@ -8,10 +8,6 @@
 #include <exception>
 #include <cassert>
 
-// we could have used decltype and auto for C++11 but we've decided
-// to use boost/typeof to be compatible with older compilers
-#include <boost/typeof/typeof.hpp>
-
 #include "../include/safe_integer.hpp"
 template <class T>
 using safe_t = boost::numeric::safe<T>;

@@ -43,7 +43,7 @@ struct get_exception_policy {
 };
 
 // used for debugging
-// usage - typedef print<T> pt;
+// usage - print_type<T>;
 // provokes error message with name of type T
 
 template<typename Tx>
@@ -52,8 +52,13 @@ struct print_impl {
 };
 
 template<typename Tx>
-using print = typename print_impl<Tx>::type;
+using print_type = typename print_impl<Tx>::type;
 
+template<int N> 
+struct print_value
+{
+   enum test : char { value = N + 256 };
+};
 
 } // numeric
 } // boost

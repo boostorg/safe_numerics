@@ -22,10 +22,10 @@
 #include <type_traits> // true_type, false_type, is_same
 #include <boost/mpl/if.hpp>
 
+#include "utility.hpp"
 #include "safe_common.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
-#include "safe_range.hpp"
 
 namespace boost {
 namespace numeric {
@@ -98,209 +98,173 @@ struct automatic {
             std::uintmax_t
         >::type >::type >::type;
 
-    template<typename T, T Min, T Max, class P, class E>
-    struct defer_signed_lazily {
-        using type = boost::numeric::safe_signed_range<Min, Max, P, E>;
+    template<typename T, T Min, T Max>
+    struct defer_stored_signed_lazily {
+        using type = signed_stored_type<Min, Max>;
     };
 
-    template<typename T, T Min, T Max, class P, class E>
-    struct defer_unsigned_lazily {
-        using type = boost::numeric::safe_unsigned_range<Min, Max, P, E>;
+    template<typename T, T Min, T Max>
+    struct defer_stored_unsigned_lazily {
+        using type = unsigned_stored_type<Min, Max>;
     };
 
-    template<typename T, T Min, T Max, class P, class E>
-    using safe_range =
+    template<typename T, T Min, T Max>
+    using result_type =
         typename boost::mpl::if_<
             std::is_signed<T>,
-            defer_signed_lazily<T, Min, Max, P, E>,
-            defer_unsigned_lazily<T, Min, Max, P, E>
+            defer_stored_signed_lazily<T, Min, Max>,
+            defer_stored_unsigned_lazily<T, Min, Max>
         >::type;
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct addition_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
 
-        constexpr static const interval<base_type_t> t = {
+        using result_base_type = calculate_max_t<T, U>;
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+
+        // filter out case were overflow cannot occur
+        // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
+        // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
+        // Use base_value(T) ( which equals MIN ) to create a new interval. Same
+        // for MAX.  Now
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<base_type_u> u = {
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        typedef calculate_max_t<T, U> max_t;
+        // when we add the temporary intervals above, we'll get a new interval
+        // with the correct range for the sum !
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = add<result_base_type>(t_interval, u_interval);
 
-        constexpr static const checked_result<interval< max_t>> r
-            = add<max_t>(t, u);
-
-        constexpr static const interval< max_t> default_interval{};
-
-        constexpr static const interval<max_t> result_interval =
-            r.no_exception() ?
-                static_cast<interval<max_t>>(r)
+        constexpr static const interval<result_base_type> result_interval =
+            r_interval.no_exception() ?
+                static_cast<interval<result_base_type>>(r_interval)
             :
-                default_interval
+                interval<result_base_type>{}
             ;
 
-        typedef typename safe_range<
-            max_t,
+        using type = typename result_type<
+            result_base_type,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct subtraction_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
+        using result_base_type = calculate_max_t<T, U>;
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
 
-        constexpr static const interval<base_type_t> t = {
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<base_type_u> u = {
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        typedef calculate_max_t<T, U> max_t;
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = subtract<result_base_type>(t_interval, u_interval);
 
-        constexpr static const checked_result<interval< max_t>> r
-            = subtract<max_t>(t, u);
-
-        constexpr static const interval< max_t> default_interval{};
-
-        constexpr static const interval<max_t> result_interval =
-            r.no_exception() ?
-                static_cast<interval<max_t>>(r)
+        constexpr static const interval<result_base_type> result_interval =
+            r_interval.no_exception() ?
+                static_cast<interval<result_base_type>>(r_interval)
             :
-                default_interval
+                interval<result_base_type>{}
             ;
 
-        typedef typename safe_range<
-            max_t,
+        using type = typename result_type<
+            result_base_type,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct multiplication_result {
-        typedef typename base_type<T>::type base_type_t;
-        typedef typename base_type<U>::type base_type_u;
+        using result_base_type = calculate_max_t<T, U>;
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
 
-        constexpr static const interval<base_type_t> t = {
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<base_type_u> u = {
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        typedef calculate_max_t<T, U> max_t;
-        // typedef print<max_t> p_max_t;
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = multiply<result_base_type>(t_interval, u_interval);
 
-        constexpr static const checked_result<interval< max_t>> r
-            {multiply<max_t>(t, u)};
-
-        constexpr static const interval<max_t> default_interval{};
-
-        constexpr static const interval<max_t> result_interval =
-            r.no_exception() ?
-                static_cast<interval<max_t>>(r)
+        constexpr static const interval<result_base_type> result_interval =
+            r_interval.no_exception() ?
+                static_cast<interval<result_base_type>>(r_interval)
             :
-                default_interval
+                interval<result_base_type>{}
             ;
 
-        typedef typename safe_range<
-            max_t,
+        using type = typename result_type<
+            result_base_type,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     ///////////////////////////////////////////////////////////////////////
-    template<class T, class U>
-    constexpr static int bits(){
-        // figure number of bits in quotient
-        return std::min(
-            std::numeric_limits<T>::digits
-            + 1  // one guard bit to cover u == -1 & t = numeric_limits<T>::min()
-            + 1  // one sign bit
-            ,
-            std::numeric_limits<std::intmax_t>::digits
-            + 1  // one sign bit
-        );
-    }
-
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct division_result {
-        typedef typename base_type<T>::type base_type_t;
-        static_assert(
-            std::is_literal_type< interval<base_type_t> >::value,
-            "interval<base_type_t> is not literal type"
-        );
-        typedef typename base_type<U>::type base_type_u;
-        static_assert(
-            std::is_literal_type< interval<base_type_u> >::value,
-            "interval<base_type_u> is not tliteral type"
-        );
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
 
-        constexpr static interval<base_type_t> t {
-            interval<base_type_t>(
-                base_value(std::numeric_limits<T>::min()),
-                base_value(std::numeric_limits<T>::max())
-            )
-        };
-        constexpr static interval<base_type_u> u {
-            interval<base_type_u>(
-                base_value(std::numeric_limits<U>::min()),
-                base_value(std::numeric_limits<U>::max())
-            )
+        constexpr static const interval<t_base_type> t_interval{
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
         };
 
-        using base_type_r = typename boost::mpl::if_c<
-            std::numeric_limits<base_type_t>::is_signed
-            || std::numeric_limits<base_type_u>::is_signed,
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        using result_base_type = typename boost::mpl::if_c<
+            std::numeric_limits<t_base_type>::is_signed
+            || std::numeric_limits<u_base_type>::is_signed,
             std::intmax_t,
             std::uintmax_t
         >::type;
 
-        constexpr static checked_result<interval<base_type_r>> r {
-            divide_nz<base_type_r>(t, u)
+        constexpr static checked_result<interval<result_base_type>> r {
+            divide_nz<result_base_type>(t_interval, u_interval)
         };
 
-        constexpr static const interval<base_type_r> default_interval{};
-
-        constexpr static const interval<base_type_r> result_interval {
+        constexpr static const interval<result_base_type> result_interval {
             r.no_exception() ?
-                static_cast<interval<base_type_r>>(r)
+                static_cast<interval<result_base_type>>(r)
             :
-                default_interval
+                interval<result_base_type>{}
          };
 
-        typedef typename safe_range<
-            base_type_r,
+        using type = typename result_type<
+            result_base_type,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     // forward to correct divide implementation
@@ -314,50 +278,38 @@ struct automatic {
     }
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct modulus_result {
-        typedef typename base_type<T>::type base_type_t;
-        static_assert(
-            std::is_literal_type< interval<base_type_t> >::value,
-            "interval<base_type_t> is not literal type"
-        );
-        typedef typename base_type<U>::type base_type_u;
-        static_assert(
-            std::is_literal_type< interval<base_type_u> >::value,
-            "interval<base_type_u> is not tliteral type"
-        );
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
 
-        constexpr static const interval<base_type_t> t {
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<base_type_u> u {
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        using base_type_r = std::make_unsigned_t<base_type_u>;
+        using r_base_type = std::make_unsigned_t<u_base_type>;
 
-        constexpr static const checked_result<interval<base_type_r>> r
-            { modulus_nz<base_type_r>(t, u) };
+        constexpr static const checked_result<interval<r_base_type>> r
+            { modulus_nz<r_base_type>(t_interval, u_interval) };
 
-        constexpr static const interval<base_type_r> default_interval{};
-
-        constexpr static const interval<base_type_r> result_interval =
+        constexpr static const interval<r_base_type> result_interval =
             r.no_exception() ?
-                static_cast<interval<base_type_r>>(r)
+                static_cast<interval<r_base_type>>(r)
             :
-                default_interval
+                interval<r_base_type>{}
             ;
 
-        typedef typename safe_range<
-            base_type_r,
+        using type = typename result_type<
+            r_base_type,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     // forward to correct modulus implementation
@@ -371,15 +323,17 @@ struct automatic {
     }
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct left_shift_result {
-        typedef typename base_type<T>::type t_base_type;
-        typedef typename base_type<U>::type u_base_type;
-        constexpr static const interval<t_base_type> t = {
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        constexpr static const interval<u_base_type> u = {
+
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
@@ -387,36 +341,34 @@ struct automatic {
         typedef calculate_max_t<T, U> max_t;
 
         constexpr static const checked_result<interval< max_t>> r
-            = left_shift<max_t>(t, u);
-
-        constexpr static const interval< max_t> default_interval{};
+            = left_shift<max_t>(t_interval, u_interval);
 
         constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
-                default_interval
+                interval< max_t>{}
             ;
 
-        typedef typename safe_range<
+        using type = typename result_type<
             max_t,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
     };
 
     ///////////////////////////////////////////////////////////////////////
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct right_shift_result {
-        typedef typename base_type<T>::type t_base_type;
-        typedef typename base_type<U>::type u_base_type;
-        constexpr static const interval<t_base_type> t = {
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+
+        constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
-        constexpr static const interval<u_base_type> u = {
+
+        constexpr static const interval<u_base_type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
@@ -424,24 +376,32 @@ struct automatic {
         typedef calculate_max_t<T, U> max_t;
 
         constexpr static const checked_result<interval< max_t>> r
-            = right_shift<max_t>(t, u);
-
-        constexpr static const interval< max_t> default_interval{};
+            = right_shift<max_t>(t_interval, u_interval);
 
         constexpr static const interval<max_t> result_interval =
             r.no_exception() ?
                 static_cast<interval<max_t>>(r)
             :
-                default_interval
+                interval< max_t>{}
             ;
 
-        typedef typename safe_range<
+        using type = typename result_type<
             max_t,
             result_interval.l,
-            result_interval.u,
-            P,
-            E
-        >::type type;
+            result_interval.u
+        >::type;
+    };
+
+    ///////////////////////////////////////////////////////////////////////
+    template<typename T, typename U>
+    struct bitwise_result {
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+        using type = typename boost::mpl::if_c<
+            (sizeof(t_base_type) > sizeof(u_base_type)),
+            t_base_type,
+            u_base_type
+        >::type;
     };
 };
 

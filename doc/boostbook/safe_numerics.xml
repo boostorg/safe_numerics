@@ -34,6 +34,9 @@
   <xi:include href="tutorial.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+  <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
   <section id="safe_numerics.notes">
     <title>Notes</title>
 
@@ -80,7 +83,7 @@
     exhaustive tests.</para>
 
     <para>All concepts, types and functions documented are declared in the
-    namespace <code>boost::numeric</code>.</para>
+    name space <code>boost::numeric</code>.</para>
   </section>
 
   <section id="safe_numerics.concepts">
@@ -111,6 +114,9 @@
     <xi:include href="safe_range.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+    <xi:include href="safe_literal.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
     <section id="safe_numerics.promotion_policies">
       <title>Promotion Policies</title>
 
@@ -130,13 +136,13 @@
       <xi:include href="throw_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+      <xi:include href="trap_exception.xml" xpointer="element(/1)"
+                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
       <xi:include href="ignore_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="no_exception_support.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-      <xi:include href="trap_exception.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </section>
   </section>
@@ -148,11 +154,7 @@
     strong guarantee.</para>
   </section>
 
-<<<<<<< HEAD
-  <section>
-=======
   <section id="safe_numerics.library_implementation">
->>>>>>> develop
     <title>Library Implementation</title>
 
     <para>The Safe Numerics library is implemented in terms of some more
@@ -161,43 +163,25 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand it's limitations.
     These components are also interesting in their own right. They are not
-    dependend upon anything in the Safe Numerics library. Rather it's the
+    dependent upon anything in the Safe Numerics library. Rather it's the
     other way around. The Safe Numerics library depends upon these components.
     It is thought that they may be useful outside of the context of the Safe
     Numerics library. For all these reasons, they are documented here.</para>
 
-<<<<<<< HEAD
-    <section>
-=======
-    <section id="safe_numerics.checked_result">
->>>>>>> develop
-      <title>Checked_Result&lt;R&gt;</title>
+    <xi:include href="exception_type.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-      <para>To Do</para>
-    </section>
+    <xi:include href="checked_result.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-<<<<<<< HEAD
-    <section>
-=======
-    <section id="safe_numerics.checked_integer_arithmetic">
->>>>>>> develop
-      <title>Checked Integer Arithmetic</title>
+    <xi:include href="checked.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-      <para>To Do</para>
-    </section>
-
-<<<<<<< HEAD
-    <section>
-=======
-    <section id="safe_numerics.interval_arithmetic">
->>>>>>> develop
-      <title>Interval Arithmetic</title>
-
-      <para>To Do</para>
-    </section>
+    <xi:include href="interval.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
-  <section>
+  <section id="safe_numerics.performance_tests">
     <title>Performance Tests</title>
 
     <para>Our goal creating facilities which make it possible write programs
@@ -219,7 +203,7 @@
           <para>Is this really necessary? If I'm writing the program with the
           requisite care and competence, problems noted in the introduction
           will never arise. Should they arise, they should be fixed "at the
-          source" and not with a "bandaid" to cover up bad practice.</para>
+          source" and not with a "band aid" to cover up bad practice.</para>
         </question>
 
         <answer>
@@ -301,7 +285,7 @@
         <answer>
           <para>As far as is known as of this writing, the library does not
           presume that the underlying hardware is two's compliment. However,
-          this has yet to be verified in a rigorus way.</para>
+          this has yet to be verified in a rigorous way.</para>
         </answer>
       </qandaentry>
 
@@ -342,22 +326,23 @@
         <code>strtoi</code> etc. DO check for valid input and throw the
         exception <code>std::out_of_range</code> if the string cannot be
         converted to the specified integer type. In other words,
-        <code>strtoi</code> already contains the exact functionality that
+        <code>strtoi</code> already contains some of the functionality that
         <code>safe&lt;int&gt;</code> provides.</para>
       </listitem>
 
       <listitem>
         <para>Although care was taking to make the library portable, it's
         likely that at least some parts of the implementation - particularly
-<<<<<<< HEAD
-        <code>checked</code> arithmetic - likely depend upon two complement
-        representation of integers. Hence the library is probably not
-        currently portable to other architectures. </para>
-=======
-        <code>checked</code> arithmetic - depend upon twos complement
+        <code>checked</code> arithmetic - depend upon two's complement
         representation of integers. Hence the library is probably not
         currently portable to other architectures.</para>
->>>>>>> develop
+      </listitem>
+
+      <listitem>
+        <para>Currently the library permits a safe&lt;int&gt; value to be
+        unitialized. This supports the goal of "drop-in" replacement of C++/C
+        built-in types with safe counter parts. On the other hand, this breaks
+        the "always valid" guarantee.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -373,7 +358,7 @@
 
     <biblioentry>
       <author>
-        <surname>Lawerence Crowl</surname>
+        <surname>Lawrence Crowl</surname>
       </author>
 
       <title>
@@ -396,7 +381,7 @@
 
     <biblioentry>
       <author>
-        <surname>Lawerence Crowl</surname>
+        <surname>Lawrence Crowl</surname>
       </author>
 
       <author>

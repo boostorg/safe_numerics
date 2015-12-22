@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="safe_unsigned_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;">
+<link rel="prev" href="safe_literal.html" title="safe_literal&lt;Value&gt;, safe_unsigned_literal&lt;Value&gt;">
 <link rel="next" href="exception_policies.html" title="Exception Policies">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,7 +15,7 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_unsigned_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_literal.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -30,7 +30,7 @@
 <a name="safe_numerics.native_policy"></a>native</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517115648"></a>Description</h5></div></div></div>
+<a name="idm473861571584"></a>Description</h5></div></div></div>
 <p>This type contains the functions to return a safe type corresponding
     to the C++ type resulting for a given arithmetic operation.</p>
 <p>Usage of this policy with safe types will produce the exact same
@@ -41,7 +41,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517113616"></a>Model of</h5></div></div></div>
+<a name="idm473861569552"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 <p>As an example of how this works consider C++ rules from section 5 of
     the standard - "usual arithmetic conversions".</p>
@@ -60,18 +60,18 @@ void int f(safe_int x, safe_int y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517108848"></a>Header</h5></div></div></div>
+<a name="idm473861564784"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/native.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/include/native.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517106352"></a>Example of use</h5></div></div></div>
+<a name="idm473861562288"></a>Example of use</h5></div></div></div>
 <p>The following example illustrates the <code class="computeroutput">native</code> type being
     passed as a template parameter for the type <code class="computeroutput">safe&lt;int&gt;</code>.
     This example is slightly contrived in that <code class="computeroutput">safe&lt;int&gt;</code>
-    has <code class="computeroutput">native</code> as it's default promotion parameter so explictiy
+    has <code class="computeroutput">native</code> as it's default promotion parameter so explicitly
     using <code class="computeroutput">native</code> is not necessary.</p>
 <pre class="programlisting">#include &lt;cassert&gt;
 #include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
@@ -105,7 +105,7 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517100224"></a>Notes</h5></div></div></div>
+<a name="idm473861556160"></a>Notes</h5></div></div></div>
 <p>See Chapter 5, Expressions, C++ Standard</p>
 </div>
 </div>
@@ -114,27 +114,27 @@ int main(){
 <a name="safe_numerics.automatic_policy"></a>automatic</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517098080"></a>Description</h5></div></div></div>
+<a name="idm473861554016"></a>Description</h5></div></div></div>
 <p>This type contains the functions to return a type with sufficient
     capacity to hold the result of a given arithmetic operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517096784"></a>Model of</h5></div></div></div>
+<a name="idm473861552720"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517095184"></a>Header</h5></div></div></div>
+<a name="idm473861551120"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/automatic.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/automatic.hpp&gt; </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517092656"></a>Example of use</h5></div></div></div>
+<a name="idm473861548592"></a>Example of use</h5></div></div></div>
 <p>The following example illustrates the <code class="computeroutput">automatic</code> type
     being passed as a template parameter for the type
-    <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+    <code class="computeroutput">safe&lt;int&gt;</code>. </p>
 <pre class="programlisting">#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
 #include &lt;boost/safe_numerics/automatic.hpp&gt;
  
@@ -157,22 +157,22 @@ int main(){
 <a name="safe_numerics.cpp_policy"></a>cpp&lt;int C, int S, int I, int L, int LL&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517087376"></a>Description</h5></div></div></div>
+<a name="idm473861543280"></a>Description</h5></div></div></div>
 <p>This policy is used to promote safe types in arithmetic expressions
-    according the the standard rules in the C++ standard. But rather than
-    using the native C++ standard types supported by the compiler, it uses
-    types whose length in number of bits is specified by the template
+    according the standard rules in the C++ standard. But rather than using
+    the native C++ standard types supported by the compiler, it uses types
+    whose length in number of bits is specified by the template
     parameters.</p>
 <p>This policy is useful for running test program which use C++
-    portable integer types but which are destined to run on an an architecture
+    portable integer types but which are destined to run on an architecture
     which is different than the one on which the test program is being built
     and run. This can happen when developing code for embedded systems.
     Algorithms developed or borrowed from one architecture but destined for
-    another can be tested on ib the desk top.</p>
+    another can be tested on the desk top.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517085120"></a>Template Parameters</h5></div></div></div>
+<a name="idm473861541024"></a>Template Parameters</h5></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -215,18 +215,18 @@ int main(){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517068176"></a>Model of</h5></div></div></div>
+<a name="idm473861524016"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517066464"></a>Header</h5></div></div></div>
+<a name="idm473861522304"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../examples/example9.cpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/cpp.hpp&gt; </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm241517063936"></a>Example of Use</h5></div></div></div>
+<a name="idm473861519776"></a>Example of Use</h5></div></div></div>
 <p>Consider the following problem. One is developing software which
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
@@ -235,8 +235,8 @@ int main(){
     make changes and try again. This is a crude method which is usually the
     one used. But it can be quite time consuming.</p>
 <p>Consider an alternative. Build and compile your code in testable
-    modules. For each module write a test which excercises all the code and
-    makes it work. Finally download your code into the chip and - voila -
+    modules. For each module write a test which exercises all the code and
+    makes it work. Finally download your code into the chip and - voil&#224; -
     working product. This sounds great, but there's one problem. Our target
     processor - in this case a PIC162550 from Microchip Technology is only an
     8 bit CPU. The compiler we use defines INT as 8 bits. This (and a few
@@ -303,8 +303,8 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
 ...</pre>
 <p>Note the usage of the compile time trap policy in order to detect at
     compile time any possible error conditions. As I write this, this is still
-    being refined. Hopefully this will be available by the time you read this.
-    </p>
+    being refined. Hopefully this will be available by the time you read
+    this.</p>
 </div>
 </div>
 </div>
@@ -316,7 +316,7 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_unsigned_range.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="safe_literal.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

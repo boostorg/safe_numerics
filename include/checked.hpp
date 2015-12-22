@@ -58,7 +58,7 @@ cast(
                     "converted signed value too small"
                 )
             :
-                checked_result<R>(t)
+                checked_result<R>(static_cast<R>(t))
         : // T is unsigned
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
@@ -68,7 +68,7 @@ cast(
                     "converted unsigned value too large"
                 )
             :
-                checked_result<R>(t)
+                checked_result<R>(static_cast<R>(t))
     : // std::numeric_limits<R>::is_signed
         // T is signed
         // INT32-C Ensure that operations on signed
@@ -80,7 +80,7 @@ cast(
                     "converted unsigned value too large"
                 )
             :
-                checked_result<R>(t)
+                checked_result<R>(static_cast<R>(t))
         : // T is signed
             t < 0 ?
                 checked_result<R>(
@@ -94,7 +94,7 @@ cast(
                     "converted signed value too large"
                 )
             :
-                checked_result<R>(t)
+                checked_result<R>(static_cast<R>(t))
     ;
 }
 

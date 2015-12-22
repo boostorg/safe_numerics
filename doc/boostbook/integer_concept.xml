@@ -32,7 +32,7 @@
   <section>
     <title>Valid Expressions</title>
 
-    <para>In addition to the expressions defined defined in <link
+    <para>In addition to the expressions defined in <link
     linkend="safe_numerics.numeric">Numeric</link> the following expressions
     must be valid. <informaltable>
         <tgroup cols="2">

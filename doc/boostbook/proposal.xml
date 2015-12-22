@@ -127,15 +127,22 @@
         cases. In the following example, there is no runtime penalty required
         to guarantee that incorrect results will never be generated.</para>
 
-        <programlisting>#include &lt;iostream&gt;
+        <programlisting>#include &lt;cstdint&gt;
 #include &lt;safe&gt;
 
 using namespace std;
 
-void f(safe&lt;int8_t&gt; i){
-    safe&lt;int8_t&gt; j;
-    j = i * i;      // C++ promotion rules make overflow impossible! 
-    std::cout &lt;&lt; j;
+int f(safe&lt;int8_t&gt; i){
+    // C++ promotion rules make overflow on multiplication impossible!
+    // cannot fail on return
+    return i * i;      
+}
+
+int8_t f(safe&lt;int8_t&gt; i){
+    // C++ promotion rules make overflow on multiplication impossible!
+    // but result could be truncated on return
+    // so result must be checked at runtime.
+    return i * i;      // cannot overflow on multiplication, 
 }</programlisting>
 
         <para>Some processors have the ability to detect erroneous results but
@@ -333,10 +340,10 @@ void f(safe&lt;int8_t&gt; i){
 
         <para>Implements all expressions defined by the <link
         linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
-        requirements. </para>
+        requirements.</para>
 
         <para><code>safe&lt;T&gt;</code> is meant to be a "drop-in"
-        replacement of the intrinsic integer types. </para>
+        replacement of the intrinsic integer types.</para>
 
         <para>The type of an expression of type safe&lt;T&gt; op safe&lt;U&gt;
         will be safe&lt;R&gt; where R would be the same as the type of the
@@ -351,7 +358,7 @@ void f(safe&lt;int8_t&gt; i){
         <title>Header</title>
 
         <para><filename><ulink url="../../include/safe_integer.hpp">#include
-        &lt;boost/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
+        &lt;safe&gt;</ulink></filename></para>
       </section>
 
       <section>

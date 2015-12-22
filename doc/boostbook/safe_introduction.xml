@@ -7,12 +7,12 @@
   <?dbhtml stop-chunking?>
 
   <para>All data types, type requirements, function and meta function names
-  are found in the namespase boost::numeric . In order to make this document
-  more readable, we have omitted this namespace qualifier.<note>
-      <para>Library code in this document resides in the namespace
-      <code>boost::numeric</code>. This namespace has generally been
+  are found in the name space boost::numeric . In order to make this document
+  more readable, we have omitted this name space qualifier.<note>
+      <para>Library code in this document resides in the name space
+      <code>boost::numeric</code>. This name space has generally been
       eliminated from text, code and examples in order to avoid
-      cludder.</para>
+      clutter.</para>
     </note></para>
 
   <section id="safe_numerics.introduction.problem">
@@ -69,7 +69,7 @@
     <para>This library implements special versions of int, unsigned, etc.
     which behave exactly like the original ones EXCEPT that the results of
     these operations are guaranteed to be either arithmetically correct or
-    invoke an error. Using this library, the above would be rendered
+    invoke an error. Using this library, the above example would be rendered
     as:</para>
 
     <programlisting>#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
@@ -79,7 +79,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 }
 </programlisting>
 
-    <para>The addition expression is checked at runtime or (if possible) or
+    <para>The addition expression is checked at runtime or (if possible) at
     compile time to trap any possible errors resulting from incorrect
     arithmetic behavior. This will permit one to write arithmetic expressions
     that cannot produce an erroneous result. Instead, one and only one of the
@@ -87,80 +87,106 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
     <para><itemizedlist>
         <listitem>
+          <para>the expression will yield the correct mathematical
+          result</para>
+        </listitem>
+
+        <listitem>
           <para>the expression will emit a compilation error.</para>
         </listitem>
 
         <listitem>
           <para>the expression will invoke a runtime exception.</para>
         </listitem>
+      </itemizedlist></para>
 
-        <listitem>
-          <para>the expression will yield the correct mathematical
-          result</para>
-        </listitem>
-      </itemizedlist>In addition to eliminating undefined behavior from
-    primitive integer types, we define new data types
-    <code>safe_signed_range&lt;MIN, MAX&gt;</code> and
-    <code>safe_unsigned_range&lt;MIN, MAX&gt;</code> which will throw an
-    exception if an attempt is made to store a result which is outside the
-    closed range [MIN, MAX].</para>
+    <para>In other words, the <emphasis>library absolutely guarantees that no
+    arithmetic expression will yield incorrect results</emphasis>.</para>
   </section>
 
   <section id="safe_numerics.introduction.summary">
-    <title>Summary</title>
+    <title>Implementation</title>
 
-    <para>Using techniques of C++ including overloading, template
-    metaprogramming, and others, this library implements special versions of
-    int, unsigned, etc. named <code>safe&lt;int&gt;</code>,
+    <para>All facilities modern C++ are employed to minimize runtime overhead
+    required to make this guarantee. In many cases there is no runtime
+    overhead at all. In other cases, small changes in the program are required
+    to eliminate the runtime overhead. The library implements special versions
+    of int, unsigned, etc. named <code>safe&lt;int&gt;</code>,
     <code>safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
-    original ones EXCEPT that expressions involving these types are checked to
-    guarantee that any possible arithmetic errors are trapped at compile time
-    (if possible) or at runtime. Since these types are meant to be "drop-in"
-    replacements, they function in all other ways the same as the built-in
-    types they are meant to replace. So things which are legal - such as
-    assigning an signed to unsigned value are not trapped at compile time - as
-    they are legal C/C++ code - but rather checked at runtime to trap the case
-    where this (legal) operation would lead to an arithmetically incorrect
-    result.</para>
+    original ones EXCEPT that expressions using these types fulfill the above
+    guarantee. These types are meant to be "drop-in" replacements for the
+    built-in types they are meant to replace. So things which are legal - such
+    as assigning an signed to unsigned value are not trapped at compile time -
+    as they are legal C/C++ code - but rather checked at runtime to trap the
+    case where this (legal) operation would lead to an arithmetically
+    incorrect result.</para>
 
     <para>Note that the library addresses arithmetical errors generated by
     straightforward C/C++ expressions. Some of these arithmetic errors are
     defined as conforming to C/C++ standard while others are not. So
     characterizing this library as addressing undefined behavior of C/C++
-    numeric expressions is misleading</para>
+    numeric expressions is misleading.</para>
   </section>
 
   <section>
-    <title>Features</title>
+    <title>Additional Features</title>
 
     <para>Operation of safe types is determined by template parameters which
     specify a pair of <link linkend="safe_numerics.promotion_policies">policy
     classes</link> which specify the behavior for type promotion and error
     handling. In addition to the usage serving as a drop-in replacement for
-    standard integer types, The library can:</para>
+    standard integer types, Users of the library can:</para>
 
     <para><itemizedlist>
         <listitem>
-          <para>Use custom type promotion so that expressions return types
-          guarenteed to hold the expression's results.</para>
+          <para>Select or define an exception policy class to specify handling
+          of exceptions.<itemizedlist>
+              <listitem>
+                <para>throw exception or runtime, trap at compile time.</para>
+              </listitem>
+
+              <listitem>
+                <para>trap at compiler time all operations which might fail at
+                runtime.</para>
+              </listitem>
+
+              <listitem>
+                <para>specify custom functions which should be called at
+                runtime</para>
+              </listitem>
+            </itemizedlist></para>
         </listitem>
 
         <listitem>
-          <para>Ability to use custom integer sizes to implement cross
-          platform code testing</para>
-        </listitem>
+          <para>Select or define a promotion policy class to alter the C++
+          type promotion rules. This can be used to <itemizedlist>
+              <listitem>
+                <para>use C++ native type promotion rules so that, except
+                throwing/trapping of exceptions, programs will operate
+                identically when using/not using safe types.</para>
+              </listitem>
 
-        <listitem>
-          <para>Trap some arithmetic errors at compile time</para>
+              <listitem>
+                <para>replace C++ native promotion rules with ones which are
+                arithmetically equivalent but minimize the need for runtime
+                checking of arithmetic results.</para>
+              </listitem>
+
+              <listitem>
+                <para>replace C++ native promotion rules with ones which
+                emulate other machine architectures. This is designed to
+                permit the testing of C++ code destined to be run on another
+                machine on one's development platform. Such a situation often
+                occurs while developing code for embedded systems.</para>
+              </listitem>
+            </itemizedlist></para>
         </listitem>
 
         <listitem>
           <para>Enforce of other program requirements using ranged integer
-          types.</para>
-        </listitem>
-
-        <listitem>
-          <para>Among others.</para>
+          types. The library includes types safe_..._range&lt;Min, Max&gt; and
+          safe_literal(...). These types can be used to improve program
+          correctness and performance. </para>
         </listitem>
       </itemizedlist></para>
   </section>
@@ -168,7 +194,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   <section id="safe_numerics.introduction.requirements">
     <title>Requirements</title>
 
-    <para>This library is composed entirely of C++ Headers. I requires a
+    <para>This library is composed entirely of C++ Headers. It requires a
     compiler compatible with the C++14 standard.</para>
 
     <para>The following Boost Libraries must be installed in order to use this
@@ -190,7 +216,16 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>concept checking</para>
         </listitem>
-      </itemizedlist></para>
+
+        <listitem>
+          <para>tribool</para>
+        </listitem>
+
+        <listitem>
+          <para>enable_if</para>
+        </listitem>
+      </itemizedlist>In order to run the test suite, the following the Boost
+    preprocessor library is also required.</para>
   </section>
 
   <section id="safe_numerics.introduction.scope">

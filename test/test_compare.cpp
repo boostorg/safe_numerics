@@ -106,7 +106,7 @@ bool test_compare(
         test_compare_detail(t1, t2, expected_result);
         return false;
     }
-
+    std::cout << std::endl;
     return true; // correct result
 }
 
@@ -183,5 +183,6 @@ void break_check(unsigned int i, unsigned int j){
 int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
+    std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

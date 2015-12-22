@@ -69,7 +69,19 @@ struct interval {
         // on checked_result yield tribool.  If either argument is an exception
         // condition, he result is indeterminate.  The result of && on two
         // tribools is indeterminant if either is indeterminate.
-        return l <= t.l && u >= t.u ;
+        return
+            safe_compare::less_than_equal(l, t.l)
+            &&
+            safe_compare::greater_than_equal(u, t.u)
+        ;
+    }
+    template<typename T>
+    constexpr bool includes(const T & t) const {
+        return
+            ! safe_compare::less_than(u,t)
+            &&
+            ! safe_compare::less_than(t,l)
+        ;
     }
 };
 
@@ -326,8 +338,16 @@ constexpr bool operator==(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // every element in t can only equal every element in u if and only if
+    // intervals have the same limits
     return (t.l == u.l && t.u == u.u) ;
+}
+
+template<typename T, typename U>
+constexpr bool operator!=(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return ! t == u;
 }
 
 template<typename T, typename U>

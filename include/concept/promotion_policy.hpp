@@ -21,14 +21,14 @@ template<class PP>
 struct PromotionPolicy {
     typedef int T;
     typedef int U;
-    typedef void E;
-    typedef typename PP::template addition_result<T, U, PP, E> a_type;
-    typedef typename PP::template subtraction_result<T, U, PP, E> s_type;
-    typedef typename PP::template multiplication_result<T, U, PP, E> m_type;
-    typedef typename PP::template division_result<T, U, PP, E> d_type;
-    typedef typename PP::template modulus_result<T, U, PP, E> mod_type;
-    typedef typename PP::template left_shift_result<T, U, PP, E> ls_type;
-    typedef typename PP::template right_shift_result<T, U, PP, E> rs_type;
+    typedef typename PP::template addition_result<T, U> a_type;
+    typedef typename PP::template subtraction_result<T, U> s_type;
+    typedef typename PP::template multiplication_result<T, U> m_type;
+    typedef typename PP::template division_result<T, U> d_type;
+    typedef typename PP::template modulus_result<T, U> mod_type;
+    typedef typename PP::template left_shift_result<T, U> ls_type;
+    typedef typename PP::template right_shift_result<T, U> rs_type;
+    typedef typename PP::template bitwise_result<T, U> bw_type;
 
     checked_result<typename base_type<d_type>::type> test(){
         return PP::template divide<typename base_type<d_type>::type>(0, 0);

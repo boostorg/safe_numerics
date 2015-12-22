@@ -99,7 +99,7 @@ int main(int argc, const char * argv[]){
 
         // since safe types can be converted to their underlying unsafe types
         // we can still call an unsafe function with safe types
-        convert(hours, minutes); // zero (almost) runtime overhead
+        convert(hours, minutes); // zero (depending on compiler) runtime overhead
 
         // since unsafe types can be implicitly converted to corresponding
         // safe types we can just pass the unsafe types.  checkin will occur

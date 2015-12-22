@@ -20,12 +20,8 @@
   <section>
     <title>Model of</title>
 
-<<<<<<< HEAD
     <para><link
     linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
-=======
-    <para><link linkend="safe_numerics.promotion_policy">PromotionPolicy</link></para>
->>>>>>> develop
 
     <para>As an example of how this works consider C++ rules from section 5 of
     the standard - "usual arithmetic conversions".</para>
@@ -60,7 +56,7 @@ void int f(safe_int x, safe_int y){
     <para>The following example illustrates the <code>native</code> type being
     passed as a template parameter for the type <code>safe&lt;int&gt;</code>.
     This example is slightly contrived in that <code>safe&lt;int&gt;</code>
-    has <code>native</code> as it's default promotion parameter so explictiy
+    has <code>native</code> as it's default promotion parameter so explicitly
     using <code>native</code> is not necessary.</para>
 
     <programlisting>#include &lt;cassert&gt;

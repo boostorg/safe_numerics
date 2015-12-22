@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section id="safe_numerics.safe_literal">
+  <title>safe_literal&lt;Value&gt;, safe_unsigned_literal&lt;Value&gt;</title>
+
+  <section>
+    <title>Description</title>
+
+    <para>A safe type which holds a literal value. This is required to be able
+    to initialize other safe type in such a way that exception code is not
+    generated. It is also useful when creating constexpr versions of safe
+    types. It contains one immutable value known at compile time and hence can
+    be used in any constexpr expression.</para>
+  </section>
+
+  <section>
+    <title>Template Parameters</title>
+
+    <informaltable>
+      <tgroup cols="3">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="2*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry align="left">Type Requirements</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>Value</code></entry>
+
+            <entry><code><link
+            linkend="safe_numerics.numeric">Integer</link></code></entry>
+
+            <entry>value used to initialize the literal</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+
+    <para><link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+
+    <para><ulink
+    url="http://en.cppreference.com/w/cpp/concept/LiteralType">LiteralType</ulink></para>
+  </section>
+
+  <section>
+    <title>Inherited Valid Expressions</title>
+
+    <para>SafeLiteral types are immutable. Hence they only inherit those valid
+    expressions which don't change the value. The excludes assignment,
+    increment, and decrement operators. Other than that, they can be used
+    anywhere a SafeNumeric type can be used.</para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../../include/safe_range.hpp">#include
+    &lt;safe/numeric/safe_literal.hpp&gt;</ulink></para>
+  </section>
+
+  <section>
+    <title>Example of use</title>
+
+    <programlisting>#include &lt;safe/numeric/safe_literal.hpp&gt;
+
+using namespace boost::numeric;
+constexpr safe&lt;int&gt; x = safe_literal&lt;42&gt;{};
+</programlisting>
+  </section>
+</section>

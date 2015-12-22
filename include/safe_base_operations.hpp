@@ -22,9 +22,11 @@
 #include <boost/mpl/or.hpp>
 #include <boost/mpl/identity.hpp>
 
-#include <boost/utility/enable_if.hpp>
+#include <boost/utility/enable_if.hpp> // lazy_enable_if
 
 #include "safe_base.hpp"
+#include "safe_literal.hpp"
+//#include "safe_range.hpp"
 #include "safe_compare.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
@@ -35,103 +37,124 @@ namespace numeric {
 /////////////////////////////////////////////////////////////////
 // validation
 
+template<typename E>
+struct validate_detail {
+    struct exception_possible {
+        template<typename Stored, Stored Min, Stored Max, typename T>
+        constexpr static Stored return_value(
+            const T & t
+        ){
+            // INT08-C
+            if(! interval<Stored>().includes(t))
+                E::range_error("Value out of range for this safe type");
+            checked_result<Stored> r = checked::cast<Stored>(t);
+            if(!r.no_exception()){
+                E::domain_error("Stored type cannot hold argument");
+            }
+            return static_cast<Stored>(r);
+        }
+
+    };
+    struct exception_not_possible {
+        template<typename Stored, Stored Min, Stored Max, typename T>
+        constexpr static Stored return_value(
+            const T & t
+        ){
+            return static_cast<Stored>(t);
+        }
+    };
+};
+
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
-constexpr bool safe_base<Stored, Min, Max, P, E>::
-validate(const T & t) const {
-    static_assert(! is_safe<T>::value, "catch dumb mistake");
-    // INT08-C
-    return (
-        ! safe_compare::less_than(
-            Max,
-            base_value(t)
-        )
-        &&
-        ! safe_compare::less_than(
-            base_value(t),
-            Min
-        )
+constexpr Stored safe_base<Stored, Min, Max, P, E>::
+validated_cast(const T & t) const {
+    constexpr const interval<typename base_type<T>::type> t_interval(
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
     );
+    constexpr const interval<Stored> this_interval{};
+    // if static values don't overlap, the program can never function
+    static_assert(
+        indeterminate(t_interval < this_interval),
+        "safe type cannot be constructed with this type"
+    );
+
+    using type = typename boost::mpl::if_c<
+        this_interval.includes(t_interval),
+        typename validate_detail<E>::exception_not_possible,
+        typename validate_detail<E>::exception_possible
+    >::type;
+    return type::template return_value<Stored, Min, Max>(base_value(t));
+}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<typename T, T N>
+constexpr Stored safe_base<Stored, Min, Max, P, E>::
+validated_cast(const safe_literal_impl<T, N> & t) const {
+    constexpr const interval<Stored> this_interval{};
+    // if static values don't overlap, the program can never function
+    static_assert(
+        this_interval.includes(N),
+        "safe type cannot be constructed value"
+    );
+    return static_cast<Stored>(t);
 }
 
 /////////////////////////////////////////////////////////////////
 // construction and assignment operators
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T, T MinT, T MaxT, class PT, class ET>
 constexpr safe_base<Stored, Min, Max, P, E>::
-safe_base(const safe_base<T, MinT, MaxT, PT, ET> & t){
-    constexpr const interval<T> t_interval = {
-        MinT,
-        MaxT
-    };
-    constexpr const interval<Stored> this_interval = {
-        Min,
-        Max
-    };
-    // if static values don't overlap, the program can never function
-    static_assert(
-        indeterminate(t_interval < this_interval),
-        "safe type cannot be constructed with this type"
-    );
+safe_base(const Stored & rhs, std::false_type) :
+    m_t(rhs)
+{}
 
-    // if the argument interval is not contained in this interval
-    if(! this_interval.includes(t_interval))
-        // we have to validate the value we're initializing with
-        if(! validate(t.m_t))
-            E::range_error("Value out of range for this safe type");
+// construction from some arbitrary type T
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T>
+constexpr safe_base<Stored, Min, Max, P, E>::
+safe_base(const T & rhs) :
+    m_t(validated_cast(rhs))
+{}
 
-    m_t = t.m_t;
-}
-
+// assignment from some type T
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T MinT, T MaxT, class PT, class ET>
 constexpr safe_base<Stored, Min, Max, P, E> &
 safe_base<Stored, Min, Max, P, E>::
 operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
-    constexpr const interval<T> t_interval = {
-        MinT,
-        MaxT
-    };
-    // typedef print<decltype(t_interval)> pt_interval;
-    constexpr const interval<Stored> this_interval = {
-        Min,
-        Max
-    };
-    // typedef print<decltype(this_interval)> pthis_intervall;
-
-    /*
-    typedef print<
-        std::integral_constant<
-            bool, (bool)(t_interval > this_interval)
-        >
-    > p_t_gt_this;
-
-    typedef print<
-        std::integral_constant<
-            bool, (bool)(t_interval < this_interval)
-        >
-    > p_t_lt_this;
-    */
-
-    // if static values don't overlap, the program can never function
-    static_assert(
-        indeterminate(t_interval < this_interval),
-        "safe type cannot be constructed with this type"
-    );
-
-    // if the argument interval is not contained in this interval
-    if(! this_interval.includes(t_interval))
-        // we have to validate the value we're assigning
-        if(! validate(rhs.m_t))
-            E::range_error("Value out of range for this safe type");
-
-    m_t = rhs.m_t;
+    m_t = validated_cast(rhs);
     return *this;
 }
 
 /////////////////////////////////////////////////////////////////
 // casting operators
+
+template<typename R, typename E>
+struct cast_detail {
+    struct exception_possible {
+        template<typename T>
+        constexpr static R
+        return_value(const T & t){
+            if(! interval<R>().includes(t))
+                E::range_error("Value out of range for this safe type");
+            checked_result<R> r = checked::cast<R>(t);
+            if(!r.no_exception())
+                E::domain_error("Stored type cannot hold argument");
+            return static_cast<R>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        template<typename T>
+        constexpr static R
+        return_value(const T & t){
+            return t;
+        }
+    };
+};
+
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
@@ -142,11 +165,20 @@ template<
 >
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
-    checked_result<R> r = checked::cast<R>(m_t);
-    if(! r.no_exception())
-        E::range_error(r);
+    constexpr interval<R> r_interval;
+    constexpr interval<Stored> this_interval(Min, Max);
 
-    return static_cast<R>(r);
+    return boost::mpl::if_c<
+        r_interval.includes(this_interval),
+        typename cast_detail<R, E>::exception_not_possible,
+        typename cast_detail<R, E>::exception_possible
+    >::type::return_value(m_t);
+}
+
+template< class Stored, Stored Min, Stored Max, class P, class E>
+constexpr safe_base<Stored, Min, Max, P, E>::
+operator Stored () const {
+    return m_t;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -154,82 +186,78 @@ operator R () const {
 
 template<class T, class U>
 struct common_policies {
-    static_assert(
-        boost::mpl::or_<
-            is_safe<T>,
-            is_safe<U>
-        >::value,
+    static_assert(is_safe<T>::value || is_safe<U>::value,
         "at least one type must be a safe type"
     );
 
+    using t_promotion_policy = typename get_promotion_policy<T>::type;
+    using u_promotion_policy = typename get_promotion_policy<U>::type;
+    using t_exception_policy = typename get_exception_policy<T>::type;
+    using u_exception_policy = typename get_exception_policy<U>::type;
+
     static_assert(
-        boost::mpl::or_<
-            std::is_same<
-                typename get_promotion_policy<T>::type,
-                typename get_promotion_policy<U>::type
-            >,
-            std::is_same<
-                typename get_promotion_policy<T>::type,
-                void
-            >,
-            std::is_same<
-                void,
-                typename get_promotion_policy<U>::type
-            >
-        >::value,
+        std::is_same<t_promotion_policy, u_promotion_policy>::value
+        ||std::is_same<t_promotion_policy, void>::value
+        ||std::is_same<void, u_promotion_policy>::value,
         "if the promotion policies are different, one must be void!"
     );
 
     static_assert(
-        boost::mpl::or_<
-            std::is_same<
-                typename get_exception_policy<T>::type,
-                typename get_exception_policy<U>::type
-            >,
-            std::is_same<
-                typename get_exception_policy<T>::type,
-                void
-            >,
-            std::is_same<
-                void,
-                typename get_exception_policy<U>::type
-            >
-        >::value,
+        ! std::is_same<t_promotion_policy, void>::value
+        || !std::is_same<void, u_promotion_policy>::value,
+        "at least one promotion polcy must be non void"
+    );
+
+    static_assert(
+        ! (std::is_same<t_promotion_policy, void>::value
+        && std::is_same<void, u_promotion_policy>::value),
+        "at least one promotion policy must not be void"
+    );
+
+    static_assert(
+        std::is_same<t_exception_policy, u_exception_policy>::value
+        || std::is_same<t_exception_policy, void>::value
+        || std::is_same<void, u_exception_policy>::value,
         "if the exception policies are different, one must be void!"
     );
 
-    // now we've verified that there is no conflict between policies
-    // return the one from the first safe type
-    typedef
-        typename boost::mpl::if_<
-            is_safe<T>,
-            T,
-        typename boost::mpl::if_<
-            is_safe<U>,
-            U,
+    static_assert(
+        ! (std::is_same<t_exception_policy, void>::value
+        && std::is_same<void, u_exception_policy>::value),
+        "at least one promotion policy must not be void"
+    );
+
+    using promotion_policy =
+        typename boost::mpl::if_c<
+            ! std::is_same<void, u_promotion_policy>::value,
+            u_promotion_policy,
+        typename boost::mpl::if_c<
+            ! std::is_same<void, t_promotion_policy>::value,
+            t_promotion_policy,
         //
             void
-        >::type >::type safe_type;
+        >::type >::type;
 
-    // typedef print<safe_type> p_st;
     static_assert(
-        is_safe<safe_type>::value,
-        "is_safe<safe_type>::value"
-    );
-/*
-    static_assert(
-        is_safe<U>::value,
-        "is_safe<U>::value"
-    );
-    typedef print<safe_type> p_st;
-*/
-    static_assert(
-        ! std::is_same<void, safe_type>::value,
-        "asdfafs"
+        ! std::is_same<void, promotion_policy>::value,
+        "promotion_policy is void"
     );
 
-    typedef typename get_promotion_policy<safe_type>::type promotion_policy;
-    typedef typename get_exception_policy<safe_type>::type exception_policy;
+    using exception_policy =
+        typename boost::mpl::if_c<
+            !std::is_same<void, u_exception_policy>::value,
+            u_exception_policy,
+        typename boost::mpl::if_c<
+            !std::is_same<void, t_exception_policy>::value,
+            t_exception_policy,
+        //
+            void
+        >::type >::type;
+
+    static_assert(
+        !std::is_same<void, exception_policy>::value,
+        "exception_policy is void"
+    );
 };
 
 // Note: the following global operators will be only found via
@@ -242,13 +270,76 @@ struct common_policies {
 
 template<class T, class U>
 struct addition_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template addition_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template addition_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    // filter out case were overflow cannot occur
+    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
+    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
+    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
+    // for MAX.  Now
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    // when we add the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const checked_result<interval<result_base_type>> r_interval
+        = add<result_base_type>(t_interval, u_interval);
+
+    constexpr static const interval<result_base_type> type_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            type_iterval.l,
+            type_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return r_interval.no_exception();
+    }
+
+    struct exception_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            checked_result<result_base_type> r = checked::add<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            return
+                static_cast<result_base_type>(base_value(t))
+                + static_cast<result_base_type>(base_value(u))
+            ;
+        }
+    };
 };
 
 template<class T, class U>
@@ -261,70 +352,85 @@ typename boost::lazy_enable_if<
 >::type
 constexpr inline operator+(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef addition_result<T, U> ar;
-    typedef typename ar::P::exception_policy exception_policy;
-    typedef typename ar::type result_type;
-    //typedef print<result_type> p_result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
+    using ar = addition_result<T, U>;
+    return typename ar::type(
+        boost::mpl::if_c<
+            ar::no_exception(),
+            typename ar::exception_not_possible,
+            typename ar::exception_possible
+        >::type::return_value(t, u),
+        std::false_type() // don't need to revalidate
     );
-
-    typedef typename base_type<result_type>::type result_base_type;
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
-
-    // filter out case were overflow cannot occur
-    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
-    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
-    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
-    // for MAX.  Now
-    constexpr const interval<t_base_type> t_interval(
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        );
-
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    // when we add the temporary intervals above, we'll get a new interval
-    // with the correct range for the sum !
-    constexpr const checked_result<interval<result_base_type>> r_interval
-        = add<result_base_type>(t_interval, u_interval);
-
-    // if no over/under flow possible
-    if(r_interval.no_exception()){
-        return result_type(
-            static_cast<result_base_type>(base_value(t))
-            + static_cast<result_base_type>(base_value(u))
-        );
-    }
-
-    // otherwise do the addition checking for overflow
-    checked_result<result_base_type> r = checked::add<result_base_type>(
-        base_value(t),
-        base_value(u)
-    );
-
-    r.template dispatch<exception_policy>();
-
-    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
 // subtraction
 template<class T, class U>
 struct subtraction_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template subtraction_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template subtraction_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    // when we add the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const checked_result<interval<result_base_type>> r_interval
+        = subtract<result_base_type>(t_interval, u_interval);
+
+    constexpr static const interval<result_base_type> type_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            type_iterval.l,
+            type_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return r_interval.no_exception();
+    }
+
+    struct exception_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            checked_result<result_base_type> r = checked::subtract<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            return
+                static_cast<result_base_type>(base_value(t))
+                - static_cast<result_base_type>(base_value(u))
+            ;
+        }
+    };
 };
 
 template<class T, class U>
@@ -336,50 +442,15 @@ typename boost::lazy_enable_if<
     subtraction_result<T, U>
 >::type
 constexpr operator-(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef subtraction_result<T, U> sr;
-    typedef typename sr::P::exception_policy exception_policy;
-    typedef typename sr::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
+    using sr = subtraction_result<T, U>;
+    return typename sr::type(
+        boost::mpl::if_c<
+            sr::no_exception(),
+            typename sr::exception_not_possible,
+            typename sr::exception_possible
+        >::type::return_value(t, u),
+        std::false_type() // don't need to revalidate
     );
-
-    typedef typename base_type<result_type>::type result_base_type;
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
-
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    constexpr const checked_result<interval<result_base_type>> r_interval
-        = subtract<result_base_type>(t_interval, u_interval);
-
-    // if no over/under flow possible
-    if(r_interval.no_exception()){
-        return result_type(
-            static_cast<result_base_type>(base_value(t))
-            - static_cast<result_base_type>(base_value(u))
-        );
-    }
-
-    // otherwise do the subtraction checking for overflow
-    checked_result<result_base_type> r = checked::subtract<result_base_type>(
-        base_value(t),
-        base_value(u)
-    );
-
-    r.template dispatch<exception_policy>();
-    
-    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -387,13 +458,75 @@ constexpr operator-(const T & t, const U & u){
 
 template<class T, class U>
 struct multiplication_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template multiplication_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template multiplication_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    // filter out case were overflow cannot occur
+    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
+    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
+    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
+    // for MAX.  Now
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    // when we add the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const checked_result<interval<result_base_type>> r_interval
+        = multiply<result_base_type>(t_interval, u_interval);
+
+    constexpr static const interval<result_base_type> type_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            type_iterval.l,
+            type_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return r_interval.no_exception();
+    }
+
+    struct exception_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            checked_result<result_base_type> r = checked::multiply<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            return
+                static_cast<result_base_type>(base_value(t))
+                * static_cast<result_base_type>(base_value(u))
+            ;
+        }
+    };
 };
 
 template<class T, class U>
@@ -406,55 +539,15 @@ typename boost::lazy_enable_if<
 >::type
 constexpr operator*(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef multiplication_result<T, U> mr;
-    typedef typename mr::P::exception_policy exception_policy;
-    typedef typename mr::type result_type;
-    // typedef print<result_type> p_result_type;
-
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
+    using mr = multiplication_result<T, U>;
+    return typename mr::type(
+        boost::mpl::if_c<
+            mr::no_exception(),
+            typename mr::exception_not_possible,
+            typename mr::exception_possible
+        >::type::return_value(t, u),
+        std::false_type() // don't need to revalidate
     );
-
-    typedef typename base_type<result_type>::type result_base_type;
-    // typedef print<result_base_type> p_result_base_type;
-    typedef typename base_type<T>::type t_base_type;
-    // typedef print<t_base_type> p_t_base_type;
-    typedef typename base_type<U>::type u_base_type;
-    // typedef print<u_base_type> p_u_base_type;
-
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    // when we multiply the temporary intervals above, we'll get a new interval
-    // with the correct range for the  product!
-    constexpr const checked_result<interval<result_base_type>> r_interval
-        = multiply<result_base_type>(t_interval, u_interval);
-
-    // if no over/under flow possible
-    if(r_interval.no_exception())
-        return result_type(
-            static_cast<result_base_type>(base_value(t))
-            * static_cast<result_base_type>(base_value(u))
-        );
-
-    // otherwise do the multiplication checking for overflow
-    const checked_result<result_base_type>  r = checked::multiply<result_base_type>(
-        base_value(t),
-        base_value(u)
-    );
-
-    r.template dispatch<exception_policy>();
-
-    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -462,13 +555,74 @@ constexpr operator*(const T & t, const U & u){
 
 template<class T, class U>
 struct division_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template division_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template division_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const checked_result<interval<result_base_type>> r_interval
+        = divide_nz<result_base_type>(t_interval, u_interval);
+
+    constexpr static const interval<result_base_type> result_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            result_iterval.l,
+            result_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return
+            // if no over/under flow or domain error possible
+            r_interval.no_exception()
+            // and if the denominator cannot contain zero
+            && (u_interval.l <= 0 && u_interval.u >=0 )
+        ;
+    }
+
+    struct exception_possible {
+        static type constexpr return_value(const T & t, const U & u){
+            checked_result<result_base_type> r =
+            promotion_policy::template divide<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static type return_value(const T & t, const U & u){
+            return
+                static_cast<result_base_type>(base_value(t))
+                / static_cast<result_base_type>(base_value(u))
+            ;
+        }
+    };
 };
 
 template<class T, class U>
@@ -481,78 +635,15 @@ typename boost::lazy_enable_if<
 >::type
 constexpr operator/(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef division_result<T, U> dr;
-    typedef typename dr::P::exception_policy exception_policy;
-    typedef typename dr::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
+    using dr = division_result<T, U>;
+    return typename dr::type(
+        boost::mpl::if_c<
+            dr::no_exception(),
+            typename dr::exception_not_possible,
+            typename dr::exception_possible
+        >::type::return_value(t, u),
+        std::false_type() // don't need to revalidate
     );
-    typedef typename base_type<result_type>::type result_base_type;
-    // typedef print<result_type> p_result_type;
-    /*
-    // note these assertions will trap when using native promotion
-    // policy.  This is because things unsigned char get promoted 
-    // to int when used in operations. comment them out as a reminder
-    // not to assume that unsigned + unsigned -> unsigned
-    static_assert(
-        std::is_signed<result_type>::value ==
-        std::is_signed<result_base_type>::value
-        ,
-        "base_type changed signedness"
-    );
-    // typedef print<result_base_type> p_result_base_type;
-    static_assert(
-        std::is_signed<T>::value != std::is_signed<U>::value
-        ||
-        std::is_signed<result_base_type>::value == std::is_signed<T>::value
-        ,
-        "unexpected type for result"
-    );
-    */
-
-    typedef typename base_type<T>::type t_base_type;
-    // typedef print<t_base_type> p_t_base_type;
-    typedef typename base_type<U>::type u_base_type;
-    // typedef print<u_base_type> p_u_base_type;
-
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    // when we divide the temporary intervals above, we'll get a new interval
-    // with the correct range for the result!
-    constexpr const checked_result<interval<result_base_type>> r_interval
-        { divide<result_base_type>(t_interval, u_interval) };
-
-    // if no over/under flow or domain error possible
-    if(r_interval.no_exception()
-    // and if the denominator cannot contain zero
-    && (u_interval.l <= 0 && u_interval.u >=0 )
-    )
-        // we can just invoke the operation and return - even at compile
-        // time since this is a constexpr !
-        return result_type(
-            static_cast<result_base_type>(base_value(t))
-            / static_cast<result_base_type>(base_value(u))
-        );
-
-    // otherwise do the division checking for overflow
-    typedef typename dr::P::promotion_policy promotion_policy;
-    checked_result<result_base_type>  r =
-        promotion_policy::template divide<result_base_type>(
-            base_value(t),
-            base_value(u)
-        );
-    r.template dispatch<exception_policy>();
-    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -561,12 +652,73 @@ constexpr operator/(const T & t, const U & u){
 template<class T, class U>
 struct modulus_result {
     typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template modulus_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template modulus_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const checked_result<interval<result_base_type>> r_interval
+        = modulus_nz<result_base_type>(t_interval, u_interval);
+
+    constexpr static const interval<result_base_type> result_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            result_iterval.l,
+            result_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return
+             // if no over/under flow or domain error possible
+            ((u_interval.l > 0 || 0 > u_interval.u)
+            // and if the denominator cannot contain zero
+            && (u_interval.l <= 0 && u_interval.u >=0 ))
+        ;
+    }
+
+    struct exception_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            checked_result<result_base_type> r = checked::modulus<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static result_base_type return_value(const T & t, const U & u){
+            return
+                static_cast<result_base_type>(base_value(t))
+                % static_cast<result_base_type>(base_value(u))
+            ;
+        }
+    };
+
 };
 
 template<class T, class U>
@@ -578,45 +730,16 @@ typename boost::lazy_enable_if<
     modulus_result<T, U>
 >::type
 inline operator%(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef modulus_result<T, U> mr;
-    typedef typename mr::P::exception_policy exception_policy;
-    typedef typename mr::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
+    using mr = modulus_result<T, U>;
+
+    return typename mr::type(
+        boost::mpl::if_c<
+            mr::no_exception(),
+            typename mr::exception_not_possible,
+            typename mr::exception_possible
+        >::type::return_value(t, u),
+        std::false_type() // don't need to revalidate
     );
-
-    typedef typename base_type<result_type>::type result_base_type;
-    typedef typename base_type<U>::type u_base_type;
-
-    // filter out case were overflow cannot occur
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    // if denominator excludes zero
-    if(u_interval.l > 0 || 0 > u_interval.u){
-        // no checking necessary
-        return result_type(base_value(t) % base_value(u));
-    }
-
-    using t_type = decltype(base_value(t) % base_value(u));
-
-    // otherwise do the modulus checking for overflow
-    typedef modulus_result<T, U> mr;
-    typedef typename mr::P::promotion_policy promotion_policy;
-
-    checked_result<t_type>  r =
-        promotion_policy::template modulus<t_type>(
-            base_value(t),
-            base_value(u)
-        );
-
-    r.template dispatch<exception_policy>();
-    return result_type(static_cast<result_base_type>(r));
 }
 
 /////////////////////////////////////////////////////////////////
@@ -631,18 +754,19 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
 
     // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
+    constexpr const interval<t_base_type> t_interval(
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    );
+
+    constexpr const interval<u_base_type> u_interval(
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    );
 
     constexpr const boost::logic::tribool r =
         t_interval < u_interval;
@@ -667,18 +791,18 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 constexpr operator>(const T & lhs, const U & rhs) {
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
 
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
+    constexpr const interval<t_base_type> t_interval(
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    );
+
+    constexpr const interval<u_base_type> u_interval(
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    );
 
     constexpr const boost::logic::tribool r =
         t_interval > u_interval;
@@ -703,18 +827,18 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
 
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
+    constexpr const interval<t_base_type> t_interval(
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    );
+
+    constexpr const interval<u_base_type> u_interval(
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    );
 
     return
         // if the ranges don't overlap
@@ -766,15 +890,70 @@ constexpr operator<=(const T & lhs, const U & rhs) {
 /////////////////////////////////////////////////////////////////
 // shift operators
 
+// left shift
 template<class T, class U>
 struct left_shift_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template left_shift_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template left_shift_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const checked_result<interval<result_base_type>> r_interval {
+        left_shift<result_base_type>(t_interval, u_interval)
+    };
+
+    constexpr static const interval<result_base_type> result_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            result_iterval.l,
+            result_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return r_interval.no_exception();
+    }
+
+    struct exception_possible {
+        constexpr static type return_value(const T & t, const U & u){
+            const checked_result<result_base_type> r = checked::left_shift<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static type return_value(const T & t, const U & u){
+            // just return the normal calcuation
+            return t << u;
+        }
+    };
 };
 
 template<class T, class U>
@@ -790,55 +969,80 @@ typename boost::lazy_enable_if_c<
 >::type
 constexpr inline operator<<(const T & t, const U & u){
     // INT13-CPP
-    typedef left_shift_result<T, U> lsr;
-    typedef typename lsr::P::exception_policy exception_policy;
-    typedef typename lsr::type result_type;
-    typedef typename base_type<result_type>::type result_base_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
+    using lsr = left_shift_result<T, U>;
 
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
-
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    constexpr const checked_result<interval<result_base_type>> r_interval {
-        left_shift<result_base_type>(t_interval, u_interval)
-    };
-
-    // if it's impossible to create an invalid result
-    if(r_interval.no_exception())
-        // just return the normal calcuation
-        return result_type(t << u);
-
-    const checked_result<result_base_type> r = checked::left_shift<result_base_type>(
-        base_value(t),
-        base_value(u)
-    );
-
-    r.template dispatch<exception_policy>();
-    return result_type(static_cast<result_base_type>(r));
+    return boost::mpl::if_c<
+        // if no over/under flow or domain error possible
+        lsr::no_exception(),
+        typename lsr::exception_not_possible,
+        typename lsr::exception_possible
+    >::type::return_value(t, u);
 }
 
+// right shift
 template<class T, class U>
 struct right_shift_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template right_shift_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template right_shift_result<
+            T, U
+        >::type;
+
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const checked_result<interval<result_base_type>> r_interval {
+        right_shift<result_base_type>(t_interval, u_interval)
+    };
+
+    constexpr static const interval<result_base_type> result_iterval =
+        r_interval.no_exception() ?
+            static_cast<interval<result_base_type>>(r_interval)
+        :
+            interval<result_base_type>{}
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            result_iterval.l,
+            result_iterval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static bool no_exception() {
+        return r_interval.no_exception();
+    }
+
+    struct exception_possible {
+        constexpr static type return_value(const T & t, const U & u){
+            const checked_result<result_base_type> r = checked::right_shift<result_base_type>(
+                base_value(t),
+                base_value(u)
+            );
+            dispatch<exception_policy>(r);
+            return static_cast<result_base_type>(r);
+        }
+    };
+
+    struct exception_not_possible {
+        constexpr static type return_value(const T & t, const U & u){
+            // just return the normal calcuation
+            return t >> u;
+        }
+    };
 };
 
 template<class T, class U>
@@ -854,43 +1058,14 @@ typename boost::lazy_enable_if_c<
 >::type
 constexpr inline operator>>(const T & t, const U & u){
     // INT13-CPP
-    typedef right_shift_result<T, U> rsr;
-    typedef typename rsr::P::exception_policy exception_policy;
-    typedef typename rsr::type result_type;
-    typedef typename base_type<result_type>::type result_base_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
-    typedef typename base_type<T>::type t_base_type;
-    typedef typename base_type<U>::type u_base_type;
+    using rsr = right_shift_result<T, U>;
 
-    // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-    constexpr const interval<u_base_type> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-    constexpr const checked_result<interval<result_base_type>> r_interval {
-        right_shift<result_base_type>(t_interval, u_interval)
-    };
-
-    // if it's impossible to create an invalid result
-    if(r_interval.no_exception())
-        // just return the normal calcuation
-        return result_type(t >> u);
-
-    const checked_result<result_base_type> r = checked::right_shift<result_base_type>(
-        base_value(t),
-        base_value(u)
-    );
-
-    r.template dispatch<exception_policy>();
-    return result_type(static_cast<result_base_type>(r));
+    return boost::mpl::if_c<
+        // if no over/under flow or domain error possible
+        rsr::no_exception(),
+        typename rsr::exception_not_possible,
+        typename rsr::exception_possible
+    >::type::return_value(t, u);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -898,35 +1073,14 @@ constexpr inline operator>>(const T & t, const U & u){
 
 // operator |
 template<class T, class U>
-struct or_result {
-    typedef common_policies<T, U> P;
-    typedef typename P::promotion_policy::template or_result<
-        T,
-        U,
-        typename P::promotion_policy,
-        typename P::exception_policy
-    >::type type;
-};
-
-template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
-    or_result<T, U>
->::type
-constexpr inline operator|(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef or_result<T, U> or_;
-    typedef typename or_::P::exception_policy exception_policy;
-    typedef typename or_::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
-
+struct bitwise_result {
+    using P = common_policies<T, U>;
+    using exception_policy = typename P::exception_policy;
+    using promotion_policy = typename P::promotion_policy;
+    using result_base_type =
+        typename promotion_policy::template bitwise<
+            T, U
+        >::type;
     static_assert(
         std::numeric_limits<T>::is_integer
         && (! std::numeric_limits<T>::is_signed)
@@ -935,18 +1089,31 @@ constexpr inline operator|(const T & t, const U & u){
         // INT13-C
         "bitwise operations are only applicable to unsigned integers"
     );
-
-    typedef typename base_type<result_type>::type result_base_type;
-
     static_assert(
         std::numeric_limits<result_base_type>::is_integer
         && (! std::numeric_limits<result_base_type>::is_signed),
         // INT13-C
         "bitwise operations should return unsigned integers"
     );
+};
 
-    checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(t, u);
-    r.template dispatch<exception_policy>();
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    bitwise_result<T, U>
+>::type
+constexpr inline operator|(const T & t, const U & u){
+    using bwr = bitwise_result<T, U>;
+    using result_base_type = typename bwr::result_base_type;
+    using result_type = typename bwr::result_type;
+    using exception_policy = typename bwr::exception_policy;
+
+    checked_result<result_base_type> r =
+        checked::bitwise_or<result_base_type>(t, u);
+    dispatch<exception_policy>(r);
     return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
@@ -957,39 +1124,17 @@ typename boost::lazy_enable_if<
         boost::numeric::is_safe<T>,
         boost::numeric::is_safe<U>
     >,
-    or_result<T, U>
+    bitwise_result<T, U>
 >::type
 constexpr inline operator&(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef or_result<T, U> and_;
-    typedef typename and_::P::exception_policy exception_policy;
-    typedef typename and_::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
+    using bwr = bitwise_result<T, U>;
+    using result_base_type = typename bwr::result_base_type;
+    using result_type = typename bwr::result_type;
+    using exception_policy = typename bwr::exception_policy;
 
-    static_assert(
-        std::numeric_limits<T>::is_integer
-        && (! std::numeric_limits<T>::is_signed)
-        && std::numeric_limits<U>::is_integer
-        && (! std::numeric_limits<U>::is_signed),
-        // INT13-C
-        "bitwise operations are only applicable to unsigned integers"
-    );
-
-    typedef typename base_type<result_type>::type result_base_type;
-
-    static_assert(
-        std::numeric_limits<result_base_type>::is_integer
-        && (! std::numeric_limits<result_base_type>::is_signed),
-        // INT13-C
-        "bitwise operations should return unsigned integers"
-    );
-
-    checked_result<result_base_type> r = checked::bitwise_and<result_base_type>(t, u);
-    r.template dispatch<exception_policy>();
+    checked_result<result_base_type> r =
+        checked::bitwise_and<result_base_type>(t, u);
+    dispatch<exception_policy>(r);
     return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
@@ -1000,39 +1145,17 @@ typename boost::lazy_enable_if<
         boost::numeric::is_safe<T>,
         boost::numeric::is_safe<U>
     >,
-    or_result<T, U>
+    bitwise_result<T, U>
 >::type
 constexpr inline operator^(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
-    // only if one of the types is a safe type. Verify this here
-    typedef or_result<T, U> xor_;
-    typedef typename xor_::P::exception_policy exception_policy;
-    typedef typename xor_::type result_type;
-    static_assert(
-        boost::numeric::is_safe<result_type>::value,
-        "Promotion failed to return safe type"
-    );
+    using bwr = bitwise_result<T, U>;
+    using result_base_type = typename bwr::result_base_type;
+    using result_type = typename bwr::result_type;
+    using exception_policy = typename bwr::exception_policy;
 
-    static_assert(
-        std::numeric_limits<T>::is_integer
-        && (! std::numeric_limits<T>::is_signed)
-        && std::numeric_limits<U>::is_integer
-        && (! std::numeric_limits<U>::is_signed),
-        // INT13-C
-        "bitwise operations are only applicable to unsigned integers"
-    );
-
-    typedef typename base_type<result_type>::type result_base_type;
-
-    static_assert(
-        std::numeric_limits<result_base_type>::is_integer
-        && (! std::numeric_limits<result_base_type>::is_signed),
-        // INT13-C
-        "bitwise operations should return unsigned integers"
-    );
-
-    checked_result<result_base_type> r = checked::bitwise_xor<result_base_type>(t, u);
-    r.template dispatch<exception_policy>();
+    checked_result<result_base_type> r =
+        checked::bitwise_xor<result_base_type>(t, u);
+    dispatch<exception_policy>(r);
     return static_cast<result_type>(static_cast<result_base_type>(r));
 }
 
@@ -1061,26 +1184,24 @@ std::ostream & operator<<(
     return os;
 }
 
-namespace detail {
-
-    template<class T, class Enable = void>
+namespace {
+    template<class T>
     struct Temp {
         T value;
     }; // primary template
-     
-    template<class T>
-    struct Temp<
-        T,
-        typename std::enable_if<
-            (std::is_same<T, signed char>::value
-            || std::is_same<T, unsigned char>::value)
-        >
-    >
-    {
+    template<> struct Temp<signed char> {
         int value;
-    };
-
-} // detail
+    }; // secondary template
+    template<> struct Temp<unsigned char> {
+        int value;
+    }; // secondary template
+    template<> struct Temp<signed wchar_t> {
+        int value;
+    }; // secondary template
+    template<> struct Temp<unsigned wchar_t> {
+        int value;
+    }; // secondary template
+}
 
 template<
     class T,
@@ -1093,8 +1214,7 @@ std::istream & operator>>(
     std::istream & is,
     safe_base<T, Min, Max, P, E> & t
 ){
-
-    detail::Temp<T> tx;
+    Temp<T> tx;
     is >> tx.value;
     if(is.fail())
         E::range_error("error in file input");

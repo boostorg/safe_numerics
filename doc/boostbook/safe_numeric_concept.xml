@@ -52,7 +52,7 @@
           </row>
 
           <row>
-            <entry>S</entry>
+            <entry>S, S1, S2</entry>
 
             <entry>A type fulfilling SafeNumeric type requirements</entry>
           </row>
@@ -114,12 +114,12 @@
 
           <tbody>
             <row>
-              <entry><code>s op u</code></entry>
+              <entry><code>s op t</code></entry>
 
               <entry>unspecified S</entry>
 
               <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
+              SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -128,7 +128,7 @@
               <entry>unspecified S</entry>
 
               <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
+              SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -137,16 +137,7 @@
               <entry>unspecified S</entry>
 
               <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
-            </row>
-
-            <row>
-              <entry><code>s1 assign_op s2</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
+              SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -155,7 +146,7 @@
               <entry>unspecified S</entry>
 
               <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
+              SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -164,7 +155,17 @@
               <entry>unspecified S</entry>
 
               <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type</para></entry>
+              SafeNumeric type.</para></entry>
+            </row>
+
+            <row>
+              <entry><code>s assign_op t</code></entry>
+
+              <entry>S1</entry>
+
+              <entry><para>convert t to type S1 and assign it to s1. If the
+              value t cannot be represented as an instance of type S1, it is
+              an error.</para></entry>
             </row>
 
             <row>
@@ -172,8 +173,9 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>construct a instance of S from a value
-              t</para></entry>
+              <entry><para>construct a instance of S from a value of type T. f
+              the value t cannot be represented as an instance of type S1, it
+              is an error.</para></entry>
             </row>
 
             <row>
@@ -182,13 +184,14 @@
               <entry>S</entry>
 
               <entry><para>construct a uninitialized instance of
-              S</para></entry>
+              S.</para></entry>
             </row>
 
             <row>
               <entry><code>is_safe&lt;S&gt;</code></entry>
 
-              <entry>std::true_type or std::false_type</entry>
+              <entry><code>std::true_type</code> or
+              <code>std::false_type</code></entry>
 
               <entry><para>type trait to query whether any type T fulfills the
               requirements for a SafeNumeric type.</para></entry>
@@ -207,12 +210,22 @@
         </tgroup>
       </informaltable></para>
 
-    <para>The key fact documented in the above table is that the result of any
-    binary operation where one or both of the operands is a SafeNumeric type
-    is also a SafeNumeric type. Also note that all the expressions in the
-    above table are <code>constexpr</code> expressions. So that if they are
-    invoked with constant values, the result will be available a compile
-    time.</para>
+    <itemizedlist>
+      <listitem>
+        <para>Result of any binary operation where one or both of the operands
+        is a SafeNumeric type is also a SafeNumeric type.</para>
+      </listitem>
+
+      <listitem>
+        <para>All the expressions in the above table are
+        <code>constexpr</code> expressions</para>
+      </listitem>
+
+      <listitem>
+        <para>Binary expressions which are not assignments require that
+        promotion and exception policies be identical.</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section>
@@ -245,10 +258,12 @@
   <section>
     <title>Models</title>
 
-    <para>boost::numeric::safe&lt;T&gt;</para>
+    <para>safe&lt;T&gt;</para>
 
-    <para>boost::numeric::safe_signed_range&lt;-11, 11&gt;</para>
+    <para>safe_signed_range&lt;-11, 11&gt;</para>
 
-    <para>boost::numeric::safe_unsigned_range&lt;0, 11&gt;</para>
+    <para>safe_unsigned_range&lt;0, 11&gt;</para>
+
+    <para>safe_literal&lt;4&gt;</para>
   </section>
 </section>

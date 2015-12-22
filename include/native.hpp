@@ -23,16 +23,6 @@
 namespace boost {
 namespace numeric {
 
-// forward declaration - safe type
-template<
-    class Stored,
-    Stored Min,
-    Stored Max,
-    class P, // promotion polic
-    class E  // exception policy
->
-class safe_base;
-
 struct native {
     // Standard C++ type promotion for expressions doesn't depend
     // on the operation being performed so we can just as well
@@ -40,49 +30,27 @@ struct native {
     // purpose.
 
     template<typename T, typename U>
-    using result_type = decltype(T() + U());
+    using result_type =
+        decltype(
+            typename base_type<T>::type()
+            + typename base_type<U>::type()
+        );
 
-    template<typename T, typename U, typename P, typename E>
-    struct safe_type_promotion {
-        using base_type_t = typename base_type<T>::type;
-        using base_type_u = typename base_type<U>::type;
-        using result_base_type = result_type<base_type_t, base_type_u>;
-        using type = safe_base<
-            result_base_type,
-            std::numeric_limits<result_base_type>::min(),
-            std::numeric_limits<result_base_type>::max(),
-            P,
-            E
-        >;
-    };
-
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct addition_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+        using type = result_type<T, U>;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct subtraction_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+        using type = result_type<T, U>;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct multiplication_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+        using type = result_type<T, U>;
     };
-    template<typename T, typename U, typename P, typename E>
+    template<typename T, typename U>
     struct division_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
-    };
-    template<typename T, typename U, typename P, typename E>
-    struct modulus_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
-    };
-    template<typename T, typename U, typename P, typename E>
-    struct left_shift_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
-    };
-    template<typename T, typename U, typename P, typename E>
-    struct right_shift_result {
-        typedef typename safe_type_promotion<T, U, P, E>::type type;
+        using type = result_type<T, U>;
     };
 
     // forward to correct divide implementation
@@ -94,6 +62,12 @@ struct native {
     ){
         return checked::divide<R>(t, u);
     }
+
+    template<typename T, typename U>
+    struct modulus_result {
+        using type = result_type<T, U>;
+    };
+
     // forward to correct modulus implementation
     template<class R, class T, class U>
     checked_result<R>
@@ -103,6 +77,20 @@ struct native {
     ){
         return checked::modulus<R>(t, u);
     }
+
+    template<typename T, typename U>
+    struct left_shift_result {
+        using type = result_type<T, U>;
+    };
+    template<typename T, typename U>
+    struct right_shift_result {
+        using type = result_type<T, U>;
+    };
+
+    template<typename T, typename U>
+    struct bitwise_result {
+        using type = result_type<T, U>;
+    };
 };
 
 } // numeric

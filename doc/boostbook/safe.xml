@@ -55,7 +55,7 @@
           <row>
             <entry><code>PP</code></entry>
 
-            <entry>A type which specifes the result type of an expression
+            <entry>A type which specifies the result type of an expression
             using safe types.</entry>
           </row>
 
@@ -169,7 +169,7 @@
     <para>There are two aspects of the operation of this type which can be
     customized with a policy. The first is the result type of an arithmetic
     operation. C++ defines the rules which define this result type in terms of
-    the constintuent types of the operation. Here we refer to these rules a
+    the constituent types of the operation. Here we refer to these rules a
     "type promotion" rules. These rules will sometimes result in a type which
     cannot hold the actual arithmetic result of the operation. This is the
     main motivation for making this library in the first place. One way to
@@ -236,14 +236,14 @@ void f(){
 
       <para>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic. This can be justified
-      by the observ</para>
+      by the observe</para>
 
       <para>Stepping back, we can see that many of the cases of invalid
       arithmetic are wouldn't exist if results types were larger. So we can
       avoid these problems by replacing the C++ type promotion rules for
       expressions with our own rules. This can be done by specifying a
       non-default type promotion policy automatic. The policy stores the
-      result of an expression in the smallest size that can accomodate the
+      result of an expression in the smallest size that can accommodate the
       largest value that an expression can yield. All the work is done at
       compile time - checking for exceptions necessary (input is of course an
       exception). The following example illustrates this.</para>

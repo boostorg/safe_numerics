@@ -1,0 +1,167 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Using Automatic Type Promotion</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="../index.html" title="Safe Numerics">
+<link rel="up" href="../eliminate_runtime_penalty.html" title="Eliminating Runtime Penalty">
+<link rel="prev" href="../eliminate_runtime_penalty.html" title="Eliminating Runtime Penalty">
+<link rel="next" href="2.html" title="Using safe_range">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="../eliminate_runtime_penalty.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="2.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.eliminate_runtime_penalty.1"></a>Using Automatic Type Promotion</h3></div></div></div>
+<p>The C++ standard describes how binary operations on different
+    integer types are handled. Here is a simplified version of the
+    rules:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>promote any operand smaller than int to an int or unsigned
+        int.</p></li>
+<li class="listitem"><p>if the signed operand is larger than the signed one, the result
+        will be signed, otherwise the result will be unsigned.</p></li>
+<li class="listitem"><p>expand the smaller operand to the size of the larger one</p></li>
+</ul></div>
+<p>So the result of the sum of two integer types will result in another
+    integer type. If the values are large, they will exceed the size that the
+    resulting integer type can hold. This is what we call "overflow". Standard
+    C/C++ does just truncates the result to fit into the result type - which
+    sometimes will make the result arithmetically incorrect.</p>
+<p>The complete signature for a safe integer type is:</p>
+<pre class="programlisting">template &lt;
+    class T,                  // underlying integer type
+    class P = native,         // type promotion policy class
+    class E = throw_exception // error handling policy class
+&gt;
+safe;
+</pre>
+<p>The standard C++ type promotion rules are consistent with the
+    default <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">"native" type
+    promotion policy</a>. Up until now, we've focused on detecting when
+    this happens and invoking an interrupt or other kind of error
+    handler.</p>
+<p>But now we look at another option. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic">"automatic" type
+    promotion policy</a>, we can change the rules of C++ arithmetic for
+    safe types to something like the following:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>for any C++ numeric types, we know from
+          <code class="computeroutput">std::numeric::limits</code> what the maximum and minimum
+          values that a variable can be - this defines a closed
+          interval.</p></li>
+<li class="listitem"><p>For any binary operation on these types, we can calculate the
+          interval of the result at compile time.</p></li>
+<li class="listitem">
+<p>From this interval we can select a new type which can be
+          guaranteed to hold the result and use this for the calculation. This
+          is more or less equivalent to the following code:</p>
+<pre class="programlisting">int x, y;
+int z = x + y               // could overflow
+
+int x, y;
+long z = (long)x + (long)y; // can never overflow</pre>
+<p>One could do this by editing his code manually, but such a
+          task would be tedious, error prone, and leave the resulting code
+          hard to read and verify. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic">"automatic"
+          type promotion policy</a> will achieve the equivalent result
+          without these problems</p>
+</li>
+<li class="listitem"><p>Since the result type is guaranteed to hold the result, there
+          is no need to check for errors - they can't happen !!! The usage of
+          <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">"trap_exception"
+          exception policy</code></a> enforces this guarentee</p></li>
+<li class="listitem"><p>Since there can be no errors, there is no need for try/catuch
+          blocks.</p></li>
+<li class="listitem"><p>The only runtime error checking we need to do is when safe
+          values are initialized or assigned using smaller types. These are
+          infrequent occurrences which generally have little or no impact on
+          program running time. And many times, one can make small adjustments
+          in selecting the types in order to eliminate all runtime
+          penalties.</p></li>
+</ul></div>
+<p>In short, given a binary operation, we promote the types of the
+    operands to a larger so that the result type cannot overflow. This is a
+    fundamental departure from the C++ Standard behavior.</p>
+<p>If the interval of the result cannot be contained in the largest
+    type that the machine can handle (usually 64 bits these days), the largest
+    available integer type with the correct result sign is used. So even with
+    our "automatic" type promotion scheme, it's still possible to overflow. In
+    this case, and only this case, is runtime error checking code generated.
+    Depending on the application, it should be rare to generate error checking
+    code, and even more rare to actually invoke it. Any such instances are
+    detected by the <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">"trap_exception" exception
+    policy</code></a> .</p>
+<p>This small example illustrates how to use automatic type promotion
+    to eliminate all runtime penalty.</p>
+<pre class="programlisting">#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+#include "../include/automatic.hpp"
+#include "safe_format.hpp" // prints out range and value of any type
+
+using safe_t = boost::numeric::safe&lt;
+    int,
+    boost::numeric::automatic, // note use of "automatic" policy!!!
+    boost::numeric::trap_exception
+&gt;;
+
+auto f(const safe_t &amp; x, const safe_t &amp; y){ // note use of "auto"
+    auto z = x + y; // note change to "auto"
+    std::cout &lt;&lt; "(x + y) = " &lt;&lt; safe_format(x + y) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "(x - y) = " &lt;&lt; safe_format(x - y) &lt;&lt; std::endl;
+    return z;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 82:\n";
+    safe_t x(INT_MAX);
+    safe_t y = 2;
+    std::cout &lt;&lt; "x = " &lt;&lt; safe_format(x) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "y = " &lt;&lt; safe_format(y) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "z = " &lt;&lt; safe_format(f(x, y)) &lt;&lt; std::endl;
+    return 0;
+}
+
+</pre>
+<p>The above program produces the following output:</p>
+<pre class="programlisting">example 82:
+x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
+y = &lt;int&gt;[-2147483648,2147483647] = 2
+z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
+(x - y) = &lt;long&gt;[-4294967295,4294967295] = 2147483645
+&lt;long&gt;[-4294967296,4294967294] = 2147483649
+</pre>
+<p>The output uses a custom output manipulator for safe types to
+    display the underlying type and its range as well as current value. Note
+    that:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>automatic type promotion policy has rendered the result of the
+          some of two <code class="computeroutput">integers</code> as a <code class="computeroutput">long</code>
+          type.</p></li>
+<li class="listitem"><p>our program compiles without error - even when using the
+          trap_exception exception policy</p></li>
+<li class="listitem"><p>We do not need to use try/catch idiom to handle arithmetic
+          errors - we will have none.</p></li>
+<li class="listitem"><p>We only needed to change two lines of code to achieve our
+          goal</p></li>
+</ul></div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="../eliminate_runtime_penalty.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="2.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
