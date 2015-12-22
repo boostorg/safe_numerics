@@ -1,0 +1,188 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="types.html" title="Types">
+<link rel="prev" href="safe.html" title="safe&lt;T, PP = boost::numeric::native, EP = boost::numeric::throw_exception&gt;">
+<link rel="next" href="safe_literal.html" title="safe_literal&lt;Value&gt;, safe_unsigned_literal&lt;Value&gt;">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_literal.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.safe_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
+  safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="safe_range.html#idm473861640608">Description</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861637744">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861630576">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861623504">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861603120">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861600528">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861598240">Header</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm473861596144">Example of use</a></span></dt>
+</dl></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861640608"></a>Description</h4></div></div></div>
+<p>This type holds a signed or unsigned integer in the closed range
+    [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
+    <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
+    anywhere an arithmetic type is permitted. Any expression which uses either
+    of these types is guaranteed to return an arithmetically correct value or
+    trap in some way.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861637744"></a>Notation</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Symbol</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody><tr>
+<td align="left"><code class="computeroutput">MIN, MAX</code></td>
+<td align="left">Minimum and maximum values that the range can
+            represent.</td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861630576"></a>Associated Types</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left">Promotion Policy. A type which specifies the result type of
+            an expression using safe types.</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left">Exception Policy. A type containing members which are
+            called when a correct result cannot be returned</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861623504"></a>Template Parameters</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Parameter</th>
+<th align="left">Requirements</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">MIN</code></td>
+<td align="left">must be non-integer literal</td>
+<td align="left">The minimum non-negative integer value that this type may
+            hold</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">MAX</code></td>
+<td align="left">must be a non-negative literal</td>
+<td align="left">The maximum non-negative integer value that this type may
+            hold</td>
+</tr>
+<tr>
+<td align="left">&#160;</td>
+<td align="left">MIN &lt;= MAX</td>
+<td align="left">must be a valid closed range</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">PP</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy&lt;PP&gt;</a></a></td>
+<td align="left"><p>Default value is <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">boost::numeric::native</a></p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">EP</code></td>
+<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;"><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">Exception
+            Policy&lt;EP&gt;</a></a></td>
+<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</a></p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861603120"></a>Model of</h4></div></div></div>
+<p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
+<p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861600528"></a>Valid Expressions</h4></div></div></div>
+<p>Implements all expressions and only those expressions defined by the
+    <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
+    requirements. This, the result type of such an expression will be another
+    safe type. The actual type of the result of such an expression will depend
+    upon the specific promotion policy template parameter.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861598240"></a>Header</h4></div></div></div>
+<p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
+    &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm473861596144"></a>Example of use</h4></div></div></div>
+<pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
+
+void f(){
+    using namespace boost::numeric;
+    safe_unsigned_range&lt;7, 24&gt; i
+    // since the range is included in [0,255], the underlying type of i 
+    // will be an unsigned char.
+    i = 0;  // throws out_of_range exception
+    i = 9;  // ok
+    i *= 9; // throws out_of_range exception
+    i = -1; // throws out_of_range exception
+    std::uint8_t j = 4;
+    auto k = i + j;
+
+    // the range of i is [7, 24] and the range of j is [0,255]
+    // if either or both types are safe types, the result is a safe type
+    // determined by promotion policy.  With the default native promotion policy
+    // k will be safe&lt;unsigned int&gt;
+    static_assert(std::is_same&lt;decltype(k), safe&lt;unsigned int&gt;);
+  }</pre>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="safe.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="safe_literal.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Eliminating Runtime Penalty</title>
+<link rel="stylesheet" href="boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Safe Numerics">
+<link rel="up" href="index.html" title="Safe Numerics">
+<link rel="prev" href="tutorial/7.html" title="Programming by Contract is Too Slow">
+<link rel="next" href="eliminate_runtime_penalty/1.html" title="Using Automatic Type Promotion">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial/7.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/1.html"><img src="images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="safe_numerics.eliminate_runtime_penalty"></a>Eliminating Runtime Penalty</h2></div></div></div>
+<div class="toc"><dl>
+<dt><span class="section"><a href="eliminate_runtime_penalty/1.html">Using Automatic Type Promotion</a></span></dt>
+<dt><span class="section"><a href="eliminate_runtime_penalty/2.html">Using safe_range</a></span></dt>
+<dt><span class="section"><a href="eliminate_runtime_penalty/3.html">Mixing Approaches</a></span></dt>
+</dl></div>
+<p>Up until now, we've focused on detecting when incorrect results are
+  produced and handling these occurances either by throwing an exception or
+  invoking some designated function. We've achieved our goal of enforcing
+  arithmetically correct behavior - but at what cost. For many C++ programers
+  any runtime penalty is unacceptable. Whether or not one agrees with this
+  tradeoff, its a fact that many C++ programmers feel this way. So the
+  question arises as to how we alter our program to minimize or eliminate any
+  runtime penalty.</p>
+<p>The first step is to determine what parts of a program might invoke
+  exceptions. The following program is similar to previous examples but uses a
+  special exception policy: <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">trap_exception</code></a>.</p>
+<pre class="programlisting">#include &lt;iostream&gt;
+
+#include "../include/safe_integer.hpp"
+#include "../include/exception.hpp" // include exception policies
+#include "safe_format.hpp" // prints out range and value of any type
+
+using safe_t = boost::numeric::safe&lt;
+    int,
+    boost::numeric::native,
+    boost::numeric::trap_exception  // note use of "trap_exception" policy!
+&gt;;
+
+safe_t f(const safe_t &amp; x, const safe_t &amp; y){
+    // each statement below will fail to compile !
+    safe_t z = x + y;
+    std::cout &lt;&lt; "(x + y)" &lt;&lt; safe_format(x + y) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "(x - y)" &lt;&lt; safe_format(x - y) &lt;&lt; std::endl;
+    return z;
+}
+
+int main(int argc, const char * argv[]){
+    std::cout &lt;&lt; "example 81:\n";
+    safe_t x(INT_MAX);  // will fail to compile
+    safe_t y(2);        // will fail to compile
+    std::cout &lt;&lt; "x" &lt;&lt; safe_format(x) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "y" &lt;&lt; safe_format(y) &lt;&lt; std::endl;
+    std::cout &lt;&lt; "z" &lt;&lt; safe_format(f(x, y)) &lt;&lt; std::endl;
+    return 0;
+}
+</pre>
+<p>Now,
+  any expression which <span class="emphasis"><em><span class="bold"><strong>MIGHT</strong></span></em></span> fail at runtime is flagged with a
+  compile time error. There is no longer any need for <code class="computeroutput">try/catch
+  blocks</code>. Since this program does not compile, the <span class="bold"><strong>library absolutely <span class="bold"><strong>guarantees that no
+  arithmetic expression</strong></span> will yield incorrect results</strong></span> .
+  This is our original goal. Now all we need to do is make the program work.
+  There are a couple of ways to do this.</p>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="tutorial/7.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/1.html"><img src="images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
