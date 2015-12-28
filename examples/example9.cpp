@@ -1,20 +1,23 @@
-#include <cassert>
-#include <stdexcept>
-#include <sstream>
+//////////////////////////////////////////////////////////////////
+// test wrapper to permit compilation execution and debug of code
+// intended for the PIC family of processors on the desktop
+// development environment.
+//
+// Robert Ramey, 2015
+
+#include <limits>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
 #include "../include/cpp.hpp"
+#include "../include/automatic.hpp"
+#include "../include/exception.hpp"
+#include "../include/safe_integer.hpp"
+#include "../include/safe_range.hpp"
+#include "../include/safe_literal.hpp"
 
-//////////////////////////////////////////////////////////////
-// Stepper Motor Control
-
-// emululate evironment for pic162550
-
-// data widths used by the CCS compiler for pic 16xxx series
 using pic16_promotion = boost::numeric::cpp<
     8,  // char
-    8,  // short - not used by pic 16xxxx
+    8,  // short
     8,  // int
     16, // long
     32  // long long
@@ -23,412 +26,318 @@ using pic16_promotion = boost::numeric::cpp<
 template <typename T> // T is char, int, etc data type
 using safe_t = boost::numeric::safe<
     T,
+    boost::numeric::automatic,
+    boost::numeric::trap_exception // use for compiling and running tests
+>;
+using safe_bool_t = boost::numeric::safe_unsigned_range<
+    0,
+    1,
     pic16_promotion,
-    boost::numeric::throw_exception  // use for running tests
+    boost::numeric::trap_exception // use for compiling and running tests
 >;
 
-using int8 = safe_t<std::int8_t>;
-using int16 = safe_t<std::int16_t>;
-using int32 = safe_t<std::int32_t>;
+using int8 = safe_t<std::uint8_t>;
+using int16 = safe_t<std::uint16_t>;
+using int32 = safe_t<std::uint32_t>;
 using uint8 = safe_t<std::uint8_t>;
 using uint16 = safe_t<std::uint16_t>;
 using uint32 = safe_t<std::uint32_t>;
+using signed_int16 = safe_t<std::int16_t>;
 
-//////////////////////////////////////////////////////////////
-// Mock defines, functions etc which are in he "real application
-using BOOLEAN = bool;
-#define TRUE true
-#define FALSE false
+#define literal(x) boost::numeric::safe_literal<x>{}
 
-using LEMPARAMETER = int16;
+std::uint8_t base[0xfff];
+#define TRISC   base[0xf94]
+#define T3CON   base[0xfb1]
+#define CCP2CON base[0xfba]
+#define CCPR2L  base[0xfbb]
+#define CCPR2H  base[0xfbc]
+#define CCP1CON base[0xfbd]
+#define CCPR1L  base[0xfbe]
+#define CCPR1H  base[0xfbf]
+#define T1CON   base[0xfcd]
+#define TMR1L   base[0xfce]
+#define TMR1H   base[0xfcf]
+// implement equivalent to #bit in C++
 
-#define STEPS_PER_MM 200
-#define STEP        0
-#define STEP_LOW        0
-#define STEP_HIGH       1
-#define STEPPING_LIGHT   0 // Labeled D3
+// this types is meant to implement operations of naming bits
+// which are part of a larger word.
+// example
+//  unsigned int x.
+//  bit<unsigned int, 2> switch; // switch now refers to the
+//  second bit from the right of the variable x.  So now can use:
+//
+//  switch = 1;
+//  if(switch)
+//      ...
 
-#define MAXIMUM_TIME 0xffff
-#define INSTRUCTIONS_PER_SECOND ((uint32)MIPS * 0x100000)
-// since we have a 48 mHz clock =>
-#define MIPS 12
-
-// stepper motor limit switches
-#define LIMIT_OUT   0  // input
-#define LIMIT_IN    1  // input
-
-// switches are Normally/Closed
-#define LIMIT_NOT_HIT   0
-#define LIMIT_HIT       1
-
-// gecko microstepper output
-#define DIRECTION_IN    0
-#define DIRECTION_OUT   1
-#define DIRECTION  0
-#define DIRECTION_LIGHT  0
-#define LIGHT_OFF   0
-#define LIGHT_ON    1
-
-#define END_CLEARENCE 10
-#define HOME_OUT ((SLIDE_LENGTH - END_CLEARENCE) * STEPS_PER_MM)
-#define HOME_IN (END_CLEARENCE * STEPS_PER_MM)
-#define SLIDE_LENGTH 155
-
-BOOLEAN report_arrival = FALSE;
-typedef enum {
-    position_counter	= 0,	// in steps
-    	// sets, initializes the position counter in steps
-    	// response with new value when set and when stage stops
-    fault               = 11,
-} pcode_t;
-
-// fault codes
-typedef enum {
-    response_queue_overflow     = 0,
-    sample_queue_overflow       = 1,
-    unanticipated_interrupt     = 2,
-    oscillator_failure          = 3,
-    low_voltage_detected        = 4,
-    ad_max_rate_exceeded        = 5,
-    unspecified_fault           = 9
-} fcode_t;
-
-BOOLEAN input(uint8){
-    return TRUE;
-}
-void output_bit(uint8, BOOLEAN){
-}
-void delay_us(uint8){};
-// just factor out macro expansion to save memory
-void enqueue_response(
-    pcode_t p, 
-    LEMPARAMETER * v, 
-    fcode_t f = unspecified_fault
-){}
-
-#define MAIL_BOX(name, type) type name
-#define mail_box_put(name, value) (name = value)
-#define mail_box_get(name, destination) (destination = name)
-#define mail_box_isempty(name) false
-
-MAIL_BOX(current_velocity, LEMPARAMETER);
-MAIL_BOX(target_position, LEMPARAMETER);
-MAIL_BOX(current_position, LEMPARAMETER);
-MAIL_BOX(dt, uint16);
-
-struct {
-    // acceleration constant.  application of a signal to the controller
-    // initiates movement according to the direction.  The acceleration
-    // depends upon the voltage on the coil, current limiting and load on the
-    // stage.  Generally this will be determined by experimentation.  If its 
-    // determined that the stepper is skipping steps, we should lower this constant
-    // to reflect the fact that things accelerate more slowly than we've assumed.
-    // if we want to move the stage faster we should increase the voltage, 
-    // increase the maximum current, and DEcrease the value of this constant.
-    LEMPARAMETER acceleration;
-        // (5 * 200) steps/sec/sec // => 1 sec to reach nominal 5 mm/sec speed
-    
-    LEMPARAMETER max_velocity;  // => 30 mm second => 5 sec for full travel ;
-    LEMPARAMETER min_velocity;  // => 1 mm second => 150 sec for full travel;
-        // nominal value would be (5 * STEPS_PER_MM) => 150 mm travel in 30 sec
-    
-    // current state of stage
-        // velocity in steps / second 
-    LEMPARAMETER current_velocity; // +/- mm/second depending on direction
-    LEMPARAMETER current_position; // current position in steps.
-    LEMPARAMETER target_position;
-        // 200 steps/mm * 152 mm travel gives maximum 30480
-    LEMPARAMETER sampling_on;
-        // turn sampling on - turns light on also
-    LEMPARAMETER min_sample_position;
-    LEMPARAMETER max_sample_position;
-        // define the range of positions between samples will 
-        // be gathered
-    LEMPARAMETER steps_per_sample;
-        // a power of two 1, 2, 4, 8, ...
-        // samples will be taken when the position counter modulo
-        // steps_per_sample is zero
-
-    // the following are dependent on the above.  They are updated whenever
-    // one of the variables they depend upon ar updated.
-    uint8 sample_mask;
-        // save some time by pre-calculating
-        // ~(lem.steps_per_sample - 1) which masks off the high
-        // order bits
-    uint8 sample_setup;
-        // magic constant for the a/d conversion at the proper rate
-} lem = {
-    (5 * 1000),             // acceleration
-    (30 * STEPS_PER_MM),    // max_velocity
-    (1 * STEPS_PER_MM),     // min_velocity
-    0,                      // current_velocity
-    0,                      // position_counter
-    0,                      // target_position
-    0,                      // sampling on
-    800,                    // min_sample_position
-    29680,                  // max_sample_position
-    32,                     // steps_per_sample
-    0x1f, //~(32 - 1),      // sample mask};
-    0
+template<typename T, std::int8_t N>
+struct bit {
+    T & m_word;
+    bit(T & rhs) :
+        m_word(rhs)
+    {}
+    bit & operator=(const safe_bool_t & b){
+        if(b)
+            m_word |= (1 << N);
+        else
+            m_word &= ~(1 << N);
+        return *this;
+    }
+    bit & operator=(const boost::numeric::safe_literal<0>){
+        m_word &= ~(1 << N);
+        return *this;
+    }
+    bit & operator=(const boost::numeric::safe_literal<1>){
+        m_word |= (1 << N);
+        return *this;
+    }
+    operator safe_bool_t () const {
+        return m_word >> N & 1;
+    }
 };
 
-// return value in steps
+// now we can render
+//#bit  TMR1ON  = T1CON.0
+// as
+bit<std::uint8_t, 0> TMR1ON(T1CON);
+// and use expressions such as TMR1ON = 0
+
+// make a 16 bit value from two 8 bit ones
+int16 make16(int8 h, int8 l){
+    return (h << literal(8)) | l;
+}
+
+#define disable_interrupts(x)
+#define enable_interrupts(x)
+#define output_c(x)
+#define set_tris_c(x)
+#define TRUE literal(1)
+#define FALSE literal(0)
+
+// note changes to original source code
+// signed int16 <- signed_int16 note '-' added
+// commented out the #byte and #bit statements
+// commented out the #INT_CCP1
+// void main() <- int main()
+// added return 0 to main
+// changed instances of x = 0 to x = literal(0)
+
+//////////////////////////////////////////////////////////////////
+// motor.c
+// david austin
+// http://www.embedded.com/design/mcus-processors-and-socs/4006438/Generate-stepper-motor-speed-profiles-in-real-time
+// DECEMBER 30, 2004
+
+// Demo program for stepper motor control with linear ramps
+// Hardware: PIC18F252, L6219
+// #include "18F252.h"
+
+// PIC18F252 SFRs
 /*
-Use the formula:
-    stopping dist = v **2 / a / 2
+#byte TRISC   = 0xf94
+#byte T3CON   = 0xfb1
+#byte CCP2CON = 0xfba
+#byte CCPR2L  = 0xfbb
+#byte CCPR2H  = 0xfbc
+#byte CCP1CON = 0xfbd
+#byte CCPR1L  = 0xfbe
+#byte CCPR1H  = 0xfbf
+#byte T1CON   = 0xfcd
+#byte TMR1L   = 0xfce
+#byte TMR1H   = 0xfcf
+#bit  TMR1ON  = T1CON.0
 */
-uint16 get_stopping_distance(LEMPARAMETER velocity){
-    int32 d;
-    d = velocity * velocity;
-    d /= lem.acceleration;
-    d /= 2;
-    return d;
-}
 
-int8 get_acceleration(
-    LEMPARAMETER dp, 
-    LEMPARAMETER velocity
-){
-    int8 a;
-    if(dp > 0){
-        // target is farther out than we are
-        if(velocity > 0){
-            // moving out
-            LEMPARAMETER sd; // stopping distance
-            sd = get_stopping_distance(velocity);
-            if(dp > sd){
-                // far from the destination
-                if(velocity > lem.max_velocity)
-                    a = -1;
-                else
-                if(velocity == lem.max_velocity)
-                    a = 0;
-                else
-                    a = 1;
-            }
-            else{
-                // close to the destination
-                a = -1;
-            }
-        }
-        else
-        if(velocity < 0){
-            // moving in
-            a = 1; // turn around
-        }
-        else
-            a = 1;
+// 1st step=50ms; max speed=120rpm (based on 1MHz timer, 1.8deg steps)
+#define C0    literal(50000)
+#define C_MIN  literal(2500)
+
+// ramp state-machine states
+#define ramp_idle literal(0)
+#define ramp_up   literal(1)
+#define ramp_max  literal(2)
+#define ramp_down literal(3)
+#define ramp_last literal(4)
+
+// Types: int8,int16,int32=8,16,32bit integers, unsigned by default
+int8  ramp_sts=ramp_idle;
+signed_int16 motor_pos = literal(0); // absolute step number
+signed_int16 pos_inc = literal(0);     // motor_pos increment
+int16 phase=literal(0);     // ccpPhase[phase_ix]
+int8  phase_ix=literal(0);  // index to ccpPhase[]
+int8  phase_inc;            // phase_ix increment
+int8  run_flg;              // true while motor is running
+int16 ccpr;                 // copy of CCPR1&2
+int16 c;                    // integer delay count
+int16 step_no;              // progress of move
+int16 step_down;            // start of down-ramp
+int16 move;                 // total steps to move
+int16 midpt;                // midpoint of move
+int32 c32;                  // 24.8 fixed point delay count
+signed_int16 denom; // 4.n+1 in ramp algo
+
+// Config data to make CCP1&2 generate quadrature sequence on PHASE pins
+// Action on CCP match: 8=set+irq; 9=clear+irq
+int16 const ccpPhase[] = {
+    literal(0x909),
+    literal(0x908),
+    literal(0x808),
+    literal(0x809)
+}; // 00,01,11,10
+
+void current_on(){/* code as needed */}  // motor drive current
+void current_off(){/* code as needed */} // reduce to holding value
+
+// compiler-specific ISR declaration
+// #INT_CCP1
+void isr_motor_step() 
+{ // CCP1 match -> step pulse + IRQ
+  ccpr += c; // next comparator value: add step delay count
+  switch (ramp_sts)
+  {
+  case ramp_up:   // accel
+    if (step_no==midpt)
+    { // midpoint: decel
+      ramp_sts = ramp_down;
+      denom = ((step_no - move) << literal(2) )+literal(1);
+
+      if (!(move & literal(1)))
+      { // even move: repeat last delay before decel
+        denom +=literal(4);
+        break;
+      }
     }
-    else
-    if(dp < 0){
-        // we're farther out than the target
-        if(velocity < 0){
-            // moving left
-            LEMPARAMETER sd; // stopping distance
-            sd = get_stopping_distance(velocity);
-            if(dp < -sd){
-                // far from the destination
-                if(velocity < - lem.max_velocity)
-                    a = 1;
-                else
-                if(velocity == - lem.max_velocity)
-                    a = 0;
-                else
-                    a = -1;
-            }
-            else{
-                // close to the destination
-                a = 1;
-            }
-        }
-        else
-        if(velocity > 0){
-            // moving right
-            a = -1;
-        }
-        else
-            a = -1;
+    // no break: share code for ramp algo
+  case ramp_down: // decel
+    if (step_no == move-literal(1))
+    { // next irq is cleanup (no step)
+      ramp_sts = ramp_last;
+      break;
     }
-    else{
-        // we're there
-        if(velocity < - lem.min_velocity)
-            a = 1;
-        else
-        if(velocity > lem.min_velocity)
-            a = -1;
-        else
-            a = 0; // shouild never get here
+    denom+=4;
+    c32 -= (c32 << literal(1)) / denom; // ramp algorithm
+    // beware confict with foreground code if long div not reentrant
+    c = (c32+literal(128))>>literal(8); // round 24.8format->int16
+    if (c <= C_MIN)
+    { // go to constant speed
+      ramp_sts = ramp_max;
+      step_down = move - step_no;
+      c = C_MIN;
+      break;
     }
-    return a;
-}
-
-// update velocity according to acceleration and
-// distance to target postion
-void motor_velocity_update(){
-    int8 a;
-    static uint16 dt = MAXIMUM_TIME;
-
-    static struct {
-        LEMPARAMETER current_position;
-        LEMPARAMETER target_position;
-    } shadow_lem; 
-    LEMPARAMETER dp; // difference between target and current
-    LEMPARAMETER velocity;
-    LEMPARAMETER previous_position;
-
-    if(mail_box_isempty(lem.current_position))
-        return;
-
-    mail_box_get(lem.current_position, shadow_lem.current_position);
-    mail_box_get(lem.target_position, shadow_lem.target_position);
-
-    velocity = lem.current_velocity;
-    dp = shadow_lem.target_position - shadow_lem.current_position;
-    a = get_acceleration(dp, velocity);
-    
-    if(0 != a){
-        uint32 dv;
-        int16 pcount;
-        pcount = shadow_lem.current_position - previous_position;
-        if(pcount < 0)
-            pcount = - pcount;
-        dv = (uint32)lem.acceleration * dt * pcount;
-        dv /= INSTRUCTIONS_PER_SECOND;
-        if(0 == dv)
-            return;
-        if(0 < a)
-            velocity += dv;
-        else
-            velocity -= dv;
+    break;
+  case ramp_max: // constant speed
+    if (step_no == step_down)
+    { // start decel
+      ramp_sts = ramp_down;
+      /*
+      denom = ((step_no - move)<<literal(2))+literal(5);
+      */
+      auto x1 = step_no - move;
+      auto x2 = x1 * literal(4);
+      auto x3 = x2 + literal(5);
+      denom = x3;
     }
-    else
-        if(0 == dp)
-            velocity = 0;
-    previous_position = shadow_lem.current_position;
+    break;
+  default: // last step: cleanup
+    ramp_sts = ramp_idle;
+    current_off(); // reduce motor current to holding value
+    disable_interrupts(INT_CCP1);
+    run_flg = FALSE; // move complete
+    break;
+  } // switch (ramp_sts)
+  if (ramp_sts!=ramp_idle)
+  {
+    motor_pos += pos_inc;
+    ++step_no;
+    CCPR2H = CCPR1H = (ccpr >> literal(8)); // timer value at next CCP match
+    CCPR2L = CCPR1L = (ccpr & literal(0xff));
+    if (ramp_sts!=ramp_last) // else repeat last action: no step
+	    phase_ix = (phase_ix + phase_inc) & literal(3);
+    phase = ccpPhase[phase_ix];
+    CCP1CON = phase & literal(0xff); // set CCP action on next match
+    CCP2CON = phase >> literal(8);
+  } // if (ramp_sts != ramp_idle)
+} // isr_motor_step()
 
-    // figure new pulse width
-    if(lem.min_velocity < velocity)
-        dt = INSTRUCTIONS_PER_SECOND / velocity;
-    else
-    if(- lem.min_velocity < velocity)
-        dt = MAXIMUM_TIME;
-    else
-        dt = - INSTRUCTIONS_PER_SECOND / velocity;
 
-    mail_box_put(current_velocity, velocity);
-    mail_box_put(dt, dt);
+void motor_run(signed_int16 pos_new)
+{ // set up to drive motor to pos_new (absolute step#)
+  if (pos_new < motor_pos) // get direction & #steps
+  {
+    move = motor_pos-pos_new;
+    pos_inc   = literal(-1);
+    phase_inc = literal(0xff);
+  } 
+  else if (pos_new != motor_pos)
+  { 
+    move = pos_new-motor_pos;
+    pos_inc   = literal(1);
+    phase_inc = literal(1);
+  }
+  else return; // already there
+  /*
+  midpt = (move-1)>>1;
+  */
+  auto x1 = move  - 1;
+  auto x2 = x1 >> 1;
+  midpt = x2;
+  c   = C0;
+  c32 = c<<literal(8); // keep c in 24.8 fixed-point format for ramp calcs
+  step_no  = literal(0); // step counter
+  denom    = literal(1); // 4.n+1, n=0
+  ramp_sts = ramp_up; // start ramp state-machine
+  run_flg  = TRUE;
+  TMR1ON   = 0; // stop timer1;
+  ccpr = make16(TMR1H,TMR1L);  // 16bit value of Timer1
+  ccpr += 1000; // 1st step + irq 1ms after timer1 restart
+  CCPR2H = CCPR1H = (ccpr >> literal(8));
+  CCPR2L = CCPR1L = (ccpr & literal(0xff));
+  phase_ix = (phase_ix + phase_inc) & literal(3);
+  phase = ccpPhase[phase_ix];
+  CCP1CON = phase & literal(0xff); // sets action on match
+  CCP2CON = phase >> literal(8);
+  current_on(); // current in motor windings
+  enable_interrupts(INT_CCP1); 
+  TMR1ON=TRUE; // restart timer1;
+} // motor_run()
 
-    // make sure input mail box is empty so that next time we get a fresh one
-    mail_box_get(current_position, shadow_lem.current_position);    
-}
+void initialize()
+{
+  disable_interrupts(GLOBAL);
+  disable_interrupts(INT_CCP1);
+  disable_interrupts(INT_CCP2);
+  output_c(0);
+  set_tris_c(0);
+  T3CON = 0;
+  T1CON = 0x35;
+  enable_interrupts(GLOBAL);
+} // initialize()
 
-///////////////////////////////////////////////////////////////
-// invoked at main timer interrupt time
+// test program
+int main()
+{
+    std::cout << "start test\n";
+    try{
+	initialize();
+    motor_run(literal(100));
 
-BOOLEAN check_collision(){
-    static BOOLEAN collision_recovery = FALSE;
-
-    if(collision_recovery){
-        if(lem.target_position == lem.current_position)
-            collision_recovery = FALSE;
-        return TRUE;
+    // move motor to position 1000
+  	motor_run(literal(1000));
+  	while (run_flg){
+        isr_motor_step();
     }
-    if(LIMIT_HIT == input(LIMIT_IN)){
-        if(LIMIT_HIT == input(LIMIT_IN)){
-            lem.current_position = 0;
-            lem.target_position = HOME_IN;
-            lem.current_velocity = lem.min_velocity;
-            collision_recovery = TRUE;
-            mail_box_put(target_position, lem.target_position);
-            return TRUE;
-       }
+    // move back to position 0
+  	motor_run(literal(0));
+  	while (run_flg)
+        isr_motor_step();
     }
-    else
-    if(LIMIT_HIT == input(LIMIT_OUT)){
-        if(LIMIT_HIT == input(LIMIT_OUT)){
-            lem.current_position = SLIDE_LENGTH  * STEPS_PER_MM;
-            lem.target_position = HOME_OUT;
-            lem.current_velocity = - lem.min_velocity;
-            collision_recovery = TRUE;
-            mail_box_put(target_position, lem.target_position);
-            return TRUE;
-        }
+    catch(...){
+        std::cout << "test interrupted\n";
+        return 1;
     }
-    return FALSE;
-}
-
-void motor_step(){
-    output_bit(STEP, STEP_LOW);
-    delay_us(4);
-    output_bit(STEP, STEP_HIGH);
-}
-
-void motor_increment(){
-    output_bit(DIRECTION, DIRECTION_OUT);
-    #if(TARGET==DEVBOARD)
-        output_bit(STEPPING_LIGHT, LIGHT_ON);
-        output_bit(DIRECTION_LIGHT, DIRECTION_OUT);
-    #endif
-    ++lem.current_position;
-    motor_step();
-}
-
-void motor_decrement(){
-    output_bit(DIRECTION, DIRECTION_IN);
-    #if(TARGET==DEVBOARD)
-        output_bit(STEPPING_LIGHT, LIGHT_ON);
-        output_bit(DIRECTION_LIGHT, DIRECTION_IN);
-    #endif
-    --lem.current_position;
-    motor_step();
-}
-
-BOOLEAN check_arrival(){
-    if(lem.current_position != lem.target_position)
-        return FALSE;    
-    #if(TARGET==DEVBOARD)
-        output_bit(STEPPING_LIGHT, LIGHT_OFF);
-    #endif
-    if(report_arrival){
-        report_arrival = FALSE;
-        enqueue_response(position_counter, & lem.current_position);
-    }
-    return TRUE;
-}
-
-void motor_update(){
-    mail_box_get(current_velocity, lem.current_velocity);
-    check_collision();
-    if(0 < lem.current_velocity){
-        if(lem.min_velocity < lem.current_velocity){
-            motor_increment();
-        }
-        else{
-            if(!check_arrival())
-                motor_increment();
-        }
-    }
-    else
-    if(0 > lem.current_velocity){
-        if(-lem.min_velocity > lem.current_velocity){
-            motor_decrement();
-        }
-        else{
-            if(!check_arrival())
-                motor_decrement();
-        }
-    }
-    else{
-        check_arrival();
-    }
-    mail_box_put(current_position, lem.current_position);
-}
-
-int main(int argc, const char * argv[]){
-    // problem: testing against other architectures
-    std::cout << "example 9: ";
-    std::cout << "testing against other architectures"
-    << std::endl;
-
-    return 0;
-}
+    std::cout << "end test\n";
+    return literal(0);
+} // main()
+// end of file motor.c

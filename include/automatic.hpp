@@ -161,7 +161,9 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct subtraction_result {
-        using result_base_type = calculate_max_t<T, U>;
+        // subtraction can result in negative result regardless of the
+        // operand types !
+        using result_base_type = std::intmax_t;
         using t_base_type = typename base_type<T>::type;
         using u_base_type = typename base_type<U>::type;
 

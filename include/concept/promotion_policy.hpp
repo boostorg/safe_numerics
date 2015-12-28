@@ -30,8 +30,11 @@ struct PromotionPolicy {
     typedef typename PP::template right_shift_result<T, U> rs_type;
     typedef typename PP::template bitwise_result<T, U> bw_type;
 
-    checked_result<typename base_type<d_type>::type> test(){
+    checked_result<typename base_type<d_type>::type> divide(){
         return PP::template divide<typename base_type<d_type>::type>(0, 0);
+    }
+    checked_result<typename base_type<d_type>::type> modulus(){
+        return PP::template modulus<typename base_type<d_type>::type>(0, 0);
     }
 
 };

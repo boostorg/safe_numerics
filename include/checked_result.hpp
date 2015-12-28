@@ -117,7 +117,7 @@ struct checked_result {
 
 template<class EP, typename R>
 constexpr void
-dispatch(const checked_result<R> &cr){
+dispatch(const checked_result<R> & cr){
     dispatch<EP>(cr.m_e, cr.m_msg);
 }
 

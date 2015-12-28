@@ -393,4 +393,5 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<sign
 
 } // std
 
+
 #endif // BOOST_NUMERIC_INTERVAL_HPP

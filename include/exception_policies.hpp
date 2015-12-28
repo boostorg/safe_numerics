@@ -92,7 +92,6 @@ struct throw_exception {
 // would otherwise trap at runtime.  Hence expressions such as i/j
 // will trap at compile time unless j can be guaranteed to not be zero.
 
-
 // meant to be trap the case where a program MIGHT throw an exception
 struct trap_exception {
 };
