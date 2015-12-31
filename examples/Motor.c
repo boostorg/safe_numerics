@@ -1,9 +1,8 @@
 // Demo program for stepper motor control with linear ramps
 // Hardware: PIC18F252, L6219
-//#include "18F252.h"
+#include "18F252.h"
 
 // PIC18F252 SFRs
-/*
 #byte TRISC   = 0xf94
 #byte T3CON   = 0xfb1
 #byte CCP2CON = 0xfba
@@ -16,7 +15,6 @@
 #byte TMR1L   = 0xfce
 #byte TMR1H   = 0xfcf
 #bit  TMR1ON  = T1CON.0
-*/
 
 // 1st step=50ms; max speed=120rpm (based on 1MHz timer, 1.8deg steps)
 #define C0    50000

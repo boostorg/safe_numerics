@@ -361,6 +361,19 @@ constexpr inline operator+(const T & t, const U & u){
     );
 }
 
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator+=(T & t, const U & u){
+    t = static_cast<T>(t + u);
+    return t;
+}
+
 /////////////////////////////////////////////////////////////////
 // subtraction
 
@@ -452,6 +465,19 @@ constexpr operator-(const T & t, const U & u){
         ),
         std::false_type() // don't need to revalidate
     );
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator-=(T & t, const U & u){
+    t = static_cast<T>(t - u);
+    return t;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -557,6 +583,19 @@ constexpr operator*(const T & t, const U & u){
     );
 }
 
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator*=(T & t, const U & u){
+    t = static_cast<T>(t * u);
+    return t;
+}
+
 /////////////////////////////////////////////////////////////////
 // division
 
@@ -615,7 +654,8 @@ struct division_result {
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         static_assert(exception_possible(), "implement runtime check");
-        checked_result<result_base_type> r = checked::divide<result_base_type>(
+        checked_result<result_base_type> r =
+        promotion_policy::template divide<result_base_type>(
             base_value(t),
             base_value(u)
         );
@@ -653,6 +693,19 @@ constexpr operator/(const T & t, const U & u){
         ),
         std::false_type() // don't need to revalidate
     );
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator/=(T & t, const U & u){
+    t = static_cast<T>(t / u);
+    return t;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -750,6 +803,19 @@ inline operator%(const T & t, const U & u){
         ),
         std::false_type() // don't need to revalidate
     );
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator%=(T & t, const U & u){
+    t = static_cast<T>(t % u);
+    return t;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -894,7 +960,7 @@ typename boost::lazy_enable_if<
     boost::mpl::identity<bool>
 >::type
 constexpr operator<=(const T & lhs, const U & rhs) {
-    return ! ( rhs > lhs );
+    return ! ( lhs > rhs );
 }
 
 /////////////////////////////////////////////////////////////////
@@ -994,6 +1060,19 @@ constexpr inline operator<<(const T & t, const U & u){
     );
 }
 
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator<<=(T & t, const U & u){
+    t = static_cast<T>(t << u);
+    return t;
+}
+
 // right shift
 template<class T, class U>
 struct right_shift_result {
@@ -1041,7 +1120,6 @@ struct right_shift_result {
             exception_policy
         >;
 
-
     // exception possible
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
@@ -1087,6 +1165,19 @@ constexpr inline operator>>(const T & t, const U & u){
         ),
         std::false_type() // don't need to revalidate
     );
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator>>=(T & t, const U & u){
+    t = static_cast<T>(t >> u);
+    return t;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -1149,6 +1240,19 @@ constexpr inline operator|(const T & t, const U & u){
     return static_cast<result_base_type>(r);
 }
 
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator|=(T & t, const U & u){
+    t = static_cast<T>(t | u);
+    return t;
+}
+
 // operator &
 template<class T, class U>
 struct bitwise_and_result {
@@ -1206,6 +1310,19 @@ constexpr inline operator&(const T & t, const U & u){
     return static_cast<result_base_type>(r);
 }
 
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator&=(T & t, const U & u){
+    t = static_cast<T>(t & u);
+    return t;
+}
+
 // operator ^
 template<class T, class U>
 typename boost::lazy_enable_if<
@@ -1224,6 +1341,19 @@ constexpr inline operator^(const T & t, const U & u){
         checked::bitwise_xor<result_base_type>(t, u);
     assert(r.no_exception());
     return static_cast<result_base_type>(r);
+}
+
+template<class T, class U>
+typename boost::lazy_enable_if<
+    boost::mpl::or_<
+        boost::numeric::is_safe<T>,
+        boost::numeric::is_safe<U>
+    >,
+    boost::mpl::identity<T &>
+>::type
+constexpr inline operator^=(T & t, const U & u){
+    t = static_cast<T>(t ^ u);
+    return t;
 }
 
 /////////////////////////////////////////////////////////////////

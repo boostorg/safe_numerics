@@ -6,12 +6,6 @@
 #include "../include/safe_range.hpp"
 
 template<typename T>
-void display_ulog(T Max){
-    std::cout
-        << "ulog(" << Max << ") = "
-        << boost::numeric::ulog(Max) << std::endl;
-}
-template<typename T>
 void display_log(T Max){
     std::cout
         << "log(" << Max << ") = "
@@ -20,12 +14,12 @@ void display_log(T Max){
 
 bool test_log(){
     using namespace boost::numeric;
-    assert(ulog(127) == 7); // 7 bits
-    assert(ulog(127) == 7); // 7 bits
-    assert(ulog(128) == 8); // 8 bits
-    assert(ulog(129) == 8); // 8 bits
-    assert(ulog(255) == 8); // 8 bits
-    assert(ulog(256) == 9); // 9 bits
+    assert(log(127u) == 7); // 7 bits
+    assert(log(127u) == 7); // 7 bits
+    assert(log(128u) == 8); // 8 bits
+    assert(log(129u) == 8); // 8 bits
+    assert(log(255u) == 8); // 8 bits
+    assert(log(256u) == 9); // 9 bits
 
     assert(log(127) == 8); // 7 bits + 1 sign bit
     assert(log(128) == 9); // 8 bits + 1 sign bit

@@ -245,54 +245,14 @@ public:
     constexpr safe_base &
     operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
 
-    template<class T>
-    safe_base & operator+=(const T & rhs){
-        return *this = *this + rhs;
-    }
-    template<class T>
-    safe_base & operator-=(const T & rhs){
-        return *this = *this - rhs;
-    }
-    template<class T>
-    safe_base & operator*=(const T & rhs){
-        return *this = *this * rhs;
-    }
-    template<class T>
-    safe_base & operator/=(const T & rhs){
-        return *this = *this / rhs;
-    }
-    template<class T>
-    safe_base & operator%=(const T & rhs){
-        return *this = *this % rhs;
-    }
-    template<class T>
-    safe_base & operator|=(const T & rhs){
-        return *this = *this | rhs;
-    }
-    template<class T>
-    safe_base & operator&=(const T & rhs){
-        return *this = *this & rhs;
-    }
-    template<class T>
-    safe_base & operator^=(const T & rhs){
-        return *this = *this ^ rhs;
-    }
-    template<class T>
-    safe_base & operator>>=(const T & rhs){
-        return *this = *this >> rhs;
-    }
-    template<class T>
-    safe_base & operator<<=(const T & rhs){
-        return *this = *this << rhs;
-    }
     // unary operators
-    safe_base operator++(){
+    safe_base operator++(){      // pre increment
         return *this = *this + 1;
     }
-    safe_base operator--(){
+    safe_base operator--(){      // pre increment
         return *this = *this - 1;
     }
-    safe_base operator++(int){ // post increment
+    safe_base operator++(int){   // post increment
         safe_base old_t = *this;
         ++(*this);
         return old_t;

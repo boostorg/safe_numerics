@@ -238,7 +238,16 @@ int main(int argc, char *argv[]){
 
 #endif
 
+#include <iostream>
+#include "../include/interval.hpp"
+
+using namespace boost::numeric;
+
 int main(){
+    interval<std::int8_t> t;
+    interval<std::int8_t> u;
+    auto r = right_shift_positive<std::int8_t>(t, u);
+    std::cout << r << '\n';
     return 0;
 }
 
