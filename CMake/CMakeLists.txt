@@ -125,7 +125,19 @@ elseif()
 endif()
 
 include_directories("../include" "${Boost_INCLUDE_DIRS}")
+
+message(STATUS "include directories are:" )
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+  message(STATUS "   ${dir}")
+endforeach()
+
 link_directories("${Boost_LIBRARY_DIRS}")
+message(STATUS "link directories are:" )
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY LINK_DIRECTORIES)
+foreach(dir ${dirs})
+  message(STATUS "   ${dir}")
+endforeach()
 
 ###########################
 # testing and submitting test results to the test dashboard
@@ -188,6 +200,9 @@ file(GLOB example_list
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
 )
+
+list(REMOVE_ITEM example_list "../examples/example91.cpp")
+
 foreach(file_path ${example_list})
   string(REPLACE "../examples/" "" file_name ${file_path})
   string(REPLACE ".cpp" "" base_name ${file_name})
@@ -197,9 +212,26 @@ foreach(file_path ${example_list})
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
 
-set_target_properties(example81 example9 PROPERTIES
+add_executable(example91
+    ../examples/example91.cpp
+    ../examples/motor.h
+    ../examples/18F252.h
+)
+set_source_files_properties(motor1.c motor.h 18F252.h PROPERTIES LANGUAGE CXX )
+
+target_include_directories(example91 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mylib>
+  $<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
+)
+message(STATUS "example91" )
+
+set_target_properties(test_z example84 PROPERTIES
     EXCLUDE_FROM_ALL TRUE
     EXCLUDE_FROM_DEFAULT_BUILD TRUE
+)
+
+set_target_properties(example81 PROPERTIES
+    WILL_FAIL TRUE
 )
 
 # end examples targets
@@ -222,4 +254,3 @@ add_custom_target(include_concept_files SOURCES ${include_concept_files})
 
 # end headers in IDE
 ####################
-

@@ -6,11 +6,11 @@
 
 int test_log(){
     using namespace boost::numeric;
-    assert(ulog(127) == 7);
-    assert(ulog(128) == 8);
-    assert(ulog(129) == 8);
-    assert(ulog(255) == 8);
-    assert(ulog(256) == 9);
+    assert(log(127u) == 7);
+    assert(log(128u) == 8);
+    assert(log(129u) == 8);
+    assert(log(255u) == 8);
+    assert(log(256u) == 9);
 
     assert(log(127) == 8);
     assert(log(128) == 9);

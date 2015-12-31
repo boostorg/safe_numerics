@@ -26,16 +26,6 @@
 #include "safe_common.hpp"
 #include "checked.hpp"
 
-// forward declaration - safe type
-template<
-    class Stored,
-    Stored Min,
-    Stored Max,
-    class P, // promotion polic
-    class E  // exception policy
->
-class safe_base;
-
 namespace boost {
 namespace numeric {
 
@@ -54,43 +44,113 @@ template<
     int LongLongBits
 >
 struct cpp {
-    template<typename T>
-    using normalize = typename std::make_signed<typename std::remove_cv<T>::type>::type;
-
     using local_char_type = typename boost::int_t<CharBits>::exact;
     using local_short_type = typename boost::int_t<ShortBits>::exact;
     using local_int_type = typename boost::int_t<IntBits>::exact;
     using local_long_type = typename boost::int_t<LongBits>::exact;
     using local_long_long_type = typename boost::int_t<LongLongBits>::exact;
 
+   /*
+    template<typename T>
+    using normalize = typename std::make_signed<
+        typename std::remove_cv<T>::type
+    >::type;
+
+    // given a native type - return the equivalent local type
+     template<typename T>
+    using local_type_0 =
+    typename boost::mpl::if_<
+        std::is_same<T, char>,
+        local_char_type,
+    typename boost::mpl::if_<
+        std::is_same<T, short>,
+        local_short_type,
+    typename boost::mpl::if_<
+        std::is_same<T, int>,
+        local_int_type,
+    typename boost::mpl::if_<
+        std::is_same<T, long>,
+        local_long_type,
+    typename boost::mpl::if_<
+        std::is_same<T, long long>,
+        local_long_long_type,
+        void
+    >::type>::type>::type>::type>::type;
+
+    template<typename T>
+    using local_type_1 =
+    typename boost::mpl::if_<
+        std::is_signed<T>,
+        local_type_0<T>,
+        typename std::make_unsigned<
+            local_type_0<typename std::make_signed<T>::type>
+        >::type
+    >::type;
+
+    template<typename T>
+    using local_type =
+    typename boost::mpl::if_<
+        std::is_const<T>,
+        typename std::add_const<
+            local_type_1<typename std::remove_const<T>::type>
+        >::type,
+    typename boost::mpl::if_<
+        std::is_volatile<T>,
+        typename std::add_volatile<
+            local_type_1<typename std::remove_volatile<T>::type>
+        >::type,
+        local_type_1<T>
+    >::type>::type;
+
     // section 4.13 integer conversion rank
     template<class T>
-    using rank =
-        typename boost::mpl::if_<
-            std::is_same<bool, normalize<T> >,
+    using rank_helper =
+        typename boost::mpl::if_c<
+            std::is_same<bool, T >::value,
             std::integral_constant<int, 0>,
         typename boost::mpl::if_c<
-            sizeof(local_char_type) == sizeof(T),
+            std::is_same<local_char_type, T>::value,
             std::integral_constant<int, 1>,
         typename boost::mpl::if_c<
-            sizeof(local_short_type) == sizeof(T),
+            std::is_same<local_short_type, T>::value,
             std::integral_constant<int, 2>,
         typename boost::mpl::if_c<
-            sizeof(local_int_type) == sizeof(T),
+            std::is_same<local_int_type, T>::value,
             std::integral_constant<int, 3>,
         typename boost::mpl::if_c<
-            sizeof(local_long_type) == sizeof(T),
+            std::is_same<local_long_type, T>::value,
             std::integral_constant<int, 4>,
         typename boost::mpl::if_c<
-            sizeof(local_long_long_type) == sizeof(T),
+            std::is_same<local_long_long_type, T>::value,
             std::integral_constant<int, 5>,
             void
-        >::type >::type >::type >::type >::type >::type;
+        >::type>::type>::type>::type>::type>::type;
+    */
+
+    template<class T>
+    using rank =
+        typename boost::mpl::if_c<
+            sizeof(char) == sizeof(T),
+            std::integral_constant<int, 1>,
+        typename boost::mpl::if_c<
+            sizeof(short) == sizeof(T),
+            std::integral_constant<int, 2>,
+        typename boost::mpl::if_c<
+            sizeof(int) == sizeof(T),
+            std::integral_constant<int, 3>,
+        typename boost::mpl::if_c<
+            sizeof(long) == sizeof(T),
+            std::integral_constant<int, 4>,
+        typename boost::mpl::if_c<
+            sizeof(long long) == sizeof(T),
+            std::integral_constant<int, 5>,
+            void
+        >::type >::type >::type >::type >::type;
 
     // section 4.5 integral promotions
     template<class T>
     using integral_promotion = typename boost::mpl::if_c<
-        rank<T>::value < rank<local_int_type>::value,
+        (rank<T>::value < rank<local_int_type>::value),
         local_int_type,
         T
     >::type;
@@ -153,25 +213,25 @@ struct cpp {
 
     template<typename T, typename U>
     using result_type = usual_arithmetic_conversions<
-        integral_promotion<typename base_type<T>::type>,
-        integral_promotion<typename base_type<U>::type>
+        integral_promotion<T>,
+        integral_promotion<U>
     >;
 
     template<typename T, typename U>
     struct addition_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     template<typename T, typename U>
     struct subtraction_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     template<typename T, typename U>
     struct multiplication_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     template<typename T, typename U>
     struct division_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     // forward to correct divide implementation
     template<class R, class T, class U>
@@ -185,7 +245,7 @@ struct cpp {
 
     template<typename T, typename U>
     struct modulus_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     // forward to correct modulus implementation
     template<class R, class T, class U>
@@ -198,15 +258,15 @@ struct cpp {
     }
     template<typename T, typename U>
     struct left_shift_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     template<typename T, typename U>
     struct right_shift_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
     template<typename T, typename U>
     struct bitwise_result {
-       using type = typename result_type<T, U>::type;
+       using type = result_type<T, U>;
     };
 };
 

@@ -161,7 +161,9 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct subtraction_result {
-        using result_base_type = calculate_max_t<T, U>;
+        // subtraction can result in negative result regardless of the
+        // operand types !
+        using result_base_type = std::intmax_t;
         using t_base_type = typename base_type<T>::type;
         using u_base_type = typename base_type<U>::type;
 
@@ -326,34 +328,14 @@ struct automatic {
     template<typename T, typename U>
     struct left_shift_result {
         using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-
         constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+            base_value(std::numeric_limits<t_base_type>::min()),
+            base_value(std::numeric_limits<t_base_type>::max())
         };
-
-        constexpr static const interval<u_base_type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-        typedef calculate_max_t<T, U> max_t;
-
-        constexpr static const checked_result<interval< max_t>> r
-            = left_shift<max_t>(t_interval, u_interval);
-
-        constexpr static const interval<max_t> result_interval =
-            r.no_exception() ?
-                static_cast<interval<max_t>>(r)
-            :
-                interval< max_t>{}
-            ;
-
         using type = typename result_type<
-            max_t,
-            result_interval.l,
-            result_interval.u
+            T,
+            t_interval.l,
+            t_interval.u
         >::type;
     };
 
@@ -361,34 +343,14 @@ struct automatic {
     template<typename T, typename U>
     struct right_shift_result {
         using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-
         constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+            base_value(std::numeric_limits<t_base_type>::min()),
+            base_value(std::numeric_limits<t_base_type>::max())
         };
-
-        constexpr static const interval<u_base_type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-
-        typedef calculate_max_t<T, U> max_t;
-
-        constexpr static const checked_result<interval< max_t>> r
-            = right_shift<max_t>(t_interval, u_interval);
-
-        constexpr static const interval<max_t> result_interval =
-            r.no_exception() ?
-                static_cast<interval<max_t>>(r)
-            :
-                interval< max_t>{}
-            ;
-
         using type = typename result_type<
-            max_t,
-            result_interval.l,
-            result_interval.u
+            T,
+            t_interval.l,
+            t_interval.u
         >::type;
     };
 

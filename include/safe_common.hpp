@@ -57,7 +57,9 @@ using print_type = typename print_impl<Tx>::type;
 template<int N> 
 struct print_value
 {
-   enum test : char { value = N + 256 };
+    enum test : unsigned char {
+        value = N + 256
+    };
 };
 
 } // numeric

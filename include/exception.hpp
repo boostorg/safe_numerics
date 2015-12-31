@@ -31,7 +31,7 @@ enum class exception_type {
 
 template<class EP>
 constexpr void
-dispatch(const exception_type & e, char const * const msg){
+dispatch(const exception_type e, char const * const msg){
     switch(e){
     case exception_type::overflow_error:
         EP::overflow_error(msg);

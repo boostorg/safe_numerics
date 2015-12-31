@@ -42,7 +42,7 @@
 
     <programlisting>int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
-  || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - x)))) {
+  || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - y)))) {
     /* Handle error */
   }
   return x + y;
@@ -104,7 +104,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     arithmetic expression will yield incorrect results</emphasis>.</para>
   </section>
 
-  <section id="safe_numerics.introduction.summary">
+  <section id="safe_numerics.introduction.implementation">
     <title>Implementation</title>
 
     <para>All facilities modern C++ are employed to minimize runtime overhead
@@ -128,7 +128,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     numeric expressions is misleading.</para>
   </section>
 
-  <section>
+  <section id="safe_numerics.introduction.additional_features">
     <title>Additional Features</title>
 
     <para>Operation of safe types is determined by template parameters which
@@ -186,7 +186,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
           <para>Enforce of other program requirements using ranged integer
           types. The library includes types safe_..._range&lt;Min, Max&gt; and
           safe_literal(...). These types can be used to improve program
-          correctness and performance. </para>
+          correctness and performance.</para>
         </listitem>
       </itemizedlist></para>
   </section>

@@ -22,6 +22,7 @@
 
 #include <boost/logic/tribool.hpp>
 
+#include "utility.hpp" // log
 #include "checked_result.hpp"
 #include "checked.hpp"
 
@@ -295,6 +296,27 @@ constexpr checked_result<interval<R>> right_shift(
     });
 }
 
+template<typename R, typename T, typename U>
+constexpr checked_result<interval<R>> right_shift_positive(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    const U ul = std::max(std::initializer_list<U>{0, u.l});
+    const U uu = std::min(std::initializer_list<U>{
+        u.u,
+        boost::numeric::log(
+            std::numeric_limits<U>::max()
+        )
+    });
+
+    return select<R>( std::initializer_list<checked_result<R>> {
+        checked::right_shift<R>(t.l, ul),
+        checked::right_shift<R>(t.l, uu),
+        checked::right_shift<R>(t.u, ul),
+        checked::right_shift<R>(t.u, uu)
+    });
+}
+
 template<typename T, typename U>
 constexpr boost::logic::tribool operator<(
     const interval<T> & t,
@@ -392,5 +414,6 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<sign
 }
 
 } // std
+
 
 #endif // BOOST_NUMERIC_INTERVAL_HPP

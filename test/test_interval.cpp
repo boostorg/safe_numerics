@@ -45,6 +45,24 @@ bool test3(){
     return true;
 }
 
+template<bool ExpectedResult, typename T, typename U>
+bool test5(){
+    using namespace boost::numeric;
+    std::cout << "test5" << std::endl;
+    interval<T> t;
+    std::cout << "t = " << t << std::endl;
+    interval<U> u;
+    std::cout << "u = " << u << std::endl;
+    if(t.includes(u))
+        std::cout << "t includes u ";
+    if(u.includes(t))
+        std::cout << "u includes t";
+    if(!t.includes(u) && ! u.includes(t))
+        std::cout << "neither interval includes the other";
+    std::cout << std::endl;
+    return ExpectedResult == t.includes(u);
+}
+
 #include <limits>
 
 namespace test4 {
@@ -322,6 +340,9 @@ int main(){
         test1() &&
         test2() &&
         test3() &&
+        test5<true, std::int8_t, std::int8_t>() &&
+        test5<false, std::int8_t, std::int16_t>() &&
+        test5<true, std::int16_t, std::int8_t>() &&
         test4::test1() &&
         test4::test2() &&
         test4::test3() &&

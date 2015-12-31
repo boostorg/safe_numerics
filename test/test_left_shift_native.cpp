@@ -30,21 +30,21 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 //      01234567890123456789012345678901
 /* 0*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /* 1*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 2*/ ".xxx.xxx.xxx.xxx.xxx.xxxxxxxxxxx",
-/* 3*/ ".xxx.xxx.xxx.xxx.xxx.xxxxxxxxxxx",
+/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /* 4*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /* 5*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 6*/ ".xxx.xxx.xxx.xxx.xxx.xxxxxxxxxxx",
-/* 7*/ ".xxx.xxx.xxx.xxx.xxx.xxxxxxxxxxx",
+/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
 /* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /* 9*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*10*/ "xxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxx",
-/*11*/ ".xxx.xxx.xxx.xxx.xxx.xxxxxxxxxxx",
+/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*13*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*15*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxxxxxx",
+/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
 //      0       0       0       0
 //      01234567012345670123456701234567

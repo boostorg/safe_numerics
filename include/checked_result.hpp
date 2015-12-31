@@ -113,11 +113,18 @@ struct checked_result {
     constexpr bool exception() const {
         return m_e != exception_type::no_exception;
     }
+
+    template<class EP>
+    constexpr void
+    dispatch(){
+        EP(m_e, m_msg);
+    }
+
 };
 
 template<class EP, typename R>
 constexpr void
-dispatch(const checked_result<R> &cr){
+dispatch(const checked_result<R> & cr){
     dispatch<EP>(cr.m_e, cr.m_msg);
 }
 

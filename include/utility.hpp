@@ -18,17 +18,28 @@
 
 namespace boost {
 namespace numeric {
-
-    constexpr int ulog(boost::uintmax_t x){
+    template<typename T>
+    typename std::enable_if<
+        ! std::is_signed<T>::value,
+        unsigned int
+    >::type
+    constexpr log(T x){
         unsigned i = 0;
         for(; x > 0; ++i)
             x >>= 1;
         return i;
     }
-    constexpr int log(std::intmax_t x){
+    template<typename T>
+    typename std::enable_if<
+        std::is_signed<T>::value,
+        unsigned int
+    >::type
+    constexpr log(T x){
         if(x < 0)
             x = ~x;
-        return ulog(x) + 1;
+        return log(
+            static_cast<typename std::make_unsigned<T>::type>(x)
+        ) + 1;
     }
     template<
         std::intmax_t Min,
@@ -43,7 +54,7 @@ namespace numeric {
         std::uintmax_t Max
     >
     using unsigned_stored_type = typename boost::uint_t<
-        std::max(ulog(Min), ulog(Max))
+        std::max(log(Min), log(Max))
     >::least ;
 
 } // numeric

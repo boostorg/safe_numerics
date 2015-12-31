@@ -14,8 +14,7 @@
 
 #include <cstdint> // for intmax
 
-#include "safe_range.hpp"
-#include "native.hpp"
+#include "utility.hpp"
 
 namespace boost {
 namespace numeric {
@@ -81,10 +80,16 @@ public:
 };
 
 template<std::intmax_t N>
-using safe_literal = safe_literal_impl<std::intmax_t, N>;
+using safe_literal = safe_literal_impl<
+    typename boost::numeric::signed_stored_type<N, N>,
+    N
+>;
 
 template<std::uintmax_t N>
-using safe_unsigned_literal = safe_literal_impl<std::uintmax_t, N>;
+using safe_unsigned_literal = safe_literal_impl<
+    typename boost::numeric::unsigned_stored_type<N, N>,
+    N
+>;
 
 } // numeric
 } // boost

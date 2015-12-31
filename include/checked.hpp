@@ -105,8 +105,8 @@ namespace detail {
 
     // result unsigned
     template<class R>
-    typename boost::enable_if<
-        typename std::is_unsigned<R>,
+    typename boost::enable_if_c<
+        std::is_unsigned<R>::value,
         checked_result<R>
     >::type
     constexpr add(
@@ -127,8 +127,8 @@ namespace detail {
 
     // result signed
     template<class R>
-    typename boost::enable_if<
-        typename std::is_signed<R>,
+    typename boost::enable_if_c<
+        std::is_signed<R>::value,
         checked_result<R>
     >::type
     constexpr add(
@@ -538,39 +538,102 @@ constexpr modulus(
 
 namespace detail {
 
-template<class T, class U>
-constexpr checked_result<U> check_shift(
+template<class R, class T, class U>
+typename std::enable_if<
+    ! std::numeric_limits<U>::is_signed,
+    checked_result<R>
+>::type
+constexpr check_shift(
     const T & t,
     const U & u
 ) {
-    if(! std::numeric_limits<T>::is_integer){
-        return checked_result<U>(
-            exception_type::domain_error,
-            "shift operation can only be applied to integers"
-        );
-    }
-    if(! std::numeric_limits<U>::is_integer){
-        return checked_result<U>(
-            exception_type::domain_error,
-            "number of bits to shift must be an integer"
-        );
-    }
-    // INT34-CPP C++ standard paragraph 5.8
-    if(u < 0){
-        return checked_result<U>(
-           exception_type::domain_error,
-           "shifting negative amount is undefined behavior"
-        );
-    }
-    // INT34-CPP C++ standard paragraph 5.8
+    // INT34-C C++ standard paragraph 5.8
     if(u > std::numeric_limits<T>::digits){
-        return checked_result<U>(
+        return checked_result<R>(
            exception_type::domain_error,
            "shifting more bits than available is undefined behavior"
         );
     }
+    return cast<R>(t);
+}
 
-    return u;
+template<class R, class T, class U>
+typename std::enable_if<
+    std::numeric_limits<U>::is_signed,
+    checked_result<R>
+>::type
+constexpr check_shift(
+    const T & t,
+    const U & u
+) {
+    // INT34-C C++ standard paragraph 5.8
+    if(std::numeric_limits<U>::max() > std::numeric_limits<T>::digits){
+        if(u > std::numeric_limits<T>::digits){
+            return checked_result<R>(
+               exception_type::domain_error,
+               "shifting more bits than available is undefined behavior"
+            );
+        }
+    }
+    // INT34-C C++ standard paragraph 5.8
+    if(u < 0){
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting negative amount is undefined behavior"
+        );
+    }
+    return cast<R>(t);
+}
+
+template<class R, class U>
+typename std::enable_if<
+    ! std::numeric_limits<R>::is_signed,
+    checked_result<R>
+>::type
+constexpr left_shift(
+    const R & r,
+    const U & u
+){
+    return static_cast<R>(r << u);
+}
+
+template<class R, class U>
+typename std::enable_if<
+    std::numeric_limits<R>::is_signed,
+    checked_result<R>
+>::type
+constexpr left_shift(
+    const R & r,
+    const U & u
+){
+    // cannot shift negative values to the left
+    return (r < 0) ?
+        checked_result<R>(
+           exception_type::domain_error,
+           "shifting negative values off left is undefined"
+        )
+    :
+        checked_result<R>(r << u)
+    ;
+
+    /*
+    // if a negative value is shifted left, then it could all of
+    // a sudden change sign - we inhibit this here.
+    if(r < 0){
+        U ui = u;
+        R ri = r;
+        while(ui-- > 0){
+            ri <<= 1;
+            if(ri >= 0){
+                return checked_result<R>(
+                   exception_type::domain_error,
+                   "shifting negative values off left is undefined"
+                );
+            }
+        }
+    }
+    return r;
+    */
 }
 
 } // detail
@@ -581,30 +644,17 @@ constexpr checked_result<R> left_shift(
     const T & t,
     const U & u
 ) {
-    const checked_result<U> ux = detail::check_shift(t, u);
-    if(! ux.no_exception())
-        return checked_result<R>(ux.m_e, ux.m_msg);
+    // INT13-C Note: We don't enforce recommendation as acually written
+    // as it would break too many programs.  Specifically, we permit signed
+    // integer operands but require that they not be negative.  This we can only
+    // enforce at runtime.
 
-    //static_assert(u >= 0, "u cannot be negative");
-    const checked_result<R> rx = cast<R>(t);
+    const checked_result<R> rx = detail::check_shift<R>(t, u);
+
     if(! rx.no_exception())
         return rx;
 
-    R r = static_cast<R>(rx);
-    if(r < 0){
-        U ui = u;
-        while(ui-- > 0){
-            r <<= 1;
-            if(r >= 0){
-                return checked_result<R>(
-                   exception_type::domain_error,
-                   "shifting negative values off left is undefined"
-                );
-            }
-        }
-        return r;
-    }
-    return checked_result<R>(r << u);
+    return detail::left_shift<R>(rx, u);
 }
 
 // right shift
@@ -613,36 +663,63 @@ constexpr checked_result<R> right_shift(
     const T & t,
     const U & u
 ) {
-    const checked_result<U> ux = detail::check_shift(t, u);
-    if(! ux.no_exception())
-        return checked_result<R>(ux.m_e, ux.m_msg);
+    // INT13-C Note: We don't enforce recommendation as acually written
+    // as it would break too many programs.  Specifically, we permit signed
+    // integer operand but require that it not be negative.  This we can only
+    // enforce at runtime.
 
-    const checked_result<R> rx = cast<R>(t);
+    const checked_result<R> rx = detail::check_shift<R>(t, u);
+
     if(! rx.no_exception())
         return rx;
 
-    if(t < 0)
+    if(u > std::numeric_limits<T>::digits){
         return checked_result<R>(
            exception_type::domain_error,
-           "right shift cannot be applied to negative number"
+           "shifting more bits than available is undefined behavior"
         );
-
-    return checked_result<R>(static_cast<R>(rx) >> ux);
+    }
+    return static_cast<R>(rx) >> u;
 }
 
 ///////////////////////////////////
 // bitwise operations
+
+namespace detail {
+    // INT13-C Note: We don't enforce recommendation as acually written
+    // as it would break too many programs.  Specifically, we permit signed
+    // integer operand but require that it not be negative.  This we can only
+    // enforce at runtime.
+    template<typename T>
+    typename boost::enable_if<
+        typename std::is_signed<T>,
+        bool
+    >::type
+    check_bitwise_operand(const T & t){
+        return t >= 0;
+    }
+
+    template<typename T>
+    typename boost::disable_if<
+        typename std::is_signed<T>,
+        bool
+    >::type
+    check_bitwise_operand(const T & t){
+        return true;
+    }
+}
 
 template<class R, class T, class U>
 constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
 ) {
-    static_assert(
-        std::is_integral<T>::value && std::is_signed<T>::value
-        && std::is_integral<U>::value && std::is_signed<T>::value,
-        "only intrinsic unsigned integers permitted"
-    );
+    if(! detail::check_bitwise_operand(t))
+        return checked_result<R>(
+           exception_type::domain_error,
+           "bitwise operands cannot be negative"
+        );
+
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
@@ -659,11 +736,11 @@ constexpr checked_result<R> bitwise_and(
     const T & t,
     const U & u
 ) {
-    static_assert(
-        std::is_integral<T>::value && std::is_signed<T>::value
-        && std::is_integral<U>::value && std::is_signed<T>::value,
-        "only intrinsic unsigned integers permitted"
-    );
+    if(! detail::check_bitwise_operand(t))
+        return checked_result<R>(
+           exception_type::domain_error,
+           "bitwise operands cannot be negative"
+        );
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
@@ -680,11 +757,11 @@ constexpr checked_result<R> bitwise_xor(
     const T & t,
     const U & u
 ) {
-    static_assert(
-        std::is_integral<T>::value && std::is_signed<T>::value
-        && std::is_integral<U>::value && std::is_signed<T>::value,
-        "only intrinsic unsigned integers permitted"
-    );
+    if(! detail::check_bitwise_operand(t))
+        return checked_result<R>(
+           exception_type::domain_error,
+           "bitwise operands cannot be negative"
+        );
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
