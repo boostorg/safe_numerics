@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
+"http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
+<section>
+  <title>Case Study: Safety Critical Embedded Controller</title>
+
+  <para>Suppose we are given the task of creating stepper motor driver
+  software to drive a robotic hand to be used in micro surgery. The processor
+  that has been selected by the engineers is the PIC18F252 manufactured by
+  Microchip Corporation. On a processor this small, it's common to use a
+  mixture of 8, 16, and 32 bit data types in order to conserve memory space
+  and minimize memory footprint and runtime penalty.</para>
+
+  <para>Requirements:<itemizedlist>
+      <listitem>
+        <para>Algorithm must be verifiable.</para>
+      </listitem>
+
+      <listitem>
+        <para>Code must match the algorithm.</para>
+      </listitem>
+
+      <listitem>
+        <para>No user interface available.</para>
+      </listitem>
+
+      <listitem>
+        <para>No user input available.</para>
+      </listitem>
+
+      <listitem>
+        <para>No exceptional conditions such as interrupts permitted.</para>
+      </listitem>
+
+      <listitem>
+        <para>The system has no i/o other than a few pins to control the
+        stepper motor.</para>
+      </listitem>
+    </itemizedlist></para>
+
+  <para>Actually this is a pretty common scenario. The only difference in this
+  case are the extreme consequences associated with violations of the above
+  requirements. We will start making a basic working prototype. This we will
+  enhance in a stepwise fashion until all the above requirements are
+  met.</para>
+
+  <section>
+    <title>First Prototype</title>
+
+    <para>The engineers are still debugging the prototype boards and hope to
+    have them ready before the product actually ships. But this doesn't have
+    to keep us from working on our code. Searching around the net, we find a
+    popular <ulink
+    url="../../examples/Generate%20stepper-motor%20speed%20profiles%20in%20real%20time%20%7C%20Embedded.pdf">article</ulink>
+    on the operation of stepper motors using simple micro controllers. The
+    algorithm is very well explains and it includes a complete <ulink
+    url="../../examples/motor.c">code example we can test</ulink>. Starting
+    with the original code we make the following changes:<itemizedlist>
+        <listitem>
+          <para>We create a new file "</para>
+        </listitem>
+
+        <listitem>
+          <para/>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+</section>

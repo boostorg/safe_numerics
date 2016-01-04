@@ -24,10 +24,21 @@
 // ***********
 // RR factor out motor.c so motor code can be separated from tests
 // and other user code.
+
+// a) changed step_no and move to signed 16 bit integer types
+// b) replaced bit shifts by multiplications.  bit shifts are not
+//    guaranteed portable.  Decent compilers should implements
+//    const multiplications by powers of 2 as bit shifts anyway
+// c) changed c32 to 32 bit signed integer type
+// d) changed phase_inc to 8 bit signed type
+// e) factored phase index into phase_bump in order to have
+//    standard conforming code
+
 #include "motor.h"
 
 #if !defined(DESKTOP)
     #include "picsfr.h"
+    #define mod16 int16
 #else
     // define a memory map to emulate the on in the pic.  This permits all
     // same pic code to work on the desktop with no alteration
@@ -53,18 +64,18 @@
 int8  ramp_sts=ramp_idle;
 signed_int16 motor_pos = 0; // absolute step number
 signed_int16 pos_inc=0;     // motor_pos increment
-int16 phase=0;    // ccpPhase[phase_ix]  
-int8  phase_ix=0; // index to ccpPhase[]  
-int8  phase_inc;  // phase_ix increment
-int8  run_flg;    // true while motor is running
-int16 ccpr;       // copy of CCPR1&2
-int16 c;          // integer delay count
-int16 step_no;    // progress of move
-int16 step_down;  // start of down-ramp
-int16 move;       // total steps to move
-int16 midpt;      // midpoint of move
-int32 c32;        // 24.8 fixed point delay count
-signed_int16 denom; // 4.n+1 in ramp algo
+int16 phase=0;              // ccpPhase[phase_ix]
+int8  phase_ix=0;           // index to ccpPhase[]
+int8  phase_inc;            // phase_ix increment
+int8  run_flg;              // true while motor is running
+mod16 ccpr;                 // copy of CCPR1&2
+mod16 c;                    // integer delay count
+signed_int16 step_no;       // progress of move
+int16 step_down;            // start of down-ramp
+signed_int16 move;          // total steps to move
+int16 midpt;                // midpoint of move
+signed_int32 c32;           // 24.8 fixed point delay count
+signed_int16 denom;         // 4.n+1 in ramp algo
 
 // Config data to make CCP1&2 generate quadrature sequence on PHASE pins
 // Action on CCP match: 8=set+irq; 9=clear+irq
@@ -73,6 +84,23 @@ int16 const ccpPhase[] = {0x909, 0x908, 0x808, 0x809}; // 00,01,11,10
 void current_on(){/* code as needed */}  // motor drive current
 void current_off(){/* code as needed */} // reduce to holding value
 
+void phase_bump()
+{
+    if(phase_inc > 0)
+        if(phase_ix == 3)
+            phase_ix = 0;
+        else
+            ++phase_ix;
+    else
+    // phase_inc < 0
+        if(phase_ix == 0)
+            phase_ix = 3;
+        else
+            --phase_ix;
+    phase = ccpPhase[phase_ix];
+    CCP1CON = phase & 0xff; // set CCP action on next match
+    CCP2CON = phase >> 8;
+}
 // compiler-specific ISR declaration
 // #INT_CCP1
 void isr_motor_step() 
@@ -84,8 +112,8 @@ void isr_motor_step()
     if (step_no==midpt)
     { // midpoint: decel
       ramp_sts = ramp_down;
-      denom = ((step_no - move)<<2)+1;
-      if (!(move & 1)) 
+      denom = ((step_no - move) * 4) + 1;
+      if (!(move & 1))
       { // even move: repeat last delay before decel
         denom +=4;
         break;
@@ -99,9 +127,9 @@ void isr_motor_step()
       break;
     }
     denom+=4;
-    c32 -= (c32<<1)/denom; // ramp algorithm
+    c32 -= (c32 * 2) / denom; // ramp algorithm
     // beware confict with foreground code if long div not reentrant
-    c = (c32+128)>>8; // round 24.8format->int16
+    c = (c32 + 128) / 256; // round 24.8format->int16
     if (c <= C_MIN)
     { // go to constant speed
       ramp_sts = ramp_max;
@@ -114,7 +142,7 @@ void isr_motor_step()
     if (step_no == step_down)
     { // start decel
       ramp_sts = ramp_down;
-      denom = ((step_no - move)<<2)+5;
+      denom = ((step_no - move) * 4) + 5;
     }
     break;
   default: // last step: cleanup
@@ -130,21 +158,19 @@ void isr_motor_step()
     ++step_no;
     CCPR2H = CCPR1H = (ccpr >> 8); // timer value at next CCP match
     CCPR2L = CCPR1L = (ccpr & 0xff);
+
     if (ramp_sts!=ramp_last) // else repeat last action: no step
-	    phase_ix = (phase_ix + phase_inc) & 3;
-    phase = ccpPhase[phase_ix];
-    CCP1CON = phase & 0xff; // set CCP action on next match
-    CCP2CON = phase >> 8;
+      phase_bump();
   } // if (ramp_sts != ramp_idle)
 } // isr_motor_step()
 
-void motor_run(short pos_new)
+void motor_run(int16 pos_new)
 { // set up to drive motor to pos_new (absolute step#)
   if (pos_new < motor_pos) // get direction & #steps
   {
     move = motor_pos-pos_new;
     pos_inc   = -1;
-    phase_inc = 0xff;
+    phase_inc = -1;
   } 
   else if (pos_new != motor_pos)
   { 
@@ -155,7 +181,7 @@ void motor_run(short pos_new)
   else return; // already there
   midpt = (move-1)>>1;
   c   = C0;
-  c32 = c<<8; // keep c in 24.8 fixed-point format for ramp calcs
+  c32 = c * 256; // keep c in 24.8 fixed-point format for ramp calcs
   step_no  = 0; // step counter
   denom    = 1; // 4.n+1, n=0
   ramp_sts = ramp_up; // start ramp state-machine
@@ -165,10 +191,7 @@ void motor_run(short pos_new)
   ccpr += 1000; // 1st step + irq 1ms after timer1 restart
   CCPR2H = CCPR1H = (ccpr >> 8);
   CCPR2L = CCPR1L = (ccpr & 0xff);
-  phase_ix = (phase_ix + phase_inc) & 3;
-  phase = ccpPhase[phase_ix];
-  CCP1CON = phase & 0xff; // sets action on match
-  CCP2CON = phase >> 8;
+  phase_bump();
   current_on(); // current in motor windings
   enable_interrupts(INT_CCP1); 
   TMR1ON=1; // restart timer1;

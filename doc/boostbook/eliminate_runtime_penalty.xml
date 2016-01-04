@@ -5,11 +5,11 @@
   <title>Eliminating Runtime Penalty</title>
 
   <para>Up until now, we've focused on detecting when incorrect results are
-  produced and handling these occurances either by throwing an exception or
+  produced and handling these occurrences either by throwing an exception or
   invoking some designated function. We've achieved our goal of enforcing
-  arithmetically correct behavior - but at what cost. For many C++ programers
+  arithmetically correct behavior - but at what cost. For many C++ programmers
   any runtime penalty is unacceptable. Whether or not one agrees with this
-  tradeoff, its a fact that many C++ programmers feel this way. So the
+  trade off, its a fact that many C++ programmers feel this way. So the
   question arises as to how we alter our program to minimize or eliminate any
   runtime penalty.</para>
 
@@ -116,7 +116,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
           <link linkend="safe_numerics.trap_exception"><code>"trap_exception"
-          exception policy</code></link> enforces this guarentee</para>
+          exception policy</code></link> enforces this guarantee</para>
         </listitem>
 
         <listitem>
@@ -285,7 +285,7 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
           <para>When variables are read from the console and assigned to
           safe_t variables x and y, they are checked for legal values. We need
           at hoc code to do this, as these types are guaranteed to contain
-          legal values and will throw an exception when this guarentee is
+          legal values and will throw an exception when this guarantee is
           violated. In other words, we automatically get checking of input
           variables with no additional programming.</para>
         </listitem>

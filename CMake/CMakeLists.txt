@@ -201,8 +201,6 @@ file(GLOB example_list
   "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
 )
 
-list(REMOVE_ITEM example_list "../examples/example91.cpp")
-
 foreach(file_path ${example_list})
   string(REPLACE "../examples/" "" file_name ${file_path})
   string(REPLACE ".cpp" "" base_name ${file_name})
@@ -211,19 +209,6 @@ foreach(file_path ${example_list})
   # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
   add_test(NAME ${base_name} COMMAND ${base_name})
 endforeach(file_path)
-
-add_executable(example91
-    ../examples/example91.cpp
-    ../examples/motor.h
-    ../examples/18F252.h
-)
-set_source_files_properties(motor1.c motor.h 18F252.h PROPERTIES LANGUAGE CXX )
-
-target_include_directories(example91 PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/mylib>
-  $<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
-)
-message(STATUS "example91" )
 
 set_target_properties(test_z example84 PROPERTIES
     EXCLUDE_FROM_ALL TRUE

@@ -40,6 +40,9 @@ constexpr checked_result<R>
 cast(
     const T & t
 ) {
+    // INT31-C requires that integer conversions, both implicit
+    // and explicit (using a cast),must be guaranteed not to result
+    // in lost or misinterpreted data [Seacord 2008].
     return
     std::numeric_limits<R>::is_signed ?
         // T is signed
@@ -606,6 +609,7 @@ constexpr left_shift(
     const R & r,
     const U & u
 ){
+    // INT13-C. Use bitwise operators only on unsigned operands
     // cannot shift negative values to the left
     return (r < 0) ?
         checked_result<R>(

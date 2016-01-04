@@ -25,7 +25,13 @@ using int32 = safe_t<std::uint32_t>;
 using uint8 = safe_t<std::uint8_t>;
 using uint16 = safe_t<std::uint16_t>;
 using uint32 = safe_t<std::uint32_t>;
+using signed_int8 = safe_t<std::int8_t>;
 using signed_int16 = safe_t<std::int16_t>;
+using signed_int32 = safe_t<std::int32_t>;
+
+// define special type for unsigned modulo N integers
+using mod16 = boost::uint_t<16>::exact;
+using mod8 = boost::uint_t<8>::exact;
 
 // implement equivalent to #bit in C++
 

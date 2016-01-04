@@ -20,6 +20,7 @@
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/or.hpp>
+#include <boost/mpl/not.hpp>
 #include <boost/mpl/identity.hpp>
 
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
@@ -65,11 +66,12 @@ template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
 constexpr Stored safe_base<Stored, Min, Max, P, E>::
 validated_cast(const T & t) const {
-    constexpr const interval<typename base_type<T>::type> t_interval(
+    using t_base_type = typename base_type<T>::type;
+    constexpr const interval<t_base_type> t_interval{
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
-    );
-    constexpr const interval<Stored> this_interval{};
+    };
+    constexpr const interval<Stored> this_interval(Min, Max);
     // if static values don't overlap, the program can never function
     static_assert(
         indeterminate(t_interval < this_interval),
@@ -126,7 +128,6 @@ operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
 
 /////////////////////////////////////////////////////////////////
 // casting operators
-
 template<typename R, typename E>
 struct cast_detail {
     struct exception_possible {
@@ -295,8 +296,7 @@ struct addition_result {
 
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
-    constexpr static const checked_result<interval<result_base_type>> r_interval
-        = add<result_base_type>(t_interval, u_interval);
+    constexpr static const checked_result<interval<result_base_type>> r_interval = add<result_base_type>(t_interval, u_interval);
 
     constexpr static bool exception_possible() {
         return ! r_interval.no_exception();
@@ -1267,22 +1267,25 @@ struct bitwise_and_result {
             u_base_type
         >::type;
 
-    using xtype =
-        typename boost::mpl::if_c<
-            sizeof(t_base_type) < sizeof(u_base_type),
-            T,
-            U
-        >::type;
-
-    constexpr static const interval<u_base_type> result_interval {
-        base_value(std::numeric_limits<xtype>::min()),
-        base_value(std::numeric_limits<xtype>::max())
+    constexpr static const interval<t_base_type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
     };
+
+    constexpr static const interval<u_base_type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const checked_result<interval<result_base_type>>
+        result_interval = intersection<result_base_type>(t_interval, u_interval);
+
+    static_assert(result_interval.no_exception(), "null intersection");
 
     using type = safe_base<
             result_base_type,
-            result_interval.l,
-            result_interval.u,
+            result_interval.m_r.l,
+            result_interval.m_r.u,
             promotion_policy,
             exception_policy
         >;

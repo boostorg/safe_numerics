@@ -317,6 +317,23 @@ constexpr checked_result<interval<R>> right_shift_positive(
     });
 }
 
+template<typename R, typename T, typename U>
+constexpr checked_result<interval<R>> intersection(
+    const interval<T> & t,
+    const interval<U> & u
+){
+
+    const R rl = std::max(std::initializer_list<R>{t.l, u.l});
+    const R ru = std::min(std::initializer_list<R>{t.u, u.u});
+
+    if(rl > ru)
+        return checked_result<interval<R>>(
+            exception_type::uninitialized,
+            "null intersection"
+        );
+    return interval<R>(rl, ru);
+}
+
 template<typename T, typename U>
 constexpr boost::logic::tribool operator<(
     const interval<T> & t,

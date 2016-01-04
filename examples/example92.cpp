@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <limits>
+#include <boost/integer.hpp>
 
 #include "../include/cpp.hpp"
 #include "../include/automatic.hpp"
@@ -46,47 +47,39 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
     boost::numeric::throw_exception // use for compiling and running tests
 >;
 
-// define a macro for literal types.  This may not be strictly necessary
-// but it provides more information at compile time to the safe numerics
-// library which may result in faster code.
-//#define literal(x) boost::numeric::safe_literal<x>{}
-#define literal(x) x
-
 #define DESKTOP
-#include "motor1.c"
+#include "motor2.c"
 
 #include <chrono>
 #include <thread>
+
+void test(int16 m){
+    std::cout << "move motor to " << m << '\n';
+    int i = 0;
+    motor_run(m);
+    do{
+        isr_motor_step();
+        std::cout << ++i << ' ' << c32 << ' ' << c << '\n';
+        std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
+    }while(run_flg);
+}
 
 int main()
 {
     std::cout << "start test\n";
     try{
         initialize();
-        motor_run(literal(100));
-        do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
-            isr_motor_step();
-        }while (run_flg);
-
+        // move motor to position 100
+        test(100);
         // move motor to position 1000
-        motor_run(literal(1000));
-        do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
-            isr_motor_step();
-        }while (run_flg);
-
+        //test(1000);
         // move back to position 0
-        motor_run(literal(0));
-        do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
-            isr_motor_step();
-        }while (run_flg);
+        test(0);
     }
     catch(...){
         std::cout << "test interrupted\n";
         return 1;
     }
     std::cout << "end test\n";
-    return literal(0);
+    return 0;
 } 

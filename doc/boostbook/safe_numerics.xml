@@ -302,6 +302,32 @@
           replacement for T so it has to implement all the operations.</para>
         </answer>
       </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>According to C/C++ standards, unsigned integers cannot
+          overflow - they are modular integers which "warp around". Yet the
+          safe numerics library detects and traps this behavior as errors. Why
+          is that?</para>
+        </question>
+
+        <answer>
+          <para>The guiding purpose of the library is to trap incorrect
+          arithmetic behavior - not just undefined behavior. Although a savvy
+          user may understand and keep present in his mind that an unsigned
+          integer is really modular type, the plain reading of an arithmetic
+          expression conveys the idea that all operands are plain integers.
+          Also in many cases, unsigned integers are used in cases where
+          modular arithmetic is not intended, such as array indexes. Finally,
+          the modulus for such an integer would vary depending upon the
+          machine architecture. For these reasons, in the context of this
+          library, an unsigned integer is considered to a representation of a
+          subset of integers which is expected to provide correct integer
+          results. Note that this decision is consistent with INT30-C, “Ensure
+          that unsigned integer operations do not wrap” in the CERT C Secure
+          Coding Standard [Seacord 2008]..</para>
+        </answer>
+      </qandaentry>
     </qandaset>
   </section>
 
@@ -658,6 +684,94 @@
       <abstract>
         <para>Posts of various authors regarding proposal to add safe integer
         to C++ standard libraries</para>
+      </abstract>
+    </biblioentry>
+
+    <issuenum/>
+
+    <biblioentry>
+      <author>
+        <surname>Jad Mouawad</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.nytimes.com/2015/05/01/business/faa-orders-fix-for-possible-power-loss-in-boeing-787.html?_r=0">F.A.A
+          Orders Fix for Possible Power Loss in Boeing 787</ulink>
+        </ulink>
+      </title>
+
+      <publishername>New York Times</publishername>
+
+      <date>April 30, 2015</date>
+
+      <abstract>
+        <para>Federal regulators will order operators of Boeing 787
+        Dreamliners to shut down the plane’s electrical power periodically
+        after Boeing discovered a software error that could result in a total
+        loss of power.</para>
+      </abstract>
+    </biblioentry>
+
+    <biblioentry>
+      <authorgroup>
+        <author>
+          <firstname>David</firstname>
+
+          <surname>Keaton</surname>
+        </author>
+
+        <author>
+          <firstname>Thomas</firstname>
+
+          <surname>Plum</surname>
+        </author>
+
+        <author>
+          <firstname>Robert</firstname>
+
+          <othername>C.</othername>
+
+          <surname>Seacord</surname>
+        </author>
+
+        <author>
+          <firstname>David</firstname>
+
+          <surname>Svoboda</surname>
+        </author>
+
+        <author>
+          <firstname>Alex</firstname>
+
+          <surname>Volkovitsky</surname>
+        </author>
+
+        <author>
+          <firstname>Timothy</firstname>
+
+          <surname>Wilson</surname>
+        </author>
+      </authorgroup>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://resources.sei.cmu.edu/asset_files/TechnicalNote/2009_004_001_15074.pdf">As-if
+          Infinitely Ranged Integer Model</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.sei.cmu.edu">Software Engineering
+        Institute</ulink>
+      </publishername>
+
+      <issuenum>CMU/SEI-2009-TN-023</issuenum>
+
+      <abstract>
+        <para>Presents a model for addressing integer overflow errors.</para>
       </abstract>
     </biblioentry>
   </section>
