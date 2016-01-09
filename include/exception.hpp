@@ -49,7 +49,6 @@ dispatch(const exception_type e, char const * const msg){
         EP::domain_error(msg);
         break;
     case exception_type::no_exception:
-        EP::no_error(msg);
         break;
     default:
         assert(false);

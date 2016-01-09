@@ -54,12 +54,11 @@ bool test5(){
     interval<U> u;
     std::cout << "u = " << u << std::endl;
     if(t.includes(u))
-        std::cout << "t includes u ";
+        std::cout << "t includes u\n";
     if(u.includes(t))
-        std::cout << "u includes t";
+        std::cout << "u includes t\n";
     if(!t.includes(u) && ! u.includes(t))
-        std::cout << "neither interval includes the other";
-    std::cout << std::endl;
+        std::cout << "neither interval includes the other\n";
     return ExpectedResult == t.includes(u);
 }
 
@@ -343,6 +342,9 @@ int main(){
         test5<true, std::int8_t, std::int8_t>() &&
         test5<false, std::int8_t, std::int16_t>() &&
         test5<true, std::int16_t, std::int8_t>() &&
+        test5<true, std::uint8_t, std::uint8_t>() &&
+        test5<false, std::uint8_t, std::uint16_t>() &&
+        test5<true, std::uint16_t, std::uint8_t>() &&
         test4::test1() &&
         test4::test2() &&
         test4::test3() &&

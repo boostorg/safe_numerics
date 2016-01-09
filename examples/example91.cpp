@@ -46,12 +46,6 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
     boost::numeric::throw_exception // use for compiling and running tests
 >;
 
-// define a macro for literal types.  This may not be strictly necessary
-// but it provides more information at compile time to the safe numerics
-// library which may result in faster code.
-//#define literal(x) boost::numeric::safe_literal<x>{}
-#define literal(x) x
-
 #define DESKTOP
 #include "motor1.c"
 
@@ -63,30 +57,34 @@ int main()
     std::cout << "start test\n";
     try{
         initialize();
-        motor_run(literal(100));
+        motor_run(100);
         do{
             std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
             isr_motor_step();
         }while (run_flg);
 
         // move motor to position 1000
-        motor_run(literal(1000));
+        motor_run(1000);
         do{
             std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
             isr_motor_step();
         }while (run_flg);
 
         // move back to position 0
-        motor_run(literal(0));
+        motor_run(0);
         do{
             std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
             isr_motor_step();
         }while (run_flg);
+    }
+    catch(std::exception & e){
+        std::cout << e.what() << '\n';
+        return 1;
     }
     catch(...){
         std::cout << "test interrupted\n";
         return 1;
     }
     std::cout << "end test\n";
-    return literal(0);
+    return 0;
 } 

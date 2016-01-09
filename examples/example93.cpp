@@ -37,27 +37,33 @@ using pic16_promotion = boost::numeric::cpp<
 template <typename T> // T is char, int, etc data type
 using safe_t = boost::numeric::safe<
     T,
-    boost::numeric::automatic,
-    boost::numeric::trap_exception // use for compiling and running tests
+    pic16_promotion,
+    boost::numeric::throw_exception // use for compiling and running tests
 >;
 using safe_bool_t = boost::numeric::safe_unsigned_range<
     0,
     1,
     pic16_promotion,
-    boost::numeric::trap_exception // use for compiling and running tests
+    boost::numeric::throw_exception // use for compiling and running tests
 >;
 
 using step_t = boost::numeric::safe_signed_range<
     0,
     1000,
-    boost::numeric::automatic,
-    boost::numeric::trap_exception
+    pic16_promotion,
+    boost::numeric::throw_exception
 >;
 using denom_t = boost::numeric::safe_signed_range<
     1,
     4001,
-    boost::numeric::automatic,
-    boost::numeric::trap_exception
+    pic16_promotion,
+    boost::numeric::throw_exception
+>;
+using phase_ix_t = boost::numeric::safe_unsigned_range<
+    0,
+    3,
+    pic16_promotion,
+    boost::numeric::throw_exception
 >;
 
 #define literal(x) boost::numeric::safe_literal<x>{}
@@ -68,7 +74,7 @@ using denom_t = boost::numeric::safe_signed_range<
 #include <chrono>
 #include <thread>
 
-void test(int16 m){
+void test(step_t m){
     std::cout << "move motor to " << m << '\n';
     int i = 0;
     motor_run(m);
@@ -76,7 +82,7 @@ void test(int16 m){
         isr_motor_step();
         std::cout << ++i << ' ' << c32 << ' ' << c << '\n';
         std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
-    }while(run_flg);
+    }while(true == run_flg);
 }
 
 int main()
@@ -85,11 +91,15 @@ int main()
     try{
         initialize();
         // move motor to position 100
-        test(100);
+        test(literal(100));
         // move motor to position 1000
         //test(1000);
         // move back to position 0
-        test(0);
+        test(literal(0));
+    }
+    catch(std::exception & e){
+        std::cout << e.what() << '\n';
+        return 1;
     }
     catch(...){
         std::cout << "test interrupted\n";

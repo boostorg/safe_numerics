@@ -28,13 +28,13 @@ namespace safe_compare {
 // safe comparison on primitive types
 namespace detail {
     template<typename T>
-    struct make_unsigned {
-        typedef typename boost::mpl::eval_if_c<
-            std::numeric_limits<T>::is_signed,
-            typename std::make_unsigned<T>,
-            typename boost::mpl::identity<T>
-        >::type type;
-    };
+    using make_unsigned = typename boost::mpl::if_c<
+        //std::numeric_limits<T>::is_signed,
+        std::is_signed<T>::value,
+        std::make_unsigned<T>,
+        boost::mpl::identity<T>
+    >::type;
+
     // both arguments unsigned or signed
     template<bool TS, bool US>
     struct less_than {
@@ -81,8 +81,8 @@ namespace detail {
 template<class T, class U>
 constexpr bool less_than(const T & lhs, const U & rhs) {
     return detail::less_than<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
+        std::is_signed<T>::value,
+        std::is_signed<U>::value
     >::template invoke(lhs, rhs);
 }
 
@@ -160,6 +160,7 @@ constexpr bool not_equal(const T & lhs, const U & rhs) {
         std::numeric_limits<U>::is_signed
     >::template invoke(lhs, rhs);
 }
+
 
 } // safe_compare
 } // numeric

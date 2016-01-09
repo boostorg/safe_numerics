@@ -301,13 +301,10 @@ constexpr checked_result<interval<R>> right_shift_positive(
     const interval<T> & t,
     const interval<U> & u
 ){
-    const U ul = std::max(std::initializer_list<U>{0, u.l});
-    const U uu = std::min(std::initializer_list<U>{
-        u.u,
-        boost::numeric::log(
-            std::numeric_limits<U>::max()
-        )
-    });
+    const U ul = safe_compare::greater_than(0, u.l) ? 0 : u.l;
+
+    const U ux = boost::numeric::log(std::numeric_limits<U>::max());
+    const U uu = safe_compare::less_than(u.u, ux) ? u.u : ux;
 
     return select<R>( std::initializer_list<checked_result<R>> {
         checked::right_shift<R>(t.l, ul),
@@ -322,15 +319,32 @@ constexpr checked_result<interval<R>> intersection(
     const interval<T> & t,
     const interval<U> & u
 ){
+    const R rl = safe_compare::greater_than(t.l, u.l) ? t.l : u.l;
+    const R ru = safe_compare::less_than(t, u) ? t.u : u.u;
 
-    const R rl = std::max(std::initializer_list<R>{t.l, u.l});
-    const R ru = std::min(std::initializer_list<R>{t.u, u.u});
-
-    if(rl > ru)
+    if(safe_compare::greater_than(rl, ru)){
         return checked_result<interval<R>>(
             exception_type::uninitialized,
             "null intersection"
         );
+    }
+    return interval<R>(rl, ru);
+}
+
+template<typename R, typename T, typename U>
+constexpr checked_result<interval<R>> union_interval(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    const R rl = safe_compare::less_than(t.l, u.l) ? t.l : u.l;
+    const R ru = safe_compare::greater_than(t, u) ? t.u : u.u;
+
+    if(safe_compare::greater_than(rl, ru)){
+        return checked_result<interval<R>>(
+            exception_type::uninitialized,
+            "null intersection"
+        );
+    }
     return interval<R>(rl, ru);
 }
 
@@ -341,11 +355,11 @@ constexpr boost::logic::tribool operator<(
 ){
     return
         // if every element in t is less than every element in u
-        safe_compare::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
+        safe_compare::less_than(t.u, u.l) ?
             boost::logic::tribool(true)
         :
         // if every element in t is greater than every element in u
-        safe_compare::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+        safe_compare::greater_than(t.l, u.u) ?
             boost::logic::tribool(false)
         :
         // otherwise some element(s) in t are greater than some element in u
@@ -360,11 +374,11 @@ constexpr boost::logic::tribool operator>(
 ){
     return
         // if every element in t is greater than every element in u
-        safe_compare::greater_than(static_cast<T>(t.l), static_cast<U>(u.u)) ?
+        safe_compare::greater_than(t.l, u.u) ?
             boost::logic::tribool(true)
         :
         // if every element in t is less than every element in u
-        safe_compare::less_than(static_cast<T>(t.u), static_cast<U>(u.l)) ?
+        safe_compare::less_than(t.u, u.l) ?
             boost::logic::tribool(false)
         :
         // otherwise some element(s) in t are greater than some element in u
@@ -378,7 +392,8 @@ constexpr bool operator==(
     const interval<U> & u
 ){
     // intervals have the same limits
-    return (t.l == u.l && t.u == u.u) ;
+    return safe_compare::equal(t.l, u.l)
+    && safe_compare::equal(t.u, u.u) ;
 }
 
 template<typename T, typename U>

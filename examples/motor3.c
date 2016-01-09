@@ -33,6 +33,7 @@
 // d) changed phase_inc to 8 bit signed type
 // e) factored phase index into phase_bump in order to have
 //    standard conforming code
+// f) limited phase_ix to 0-3
 
 #include "motor3.h"
 
@@ -61,15 +62,12 @@
 #define ramp_down literal(3)
 #define ramp_last literal(4)
 
-
-
 // Types: int8,int16,int32=8,16,32bit integers, unsigned by default
 int8  ramp_sts=ramp_idle;
 step_t motor_pos = literal(0); // absolute step number
 step_t pos_inc = literal(0);   // motor_pos increment
 int16 phase = literal(0);      // ccpPhase[phase_ix]
-int8  phase_ix = literal(0);   // index to ccpPhase[]
-int8  phase_inc;               // phase_ix increment
+signed_int8  phase_inc;               // phase_ix increment
 int8  run_flg;                 // true while motor is running
 mod16 ccpr;                    // copy of CCPR1&2
 mod16 c;                       // integer delay count
@@ -88,6 +86,7 @@ int16 const ccpPhase[] = {
     literal(0x808),
     literal(0x809)
 }; // 00,01,11,10
+phase_ix_t  phase_ix = literal(0);   // index to ccpPhase[]
 
 void current_on(){/* code as needed */}  // motor drive current
 void current_off(){/* code as needed */} // reduce to holding value
@@ -194,7 +193,7 @@ void motor_run(step_t pos_new)
   denom    = literal(1); // 4.n+1, n=0
   ramp_sts = ramp_up; // start ramp state-machine
   run_flg  = literal(TRUE);
-  TMR1ON   = 0; // stop timer1;
+  TMR1ON   = literal(0); // stop timer1;
   ccpr = make16(TMR1H,TMR1L);  // 16bit value of Timer1
   ccpr += 1000; // 1st step + irq 1ms after timer1 restart
   CCPR2H = CCPR1H = (ccpr >> 8);
@@ -202,7 +201,7 @@ void motor_run(step_t pos_new)
   phase_bump();
   current_on(); // current in motor windings
   enable_interrupts(INT_CCP1); 
-  TMR1ON=1; // restart timer1;
+  TMR1ON=literal(1); // restart timer1;
 } // motor_run()
 
 void initialize()

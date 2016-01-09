@@ -76,6 +76,10 @@ int main()
         // move back to position 0
         test(0);
     }
+    catch(std::exception & e){
+        std::cout << e.what() << '\n';
+        return 1;
+    }
     catch(...){
         std::cout << "test interrupted\n";
         return 1;

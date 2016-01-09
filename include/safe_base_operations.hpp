@@ -37,29 +37,31 @@ namespace numeric {
 /////////////////////////////////////////////////////////////////
 // validation
 
-template<typename E>
+template<typename R, typename E>
 struct validate_detail {
-    // exception possible
-    template<typename Stored, Stored Min, Stored Max, typename T>
-    constexpr static Stored return_value(
-        const T & t, std::true_type
-    ){
-        // INT08-C
-        if(! interval<Stored>().includes(t))
-            E::range_error("Value out of range for this safe type");
-        checked_result<Stored> r = checked::cast<Stored>(t);
-        if(!r.no_exception()){
-            E::domain_error("Stored type cannot hold argument");
+    struct exception_possible {
+        template<typename T>
+        constexpr static R return_value(
+            const T & t,
+            const interval<R> & this_interval
+        ){
+            // INT08-C
+            if(! this_interval.includes(t))
+                E::range_error("Value out of range for this safe type");
+            checked_result<R> r = checked::cast<R>(t);
+            assert(r.no_exception());
+            return r;
         }
-        return static_cast<Stored>(r);
-    }
-    // exception not possible
-    template<typename Stored, Stored Min, Stored Max, typename T>
-    constexpr static Stored return_value(
-        const T & t, std::false_type
-    ){
-        return static_cast<Stored>(t);
-    }
+    };
+    struct exception_not_possible {
+        template<typename T>
+        constexpr static R return_value(
+            const T & t,
+            const interval<R> & this_interval
+        ){
+            return static_cast<R>(t);
+        }
+    };
 };
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
@@ -77,13 +79,11 @@ validated_cast(const T & t) const {
         indeterminate(t_interval < this_interval),
         "safe type cannot be constructed with this type"
     );
-    return validate_detail<E>::template return_value<Stored, Min, Max>(
-        base_value(t),
-        typename std::integral_constant<
-            bool,
-            ! this_interval.includes(t_interval)
-        >()
-    );
+    return boost::mpl::if_c<
+        this_interval.includes(t_interval),
+        typename validate_detail<Stored, E>::exception_not_possible,
+        typename validate_detail<Stored, E>::exception_possible
+    >::type::template return_value(base_value(t), this_interval);
 }
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
@@ -128,30 +128,6 @@ operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs){
 
 /////////////////////////////////////////////////////////////////
 // casting operators
-template<typename R, typename E>
-struct cast_detail {
-    struct exception_possible {
-        template<typename T>
-        constexpr static R
-        return_value(const T & t){
-            if(! interval<R>().includes(t))
-                E::range_error("Value out of range for this safe type");
-            checked_result<R> r = checked::cast<R>(t);
-            if(!r.no_exception())
-                E::domain_error("Stored type cannot hold argument");
-            return static_cast<R>(r);
-        }
-    };
-
-    struct exception_not_possible {
-        template<typename T>
-        constexpr static R
-        return_value(const T & t){
-            return t;
-        }
-    };
-};
-
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
@@ -162,14 +138,18 @@ template<
 >
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
-    constexpr interval<R> r_interval;
-    constexpr interval<Stored> this_interval(Min, Max);
-
+    constexpr const interval<R> r_interval;
+    constexpr const interval<Stored> this_interval(Min, Max);
+    // if static values don't overlap, the program can never function
+    static_assert(
+        indeterminate(r_interval < this_interval),
+        "safe type cannot be constructed with this type"
+    );
     return boost::mpl::if_c<
         r_interval.includes(this_interval),
-        typename cast_detail<R, E>::exception_not_possible,
-        typename cast_detail<R, E>::exception_possible
-    >::type::return_value(m_t);
+        typename validate_detail<R, E>::exception_not_possible,
+        typename validate_detail<R, E>::exception_possible
+    >::type::template return_value(m_t, r_interval);
 }
 
 template< class Stored, Stored Min, Stored Max, class P, class E>
@@ -1267,25 +1247,24 @@ struct bitwise_and_result {
             u_base_type
         >::type;
 
-    constexpr static const interval<t_base_type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
+    constexpr static interval<std::uint8_t> t_b {
+        0u,
+        log(base_value(std::numeric_limits<T>::max()))
+    };
+    constexpr static interval<std::uint8_t> u_b {
+        0u,
+        log(base_value(std::numeric_limits<U>::max()))
     };
 
-    constexpr static const interval<u_base_type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    };
+    constexpr static const checked_result<interval<std::uint8_t>>
+        r_b = intersection<std::uint8_t>(t_b, u_b);
 
-    constexpr static const checked_result<interval<result_base_type>>
-        result_interval = intersection<result_base_type>(t_interval, u_interval);
-
-    static_assert(result_interval.no_exception(), "null intersection");
+    static_assert(r_b.no_exception(), "null intersection");
 
     using type = safe_base<
             result_base_type,
-            result_interval.m_r.l,
-            result_interval.m_r.u,
+            1 << r_b.m_r.l,
+            (1 << r_b.m_r.u) - 1,
             promotion_policy,
             exception_policy
         >;

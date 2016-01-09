@@ -215,7 +215,7 @@ set_target_properties(test_z example84 PROPERTIES
     EXCLUDE_FROM_DEFAULT_BUILD TRUE
 )
 
-set_target_properties(example81 PROPERTIES
+set_target_properties(example81 example91 example92 PROPERTIES
     WILL_FAIL TRUE
 )
 

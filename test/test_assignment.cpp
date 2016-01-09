@@ -194,11 +194,11 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
 #include "test_types.hpp"
 #include "test_values.hpp"
 
-#define TEST_ASSIGNMENT(T1, v)        \
-    test_assignment<T1>(              \
-        v,                            \
-        BOOST_PP_STRINGIZE(T1),       \
-        BOOST_PP_STRINGIZE(v)         \
+#define TEST_ASSIGNMENT(T1, v)          \
+    rval = rval && test_assignment<T1>( \
+        v,                              \
+        BOOST_PP_STRINGIZE(T1),         \
+        BOOST_PP_STRINGIZE(v)           \
     );
 /**/
 
@@ -217,11 +217,13 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
     )                                              \
 /**/
 int main(int argc, char *argv[]){
+    bool rval = true;
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),
         EACH_TYPE1,
         nothing
     )
-    return 0;
+    std::cout << (rval ? "success!" : "failure") << std::endl;
+    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 

@@ -57,6 +57,7 @@ namespace numeric {
         std::max(log(Min), log(Max))
     >::least ;
 
+
 } // numeric
 } // boost
 

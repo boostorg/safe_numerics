@@ -14,12 +14,12 @@ void display_log(T Max){
 
 bool test_log(){
     using namespace boost::numeric;
-    assert(log(127u) == 7); // 7 bits
-    assert(log(127u) == 7); // 7 bits
-    assert(log(128u) == 8); // 8 bits
-    assert(log(129u) == 8); // 8 bits
-    assert(log(255u) == 8); // 8 bits
-    assert(log(256u) == 9); // 9 bits
+    assert(ulog(127u) == 7); // 7 bits
+    assert(ulog(127u) == 7); // 7 bits
+    assert(ulog(128u) == 8); // 8 bits
+    assert(ulog(129u) == 8); // 8 bits
+    assert(ulog(255u) == 8); // 8 bits
+    assert(ulog(256u) == 9); // 9 bits
 
     assert(log(127) == 8); // 7 bits + 1 sign bit
     assert(log(128) == 9); // 8 bits + 1 sign bit
@@ -103,12 +103,14 @@ int main(){
     //safe_signed_literal2<100> one_hundred;
     //one_hundred = 200;
 
-    return (
+    bool rval = 
         test_log() &&
         test1() &&
         test2() /* &&
         test3() &&
         test4()
         */
-    ) ? EXIT_SUCCESS : EXIT_FAILURE;
+    ;
+    std::cout << (rval ? "success!" : "failure") << std::endl;
+    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
 }
