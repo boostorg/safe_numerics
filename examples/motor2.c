@@ -66,7 +66,7 @@ signed_int16 motor_pos = 0; // absolute step number
 signed_int16 pos_inc=0;     // motor_pos increment
 int16 phase=0;              // ccpPhase[phase_ix]
 int8  phase_ix=0;           // index to ccpPhase[]
-int8  phase_inc;            // phase_ix increment
+signed_int8  phase_inc;     // phase_ix increment
 int8  run_flg;              // true while motor is running
 mod16 ccpr;                 // copy of CCPR1&2
 mod16 c;                    // integer delay count

@@ -54,7 +54,7 @@ using step_t = boost::numeric::safe_signed_range<
     boost::numeric::throw_exception
 >;
 using denom_t = boost::numeric::safe_signed_range<
-    1,
+    -4001,
     4001,
     pic16_promotion,
     boost::numeric::throw_exception

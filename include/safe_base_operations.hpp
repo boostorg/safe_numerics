@@ -1177,22 +1177,20 @@ struct bitwise_or_result {
             u_base_type
         >::type;
 
-    using xtype =
-        typename boost::mpl::if_c<
-            sizeof(t_base_type) < sizeof(u_base_type),
-            U,
-            T
-        >::type;
-
-    constexpr static const interval<u_base_type> result_interval {
-        base_value(std::numeric_limits<xtype>::min()),
-        base_value(std::numeric_limits<xtype>::max())
-    };
+    constexpr static result_base_type r =
+        safe_compare::greater_than(
+            base_value(std::numeric_limits<T>::max()),
+            base_value(std::numeric_limits<U>::max())
+        ) ?
+            base_value(std::numeric_limits<T>::max())
+        :
+            base_value(std::numeric_limits<U>::max())
+        ;
 
     using type = safe_base<
             result_base_type,
-            result_interval.l,
-            result_interval.u,
+            0,
+            r,
             promotion_policy,
             exception_policy
         >;
@@ -1247,24 +1245,20 @@ struct bitwise_and_result {
             u_base_type
         >::type;
 
-    constexpr static interval<std::uint8_t> t_b {
-        0u,
-        log(base_value(std::numeric_limits<T>::max()))
-    };
-    constexpr static interval<std::uint8_t> u_b {
-        0u,
-        log(base_value(std::numeric_limits<U>::max()))
-    };
-
-    constexpr static const checked_result<interval<std::uint8_t>>
-        r_b = intersection<std::uint8_t>(t_b, u_b);
-
-    static_assert(r_b.no_exception(), "null intersection");
+    constexpr static result_base_type r =
+        safe_compare::less_than(
+            base_value(std::numeric_limits<T>::max()),
+            base_value(std::numeric_limits<U>::max())
+        ) ?
+            base_value(std::numeric_limits<T>::max())
+        :
+            base_value(std::numeric_limits<U>::max())
+        ;
 
     using type = safe_base<
             result_base_type,
-            1 << r_b.m_r.l,
-            (1 << r_b.m_r.u) - 1,
+            0,
+            r,
             promotion_policy,
             exception_policy
         >;

@@ -52,8 +52,7 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
 #include <chrono>
 #include <thread>
 
-int main()
-{
+int main(){
     std::cout << "start test\n";
     try{
         initialize();
