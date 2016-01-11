@@ -25,12 +25,12 @@ namespace numeric {
 // this would emulate the normal C/C++ behavior of permitting overflows
 // and the like.
 struct ignore_exception {
-    constexpr static void no_error(const char * message) {}
-    constexpr static void uninitialized_error(const char * message) {}
-    constexpr static void overflow_error(const char * message) {}
-    constexpr static void underflow_error(const char * message) {}
-    constexpr static void range_error(const char * message) {}
-    constexpr static void domain_error(const char * message) {}
+    static void no_error(const char * message) {}
+    static void uninitialized_error(const char * message) {}
+    static void overflow_error(const char * message) {}
+    static void underflow_error(const char * message) {}
+    static void range_error(const char * message) {}
+    static void domain_error(const char * message) {}
 };
 
 // example - if you want to specify specific behavior for particular exception
@@ -46,22 +46,22 @@ template<
     void (*DOMAIN)(const char *) = *OVERFLOW
 >
 struct no_exception_support {
-    constexpr static void no_error(const char * message) {
+    static void no_error(const char * message) {
         NO_EXCEPTION(message);
     }
-    constexpr static void uninitialized_error(const char * message) {
+    static void uninitialized_error(const char * message) {
         UNINITIALIZED(message);
     }
-    constexpr static void overflow_error(const char * message) {
+    static void overflow_error(const char * message) {
         OVERFLOW(message);
     }
-    constexpr static void underflow_error(const char * message) {
+    static void underflow_error(const char * message) {
         UNDERFLOW(message);
     }
-    constexpr static void range_error(const char * message) {
+    static void range_error(const char * message) {
         RANGE(message);
     }
-    constexpr static void domain_error(const char * message) {
+    static void domain_error(const char * message) {
         DOMAIN(message);
     }
 };
@@ -69,21 +69,21 @@ struct no_exception_support {
 // If an exceptional condition is detected at runtime throw the exception.
 // map our exception list to the ones in stdexcept
 struct throw_exception {
-    constexpr static void no_error(const char * message) {
+    static void no_error(const char * message) {
     }
-    constexpr static void unintialized_error(const char * message) {
+    static void unintialized_error(const char * message) {
         throw std::invalid_argument(message);
     }
-    constexpr static void overflow_error(const char * message) {
+    static void overflow_error(const char * message) {
         throw std::overflow_error(message);
     }
-    constexpr static void underflow_error(const char * message) {
+    static void underflow_error(const char * message) {
         throw std::underflow_error(message);
     }
-    constexpr static void range_error(const char * message) {
+    static void range_error(const char * message) {
         throw std::range_error(message);
     }
-    constexpr static void domain_error(const char * message) {
+    static void domain_error(const char * message) {
         throw std::domain_error(message);
     }
 };

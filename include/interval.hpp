@@ -66,22 +66,18 @@ struct interval {
     // other inteval t
     template<typename T>
     constexpr bool includes(const interval<T> & t) const {
-        // note very tricky algebra here.  the <= and >= operators
-        // on checked_result yield tribool.  If either argument is an exception
-        // condition, he result is indeterminate.  The result of && on two
-        // tribools is indeterminant if either is indeterminate.
         return
-            safe_compare::less_than_equal(l, t.l)
+            safe_compare::greater_than_equal(t.l, l)
             &&
-            safe_compare::greater_than_equal(u, t.u)
+            safe_compare::less_than_equal(t.u, u)
         ;
     }
     template<typename T>
     constexpr bool includes(const T & t) const {
         return
-            ! safe_compare::less_than(u,t)
+            safe_compare::greater_than_equal(t, l)
             &&
-            ! safe_compare::less_than(t,l)
+            safe_compare::less_than_equal(t, u)
         ;
     }
 };

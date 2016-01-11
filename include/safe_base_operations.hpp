@@ -43,13 +43,13 @@ struct validate_detail {
         template<typename T>
         constexpr static R return_value(
             const T & t,
-            const interval<R> & this_interval
+            const interval<R> & r_interval
         ){
             // INT08-C
-            if(! this_interval.includes(t))
+            if(! r_interval.includes(t))
                 E::range_error("Value out of range for this safe type");
             checked_result<R> r = checked::cast<R>(t);
-            assert(r.no_exception());
+            dispatch<E>(r);
             return r;
         }
     };
@@ -79,6 +79,7 @@ validated_cast(const T & t) const {
         indeterminate(t_interval < this_interval),
         "safe type cannot be constructed with this type"
     );
+
     return boost::mpl::if_c<
         this_interval.includes(t_interval),
         typename validate_detail<Stored, E>::exception_not_possible,
@@ -276,7 +277,8 @@ struct addition_result {
 
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
-    constexpr static const checked_result<interval<result_base_type>> r_interval = add<result_base_type>(t_interval, u_interval);
+    constexpr static const checked_result<interval<result_base_type>> r_interval =
+        add<result_base_type>(t_interval, u_interval);
 
     constexpr static bool exception_possible() {
         return ! r_interval.no_exception();
@@ -412,7 +414,7 @@ struct subtraction_result {
             base_value(t),
             base_value(u)
         );
-        dispatch<exception_policy, result_base_type>(r);
+        dispatch<exception_policy>(r);
         return static_cast<result_base_type>(r);
     }
 
@@ -527,7 +529,7 @@ struct multiplication_result {
             base_value(t),
             base_value(u)
         );
-        boost::numeric::dispatch<exception_policy>(r);
+        dispatch<exception_policy>(r);
         return static_cast<result_base_type>(r);
     }
 
@@ -1215,7 +1217,10 @@ constexpr inline operator|(const T & t, const U & u){
             base_value(u)
         );
     assert(r.no_exception());
-    return static_cast<result_base_type>(r);
+    return typename bwr::type(
+        static_cast<result_base_type>(r),
+        std::false_type() // don't need to re-validate
+    );
 }
 
 template<class T, class U>
@@ -1283,7 +1288,10 @@ constexpr inline operator&(const T & t, const U & u){
             base_value(u)
         );
     assert(r.no_exception());
-    return static_cast<result_base_type>(r);
+    return typename bwr::type(
+        static_cast<result_base_type>(r),
+        std::false_type() // don't need to re-validate
+    );
 }
 
 template<class T, class U>
@@ -1316,7 +1324,10 @@ constexpr inline operator^(const T & t, const U & u){
     const checked_result<result_base_type> r =
         checked::bitwise_xor<result_base_type>(t, u);
     assert(r.no_exception());
-    return static_cast<result_base_type>(r);
+    return typename bwr::type(
+        static_cast<result_base_type>(r),
+        std::false_type() // don't need to re-validate
+    );
 }
 
 template<class T, class U>

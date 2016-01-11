@@ -35,6 +35,13 @@
 //    standard conforming code
 // f) limited phase_ix to 0-3
 
+// *************
+// "unfixable" problems
+//
+// anyting with ++ or -- can't be proved to not overflow
+// same with +=, -=, etc.
+// step_down = move - step_no; might assign negative value to unsigned
+
 #include "motor3.h"
 
 #if !defined(DESKTOP)
@@ -75,7 +82,7 @@ step_t step_no;                // progress of move
 step_t step_down;              // start of down-ramp
 step_t move;                   // total steps to move
 step_t midpt;                  // midpoint of move
-signed_int32 c32;              // 24.8 fixed point delay count
+c24_t c32;              // 24.8 fixed point delay count
 denom_t denom;            // 4.n+1 in ramp algo
 
 // Config data to make CCP1&2 generate quadrature sequence on PHASE pins
@@ -97,13 +104,13 @@ void phase_bump()
         if(phase_ix == 3)
             phase_ix = literal(0);
         else
-            ++phase_ix;
+            ++phase_ix;    // *** anything with ++
     else
     // phase_inc < 0
         if(phase_ix == 0)
             phase_ix = literal(3);
         else
-            --phase_ix;
+            --phase_ix;    // *** anything with --
     phase = ccpPhase[phase_ix];
     CCP1CON = phase & literal(0xff); // set CCP action on next match
     CCP2CON = phase >> literal(8);
@@ -122,7 +129,7 @@ void isr_motor_step()
       denom = ((step_no - move) * literal(4)) + literal(1);
       if (!(move & literal(1)))
       { // even move: repeat last delay before decel
-        denom += literal(4);
+        denom += literal(4);    // *** anything with +=
         break;
       }
     }
@@ -134,13 +141,14 @@ void isr_motor_step()
       break;
     }
     denom += literal(4);
-    c32 -= (c32 * 2) / denom; // ramp algorithm
+    c32 -= (c32 * literal(2)) / denom; // ramp algorithm  *** anything with -=
     // beware confict with foreground code if long div not reentrant
-    c = (c32 + 128) / 256; // round 24.8format->int16
+    c = ((c32 + literal(128)) / literal(256)) % literal(0xffff); // round 24.8format->int16
+
     if (c <= C_MIN)
     { // go to constant speed
       ramp_sts = ramp_max;
-      step_down = move - step_no;
+      step_down = move - step_no;  // *** could assign negative value to unsigned
       c = C_MIN;
       break;
     }
@@ -161,8 +169,8 @@ void isr_motor_step()
   } // switch (ramp_sts)
   if (ramp_sts!=ramp_idle)
   {
-    motor_pos += pos_inc;
-    ++step_no;
+    motor_pos += pos_inc;   // *** anything with +=
+    ++step_no;              // *** anything with ++ could overflow
     CCPR2H = CCPR1H = (ccpr >> 8); // timer value at next CCP match
     CCPR2L = CCPR1L = (ccpr & 0xff);
 
@@ -186,9 +194,9 @@ void motor_run(step_t pos_new)
     phase_inc = literal(1);
   }
   else return; // already there
-  midpt = (move - literal(1))>> literal(1);
+  midpt = (move - literal(1))>> literal(1); // *** would fail for move == 0
   c   = C0;
-  c32 = c * 256; // keep c in 24.8 fixed-point format for ramp calcs
+  c32 = c << 8; // keep c in 24.8 fixed-point format for ramp calcs
   step_no  = literal(0); // step counter
   denom    = literal(1); // 4.n+1, n=0
   ramp_sts = ramp_up; // start ramp state-machine

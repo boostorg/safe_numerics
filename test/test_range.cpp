@@ -69,7 +69,7 @@ using safe_t = boost::numeric::safe_signed_range<
 bool test2(){
     std::cout << "test1" << std::endl;
     try{
-        constexpr const safe_t<-64, 63> x(1);
+        const safe_t<-64, 63> x(1);
         safe_t<-64, 63> y;
         y = 2;
         std::cout << "x = " << x << std::endl;

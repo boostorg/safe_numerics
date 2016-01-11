@@ -30,6 +30,8 @@ using pic16_promotion = boost::numeric::cpp<
     32  // long long
 >;
 
+using exception_policy = boost::numeric::trap_exception;
+
 // define safe types used desktop version of the program.  In conjunction
 // with the promotion policy above, this will permit us to guarantee that
 // the resulting program will be free of arithmetic errors introduced by
@@ -38,32 +40,38 @@ template <typename T> // T is char, int, etc data type
 using safe_t = boost::numeric::safe<
     T,
     pic16_promotion,
-    boost::numeric::throw_exception // use for compiling and running tests
+    exception_policy
 >;
 using safe_bool_t = boost::numeric::safe_unsigned_range<
     0,
     1,
     pic16_promotion,
-    boost::numeric::throw_exception // use for compiling and running tests
+    exception_policy
 >;
 
 using step_t = boost::numeric::safe_signed_range<
     0,
     1000,
     pic16_promotion,
-    boost::numeric::throw_exception
+    exception_policy
 >;
 using denom_t = boost::numeric::safe_signed_range<
-    -4001,
-    4001,
+    -4005,
+    4005,
     pic16_promotion,
-    boost::numeric::throw_exception
+    exception_policy
 >;
 using phase_ix_t = boost::numeric::safe_unsigned_range<
     0,
     3,
     pic16_promotion,
-    boost::numeric::throw_exception
+    exception_policy
+>;
+using c24_t = boost::numeric::safe_signed_range<
+    -0x8000000,
+    0x7ffffff,
+    pic16_promotion,
+    exception_policy
 >;
 
 #define literal(x) boost::numeric::safe_literal<x>{}
@@ -76,13 +84,12 @@ using phase_ix_t = boost::numeric::safe_unsigned_range<
 
 void test(step_t m){
     std::cout << "move motor to " << m << '\n';
-    int i = 0;
     motor_run(m);
-    do{
+    while(true == run_flg){
         isr_motor_step();
-        std::cout << ++i << ' ' << c32 << ' ' << c << '\n';
+        std::cout << motor_pos << ' ' << c32 << ' ' << c << '\n';
         std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
-    }while(true == run_flg);
+    }
 }
 
 int main()

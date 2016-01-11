@@ -35,7 +35,7 @@ auto f(const safe_t & x, const safe_t & y){
 }
 
 int main(int argc, const char * argv[]){
-    std::cout << "example 83:\n";
+    std::cout << "example 84:\n";
     try{
         input_safe_t x, y;
         std::cin >> x >> y; // read varibles, throw exception

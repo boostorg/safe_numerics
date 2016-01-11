@@ -78,12 +78,13 @@ int main(){
     }
     catch(std::exception & e){
         std::cout << e.what() << '\n';
-        return 1;
+        // we expect to trap an exception
+        return 0;
     }
     catch(...){
         std::cout << "test interrupted\n";
         return 1;
     }
     std::cout << "end test\n";
-    return 0;
+    return 1;
 } 

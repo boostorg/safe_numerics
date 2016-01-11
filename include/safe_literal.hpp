@@ -23,7 +23,7 @@ template<typename T, T N>
 class safe_literal_impl;
 
 template<typename T, T N>
-struct is_safe<safe_literal_impl<T, N> > : public std::true_type
+struct is_safe<safe_literal_impl<T, N> > : public std::false_type
 {};
 
 template<typename T, T N>
