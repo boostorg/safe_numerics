@@ -32,7 +32,7 @@ struct safe_format_impl {
         return os
             << "<"
             << abi::__cxa_demangle(
-                typeid(boost::numeric::base_value(m_t)).name(),0,0,&status
+                typeid(typename boost::numeric::base_type<T>::type).name(),0,0,&status
             )
             << ">["
             << std::numeric_limits<T>::min() << ","

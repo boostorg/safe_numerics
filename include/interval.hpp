@@ -116,10 +116,15 @@ constexpr InputIt find(InputIt first, InputIt last, const T& value)
 
 template<typename R>
 constexpr bool less_than(
-    const checked_result<R> & x,
-    const checked_result<R> & y
+    const checked_result<R> & lhs,
+    const checked_result<R> & rhs
 ){
-    return x < y;
+    return
+        (lhs.no_exception() && rhs.no_exception()) ?
+            safe_compare::less_than(lhs.m_r, rhs.m_r)
+        :
+            false
+        ;
 }
 
 template<typename R>

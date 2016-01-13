@@ -38,33 +38,34 @@ struct ignore_exception {
 // exception support and you want to trap "exceptions" by calling your own
 // special functions.
 template<
-    void (*NO_EXCEPTION)(const char *),
-    void (*UNINITIALIZED)(const char *),
-    void (*OVERFLOW)(const char *),
-    void (*UNDERFLOW)(const char *) = *OVERFLOW,
-    void (*RANGE)(const char *) = *OVERFLOW,
-    void (*DOMAIN)(const char *) = *OVERFLOW
+    void (*FUNCTION_NO_EXCEPTION)(const char *),
+    void (*FUNCTION_UNINITIALIZED)(const char *),
+    void (*FUNCTION_OVERFLOW)(const char *),
+    void (*FUNCTION_UNDERFLOW)(const char *) = FUNCTION_OVERFLOW,
+    void (*FUNCTION_RANGE)(const char *) = FUNCTION_OVERFLOW,
+    void (*FUNCTION_DOMAIN)(const char *) = FUNCTION_OVERFLOW
 >
 struct no_exception_support {
     static void no_error(const char * message) {
-        NO_EXCEPTION(message);
+        (*FUNCTION_NO_EXCEPTION)(message);
     }
     static void uninitialized_error(const char * message) {
-        UNINITIALIZED(message);
+        (*FUNCTION_UNINITIALIZED)(message);
     }
     static void overflow_error(const char * message) {
-        OVERFLOW(message);
+        (*FUNCTION_OVERFLOW)(message);
     }
     static void underflow_error(const char * message) {
-        UNDERFLOW(message);
+        (FUNCTION_UNDERFLOW)(message);
     }
     static void range_error(const char * message) {
-        RANGE(message);
+        FUNCTION_RANGE(message);
     }
     static void domain_error(const char * message) {
-        DOMAIN(message);
+        FUNCTION_DOMAIN(message);
     }
 };
+
 
 // If an exceptional condition is detected at runtime throw the exception.
 // map our exception list to the ones in stdexcept

@@ -42,15 +42,26 @@
 #define C0    50000
 #define C_MIN  2500
 
+// Types: int8,int16,int32=8,16,32bit integers, unsigned by default
+
+#if 0
 // ramp state-machine states
 #define ramp_idle 0
 #define ramp_up   1
 #define ramp_max  2
 #define ramp_down 3
 #define ramp_last 4
-
-// Types: int8,int16,int32=8,16,32bit integers, unsigned by default
 int8  ramp_sts=ramp_idle;
+#endif
+
+enum {
+  ramp_idle,
+  ramp_up,
+  ramp_max,
+  ramp_down,
+  ramp_last
+} ramp_sts;
+
 signed_int16 motor_pos = 0; // absolute step number
 signed_int16 pos_inc=0;     // motor_pos increment
 int16 phase=0;    // ccpPhase[phase_ix]  

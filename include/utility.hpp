@@ -46,7 +46,7 @@ namespace numeric {
         std::intmax_t Max
     >
     using signed_stored_type = typename boost::int_t<
-        std::max(log(Min), log(Max))
+        std::max({log(Min), log(Max)})
     >::least ;
 
     template<
@@ -54,7 +54,7 @@ namespace numeric {
         std::uintmax_t Max
     >
     using unsigned_stored_type = typename boost::uint_t<
-        std::max(log(Min), log(Max))
+        std::max({log(Min), log(Max)})
     >::least ;
 
 

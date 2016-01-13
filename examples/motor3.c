@@ -47,7 +47,13 @@
 #if !defined(DESKTOP)
     #include "picsfr.h"
     #define mod16 int16
-    #define literal(x)
+    // ramp state-machine states
+    #define ramp_idle 0
+    #define ramp_up   1
+    #define ramp_max  2
+    #define ramp_down 3
+    #define ramp_last 4
+    #define ramp_state_t int8
 #else
     // define a memory map to emulate the on in the pic.  This permits all
     // same pic code to work on the desktop with no alteration
@@ -56,21 +62,21 @@
     //#bit  TMR1ON  = T1CON.0 as
     bit<std::uint8_t, 0> TMR1ON(T1CON);
     // and use expressions such as TMR1ON = 0
+    enum ramp_state_t {
+      ramp_idle,
+      ramp_up,
+      ramp_max,
+      ramp_down,
+      ramp_last
+    };
 #endif
 
 // 1st step=50ms; max speed=120rpm (based on 1MHz timer, 1.8deg steps)
 #define C0    50000
 #define C_MIN  2500
 
-// ramp state-machine states
-#define ramp_idle literal(0)
-#define ramp_up   literal(1)
-#define ramp_max  literal(2)
-#define ramp_down literal(3)
-#define ramp_last literal(4)
-
 // Types: int8,int16,int32=8,16,32bit integers, unsigned by default
-int8  ramp_sts=ramp_idle;
+ramp_state_t ramp_sts = ramp_idle;
 step_t motor_pos = literal(0); // absolute step number
 step_t pos_inc = literal(0);   // motor_pos increment
 int16 phase = literal(0);      // ccpPhase[phase_ix]
