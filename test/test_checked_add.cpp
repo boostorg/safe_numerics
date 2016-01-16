@@ -26,7 +26,7 @@ bool test_checked_add(
         << av1 << " + " << av2
         << std::endl;
 
-    typedef decltype(T1() + T2()) result_type;
+    using result_type = decltype(T1() + T2());
 
     checked_result<result_type> result
         = checked::add<result_type>(

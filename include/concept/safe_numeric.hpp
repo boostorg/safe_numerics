@@ -27,9 +27,9 @@ struct SafeNumeric : public Numeric<T> {
         "std::numeric_limits<T> has not been specialized for this type"
     );
     BOOST_CONCEPT_USAGE(SafeNumeric){
-        typedef get_exception_policy<T> t1;
-        typedef get_promotion_policy<T> t2;
-        typedef base_type<T> t3;
+        using t1 = get_exception_policy<T>;
+        using t2 = get_promotion_policy<T>;
+        using t3 = base_type<T>;
     }
 };
 

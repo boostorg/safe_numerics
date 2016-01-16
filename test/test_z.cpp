@@ -157,7 +157,7 @@ using pic16_promotion = boost::numeric::cpp<
     32  // long long
 >;
 
-typedef pic16_promotion::rank<short> pr;
+using pr = pic16_promotion::rank<short>;
 
 int main(){
     return 0;
@@ -181,22 +181,22 @@ template<typename T>
 using test = custom::rank<T>;
 
 print_value<sizeof(int)> pv_int;
-typedef print_type<test<int>> pt_r_int;
+using pt_r_int = print_type<test<int>>t;
 
 print_value<sizeof(long long)> pv_long_long;
-typedef print_type<long long> pt_long_long;
-typedef print_type<test<long long>> p_r_long_long;
+using pt_long_long = print_type<long long>;
+using p_r_long_long = print_type<test<long long>>;
 
 print_value<sizeof(custom::local_long_long_type)> pv_local_long_long_type;
-typedef print_type<custom::local_long_long_type> pt_local_long_long;
-typedef print_type<test<custom::local_long_long_type>> p_r_local_long_long;
+using pt_local_long_long print_type<custom::local_long_long_type>;
+using p_r_local_long_long print_type<test<custom::local_long_long_type>>;
 
-typedef print_type<
+using pt_same = print_type<
     std::is_same<
         long long,
         custom::local_long_long_type
     >::type
-> pt_same;
+>;
 
 
 // testing trap

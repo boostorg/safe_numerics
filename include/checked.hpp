@@ -258,7 +258,7 @@ constexpr multiply(
     // INT30-C
     // fast method using intermediate result guaranteed not to overflow
     // todo - replace std::uintmax_t with a size double the size of R
-    typedef std::uintmax_t i_type;
+    using i_type = std::uintmax_t;
     return
         static_cast<i_type>(t) * static_cast<i_type>(u)
         > std::numeric_limits<R>::max() ?
@@ -303,8 +303,8 @@ constexpr multiply(
 ) {
     // INT30-C
     // fast method using intermediate result guaranteed not to overflow
-    // todo - replace std::uintmax_t with a size double the size of R
-    typedef std::intmax_t i_type;
+    // todo - replace std::intmax_t with a size double the size of R
+    using i_type = std::intmax_t;
     return
         (
             static_cast<i_type>(t) * static_cast<i_type>(u)

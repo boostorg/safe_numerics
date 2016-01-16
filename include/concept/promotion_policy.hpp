@@ -19,16 +19,16 @@ namespace numeric {
 
 template<class PP>
 struct PromotionPolicy {
-    typedef int T;
-    typedef int U;
-    typedef typename PP::template addition_result<T, U> a_type;
-    typedef typename PP::template subtraction_result<T, U> s_type;
-    typedef typename PP::template multiplication_result<T, U> m_type;
-    typedef typename PP::template division_result<T, U> d_type;
-    typedef typename PP::template modulus_result<T, U> mod_type;
-    typedef typename PP::template left_shift_result<T, U> ls_type;
-    typedef typename PP::template right_shift_result<T, U> rs_type;
-    typedef typename PP::template bitwise_result<T, U> bw_type;
+    using T = int;
+    using U = int;
+    using a_type = typename PP::template addition_result<T, U>;
+    using s_type = typename PP::template subtraction_result<T, U>;
+    using m_type = typename PP::template multiplication_result<T, U>;
+    using d_type = typename PP::template division_result<T, U>;
+    using mod_type = typename PP::template modulus_result<T, U>;
+    using ls_type = typename PP::template left_shift_result<T, U>;
+    using rs_type = typename PP::template right_shift_result<T, U>;
+    using bw_type = typename PP::template bitwise_result<T, U>;
 
     checked_result<typename base_type<d_type>::type> divide(){
         return PP::template divide<typename base_type<d_type>::type>(0, 0);

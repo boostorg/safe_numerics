@@ -65,7 +65,7 @@ template<
     class E
 >
 struct get_promotion_policy<safe_base<T, Min, Max, P, E> > {
-    typedef P type;
+    using type = P;
 };
 
 template<
@@ -76,7 +76,7 @@ template<
     class E
 >
 struct get_exception_policy<safe_base<T, Min, Max, P, E> > {
-    typedef E type;
+    using type = E;
 };
 
 template<
@@ -87,7 +87,7 @@ template<
     class E
 >
 struct base_type<safe_base<T, Min, Max, P, E> > {
-    typedef T type;
+    using type = T;
 };
 
 template<

@@ -37,18 +37,16 @@ bool test_log(){
 
 bool test1(){
     using namespace boost::numeric;
-    typedef signed_stored_type<-256, 254> t1;
+    using t1 = signed_stored_type<-256, 254>;
 
     safe_signed_range<-128, 127> s1(1);
     safe_signed_range<-256, 254> s2(2);
 
-    typedef safe_unsigned_range<0u, 1000u> t2;
+    using t2 = safe_unsigned_range<0u, 1000u>;
     static_assert(
         std::numeric_limits<t2>::is_signed == false,
         "this range should be unsigned"
     );
-
-    //typedef ::print_type<t2>::type p_t2;
 
     return true;
 }

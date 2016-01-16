@@ -24,7 +24,7 @@ struct is_safe : public std::false_type
 
 template<typename T>
 struct base_type {
-    typedef T type;
+    using type = T;
 };
 
 template<class T>
@@ -34,12 +34,12 @@ constexpr const typename base_type<T>::type & base_value(const T & t) {
 
 template<typename T>
 struct get_promotion_policy {
-    typedef void type;
+    using type = void;
 };
 
 template<typename T>
 struct get_exception_policy {
-    typedef void type;
+    using type = void;
 };
 
 // used for debugging
@@ -48,7 +48,7 @@ struct get_exception_policy {
 
 template<typename Tx>
 struct print_impl {
-    typedef typename Tx::error_message type;
+    using type = typename Tx::error_message;
 };
 
 template<typename Tx>

@@ -67,7 +67,6 @@ bool test5(){
 namespace test4 {
     using namespace boost::numeric;
     using max_t = std::intmax_t;
-    // typedef typename print_type<max_t>::type p_max_t;
 
     template<typename Tx>
     constexpr static const interval<Tx> r_upper(const interval<Tx> & t){

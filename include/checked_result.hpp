@@ -212,7 +212,7 @@ template<class R>
 class numeric_limits<boost::numeric::checked_result<R> >
     : public std::numeric_limits<R>
 {
-    typedef boost::numeric::checked_result<R> this_type;
+    using this_type = boost::numeric::checked_result<R>;
 public:
     constexpr static this_type min() noexcept {
         return this_type(std::numeric_limits<R>::min());

@@ -695,7 +695,7 @@ constexpr inline operator/=(T & t, const U & u){
 
 template<class T, class U>
 struct modulus_result {
-    typedef common_policies<T, U> P;
+    using P = common_policies<T, U>;
     using exception_policy = typename P::exception_policy;
     using promotion_policy = typename P::promotion_policy;
     using t_base_type = typename base_type<T>::type;
