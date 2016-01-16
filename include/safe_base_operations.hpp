@@ -44,9 +44,14 @@ struct validate_detail {
             const interval<R> & r_interval
         ){
             // INT08-C
-            if(! r_interval.includes(t))
-                E::range_error("Value out of range for this safe type");
-            checked_result<R> r = checked::cast<R>(t);
+            const checked_result<R> r = r_interval.includes(t) ?
+                checked::cast<R>(t)
+            :
+                checked_result<R>(
+                    exception_type::range_error,
+                    "Value out of range for this safe type"
+                )
+            ;
             dispatch<E>(r);
             return r;
         }

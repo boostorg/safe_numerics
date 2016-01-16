@@ -35,20 +35,21 @@ namespace checked {
 ////////////////////////////////////////////////////
 // safe casting on primitive types
 
-template<class R, class T>
-constexpr checked_result<R>
-cast(
-    const T & t
-) {
-    // INT31-C requires that integer conversions, both implicit
-    // and explicit (using a cast),must be guaranteed not to result
-    // in lost or misinterpreted data [Seacord 2008].
-    return
-    std::numeric_limits<R>::is_signed ?
-        // T is signed
-        std::numeric_limits<T>::is_signed ?
+namespace detail {
+
+    template<bool RSIGNED, bool TSIGNED>
+    struct cast_impl {
+        template<class R, class T>
+        constexpr checked_result<R>
+        invoke(const T & t);
+    };
+    template<> struct cast_impl<true, true> {
+        template<class R, class T>
+        constexpr static checked_result<R>
+        invoke(const T & t){
             // INT32-C Ensure that operations on signed
             // integers do not overflow
+            return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -62,9 +63,16 @@ cast(
                 )
             :
                 checked_result<R>(static_cast<R>(t))
-        : // T is unsigned
+            ;
+        }
+    };
+    template<> struct cast_impl<true, false> {
+        template<class R, class T>
+        constexpr static checked_result<R>
+        invoke(const T & t){
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
+            return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -72,11 +80,16 @@ cast(
                 )
             :
                 checked_result<R>(static_cast<R>(t))
-    : // std::numeric_limits<R>::is_signed
-        // T is signed
-        // INT32-C Ensure that operations on signed
-        // integers do not overflow
-        ! std::numeric_limits<T>::is_signed ?
+            ;
+        }
+    };
+    template<> struct cast_impl<false, false> {
+        template<class R, class T>
+        constexpr static checked_result<R>
+        invoke(const T & t){
+            // INT32-C Ensure that operations on signed
+            // integers do not overflow
+            return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -84,7 +97,14 @@ cast(
                 )
             :
                 checked_result<R>(static_cast<R>(t))
-        : // T is signed
+            ;
+        }
+    };
+    template<> struct cast_impl<false, true> {
+        template<class R, class T>
+        constexpr static checked_result<R>
+        invoke(const T & t){
+            return
             t < 0 ?
                 checked_result<R>(
                     exception_type::range_error,
@@ -98,8 +118,23 @@ cast(
                 )
             :
                 checked_result<R>(static_cast<R>(t))
-    ;
+            ;
+        }
+    };
 }
+
+template<class R, class T>
+constexpr checked_result<R>
+cast(
+    const T & t
+) {
+    return detail::cast_impl<
+        std::numeric_limits<R>::is_signed,
+        std::numeric_limits<T>::is_signed
+    >
+    ::template invoke<R>(t);
+}
+
 
 ////////////////////////////////////////////////////
 // safe addition on primitive types
@@ -109,7 +144,7 @@ namespace detail {
     // result unsigned
     template<class R>
     typename boost::enable_if_c<
-        std::is_unsigned<R>::value,
+        ! std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
     constexpr add(
@@ -131,7 +166,7 @@ namespace detail {
     // result signed
     template<class R>
     typename boost::enable_if_c<
-        std::is_signed<R>::value,
+        std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
     constexpr add(

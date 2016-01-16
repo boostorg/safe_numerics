@@ -47,12 +47,7 @@ struct get_exception_policy {
 // provokes error message with name of type T
 
 template<typename Tx>
-struct print_impl {
-    using type = typename Tx::error_message;
-};
-
-template<typename Tx>
-using print_type = typename print_impl<Tx>::type;
+using print_type = typename Tx::error_message;
 
 template<int N> 
 struct print_value
