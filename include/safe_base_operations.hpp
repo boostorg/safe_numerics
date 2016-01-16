@@ -19,8 +19,6 @@
 
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/or.hpp>
-#include <boost/mpl/not.hpp>
 #include <boost/mpl/identity.hpp>
 
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
@@ -323,11 +321,10 @@ struct addition_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     addition_result<T, U>
 >::type
 constexpr inline operator+(const T & t, const U & u){
@@ -344,11 +341,10 @@ constexpr inline operator+(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator+=(T & t, const U & u){
@@ -430,11 +426,10 @@ struct subtraction_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     subtraction_result<T, U>
 >::type
 constexpr operator-(const T & t, const U & u){
@@ -450,11 +445,10 @@ constexpr operator-(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator-=(T & t, const U & u){
@@ -545,11 +539,10 @@ struct multiplication_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     multiplication_result<T, U>
 >::type
 constexpr operator*(const T & t, const U & u){
@@ -566,11 +559,10 @@ constexpr operator*(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator*=(T & t, const U & u){
@@ -657,11 +649,10 @@ struct division_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     division_result<T, U>
 >::type
 constexpr operator/(const T & t, const U & u){
@@ -678,11 +669,10 @@ constexpr operator/(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator/=(T & t, const U & u){
@@ -768,11 +758,10 @@ struct modulus_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     modulus_result<T, U>
 >::type
 inline operator%(const T & t, const U & u){
@@ -788,11 +777,10 @@ inline operator%(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator%=(T & t, const U & u){
@@ -804,11 +792,10 @@ constexpr inline operator%=(T & t, const U & u){
 // comparison
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
@@ -841,11 +828,10 @@ constexpr operator<(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator>(const T & lhs, const U & rhs) {
@@ -877,11 +863,10 @@ constexpr operator>(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
@@ -910,11 +895,10 @@ constexpr operator==(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator!=(const T & lhs, const U & rhs) {
@@ -922,11 +906,10 @@ constexpr operator!=(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator>=(const T & lhs, const U & rhs) {
@@ -934,11 +917,10 @@ constexpr operator>=(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<bool>
 >::type
 constexpr operator<=(const T & lhs, const U & rhs) {
@@ -1043,11 +1025,10 @@ constexpr inline operator<<(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator<<=(T & t, const U & u){
@@ -1150,11 +1131,10 @@ constexpr inline operator>>(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator>>=(T & t, const U & u){
@@ -1199,11 +1179,10 @@ struct bitwise_or_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     bitwise_or_result<T, U>
 >::type
 constexpr inline operator|(const T & t, const U & u){
@@ -1224,11 +1203,10 @@ constexpr inline operator|(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator|=(T & t, const U & u){
@@ -1270,11 +1248,10 @@ struct bitwise_and_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     bitwise_and_result<T, U>
 >::type
 constexpr inline operator&(const T & t, const U & u){
@@ -1295,11 +1272,10 @@ constexpr inline operator&(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator&=(T & t, const U & u){
@@ -1309,11 +1285,10 @@ constexpr inline operator&=(T & t, const U & u){
 
 // operator ^
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     bitwise_or_result<T, U>
 >::type
 constexpr inline operator^(const T & t, const U & u){
@@ -1331,11 +1306,10 @@ constexpr inline operator^(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if<
-    boost::mpl::or_<
-        boost::numeric::is_safe<T>,
-        boost::numeric::is_safe<U>
-    >,
+typename boost::lazy_enable_if_c<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
     boost::mpl::identity<T &>
 >::type
 constexpr inline operator^=(T & t, const U & u){
