@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>no_exception_support&lt;O, U = O, R =O, D = O&gt;</title>
+<link rel="stylesheet" href="../boostbook.css" type="text/css">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="../index.html" title="Safe Numerics">
+<link rel="up" href="../exception_policies.html" title="Exception Policies">
+<link rel="prev" href="ignore.html" title="ignore_exception">
+<link rel="next" href="../exception_safety.html" title="Exception Safety">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<table cellpadding="2" width="100%"><tr>
+<td valign="top"><img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index"></td>
+<td><h2>Safe Numerics</h2></td>
+</tr></table>
+<div class="spirit-nav">
+<a accesskey="p" href="ignore.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../exception_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_safety.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.exception_policies.no_exception_support"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm413203233696"></a>Description</h5></div></div></div>
+<p>This exception policy can be used in an environment where one cannot
+    or does not want to use exceptions.</p>
+<p>Parameters are pointers to static functions which are invoked for
+    each kind of error encountered in the library. The function signature of
+    these functions are <code class="computeroutput">void function(const char * message)</code> where
+    <code class="computeroutput">message</code> is the address of a literal string with information
+    regarding the error.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm413203230352"></a>Template Parameters</h5></div></div></div>
+<p>Function objects to be invoked are specified for each error
+    condition are specified via template parameters.</p>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+<col align="left">
+<col align="left">
+</colgroup>
+<thead><tr>
+<th align="left">Parameter</th>
+<th align="left">Default</th>
+<th align="left">Type Requirements</th>
+<th align="left">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left">&#160;</td>
+<td align="left">void (*O)(const char *)</td>
+<td align="left"><p>Function to call on overflow error</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left">void (*U)(const char *)</td>
+<td align="left"><p>Function to call on underflow error</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left">void (*R)(const char *)</td>
+<td align="left"><p>Function to call on range error</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left"><code class="computeroutput">O</code></td>
+<td align="left">void (*D)(const char *)</td>
+<td align="left"><p>Function to call on domain error</p></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm413203210720"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm413203209008"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/safe_numerics/exception_policy.hpp&gt;
+    </code></a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm413203206448"></a>Example of use</h5></div></div></div>
+<p>[A code fragment involving the type.]</p>
+<pre class="programlisting"><span class="keyword">void</span> <span class="identifier">overflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">void</span> <span class="identifier">underflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">void</span> <span class="identifier">range_error</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">void</span> <span class="identifier">domain_error</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
+
+<span class="keyword">using</span> <span class="identifier">ep</span> <span class="special">=</span> <span class="identifier">ignore_exception</span><span class="special">&lt;</span>
+    <span class="identifier">overflow</span><span class="special">,</span>
+    <span class="identifier">underflow</span><span class="special">,</span>
+    <span class="identifier">range_error</span><span class="special">,</span>
+    <span class="identifier">domain_error</span>
+<span class="special">&gt;</span><span class="special">;</span>
+
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">native</span><span class="special">,</span> <span class="identifier">ep</span><span class="special">&gt;</span> <span class="identifier">st</span><span class="special">(</span><span class="number">4</span><span class="special">)</span><span class="special">;</span></pre>
+</div>
+</div>
+<table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
+<td align="left"></td>
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+      Software License</a></p>
+</div></td>
+</tr></table>
+<hr>
+<div class="spirit-nav">
+<a accesskey="p" href="ignore.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../exception_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_safety.html"><img src="../images/next.png" alt="Next"></a>
+</div>
+</body>
+</html>
