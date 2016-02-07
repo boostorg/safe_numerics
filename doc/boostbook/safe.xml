@@ -5,6 +5,8 @@
   <title>safe&lt;T, PP = boost::numeric::native, EP =
   boost::numeric::throw_exception&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

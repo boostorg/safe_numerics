@@ -687,8 +687,6 @@
       </abstract>
     </biblioentry>
 
-    <issuenum/>
-
     <biblioentry>
       <author>
         <surname>Jad Mouawad</surname>
@@ -768,7 +766,7 @@
         Institute</ulink>
       </publishername>
 
-      <issuenum>CMU/SEI-2009-TN-023</issuenum>
+      <volumenum>CMU/SEI-2009-TN-023</volumenum>
 
       <abstract>
         <para>Presents a model for addressing integer overflow errors.</para>

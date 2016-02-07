@@ -31,49 +31,49 @@
 <p>This program demonstrates this problem. The solution is to replace
     instances of <code class="computeroutput">char</code> type with <code class="computeroutput">safe&lt;char&gt;</code>
     type.</p>
-<pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;exception&gt;
-#include &lt;iostream&gt;
-#include &lt;cstdint&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 1:";
-    std::cout &lt;&lt; "undetected erroneous expression evaluation" &lt;&lt; std::endl;
-    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-    // problem: arithmetic operations can yield incorrect results.
-    try{
-        std::int8_t x = 127;
-        std::int8_t y = 2;
-        std::int8_t z;
-        // this produces an invalid result !
-        z = x + y;
-        // but assert fails to detect it since C++ implicitly
-        // converts variables to int before evaluating he expression!
-        // assert(z == x + y);
-        std::cout &lt;&lt; static_cast&lt;int&gt;(z) &lt;&lt; " != " &lt;&lt; x + y &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
-    }
-    catch(std::exception){
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    // solution: replace std::int8_t with safe&lt;std::int8_t&gt;
-    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
-    try{
-        using namespace boost::numeric;
-        safe&lt;std::int8_t&gt; x = 127;
-        safe&lt;std::int8_t&gt; y = 2;
-        safe&lt;std::int8_t&gt; z;
-        // rather than producing and invalid result an exception is thrown
-        z = x + y;
-    }
-    catch(std::exception &amp; e){
-        // which can catch here
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-    }
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 1:"</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"undetected erroneous expression evaluation"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="comment">// problem: arithmetic operations can yield incorrect results.</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="comment">// this produces an invalid result !</span>
+        <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+        <span class="comment">// but assert fails to detect it since C++ implicitly</span>
+        <span class="comment">// converts variables to int before evaluating he expression!</span>
+        <span class="comment">// assert(z == x + y);</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="keyword">static_cast</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="comment">// solution: replace std::int8_t with safe&lt;std::int8_t&gt;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="comment">// rather than producing and invalid result an exception is thrown</span>
+        <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// which can catch here</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>Note that I've used <code class="computeroutput">char</code> types in this example to make
     the problem and solution easier to see. The exact same example could have

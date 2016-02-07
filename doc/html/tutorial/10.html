@@ -27,54 +27,54 @@
     "rules" to avoid these problems. It's not always easy to apply these
     "rules" to existing code without creating even more bugs. Here is a
     typical example of this problem:</p>
-<pre class="programlisting">#include &lt;iostream&gt;
-#include &lt;cstdint&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
-#include "../include/cpp.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/cpp.hpp"</span>
 
-using namespace std;
-using namespace boost::numeric;
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">std</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
 
-void f(const unsigned int &amp; x, const int8_t &amp; y){
-    cout &lt;&lt; x * y &lt;&lt; endl;
-}
-void safe_f(
-    const safe&lt;unsigned int&gt; &amp; x,
-    const safe&lt;int8_t&gt; &amp; y
-){
-    cout &lt;&lt; x * y &lt;&lt; endl;
-}
+<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">int8_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">*</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
+<span class="special">}</span>
+<span class="keyword">void</span> <span class="identifier">safe_f</span><span class="special">(</span>
+    <span class="keyword">const</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span>
+    <span class="keyword">const</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="special">&amp;</span> <span class="identifier">y</span>
+<span class="special">)</span><span class="special">{</span>
+    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">*</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
+<span class="special">}</span>
 
-int main(){
-    cout &lt;&lt; "example 10: ";
-    cout &lt;&lt; "mixing types produces surprising results" &lt;&lt; endl;
-    try {
-        std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-        // problem: arithmetic operations can yield incorrect results.
-        f(100, 100);  // works as expected
-        f(100, -100); // wrong result - unnoticed
-    }
-    catch(std::exception){
-        // never arrive here
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    try {
-        // solution: use safe types
-        std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
-        safe_f(100, 100);  // works as expected
-        safe_f(100, -100); // throw error
-    }
-    catch(const exception &amp; e){
-        cout &lt;&lt; "detected error:" &lt;&lt; e.what() &lt;&lt; endl;;
-    }
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 10: "</span><span class="special">;</span>
+    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"mixing types produces surprising results"</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span> <span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="comment">// problem: arithmetic operations can yield incorrect results.</span>
+        <span class="identifier">f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="number">100</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// works as expected</span>
+        <span class="identifier">f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="special">-</span><span class="number">100</span><span class="special">)</span><span class="special">;</span> <span class="comment">// wrong result - unnoticed</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// never arrive here</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">try</span> <span class="special">{</span>
+        <span class="comment">// solution: use safe types</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">safe_f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="number">100</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// works as expected</span>
+        <span class="identifier">safe_f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="special">-</span><span class="number">100</span><span class="special">)</span><span class="special">;</span> <span class="comment">// throw error</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"detected error:"</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 
 </pre>
 <p>Here
     is the output of the above program:</p>
-<pre class="programlisting">example 10: mixing types produces surprising results
+<pre class="screen">example 10: mixing types produces surprising results
 Not using safe numerics
 10000
 4294957296

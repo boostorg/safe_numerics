@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.cpp_policy">
+<section id="safe_numerics.promotion_policies.cpp">
   <title>cpp&lt;int C, int S, int I, int L, int LL&gt;</title>
 
   <section>

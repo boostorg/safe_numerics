@@ -23,8 +23,8 @@
 <div class="toc"><dl>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
-<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.summary">Implementation</a></span></dt>
-<dt><span class="section"><a href="introduction.html#idm473864781120">Additional Features</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.implementation">Implementation</a></span></dt>
+<dt><span class="section"><a href="introduction.html#safe_numerics.introduction.additional_features">Additional Features</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.requirements">Requirements</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.scope">Scope</a></span></dt>
 </dl></div>
@@ -41,6 +41,13 @@
       eliminated from text, code and examples in order to avoid
       clutter.</p></td></tr>
 </table></div>
+<p>This library is intended as a drop-in replacement for all built-in
+  integer types in any program which must:</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<li class="listitem"><p>be demonstrably and verifiably correct.</p></li>
+<li class="listitem"><p>detect every user error such as input, assignment, etc.</p></li>
+<li class="listitem"><p>be efficient as possible subject to the constraints above.</p></li>
+</ul></div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.introduction.problem"></a>Problem</h3></div></div></div>
@@ -52,24 +59,24 @@
     arithmetic operations exceeds this number of bits, the result will not be
     arithmetically correct. The following example illustrates this
     problem.</p>
-<pre class="programlisting">int f(int x, int y){
-    // this returns an invalid result for some legal values of x and y !
-    return x + y;
-}
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+    <span class="comment">// this returns an invalid result for some legal values of x and y !</span>
+    <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>It is incumbent up the C/C++ programmer to guarantee that this
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm473861135168"><span class="citation">INT32-C</span></a>]</a> seems
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm413214539152"><span class="citation">INT32-C</span></a>]</a> seems
     to recommend the following approach.</p>
-<pre class="programlisting">int f(int x, int y){
-  if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
-  || ((y &lt; 0) &amp;&amp; (x &lt; (INT_MIN - x)))) {
-    /* Handle error */
-  }
-  return x + y;
-}
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+  <span class="keyword">if</span> <span class="special">(</span><span class="special">(</span><span class="special">(</span><span class="identifier">y</span> <span class="special">&gt;</span> <span class="number">0</span><span class="special">)</span> <span class="special">&amp;&amp;</span> <span class="special">(</span><span class="identifier">x</span> <span class="special">&gt;</span> <span class="special">(</span><span class="identifier">INT_MAX</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span><span class="special">)</span> 
+  <span class="special">||</span> <span class="special">(</span><span class="special">(</span><span class="identifier">y</span> <span class="special">&lt;</span> <span class="number">0</span><span class="special">)</span> <span class="special">&amp;&amp;</span> <span class="special">(</span><span class="identifier">x</span> <span class="special">&lt;</span> <span class="special">(</span><span class="identifier">INT_MIN</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span><span class="special">)</span><span class="special">)</span> <span class="special">{</span>
+    <span class="comment">/* Handle error */</span>
+  <span class="special">}</span>
+  <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>This will indeed trap the error. However, it would be tedious and
     laborious for a programmer to do alter his code to do. Altering code in
@@ -77,10 +84,10 @@
     unreadable and add another source of potential programming errors. This
     approach is clearly not functional when the expression is even a little
     more complex as is shown in the following example.</p>
-<pre class="programlisting">int f(int x, int y, int z){
-    // this returns an invalid result for some legal values of x and y !
-    return x + y * z;
-}
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">y</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">z</span><span class="special">)</span><span class="special">{</span>
+    <span class="comment">// this returns an invalid result for some legal values of x and y !</span>
+    <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span> <span class="special">*</span> <span class="identifier">z</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 </div>
 <div class="section">
@@ -91,11 +98,11 @@
     these operations are guaranteed to be either arithmetically correct or
     invoke an error. Using this library, the above example would be rendered
     as:</p>
-<pre class="programlisting">#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numeric</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
-  return x + y; // throw exception if correct result cannot be returned
-}
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">f</span><span class="special">(</span><span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+  <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// throw exception if correct result cannot be returned</span>
+<span class="special">}</span>
 </pre>
 <p>The addition expression is checked at runtime or (if possible) at
     compile time to trap any possible errors resulting from incorrect
@@ -113,7 +120,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.introduction.summary"></a>Implementation</h3></div></div></div>
+<a name="safe_numerics.introduction.implementation"></a>Implementation</h3></div></div></div>
 <p>All facilities modern C++ are employed to minimize runtime overhead
     required to make this guarantee. In many cases there is no runtime
     overhead at all. In other cases, small changes in the program are required
@@ -135,7 +142,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm473864781120"></a>Additional Features</h3></div></div></div>
+<a name="safe_numerics.introduction.additional_features"></a>Additional Features</h3></div></div></div>
 <p>Operation of safe types is determined by template parameters which
     specify a pair of <a class="link" href="promotion_policies.html" title="Promotion Policies">policy
     classes</a> which specify the behavior for type promotion and error
@@ -173,7 +180,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 <li class="listitem"><p>Enforce of other program requirements using ranged integer
           types. The library includes types safe_..._range&lt;Min, Max&gt; and
           safe_literal(...). These types can be used to improve program
-          correctness and performance. </p></li>
+          correctness and performance.</p></li>
 </ul></div>
 </div>
 <div class="section">

@@ -4,6 +4,8 @@
 <section id="safe_numerics.safe_numeric_concept">
   <title>SafeNumeric&lt;T&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

@@ -24,58 +24,58 @@
     eliminate runtime penalties by the different approaches available. A
     realistic program would likely include all techniques mentioned above.
     Consider the following:</p>
-<pre class="programlisting">#include &lt;stdexcept&gt;
-#include &lt;iostream&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_range.hpp"
-#include "../include/safe_literal.hpp"
-#include "../include/automatic.hpp"
-#include "../include/exception.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_literal.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
 
-#include "safe_format.hpp" // prints out range and value of any type
+<span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
-using namespace boost::numeric; // for safe_literal
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span> <span class="comment">// for safe_literal</span>
 
-using safe_t = safe_signed_range&lt;
-    -24,
-    82,
-    automatic,
-    trap_exception
-&gt;;
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
+    <span class="special">-</span><span class="number">24</span><span class="special">,</span>
+    <span class="number">82</span><span class="special">,</span>
+    <span class="identifier">automatic</span><span class="special">,</span>
+    <span class="identifier">trap_exception</span>
+<span class="special">&gt;</span><span class="special">;</span>
 
-// define variables use for input
-using input_safe_t = safe_signed_range&lt;
-    -24,
-    82,
-    automatic, // we don't need automatic in this case
-    throw_exception // these variables need to
-&gt;;
+<span class="comment">// define variables use for input</span>
+<span class="keyword">using</span> <span class="identifier">input_safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
+    <span class="special">-</span><span class="number">24</span><span class="special">,</span>
+    <span class="number">82</span><span class="special">,</span>
+    <span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// we don't need automatic in this case</span>
+    <span class="identifier">throw_exception</span> <span class="comment">// these variables need to</span>
+<span class="special">&gt;</span><span class="special">;</span>
 
-// function arguments can never be outside of limits
-auto f(const safe_t &amp; x, const safe_t &amp; y){
-    auto z = x + y;  // we know that this cannot fail
-    std::cout &lt;&lt; "z = " &lt;&lt; safe_format(z) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "(x + y) = " &lt;&lt; safe_format(x + y) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "(x - y) = " &lt;&lt; safe_format(x - y) &lt;&lt; std::endl;
-    return z;
-}
+<span class="comment">// function arguments can never be outside of limits</span>
+<span class="keyword">auto</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>  <span class="comment">// we know that this cannot fail</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x + y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x - y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="identifier">z</span><span class="special">;</span>
+<span class="special">}</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 83:\n";
-    try{
-        input_safe_t x, y;
-        std::cin &gt;&gt; x &gt;&gt; y; // read varibles, throw exception
-        std::cout &lt;&lt; "x" &lt;&lt; safe_format(x) &lt;&lt; std::endl;
-        std::cout &lt;&lt; "y" &lt;&lt; safe_format(y) &lt;&lt; std::endl;
-        std::cout &lt;&lt; "z" &lt;&lt; safe_format(f(x, y)) &lt;&lt; std::endl;
-    }
-    catch(const std::exception &amp; e){
-        // none of the above should trap. Mark failure if they do
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        return false;
-    }
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 84:\n"</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">input_safe_t</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">x</span> <span class="special">&gt;&gt;</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// read varibles, throw exception</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// none of the above should trap. Mark failure if they do</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="keyword">false</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem"><p>As before we define a safe_t to reflect our view of legal
@@ -88,7 +88,7 @@ int main(int argc, const char * argv[]){
 <li class="listitem"><p>When variables are read from the console and assigned to
           safe_t variables x and y, they are checked for legal values. We need
           at hoc code to do this, as these types are guaranteed to contain
-          legal values and will throw an exception when this guarentee is
+          legal values and will throw an exception when this guarantee is
           violated. In other words, we automatically get checking of input
           variables with no additional programming.</p></li>
 <li class="listitem"><p>On calling of the function f, the variables of type
@@ -104,13 +104,13 @@ int main(int argc, const char * argv[]){
 </ul></div>
 <p>Here is the output from the program when values 12 and 32
     are input from the console:</p>
-<pre class="programlisting">example 83:
+<pre class="screen">example 84:
 12 32
 x&lt;signed char&gt;[-24,82] = 12
 y&lt;signed char&gt;[-24,82] = 32
-zz = &lt;short&gt;[-48,164] = 44
+z = &lt;short&gt;[-48,164] = 44
 (x + y) = &lt;short&gt;[-48,164] = 44
-(x - y) = &lt;signed char&gt;[-106,106] = -20
+(x - y) = &lt;short&gt;[-106,106] = -20
 &lt;short&gt;[-48,164] = 44</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

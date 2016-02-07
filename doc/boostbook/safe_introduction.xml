@@ -15,6 +15,23 @@
       clutter.</para>
     </note></para>
 
+  <para>This library is intended as a drop-in replacement for all built-in
+  integer types in any program which must:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>be demonstrably and verifiably correct.</para>
+    </listitem>
+
+    <listitem>
+      <para>detect every user error such as input, assignment, etc.</para>
+    </listitem>
+
+    <listitem>
+      <para>be efficient as possible subject to the constraints above.</para>
+    </listitem>
+  </itemizedlist>
+
   <section id="safe_numerics.introduction.problem">
     <title>Problem</title>
 

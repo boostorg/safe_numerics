@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="promotion_policies.html" title="Promotion Policies">
-<link rel="prev" href="native_policy.html" title="Notes">
-<link rel="next" href="automatic_policy.html" title="Description">
+<link rel="prev" href="native_policy.html" title="native">
+<link rel="next" href="cpp_policy.html" title="cpp&lt;int C, int S, int I, int L, int LL&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,10 +15,51 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="native_policy.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="promotion_policies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="automatic_policy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="native_policy.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="promotion_policies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="cpp_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
-<div class="section"><div class="titlepage"><div><div><h4 class="title">
-<a name="safe_numerics.automatic_policy"></a>automatic</h4></div></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.automatic_policy"></a>automatic</h4></div></div></div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm291788450432"></a>Description</h5></div></div></div>
+<p>This type contains the functions to return a type with sufficient
+    capacity to hold the result of a given arithmetic operation.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm291788449120"></a>Model of</h5></div></div></div>
+<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm291788447440"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/automatic.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/safe_numerics/automatic.hpp&gt; </code></a></code></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm291788444912"></a>Example of use</h5></div></div></div>
+<p>The following example illustrates the <code class="computeroutput">automatic</code> type
+    being passed as a template parameter for the type
+    <code class="computeroutput">safe&lt;int&gt;</code>. </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span> 
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">automatic</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+ 
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+    <span class="comment">// use automatic promotion policy where C++ standard arithmetic might lead to incorrect results</span>
+    <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">,</span> <span class="identifier">automatic</span><span class="special">&gt;</span><span class="special">;</span>
+
+    <span class="comment">// In such cases, there is no runtime overhead from using safe types.</span>
+    <span class="identifier">safe_t</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+    <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+    <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// z is guarenteed correct without any runtime overhead or interrupt.</span>
+
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span></pre>
+</div>
+</div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
 <td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
@@ -27,7 +68,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="native_policy.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="promotion_policies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="automatic_policy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="native_policy.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="promotion_policies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="cpp_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

@@ -41,7 +41,7 @@ int main(int argc, const char * argv[]){
         std::cin >> x >> y; // read varibles, throw exception
         std::cout << "x" << safe_format(x) << std::endl;
         std::cout << "y" << safe_format(y) << std::endl;
-        std::cout << "z" << safe_format(f(x, y)) << std::endl;
+        std::cout << safe_format(f(x, y)) << std::endl;
     }
     catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do

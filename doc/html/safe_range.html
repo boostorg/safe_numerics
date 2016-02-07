@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe_range.html#idm473861640608">Description</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861637744">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861630576">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861623504">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861603120">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861600528">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861598240">Header</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm473861596144">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203750224">Description</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203747360">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203740032">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203732944">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203712528">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203709936">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203707648">Header</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm413203705552">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861640608"></a>Description</h4></div></div></div>
+<a name="idm413203750224"></a>Description</h4></div></div></div>
 <p>This type holds a signed or unsigned integer in the closed range
     [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
@@ -43,7 +43,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861637744"></a>Notation</h4></div></div></div>
+<a name="idm413203747360"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861630576"></a>Associated Types</h4></div></div></div>
+<a name="idm413203740032"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -84,7 +84,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861623504"></a>Template Parameters</h4></div></div></div>
+<a name="idm413203732944"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -130,13 +130,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861603120"></a>Model of</h4></div></div></div>
+<a name="idm413203712528"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861600528"></a>Valid Expressions</h4></div></div></div>
+<a name="idm413203709936"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -145,33 +145,33 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861598240"></a>Header</h4></div></div></div>
+<a name="idm413203707648"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;safe/numeric/safe_range.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861596144"></a>Example of use</h4></div></div></div>
-<pre class="programlisting">#include &lt;safe/numeric/safe_range.hpp&gt;
+<a name="idm413203705552"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_range</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-void f(){
-    using namespace boost::numeric;
-    safe_unsigned_range&lt;7, 24&gt; i
-    // since the range is included in [0,255], the underlying type of i 
-    // will be an unsigned char.
-    i = 0;  // throws out_of_range exception
-    i = 9;  // ok
-    i *= 9; // throws out_of_range exception
-    i = -1; // throws out_of_range exception
-    std::uint8_t j = 4;
-    auto k = i + j;
+<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+    <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">7</span><span class="special">,</span> <span class="number">24</span><span class="special">&gt;</span> <span class="identifier">i</span>
+    <span class="comment">// since the range is included in [0,255], the underlying type of i </span>
+    <span class="comment">// will be an unsigned char.</span>
+    <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>  <span class="comment">// throws out_of_range exception</span>
+    <span class="identifier">i</span> <span class="special">=</span> <span class="number">9</span><span class="special">;</span>  <span class="comment">// ok</span>
+    <span class="identifier">i</span> <span class="special">*=</span> <span class="number">9</span><span class="special">;</span> <span class="comment">// throws out_of_range exception</span>
+    <span class="identifier">i</span> <span class="special">=</span> <span class="special">-</span><span class="number">1</span><span class="special">;</span> <span class="comment">// throws out_of_range exception</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">uint8_t</span> <span class="identifier">j</span> <span class="special">=</span> <span class="number">4</span><span class="special">;</span>
+    <span class="keyword">auto</span> <span class="identifier">k</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">+</span> <span class="identifier">j</span><span class="special">;</span>
 
-    // the range of i is [7, 24] and the range of j is [0,255]
-    // if either or both types are safe types, the result is a safe type
-    // determined by promotion policy.  With the default native promotion policy
-    // k will be safe&lt;unsigned int&gt;
-    static_assert(std::is_same&lt;decltype(k), safe&lt;unsigned int&gt;);
-  }</pre>
+    <span class="comment">// the range of i is [7, 24] and the range of j is [0,255]</span>
+    <span class="comment">// if either or both types are safe types, the result is a safe type</span>
+    <span class="comment">// determined by promotion policy.  With the default native promotion policy</span>
+    <span class="comment">// k will be safe&lt;unsigned int&gt;</span>
+    <span class="identifier">static_assert</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">is_same</span><span class="special">&lt;</span><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">k</span><span class="special">)</span><span class="special">,</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span><span class="special">)</span><span class="special">;</span>
+  <span class="special">}</span></pre>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

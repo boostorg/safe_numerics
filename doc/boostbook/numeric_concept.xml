@@ -4,7 +4,9 @@
 <section id="safe_numerics.numeric">
   <title>Numeric&lt;T&gt;</title>
 
-  <section>
+  <?dbhtml stop-chunking?>
+
+  <section id="safe_numerics.numeric.description">
     <title>Description</title>
 
     <para>A type is Numeric if it has the properties of a number.</para>

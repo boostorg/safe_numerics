@@ -21,22 +21,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="promotion_policy.html#idm473861772336">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm473861768912">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm473861760544">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm473861742896">Header</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm473861740864">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm413204110336">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm413204099744">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm413204090864">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm413204071760">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm413204069504">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861772336"></a>Description</h4></div></div></div>
+<a name="idm413204110336"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
     following code</p>
-<pre class="programlisting">int x;
-char y;
-auto z = x + y</pre>
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
+<span class="keyword">char</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span></pre>
 <p>the type of <code class="computeroutput">z</code> will be an
     <code class="computeroutput">int</code>. This is a consequence for the standard rules for type
     promotion for C/C++ arithmetic. A key feature of library permits one to
@@ -44,7 +44,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861768912"></a>Notation</h4></div></div></div>
+<a name="idm413204099744"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -69,7 +69,7 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861760544"></a>Valid Expressions</h4></div></div></div>
+<a name="idm413204090864"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.</p>
 <div class="informaltable"><table class="table">
@@ -123,27 +123,27 @@ auto z = x + y</pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861742896"></a>Header</h4></div></div></div>
+<a name="idm413204071760"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861740864"></a>Models</h4></div></div></div>
+<a name="idm413204069504"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" type="disc">
 <li class="listitem">
 <p><a name="safe_numerics.promotion_policy.models.native"></a><code class="computeroutput">boost::numeric::native</code></p>
 <p>Use the normal C/C++ expression type promotion rules.
         </p>
-<pre class="programlisting">int x;
-char y;
-auto z = x + y; // could result in overflow
-safe&lt;int&gt; sx;
-auto sz = sx + y; // includes code which traps overflows at runtime</pre>
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
+<span class="keyword">char</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// could result in overflow</span>
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// includes code which traps overflows at runtime</span></pre>
 <p>The type of sz will be safe&lt; type of z &gt;.</p>
-<p>This policy is documented in <a class="link" href="promotion_policies.html#safe_numerics.native_policy" title="native">Promotion Policies -
+<p>This policy is documented in <a class="link" href="promotion_policies/native.html" title="native">Promotion Policies -
         native</a>.</p>
 </li>
 <li class="listitem">
@@ -155,16 +155,16 @@ auto sz = sx + y; // includes code which traps overflows at runtime</pre>
         hold the result without overflow. If there is no such type, the result
         will be checked for overflow. Consider the following
         example:</p>
-<pre class="programlisting">int x;
-char y;
-auto z = x + y; // could result in overflow
-safe&lt;int&gt; sx;
-auto sz = sx + y; // promotes expression type to a safe&lt;long int&gt; which requires no result checking
-is guaranteed not to overflow.
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
+<span class="keyword">char</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// could result in overflow</span>
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// promotes expression type to a safe&lt;long int&gt; which requires no result checking</span>
+<span class="identifier">is</span> <span class="identifier">guaranteed</span> <span class="identifier">not</span> <span class="identifier">to</span> <span class="identifier">overflow</span><span class="special">.</span>
 
-safe_unsigned_range&lt;1, 4&gt; a;
-safe_unsigned_range&lt;2, 4&gt; b;
-auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</pre>
+<span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">1</span><span class="special">,</span> <span class="number">4</span><span class="special">&gt;</span> <span class="identifier">a</span><span class="special">;</span>
+<span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">,</span> <span class="number">4</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">a</span> <span class="special">+</span> <span class="identifier">b</span><span class="special">;</span> <span class="comment">// c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</span></pre>
 <p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
         which is guaranteed to hold he result of x + y. In this case that will
         be a long int (or perhaps a long long) depending upon the compiler and
@@ -172,7 +172,7 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
         special checking on the result and there can be no overflow.</p>
 <p>Type of c will be a signed character as that type can be
         guaranteed to hold the sum so no overflow checking is done.</p>
-<p>This policy is documented in <a class="link" href="promotion_policies.html#safe_numerics.automatic_policy" title="automatic">Promotion Policies -
+<p>This policy is documented in <a class="link" href="promotion_policies/automatic.html" title="automatic">Promotion Policies -
         automatic</a></p>
 </li>
 </ul></div>

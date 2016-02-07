@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="types.html" title="Types">
-<link rel="prev" href="promotion_policies.html" title="Promotion Policies">
-<link rel="next" href="exception_safety.html" title="Exception Safety">
+<link rel="prev" href="promotion_policies/cpp.html" title="cpp&lt;int C, int S, int I, int L, int LL&gt;">
+<link rel="next" href="exception_policies/throw_exception.html" title="throw_exception">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,218 +15,17 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="promotion_policies.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_safety.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="promotion_policies/cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies/throw_exception.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception_policies"></a>Exception Policies</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="exception_policies.html#safe_numerics.throw_exception">throw_exception</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#safe_numerics.trap_exception">trap_exception</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#safenumerics.ignore_exception">ignore_exception</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#safenumerics.no_exception_support">no_exception_support&lt;O, U = O, R =O, D = O&gt;</a></span></dt>
+<dt><span class="section"><a href="exception_policies/throw_exception.html">throw_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies/trap_exception.html">trap_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies/ignore.html">ignore_exception</a></span></dt>
+<dt><span class="section"><a href="exception_policies/no_exception_support.html">no_exception_support&lt;O, U = O, R =O, D = O&gt;</a></span></dt>
 </dl></div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="safe_numerics.throw_exception"></a>throw_exception</h4></div></div></div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="safenumerics.throw_exception"></a>Description</h5></div></div></div>
-<p>This exception policy throws a an exception derived from
-    <code class="computeroutput">std::exception</code> any time some operation would result in an
-    incorrect result. This is the default exception handling policy.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861511632"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861509920"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/exception_policies.hpp&gt;
-    </code></a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861507360"></a>Example of use</h5></div></div></div>
-<p>This example is somewhat contrived as throw_exception is the default
-    for safe types. Hence it usually is not necessarily to request it
-    explicitly.</p>
-<pre class="programlisting">#include "../../include/safe_integer.hpp"
-#include "../../include/exception_policies" // exception policies
-#include "../../include/native"             // native promotion policy
-
-int main(){
-    using namespace boost::numeric;
-    safe&lt;int, native, throw_exception&gt; i;
-    int j = 0;
-    i /= j;   // throws exception
-}</pre>
-</div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="safe_numerics.trap_exception"></a>trap_exception</h4></div></div></div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861503632"></a>Description</h5></div></div></div>
-<p>This exception policy will trap at compile time any operation
-    <span class="emphasis"><em><span class="bold"><strong>COULD</strong></span></em></span> result in a
-    runtime exception. It can be used in an environment which can tolerate
-    neither arithmetic errors nor runtime overhead. Usage of this policy will
-    almost always require altering one's program to avoid exceptions.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861501472"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861499792"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/exception_policy.hpp&gt;
-    </code></a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861497232"></a>Example of use</h5></div></div></div>
-<p>The following</p>
-<pre class="programlisting">#include "../../include/safe_integer.hpp"
-#include "../../include/automatic.hpp"
-#include "../../include/exception_policies.hpp"
-
-int main(){
-    using namespace boost::numeric;
-    safe&lt;char, automatic, trap_exception&gt; x, y;
-    y = x * x; // compile error here !!!
-    auto z = x * x; // compile OK
-    return 0;
-}</pre>
-</div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="safenumerics.ignore_exception"></a>ignore_exception</h4></div></div></div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861493792"></a>Description</h5></div></div></div>
-<p>This exception policy can be used to just ignore conditions which
-    generate incorrect arithmetic results and continue processing. Programs
-    using this policy along with the <a class="link" href="promotion_policies.html#safe_numerics.native_policy" title="native">native</a> promotion policy
-    should function as if the library is not even being used.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861491616"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861489936"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/exception_policy.hpp&gt;
-    </code></a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861487376"></a>Example of use</h5></div></div></div>
-<pre class="programlisting">safe&lt;int, native, ignore_exception&gt; st(4);</pre>
-</div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="safenumerics.no_exception_support"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861484560"></a>Description</h5></div></div></div>
-<p>This exception policy can be used in an environment where one cannot
-    or does not want to use exceptions.</p>
-<p>Parameters are pointers to static functions which are invoked for
-    each kind of error encountered in the library. The function signature of
-    these functions are <code class="computeroutput">void function(const char * message)</code> where
-    <code class="computeroutput">message</code> is the address of a literal string with information
-    regarding the error.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861481168"></a>Template Parameters</h5></div></div></div>
-<p>Function objects to be invoked are specified for each error
-    condition are specified via template parameters.</p>
-<div class="informaltable"><table class="table">
-<colgroup>
-<col align="left">
-<col align="left">
-<col align="left">
-<col align="left">
-</colgroup>
-<thead><tr>
-<th align="left">Parameter</th>
-<th align="left">Default</th>
-<th align="left">Type Requirements</th>
-<th align="left">Description</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left">&#160;</td>
-<td align="left">void (*O)(const char *)</td>
-<td align="left"><p>Function to call on overflow error</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left">void (*U)(const char *)</td>
-<td align="left"><p>Function to call on underflow error</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left">void (*R)(const char *)</td>
-<td align="left"><p>Function to call on range error</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left"><code class="computeroutput">O</code></td>
-<td align="left">void (*D)(const char *)</td>
-<td align="left"><p>Function to call on domain error</p></td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861461536"></a>Model of</h5></div></div></div>
-<p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861459824"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/exception_policy.hpp&gt;
-    </code></a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861457264"></a>Example of use</h5></div></div></div>
-<p>[A code fragment involving the type.]</p>
-<pre class="programlisting">void overflow(const char * msg);
-void underflow(const char * msg);
-void range_error(const char * msg);
-void domain_error(const char * msg);
-
-using ep = ignore_exception&lt;
-    overflow,
-    underflow,
-    range_error,
-    domain_error
-&gt;;
-
-safe&lt;int, native, ep&gt; st(4);</pre>
-</div>
-</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -236,7 +35,7 @@ safe&lt;int, native, ep&gt; st(4);</pre>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="promotion_policies.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_safety.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="promotion_policies/cpp.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="types.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policies/throw_exception.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

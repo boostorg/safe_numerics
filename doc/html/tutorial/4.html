@@ -40,43 +40,43 @@
 </ul></div>
 <p>This solution is simple, Just replace instances of the <code class="computeroutput">int
     </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
-<pre class="programlisting">#include &lt;exception&gt;
-#include &lt;iostream&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 4: ";
-    std::cout &lt;&lt; "implicit conversions change data values" &lt;&lt; std::endl;
-    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-    // problem: implicit conversions change data values
-    try{
-        int x = -1000;
-        // the following silently produces an incorrect result
-        char y = x;
-        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; (int)y &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
-    }
-    catch(std::exception){
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl; // never arrive here
-    }
-    // solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;
-    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
-    try{
-        using namespace boost::numeric;
-        safe&lt;int&gt; x = -1000;
-        // throws exception when conversion change data value
-        safe&lt;char&gt; y1(x);
-        safe&lt;char&gt; y2 = x;
-        safe&lt;char&gt; y3 = {x};
-        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
-    }
-    catch(std::exception &amp; e){
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 4: "</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"implicit conversions change data values"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="comment">// problem: implicit conversions change data values</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">-</span><span class="number">1000</span><span class="special">;</span>
+        <span class="comment">// the following silently produces an incorrect result</span>
+        <span class="keyword">char</span> <span class="identifier">y</span> <span class="special">=</span> <span class="identifier">x</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span> <span class="comment">// never arrive here</span>
+    <span class="special">}</span>
+    <span class="comment">// solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">-</span><span class="number">1000</span><span class="special">;</span>
+        <span class="comment">// throws exception when conversion change data value</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y1</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y2</span> <span class="special">=</span> <span class="identifier">x</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y3</span> <span class="special">=</span> <span class="special">{</span><span class="identifier">x</span><span class="special">}</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

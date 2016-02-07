@@ -4,6 +4,8 @@
 <section id="safe_numerics.exception_type">
   <title>exception_type</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

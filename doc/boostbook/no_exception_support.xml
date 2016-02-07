@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safenumerics.no_exception_support">
+<section id="safe_numerics.exception_policies.no_exception_support">
   <title>no_exception_support&lt;O, U = O, R =O, D = O&gt;</title>
 
   <section>

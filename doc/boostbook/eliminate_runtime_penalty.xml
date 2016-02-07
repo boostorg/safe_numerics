@@ -16,7 +16,7 @@
   <para>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
   special exception policy: <link
-  linkend="safe_numerics.trap_exception"><code>trap_exception</code></link>.</para>
+  linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>.</para>
 
   <para><programlisting><xi:include href="../../examples/example81.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
@@ -115,7 +115,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
         <listitem>
           <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
-          <link linkend="safe_numerics.trap_exception"><code>"trap_exception"
+          <link
+          linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
           exception policy</code></link> enforces this guarantee</para>
         </listitem>
 
@@ -146,8 +147,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     Depending on the application, it should be rare to generate error checking
     code, and even more rare to actually invoke it. Any such instances are
     detected by the <link
-    linkend="safe_numerics.trap_exception"><code>"trap_exception" exception
-    policy</code></link> .</para>
+    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
+    exception policy</code></link> .</para>
 
     <para>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</para>
@@ -157,13 +158,13 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
 
     <para>The above program produces the following output:</para>
 
-    <para><programlisting>example 82:
+    <para><screen>example 82:
 x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
 y = &lt;int&gt;[-2147483648,2147483647] = 2
 z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 (x - y) = &lt;long&gt;[-4294967295,4294967295] = 2147483645
 &lt;long&gt;[-4294967296,4294967294] = 2147483649
-</programlisting></para>
+</screen></para>
 
     <para>The output uses a custom output manipulator for safe types to
     display the underlying type and its range as well as current value. Note
@@ -202,7 +203,7 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     will always result in a correct result. But since we trust no one, and
     since the program could change and the expressions replaced with other
     ones, we'll still use the <link
-    linkend="safe_numerics.trap_exception"><code>"trap_exception" exception
+    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception" exception
     policy</code></link> to verify at compile time that what we "know" to be
     true is in fact true.</para>
 
@@ -211,12 +212,12 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 
     <para>which produces the following output.</para>
 
-    <programlisting>example 83:
+    <screen>example 83:
 x = &lt;signed char&gt;[-24,82] = 2
 y = &lt;signed char&gt;[-24,82] = 2
 z = (x + y) = &lt;int&gt;[-48,164] = 4
 (x - y) = &lt;int&gt;[-106,106] = 0
-&lt;int&gt;[-48,164] = 4</programlisting>
+&lt;int&gt;[-48,164] = 4</screen>
 
     <itemizedlist>
       <listitem>
@@ -308,13 +309,13 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
       </itemizedlist>Here is the output from the program when values 12 and 32
     are input from the console:</para>
 
-    <para><programlisting>example 83:
+    <screen>example 84:
 12 32
 x&lt;signed char&gt;[-24,82] = 12
 y&lt;signed char&gt;[-24,82] = 32
-zz = &lt;short&gt;[-48,164] = 44
+z = &lt;short&gt;[-48,164] = 44
 (x + y) = &lt;short&gt;[-48,164] = 44
-(x - y) = &lt;signed char&gt;[-106,106] = -20
-&lt;short&gt;[-48,164] = 44</programlisting></para>
+(x - y) = &lt;short&gt;[-106,106] = -20
+&lt;short&gt;[-48,164] = 44</screen>
   </section>
 </section>

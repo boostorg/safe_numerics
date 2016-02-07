@@ -22,25 +22,25 @@
 <a name="safe_numerics.safe"></a>safe&lt;T, PP = boost::numeric::native, EP =
   boost::numeric::throw_exception&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="safe.html#idm473861694080">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861692144">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861685024">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861678272">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861662384">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861660096">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861657824">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm473861655760">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203968448">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203966480">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203959104">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203952064">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203934320">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203931728">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203929440">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm413203927328">Examples of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861694080"></a>Description</h4></div></div></div>
+<a name="idm413203968448"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861692144"></a>Notation</h4></div></div></div>
+<a name="idm413203966480"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -59,7 +59,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861685024"></a>Associated Types</h4></div></div></div>
+<a name="idm413203959104"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -81,7 +81,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861678272"></a>Template Parameters</h4></div></div></div>
+<a name="idm413203952064"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -117,13 +117,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861662384"></a>Model of</h4></div></div></div>
+<a name="idm413203934320"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861660096"></a>Valid Expressions</h4></div></div></div>
+<a name="idm413203931728"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. This, the result type of such an expression will be another
@@ -132,13 +132,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861657824"></a>Header</h4></div></div></div>
+<a name="idm413203929440"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861655760"></a>Examples of use</h4></div></div></div>
+<a name="idm413203927328"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -157,32 +157,32 @@
     the C++ ones.</p>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861652672"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
+<a name="idm413203924240"></a>Drop-in replacement for standard integer type.</h5></div></div></div>
 <p>The following program will throw an exception and emit a error
       message at runtime if any of several events result in an incorrect
       arithmetic type. Behavior of this program could vary according to the
       machine architecture in question.</p>
-<pre class="programlisting">#include &lt;exception&gt;
-#include &lt;iostream&gt;
-#include &lt;boost/numeric/safe.hpp&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-void f(){
-    using namespace boost::numeric;
-    safe&lt;int&gt; j;
-    try {
-        safe&lt;int&gt; i;
-        std::cin &gt;&gt; i;  // could overflow !
-        j = i * i;      // could overflow
-    }
-    catch(std::exception &amp; e){
-       std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-    }
-    std::cout &lt;&lt; j;
-}</pre>
+<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+    <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">j</span><span class="special">;</span>
+    <span class="keyword">try</span> <span class="special">{</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">i</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">i</span><span class="special">;</span>  <span class="comment">// could overflow !</span>
+        <span class="identifier">j</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">;</span>      <span class="comment">// could overflow</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+       <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">j</span><span class="special">;</span>
+<span class="special">}</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861649888"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
+<a name="idm413203856016"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
 <p>In some instance catching an error at run time is not sufficient.
       We want to be sure that the program can never fail. To achieve this, use
       the trap_exception exception policy rather than the default throw
@@ -193,20 +193,20 @@ void f(){
       * i will return an arithmetically correct result. Since we know that the
       program cannot compile if there is any possibility of arithmetic error,
       we can dispense with the exception handling used above.</p>
-<pre class="programlisting">#include &lt;iostream&gt;
-#include &lt;boost/numeric/safe.hpp&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-void f(){
-    using safe_int = safe&lt;int, boost::numeric::native, boost::numeric::trap_exception&gt;; 
-    safe_int i;
-    std::cin &gt;&gt; i;  // could throw exception here !!!
-    safe_int j;
-    j = i * i; // could throw exception here !!!
-}</pre>
+<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">using</span> <span class="identifier">safe_int</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">native</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span><span class="special">&gt;</span><span class="special">;</span> 
+    <span class="identifier">safe_int</span> <span class="identifier">i</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">i</span><span class="special">;</span>  <span class="comment">// could throw exception here !!!</span>
+    <span class="identifier">safe_int</span> <span class="identifier">j</span><span class="special">;</span>
+    <span class="identifier">j</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// could throw exception here !!!</span>
+<span class="special">}</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm473861645760"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm413203819168"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic. This can be justified
       by the observe</p>
@@ -219,19 +219,19 @@ void f(){
       largest value that an expression can yield. All the work is done at
       compile time - checking for exceptions necessary (input is of course an
       exception). The following example illustrates this.</p>
-<pre class="programlisting">#include &lt;boost/numeric/safe.hpp&gt;
-#include &lt;iostream&gt;
-void f(){
-    using safe_int = safe&lt;int, boost::numeric::automatic, boost::numeric::throw_exception&gt;; 
-    safe_int i;
-    std::cin &gt;&gt; i; // might throw exception
-    auto j = i * i; // won't ever trap - result type can hold the maximum value of i * i
-    static_assert(boost::numeric::is_safe&lt;decltype(j)&gt;::value); // result is another safe type
-    static_assert(
-        std::numeric_limits&lt;decltype(i * i)&gt;::max() &gt;=
-        std::numeric_limits&lt;safe_int&gt;::max() * std::numeric_limits&lt;safe_int&gt;::max()
-    ); // always true
-}</pre>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">using</span> <span class="identifier">safe_int</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">throw_exception</span><span class="special">&gt;</span><span class="special">;</span> 
+    <span class="identifier">safe_int</span> <span class="identifier">i</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// might throw exception</span>
+    <span class="keyword">auto</span> <span class="identifier">j</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// won't ever trap - result type can hold the maximum value of i * i</span>
+    <span class="identifier">static_assert</span><span class="special">(</span><span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">is_safe</span><span class="special">&lt;</span><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">j</span><span class="special">)</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">value</span><span class="special">)</span><span class="special">;</span> <span class="comment">// result is another safe type</span>
+    <span class="identifier">static_assert</span><span class="special">(</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">)</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="special">)</span> <span class="special">&gt;=</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="identifier">safe_int</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="identifier">safe_int</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="special">)</span>
+    <span class="special">)</span><span class="special">;</span> <span class="comment">// always true</span>
+<span class="special">}</span></pre>
 </div>
 </div>
 </div>

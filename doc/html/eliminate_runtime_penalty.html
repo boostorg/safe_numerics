@@ -26,45 +26,45 @@
 <dt><span class="section"><a href="eliminate_runtime_penalty/3.html">Mixing Approaches</a></span></dt>
 </dl></div>
 <p>Up until now, we've focused on detecting when incorrect results are
-  produced and handling these occurances either by throwing an exception or
+  produced and handling these occurrences either by throwing an exception or
   invoking some designated function. We've achieved our goal of enforcing
-  arithmetically correct behavior - but at what cost. For many C++ programers
+  arithmetically correct behavior - but at what cost. For many C++ programmers
   any runtime penalty is unacceptable. Whether or not one agrees with this
-  tradeoff, its a fact that many C++ programmers feel this way. So the
+  trade off, its a fact that many C++ programmers feel this way. So the
   question arises as to how we alter our program to minimize or eliminate any
   runtime penalty.</p>
 <p>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
-  special exception policy: <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">trap_exception</code></a>.</p>
-<pre class="programlisting">#include &lt;iostream&gt;
+  special exception policy: <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>.</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
-#include "../include/exception.hpp" // include exception policies
-#include "safe_format.hpp" // prints out range and value of any type
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span> <span class="comment">// include exception policies</span>
+<span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
-using safe_t = boost::numeric::safe&lt;
-    int,
-    boost::numeric::native,
-    boost::numeric::trap_exception  // note use of "trap_exception" policy!
-&gt;;
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+    <span class="keyword">int</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">native</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span>  <span class="comment">// note use of "trap_exception" policy!</span>
+<span class="special">&gt;</span><span class="special">;</span>
 
-safe_t f(const safe_t &amp; x, const safe_t &amp; y){
-    // each statement below will fail to compile !
-    safe_t z = x + y;
-    std::cout &lt;&lt; "(x + y)" &lt;&lt; safe_format(x + y) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "(x - y)" &lt;&lt; safe_format(x - y) &lt;&lt; std::endl;
-    return z;
-}
+<span class="identifier">safe_t</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
+    <span class="comment">// each statement below will fail to compile !</span>
+    <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x + y)"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x - y)"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="identifier">z</span><span class="special">;</span>
+<span class="special">}</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 81:\n";
-    safe_t x(INT_MAX);  // will fail to compile
-    safe_t y(2);        // will fail to compile
-    std::cout &lt;&lt; "x" &lt;&lt; safe_format(x) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "y" &lt;&lt; safe_format(y) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "z" &lt;&lt; safe_format(f(x, y)) &lt;&lt; std::endl;
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 81:\n"</span><span class="special">;</span>
+    <span class="identifier">safe_t</span> <span class="identifier">x</span><span class="special">(</span><span class="identifier">INT_MAX</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// will fail to compile</span>
+    <span class="identifier">safe_t</span> <span class="identifier">y</span><span class="special">(</span><span class="number">2</span><span class="special">)</span><span class="special">;</span>        <span class="comment">// will fail to compile</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>Now,
   any expression which <span class="emphasis"><em><span class="bold"><strong>MIGHT</strong></span></em></span> fail at runtime is flagged with a

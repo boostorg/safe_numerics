@@ -4,6 +4,8 @@
 <section id="safenumerics.checked_result">
   <title>checked_result&lt;typename R&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

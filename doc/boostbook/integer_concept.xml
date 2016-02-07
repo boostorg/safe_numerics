@@ -4,6 +4,8 @@
 <section id="safe_numerics.integer">
   <title>Integer&lt;T&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

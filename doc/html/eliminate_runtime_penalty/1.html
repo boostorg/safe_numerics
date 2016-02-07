@@ -36,12 +36,12 @@
     C/C++ does just truncates the result to fit into the result type - which
     sometimes will make the result arithmetically incorrect.</p>
 <p>The complete signature for a safe integer type is:</p>
-<pre class="programlisting">template &lt;
-    class T,                  // underlying integer type
-    class P = native,         // type promotion policy class
-    class E = throw_exception // error handling policy class
-&gt;
-safe;
+<pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span>
+    <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span>                  <span class="comment">// underlying integer type</span>
+    <span class="keyword">class</span> <span class="identifier">P</span> <span class="special">=</span> <span class="identifier">native</span><span class="special">,</span>         <span class="comment">// type promotion policy class</span>
+    <span class="keyword">class</span> <span class="identifier">E</span> <span class="special">=</span> <span class="identifier">throw_exception</span> <span class="comment">// error handling policy class</span>
+<span class="special">&gt;</span>
+<span class="identifier">safe</span><span class="special">;</span>
 </pre>
 <p>The standard C++ type promotion rules are consistent with the
     default <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">"native" type
@@ -62,11 +62,11 @@ safe;
 <p>From this interval we can select a new type which can be
           guaranteed to hold the result and use this for the calculation. This
           is more or less equivalent to the following code:</p>
-<pre class="programlisting">int x, y;
-int z = x + y               // could overflow
+<pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">int</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span>               <span class="comment">// could overflow</span>
 
-int x, y;
-long z = (long)x + (long)y; // can never overflow</pre>
+<span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="keyword">long</span> <span class="identifier">z</span> <span class="special">=</span> <span class="special">(</span><span class="keyword">long</span><span class="special">)</span><span class="identifier">x</span> <span class="special">+</span> <span class="special">(</span><span class="keyword">long</span><span class="special">)</span><span class="identifier">y</span><span class="special">;</span> <span class="comment">// can never overflow</span></pre>
 <p>One could do this by editing his code manually, but such a
           task would be tedious, error prone, and leave the resulting code
           hard to read and verify. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic">"automatic"
@@ -75,8 +75,8 @@ long z = (long)x + (long)y; // can never overflow</pre>
 </li>
 <li class="listitem"><p>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
-          <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">"trap_exception"
-          exception policy</code></a> enforces this guarentee</p></li>
+          <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
+          exception policy</code></a> enforces this guarantee</p></li>
 <li class="listitem"><p>Since there can be no errors, there is no need for try/catuch
           blocks.</p></li>
 <li class="listitem"><p>The only runtime error checking we need to do is when safe
@@ -96,42 +96,42 @@ long z = (long)x + (long)y; // can never overflow</pre>
     this case, and only this case, is runtime error checking code generated.
     Depending on the application, it should be rare to generate error checking
     code, and even more rare to actually invoke it. Any such instances are
-    detected by the <a class="link" href="exception_policies.html#safe_numerics.trap_exception" title="trap_exception"><code class="computeroutput">"trap_exception" exception
-    policy</code></a> .</p>
+    detected by the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
+    exception policy</code></a> .</p>
 <p>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</p>
-<pre class="programlisting">#include &lt;iostream&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
-#include "../include/automatic.hpp"
-#include "safe_format.hpp" // prints out range and value of any type
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
-using safe_t = boost::numeric::safe&lt;
-    int,
-    boost::numeric::automatic, // note use of "automatic" policy!!!
-    boost::numeric::trap_exception
-&gt;;
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+    <span class="keyword">int</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// note use of "automatic" policy!!!</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span>
+<span class="special">&gt;</span><span class="special">;</span>
 
-auto f(const safe_t &amp; x, const safe_t &amp; y){ // note use of "auto"
-    auto z = x + y; // note change to "auto"
-    std::cout &lt;&lt; "(x + y) = " &lt;&lt; safe_format(x + y) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "(x - y) = " &lt;&lt; safe_format(x - y) &lt;&lt; std::endl;
-    return z;
-}
+<span class="keyword">auto</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span> <span class="comment">// note use of "auto"</span>
+    <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// note change to "auto"</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x + y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x - y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="identifier">z</span><span class="special">;</span>
+<span class="special">}</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 82:\n";
-    safe_t x(INT_MAX);
-    safe_t y = 2;
-    std::cout &lt;&lt; "x = " &lt;&lt; safe_format(x) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "y = " &lt;&lt; safe_format(y) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "z = " &lt;&lt; safe_format(f(x, y)) &lt;&lt; std::endl;
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 82:\n"</span><span class="special">;</span>
+    <span class="identifier">safe_t</span> <span class="identifier">x</span><span class="special">(</span><span class="identifier">INT_MAX</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 
 </pre>
 <p>The above program produces the following output:</p>
-<pre class="programlisting">example 82:
+<pre class="screen">example 82:
 x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
 y = &lt;int&gt;[-2147483648,2147483647] = 2
 z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649

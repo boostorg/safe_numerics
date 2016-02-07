@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safenumerics.ignore_exception">
+<section id="safe_numerics.exception_policies.ignore">
   <title>ignore_exception</title>
 
   <section>
@@ -10,7 +10,7 @@
     <para>This exception policy can be used to just ignore conditions which
     generate incorrect arithmetic results and continue processing. Programs
     using this policy along with the <link
-    linkend="safe_numerics.native_policy">native</link> promotion policy
+    linkend="safe_numerics.promotion_policies.native">native</link> promotion policy
     should function as if the library is not even being used.</para>
   </section>
 

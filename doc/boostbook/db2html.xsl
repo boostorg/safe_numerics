@@ -75,6 +75,6 @@ Note: each chunk have to start with  a section with an id
 Otherwise the chunk (i.e. file) will be lost.  There is no 
 checking of this
 -->
-<xsl:param name="chunk.section.depth" select="2" />
+<xsl:param name="chunk.section.depth" select="3" />
 
 </xsl:stylesheet>

@@ -24,45 +24,45 @@
     This can fail to be detected when it occurs and create bugs which are hard
     to find. There are several ways to address this, but one of the simplest
     would be to use safe_unsigned_range;</p>
-<pre class="programlisting">#include &lt;stdexcept&gt;
-#include &lt;iostream&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_range.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
 
-void detected_msg(bool detected){
-    std::cout &lt;&lt; (detected ? "error detected!" : "error NOT detected! ") &lt;&lt; std::endl;
-}
+<span class="keyword">void</span> <span class="identifier">detected_msg</span><span class="special">(</span><span class="keyword">bool</span> <span class="identifier">detected</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="identifier">detected</span> <span class="special">?</span> <span class="string">"error detected!"</span> <span class="special">:</span> <span class="string">"error NOT detected! "</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+<span class="special">}</span>
 
-int main(int argc, const char * argv[]){
-    // problem: array index values can exceed array bounds
-    std::cout &lt;&lt; "example 5: ";
-    std::cout &lt;&lt; "array index values can exceed array bounds" &lt;&lt; std::endl;
-    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-    std::array&lt;int, 37&gt; i_array;
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="comment">// problem: array index values can exceed array bounds</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 5: "</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"array index values can exceed array bounds"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">array</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="number">37</span><span class="special">&gt;</span> <span class="identifier">i_array</span><span class="special">;</span>
 
-    // unsigned int i_index = 43;
-    // the following corrupts memory.
-    // This may or may not be detected at run time.
-    // i_array[i_index] = 84; // comment this out so it can be tested!
-    std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
+    <span class="comment">// unsigned int i_index = 43;</span>
+    <span class="comment">// the following corrupts memory.</span>
+    <span class="comment">// This may or may not be detected at run time.</span>
+    <span class="comment">// i_array[i_index] = 84; // comment this out so it can be tested!</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
 
-    // solution: replace unsigned array index with safe_unsigned_range
-    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
-    try{
-        using namespace boost::numeric;
-        using i_index_t = safe_unsigned_range&lt;0, i_array.size() - 1&gt;;
-        i_index_t i_index;
-        i_index = 36; // this works fine
-        i_array[i_index] = 84;
-        i_index = 43; // throw exception here!
-        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl; // so we never arrive here
-    }
-    catch(std::exception &amp; e){
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    return 0;
-}
+    <span class="comment">// solution: replace unsigned array index with safe_unsigned_range</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+        <span class="keyword">using</span> <span class="identifier">i_index_t</span> <span class="special">=</span> <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">0</span><span class="special">,</span> <span class="identifier">i_array</span><span class="special">.</span><span class="identifier">size</span><span class="special">(</span><span class="special">)</span> <span class="special">-</span> <span class="number">1</span><span class="special">&gt;</span><span class="special">;</span>
+        <span class="identifier">i_index_t</span> <span class="identifier">i_index</span><span class="special">;</span>
+        <span class="identifier">i_index</span> <span class="special">=</span> <span class="number">36</span><span class="special">;</span> <span class="comment">// this works fine</span>
+        <span class="identifier">i_array</span><span class="special">[</span><span class="identifier">i_index</span><span class="special">]</span> <span class="special">=</span> <span class="number">84</span><span class="special">;</span>
+        <span class="identifier">i_index</span> <span class="special">=</span> <span class="number">43</span><span class="special">;</span> <span class="comment">// throw exception here!</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span> <span class="comment">// so we never arrive here</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>Collections
     like standard arrays, vectors do array index checking in some function

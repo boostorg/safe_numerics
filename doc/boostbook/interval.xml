@@ -4,6 +4,8 @@
 <section id="safe_numerics.interval">
   <title>interval&lt;typename R&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

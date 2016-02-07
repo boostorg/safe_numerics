@@ -21,28 +21,28 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.interval"></a>interval&lt;typename R&gt;</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="interval.html#idm473861313552">Description</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861312320">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861310448">Notation</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861294816">Associated Types</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861289008">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861227952">Header</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm473861226288">Example of use</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202735680">Description</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202734448">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202732560">Notation</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202717040">Associated Types</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202711232">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202650176">Header</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm413202648512">Example of use</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861313552"></a>Description</h4></div></div></div>
+<a name="idm413202735680"></a>Description</h4></div></div></div>
 <p>A closed arithmetic interval represented by a pair of elements of
     type R.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861312320"></a>Template Parameters</h4></div></div></div>
+<a name="idm413202734448"></a>Template Parameters</h4></div></div></div>
 <p>R must model the type requirements <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861310448"></a>Notation</h4></div></div></div>
+<a name="idm413202732560"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -82,7 +82,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861294816"></a>Associated Types</h4></div></div></div>
+<a name="idm413202717040"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -97,7 +97,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861289008"></a>Valid Expressions</h4></div></div></div>
+<a name="idm413202711232"></a>Valid Expressions</h4></div></div></div>
 <p>Note that all expressions are constexpr .</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -231,28 +231,28 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861227952"></a>Header</h4></div></div></div>
+<a name="idm413202650176"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include "interval.hpp"</code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861226288"></a>Example of use</h4></div></div></div>
-<pre class="programlisting">#include &lt;iostream&gt;
-#include &lt;cstdint&gt;
-#include &lt;cassert&gt;
-#include &lt;boost/numeric/interval.hpp&gt;
+<a name="idm413202648512"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">interval</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-int main(){
-    std::cout &lt;&lt; "test1" &lt;&lt; std::endl;
-    interval&lt;std::int16_t&gt; x = {-64, 63};
-    std::cout &lt;&lt; "x = " &lt;&lt; x &lt;&lt; std::endl;
-    interval&lt;std::int16_t&gt; y(-128, 126);
-    std::cout &lt;&lt; "y = " &lt;&lt; y &lt;&lt; std::endl;
-    assert(static_cast&lt;interval&lt;std::int16_t&gt;&gt;(add&lt;std::int16_t&gt;(x,x)) == y);
-    std::cout &lt;&lt; "x + x =" &lt;&lt; add&lt;std::int16_t&gt;(x, x) &lt;&lt; std::endl;
-    std::cout &lt;&lt; "x - x = " &lt;&lt; subtract&lt;std::int16_t&gt;(x, x) &lt;&lt; std::endl;
-    return 0;
-}</pre>
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"test1"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">interval</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">{</span><span class="special">-</span><span class="number">64</span><span class="special">,</span> <span class="number">63</span><span class="special">}</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">interval</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">(</span><span class="special">-</span><span class="number">128</span><span class="special">,</span> <span class="number">126</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">assert</span><span class="special">(</span><span class="keyword">static_cast</span><span class="special">&lt;</span><span class="identifier">interval</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;&gt;</span><span class="special">(</span><span class="identifier">add</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span><span class="identifier">x</span><span class="special">)</span><span class="special">)</span> <span class="special">==</span> <span class="identifier">y</span><span class="special">)</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x + x ="</span> <span class="special">&lt;&lt;</span> <span class="identifier">add</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x - x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">subtract</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int16_t</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span></pre>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

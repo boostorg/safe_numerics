@@ -21,116 +21,116 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.checked_integer_arithmetic"></a>Checked Integer Arithmetic</h3></div></div></div>
 <div class="toc"><dl>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861327744">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861326032">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861324592">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861322720">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861321568">Header</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861319936">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861317680">Notes</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm473861316528">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202990096">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202759216">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202757872">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202755776">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202754624">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202752976">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202740256">Notes</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202739008">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861327744"></a>Synopsis</h4></div></div></div>
-<pre class="programlisting">// safe casting on primitive types
-template&lt;class R, class T&gt;
-constexpr checked_result&lt;R&gt;
-checked::cast(const T &amp; t);
+<a name="idm413202990096"></a>Synopsis</h4></div></div></div>
+<pre class="programlisting"><span class="comment">// safe casting on primitive types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">cast</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">)</span><span class="special">;</span>
 
-// safe addition on primitive types
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::add(const T &amp; t, const U &amp; u);
+<span class="comment">// safe addition on primitive types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">add</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// safe subtraction on primitive types
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::subtract(const T &amp; t, const U &amp; u);
+<span class="comment">// safe subtraction on primitive types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">subtract</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// safe multiplication on primitive types
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::multiply(const T &amp; t, const U &amp; u);
+<span class="comment">// safe multiplication on primitive types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">multiply</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// safe division on unsafe types
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::divide(const T &amp; t, const U &amp; u);
+<span class="comment">// safe division on unsafe types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">divide</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::divide_automatic(const T &amp; t, const U &amp; u);
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">divide_automatic</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// safe modulus on unsafe types
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::modulus(const T &amp; t, const U &amp; u);
+<span class="comment">// safe modulus on unsafe types</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">modulus</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// left shift
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::left_shift(const T &amp; t, const U &amp; u);
+<span class="comment">// left shift</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">left_shift</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// right shift
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::right_shift(const T &amp; t, const U &amp; u);
+<span class="comment">// right shift</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">right_shift</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-// bitwise operations
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_or(const T &amp; t, const U &amp; u);
+<span class="comment">// bitwise operations</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_or</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_and(const T &amp; t, const U &amp; u);
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_and</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 
-template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_xor(const T &amp; t, const U &amp; u);
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
+<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_xor</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
 </pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861326032"></a>Description</h4></div></div></div>
+<a name="idm413202759216"></a>Description</h4></div></div></div>
 <p>Perform binary operations on arithmetic types. Return either a valid
     result or an error code. Under no circumstances should an incorrect result
     be returned.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861324592"></a>Type requirements</h4></div></div></div>
+<a name="idm413202757872"></a>Type requirements</h4></div></div></div>
 <p>All template parameters of the functions must model <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a> type requirements.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861322720"></a>Complexity</h4></div></div></div>
+<a name="idm413202755776"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861321568"></a>Header</h4></div></div></div>
+<a name="idm413202754624"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include "checked.hpp" </code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861319936"></a>Example of use</h4></div></div></div>
+<a name="idm413202752976"></a>Example of use</h4></div></div></div>
 <p>[A code fragment that illustrates how to use the function.]</p>
-<pre class="programlisting">#include "checked.hpp"
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"checked.hpp"</span>
 
-checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
+<span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">result_base_type</span><span class="special">&gt;</span> <span class="identifier">r</span> <span class="special">=</span> <span class="identifier">checked</span><span class="special">::</span><span class="identifier">multiply</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span><span class="special">(</span><span class="number">24</span><span class="special">,</span> <span class="number">42</span><span class="special">)</span><span class="special">;</span>
 </pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861317680"></a>Notes</h4></div></div></div>
+<a name="idm413202740256"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm473861316528"></a>See Also</h4></div></div></div>
+<a name="idm413202739008"></a>See Also</h4></div></div></div>
 <p><a class="link" href="checked_result.html" title="checked_result&lt;typename R&gt;">checked_result&lt;typename
     R&gt;</a></p>
 </div>

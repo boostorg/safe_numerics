@@ -4,6 +4,8 @@
 <section id="safe_numerics.promotion_policy">
   <title>PromotionPolicy&lt;PP&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 
@@ -154,7 +156,7 @@ auto sz = sx + y; // includes code which traps overflows at runtime</programlist
         <para>The type of sz will be safe&lt; type of z &gt;.</para>
 
         <para>This policy is documented in <link
-        linkend="safe_numerics.native_policy">Promotion Policies -
+        linkend="safe_numerics.promotion_policies.native">Promotion Policies -
         native</link>.</para>
       </listitem>
 
@@ -189,7 +191,7 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
         guaranteed to hold the sum so no overflow checking is done.</para>
 
         <para>This policy is documented in <link
-        linkend="safe_numerics.automatic_policy">Promotion Policies -
+        linkend="safe_numerics.promotion_policies.automatic">Promotion Policies -
         automatic</link></para>
       </listitem>
     </itemizedlist>

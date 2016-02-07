@@ -4,6 +4,8 @@
 <section id="safe_numerics.safe_literal">
   <title>safe_literal&lt;Value&gt;, safe_unsigned_literal&lt;Value&gt;</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Description</title>
 

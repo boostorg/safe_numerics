@@ -22,42 +22,42 @@
 <a name="safe_numerics.tutorial.2"></a>Arithmetic Operations can Overflow Silently</h3></div></div></div>
 <p>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</p>
-<pre class="programlisting">#include &lt;cassert&gt;
-#include &lt;exception&gt;
-#include &lt;iostream&gt;
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-#include "../include/safe_integer.hpp"
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
-int main(int argc, const char * argv[]){
-    std::cout &lt;&lt; "example 2:";
-    std::cout &lt;&lt; "undetected overflow in data type" &lt;&lt; std::endl;
-    // problem: undetected overflow
-    std::cout &lt;&lt; "Not using safe numerics" &lt;&lt; std::endl;
-    try{
-        int x = INT_MAX;
-        // the following silently produces an incorrect result
-        ++x;
-        std::cout &lt;&lt; x &lt;&lt; " != " &lt;&lt; INT_MAX &lt;&lt; " + 1" &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error NOT detected!" &lt;&lt; std::endl;
-    }
-    catch(std::exception){
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    // solution: replace int with safe&lt;int&gt;
-    std::cout &lt;&lt; "Using safe numerics" &lt;&lt; std::endl;
-    try{
-        using namespace boost::numeric;
-        safe&lt;int&gt; x = INT_MAX;
-        // throws exception when result is past maximum possible 
-        ++x;
-        assert(false); // never arrive here
-    }
-    catch(std::exception &amp; e){
-        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
-        std::cout &lt;&lt; "error detected!" &lt;&lt; std::endl;
-    }
-    return 0;
-}
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 2:"</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"undetected overflow in data type"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="comment">// problem: undetected overflow</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
+        <span class="comment">// the following silently produces an incorrect result</span>
+        <span class="special">++</span><span class="identifier">x</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">INT_MAX</span> <span class="special">&lt;&lt;</span> <span class="string">" + 1"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="comment">// solution: replace int with safe&lt;int&gt;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
+        <span class="comment">// throws exception when result is past maximum possible </span>
+        <span class="special">++</span><span class="identifier">x</span><span class="special">;</span>
+        <span class="identifier">assert</span><span class="special">(</span><span class="keyword">false</span><span class="special">)</span><span class="special">;</span> <span class="comment">// never arrive here</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
 </pre>
 <p>When variables of unsigned integer type are decremented below zero,
     they "roll over" to the highest possible unsigned version of that integer

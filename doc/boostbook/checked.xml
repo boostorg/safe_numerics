@@ -4,6 +4,8 @@
 <section id="safe_numerics.checked_integer_arithmetic">
   <title>Checked Integer Arithmetic</title>
 
+  <?dbhtml stop-chunking?>
+
   <section>
     <title>Synopsis</title>
 
