@@ -5,25 +5,53 @@
   <articleinfo>
     <title>A Proposal to Add Safe Integer Types to the Standard Library
     Technical Report</title>
-
-    <affiliation>
-      <orgname>Programming Language C++, Library Subgroup</orgname>
-    </affiliation>
-
-    <author>
-      <firstname>Robert</firstname>
-
-      <surname>Ramey</surname>
-
-      <affiliation>
-        <orgname>Robert Ramey Software Development, Boost</orgname>
-      </affiliation>
-
-      <email>ramey@rrsd.com</email>
-    </author>
-
-    <pubdate>8 December 2015</pubdate>
   </articleinfo>
+
+  <informaltable>
+    <tgroup cols="2">
+      <colspec colwidth="1*"/>
+
+      <colspec colwidth="2*"/>
+
+      <tbody>
+        <row>
+          <entry>Document number:</entry>
+
+          <entry>P0228R0</entry>
+        </row>
+
+        <row>
+          <entry>Project:</entry>
+
+          <entry>Programming Language C++</entry>
+        </row>
+
+        <row>
+          <entry>Audience:</entry>
+
+          <entry>Library Evolution Working Group</entry>
+        </row>
+
+        <row>
+          <entry>Author:</entry>
+
+          <entry>Robert Ramey</entry>
+        </row>
+
+        <row>
+          <entry>Contact:</entry>
+
+          <entry>ramey@rrsd.com</entry>
+        </row>
+
+        <row>
+          <entry>Date:</entry>
+
+          <entry>2016-02-16</entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </informaltable>
 
   <section>
     <title>Motivation</title>
@@ -84,7 +112,7 @@
       </listitem>
 
       <listitem>
-        <para>"Automatically Interoperate with Unsafe Types"</para>
+        <para>"Automatically Inter operate with built-in integer types"</para>
 
         <para>The usage of a safe type in binary expression "infects" the
         expression by returning another safe type. This is designed to avoid
@@ -135,19 +163,20 @@ using namespace std;
 int f(safe&lt;int8_t&gt; i){
     // C++ promotion rules make overflow on multiplication impossible!
     // cannot fail on return
+    // zero performance penalty
     return i * i;      
 }
 
 int8_t f(safe&lt;int8_t&gt; i){
     // C++ promotion rules make overflow on multiplication impossible!
     // but result could be truncated on return
-    // so result must be checked at runtime.
+    // so result must be checked at runtime incurring a runtime penalty
     return i * i;      // cannot overflow on multiplication, 
 }</programlisting>
 
         <para>Some processors have the ability to detect erroneous results but
         the C++ language doesn't include the ability to exploit these
-        features. Implementor's of this this library will have the option to
+        features. Implementor's of this library will have the option to
         exploit these features to diminish or eliminate runtime costs.</para>
 
         <para>If all else fails and the runtime cost is deemed too large for
