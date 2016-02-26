@@ -294,13 +294,34 @@ struct addition_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -333,15 +354,13 @@ typename boost::lazy_enable_if_c<
     addition_result<T, U>
 >::type
 constexpr inline operator+(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
     using ar = addition_result<T, U>;
-    return typename ar::type(
+    return ar::make(
         ar::return_value(
             t,
             u,
             typename std::integral_constant<bool, ar::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -399,13 +418,34 @@ struct subtraction_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -439,13 +479,12 @@ typename boost::lazy_enable_if_c<
 >::type
 constexpr operator-(const T & t, const U & u){
     using sr = subtraction_result<T, U>;
-    return typename sr::type(
+    return sr::make(
         sr::return_value(
             t,
             u,
             typename std::integral_constant<bool, sr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -508,13 +547,34 @@ struct multiplication_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     constexpr static bool no_exception() {
         return r_interval.no_exception();
@@ -553,13 +613,12 @@ typename boost::lazy_enable_if_c<
 constexpr operator*(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     using mr = multiplication_result<T, U>;
-    return typename mr::type(
+    return mr::make(
         mr::return_value(
             t,
             u,
             typename std::integral_constant<bool, mr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -620,14 +679,34 @@ struct division_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -663,13 +742,12 @@ typename boost::lazy_enable_if_c<
 constexpr operator/(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
     using dr = division_result<T, U>;
-    return typename dr::type(
+    return dr::make(
         dr::return_value(
             t,
             u,
             typename std::integral_constant<bool, dr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -730,14 +808,34 @@ struct modulus_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
 
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -771,13 +869,12 @@ typename boost::lazy_enable_if_c<
 >::type
 inline operator%(const T & t, const U & u){
     using mr = modulus_result<T, U>;
-    return typename mr::type(
+    return mr::make(
         mr::return_value(
             t,
             u,
             typename std::integral_constant<bool, mr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -974,13 +1071,34 @@ struct left_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -1019,13 +1137,12 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator<<(const T & t, const U & u){
     // INT13-CPP
     using lsr = left_shift_result<T, U>;
-    return typename lsr::type(
+    return lsr::make(
         lsr::return_value(
             t,
             u,
             typename std::integral_constant<bool, lsr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -1080,13 +1197,34 @@ struct right_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
 
     // exception possible
     constexpr static result_base_type
@@ -1125,13 +1263,12 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator>>(const T & t, const U & u){
     // INT13-CPP
     using rsr = right_shift_result<T, U>;
-    return typename rsr::type(
+    return rsr::make(
         rsr::return_value(
             t,
             u,
             typename std::integral_constant<bool, rsr::exception_possible()>()
-        ),
-        std::false_type() // don't need to revalidate
+        )
     );
 }
 
@@ -1163,6 +1300,11 @@ struct bitwise_or_result {
             t_base_type,
             u_base_type
         >::type;
+
+    static_assert(
+        std::numeric_limits<result_base_type>::is_integer,
+        "bitwise operations must use integers"
+    );
 
     constexpr static result_base_type r =
         safe_compare::greater_than(
@@ -1232,6 +1374,11 @@ struct bitwise_and_result {
             t_base_type,
             u_base_type
         >::type;
+
+    static_assert(
+        std::numeric_limits<result_base_type>::is_integer,
+        "bitwise operations must use integers"
+    );
 
     constexpr static result_base_type r =
         safe_compare::less_than(

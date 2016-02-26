@@ -15,7 +15,7 @@
 #include <type_traits>
 #include <limits>
 
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
 
 #include "safe_common.hpp"

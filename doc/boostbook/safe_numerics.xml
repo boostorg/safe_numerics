@@ -380,11 +380,62 @@
   </section>
 
   <section id="safe_numerics.bibliography">
-    <title>Bibliography</title>
+    <title>Bibliograph</title>
 
     <biblioentry>
       <author>
-        <surname>Lawrence Crowl</surname>
+        <firstname>Zack</firstname>
+
+        <surname>Coker</surname>
+      </author>
+
+      <author>
+        <firstname>Samir</firstname>
+
+        <surname>Hasan</surname>
+      </author>
+
+      <author>
+        <firstname>Jeffrey</firstname>
+
+        <surname>Overbey</surname>
+      </author>
+
+      <author>
+        <firstname>Munawar</firstname>
+
+        <surname>Hafiz</surname>
+      </author>
+
+      <author>
+        <firstname>Christian</firstname>
+
+        <surname>Kästner</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="https://www.cs.cmu.edu/~ckaestne/pdf/csse14-01.pdf">Integers In
+          C: An Open Invitation To Security Attacks?</ulink>
+        </ulink>
+      </title>
+
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
+        The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
+
+      <date>January 15, 2012</date>
+
+      <abbrev>Crowl</abbrev>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
+        <firstname>Lawrence</firstname>
+
+        <surname>Crowl</surname>
       </author>
 
       <title>
@@ -576,6 +627,31 @@
 
     <biblioentry>
       <author>
+        <surname>Jad Mouawad</surname>
+      </author>
+
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.nytimes.com/2015/05/01/business/faa-orders-fix-for-possible-power-loss-in-boeing-787.html?_r=0">F.A.A
+          Orders Fix for Possible Power Loss in Boeing 787</ulink>
+        </ulink>
+      </title>
+
+      <publishername>New York Times</publishername>
+
+      <date>April 30, 2015</date>
+
+      <abstract>
+        <para>Federal regulators will order operators of Boeing 787
+        Dreamliners to shut down the plane’s electrical power periodically
+        after Boeing discovered a software error that could result in a total
+        loss of power.</para>
+      </abstract>
+    </biblioentry>
+
+    <biblioentry>
+      <author>
         <surname>Daniel Plakosh</surname>
       </author>
 
@@ -684,31 +760,6 @@
       <abstract>
         <para>Posts of various authors regarding proposal to add safe integer
         to C++ standard libraries</para>
-      </abstract>
-    </biblioentry>
-
-    <biblioentry>
-      <author>
-        <surname>Jad Mouawad</surname>
-      </author>
-
-      <title>
-        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
-          <ulink
-          url="http://www.nytimes.com/2015/05/01/business/faa-orders-fix-for-possible-power-loss-in-boeing-787.html?_r=0">F.A.A
-          Orders Fix for Possible Power Loss in Boeing 787</ulink>
-        </ulink>
-      </title>
-
-      <publishername>New York Times</publishername>
-
-      <date>April 30, 2015</date>
-
-      <abstract>
-        <para>Federal regulators will order operators of Boeing 787
-        Dreamliners to shut down the plane’s electrical power periodically
-        after Boeing discovered a software error that could result in a total
-        loss of power.</para>
       </abstract>
     </biblioentry>
 

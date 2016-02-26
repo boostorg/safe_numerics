@@ -16,7 +16,7 @@
 // C++ types.
 
 #include <limits>
-#include <type_traits> // is_integral, make_unsigned
+#include <type_traits> // is_fundamental, make_unsigned
 #include <algorithm> // std::max
 
 #include <boost/utility/enable_if.hpp>
@@ -128,13 +128,27 @@ constexpr checked_result<R>
 cast(
     const T & t
 ) {
-    return detail::cast_impl<
-        std::numeric_limits<R>::is_signed,
-        std::numeric_limits<T>::is_signed
-    >
-    ::template invoke<R>(t);
+    return
+    (! std::numeric_limits<R>::is_integer) ?
+        // conversions to floating point types are always OK
+        checked_result<R>(t)
+    :
+    (! std::numeric_limits<T>::is_integer) ?
+        // conversions to integer types
+        // from floating point types are never OK
+        checked_result<R>(
+            exception_type::range_error,
+            "converted signed value too large"
+        )
+    :
+        // for integer to integer conversions
+        // it depends ...
+        detail::cast_impl<
+            std::numeric_limits<R>::is_signed,
+            std::numeric_limits<T>::is_signed
+        >::template invoke<R>(t)
+    ;
 }
-
 
 ////////////////////////////////////////////////////
 // safe addition on primitive types
@@ -193,8 +207,7 @@ constexpr checked_result<R> add(
     const T & t,
     const U & u
 ) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     const checked_result<R> ru = cast<R>(u);
     const checked_result<R> rt = cast<R>(t);
     return
@@ -264,8 +277,7 @@ constexpr checked_result<R> subtract(
     const T & t,
     const U & u
 ) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     checked_result<R> rt(cast<R>(t));
     if(! rt.no_exception() )
         return rt;
@@ -415,8 +427,7 @@ constexpr checked_result<R> multiply(
     const T & t,
     const U & u
 ) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     checked_result<R> rt(cast<R>(t));
     if(! rt.no_exception() )
         return rt;
@@ -560,8 +571,7 @@ constexpr modulus(
     const T & t,
     const U & u
 ) {
-    static_assert(std::is_integral<T>::value, "only intrinsic integers permitted");
-    static_assert(std::is_integral<U>::value, "only intrinsic integers permitted");
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     if(0 == u)
         return checked_result<R>(
             exception_type::domain_error,
