@@ -236,7 +236,9 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-#endif
+#endif 
+
+#if 0
 
 #include <iostream>
 #include "../include/interval.hpp"
@@ -250,4 +252,42 @@ int main(){
     std::cout << r << '\n';
     return 0;
 }
+
+#endif
+
+
+// testing floating point
+#include "../include/safe_integer.hpp"
+
+using namespace boost::numeric;
+
+template<typename T, typename U>
+void test(){
+    T t;
+    U u;
+    t + u;
+/*
+    t - u;
+    t * u;
+    t / u;
+    t % u;
+    t << u;
+    t >> u;
+    t | u;
+    t & u;
+    t ^ u;
+*/
+}
+int main(int argc, char *argv[]){
+    test<safe<std::int8_t>, float>();
+    test<safe<std::int16_t>,float>();
+    test<safe<std::int32_t>, float>();
+    test<safe<std::int64_t>, float>();
+    // this is a compile only test - but since many build systems
+    // can't handle a compile-only test - make sure it passes trivially.
+    return 0;
+}
+
+
+
 
