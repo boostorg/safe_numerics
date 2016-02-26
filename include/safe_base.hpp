@@ -185,11 +185,6 @@ public:
     // constructors
 
     constexpr explicit safe_base(const Stored & rhs, std::false_type);
-    /*
-    constexpr explicit safe_base(const Stored & rhs) :
-        m_t(validated_cast(rhs))
-    {}
-    */
     // default constructor
     constexpr explicit safe_base() {
         // this permits creating of invalid instances.  This is inline
@@ -205,10 +200,6 @@ public:
 
     template<class T>
     constexpr /*explicit*/ safe_base(const T & t);
-
-    //constexpr safe_base(const safe_base & rhs) :
-    //    m_t(rhs.m_t)
-    //{}
 
     // note: Rule of Five.  Don't specify
     // custom destructor, custom destructor, custom assignment
