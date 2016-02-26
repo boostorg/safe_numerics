@@ -189,10 +189,7 @@ public:
     constexpr explicit safe_base(const Stored & rhs) :
         m_t(validated_cast(rhs))
     {}
-    constexpr explicit safe_base(validated_wrapper && rhs) :
-        m_t(rhs)
-    {}
-*/
+    */
     // default constructor
     constexpr explicit safe_base() {
         // this permits creating of invalid instances.  This is inline
