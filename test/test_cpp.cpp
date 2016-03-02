@@ -1,7 +1,6 @@
 #include <climits>
 
 #include "../include/cpp.hpp"
-#include "../include/native.hpp"
 
 using namespace boost::numeric;
 
@@ -48,7 +47,7 @@ void test_usual_arithmetic_conversions(T1, T2){   \
     static_assert(                       \
         std::is_same<                    \
             custom_result_type<T1, T2>,  \
-            native::result_type<T1, T2>  \
+            decltype(T1() + T2())        \
         >::value,                        \
         BOOST_PP_STRINGIZE(conversion fails T1 T2) \
     );                                   \

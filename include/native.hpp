@@ -30,27 +30,46 @@ struct native {
     // purpose.
 
     template<typename T, typename U>
-    using result_type =
+    using additive_operator_type =
         decltype(
             typename base_type<T>::type()
             + typename base_type<U>::type()
         );
+    template<typename T, typename U>
+    using multiplicative_operator_type =
+        decltype(
+            typename base_type<T>::type()
+            * typename base_type<U>::type()
+        );
+    // note: right/left shift require integer arguments
+    template<typename T, typename U>
+    using bitwise_shift_operator_type =
+        decltype(
+            typename base_type<T>::type()
+            << typename base_type<U>::type()
+        );
+    template<typename T, typename U>
+    using bitwise_logic_operator_type =
+        decltype(
+            typename base_type<T>::type()
+            & typename base_type<U>::type()
+        );
 
     template<typename T, typename U>
     struct addition_result {
-        using type = result_type<T, U>;
+        using type = additive_operator_type<T, U>;
     };
     template<typename T, typename U>
     struct subtraction_result {
-        using type = result_type<T, U>;
+        using type = additive_operator_type<T, U>;
     };
     template<typename T, typename U>
     struct multiplication_result {
-        using type = result_type<T, U>;
+        using type = multiplicative_operator_type<T, U>;
     };
     template<typename T, typename U>
     struct division_result {
-        using type = result_type<T, U>;
+        using type = multiplicative_operator_type<T, U>;
     };
 
     // forward to correct divide implementation
@@ -65,7 +84,7 @@ struct native {
 
     template<typename T, typename U>
     struct modulus_result {
-        using type = result_type<T, U>;
+        using type = multiplicative_operator_type<T, U>;
     };
 
     // forward to correct modulus implementation
@@ -80,16 +99,16 @@ struct native {
 
     template<typename T, typename U>
     struct left_shift_result {
-        using type = result_type<T, U>;
+        using type = bitwise_shift_operator_type<T, U>;
     };
     template<typename T, typename U>
     struct right_shift_result {
-        using type = result_type<T, U>;
+        using type = bitwise_shift_operator_type<T, U>;
     };
 
     template<typename T, typename U>
     struct bitwise_result {
-        using type = result_type<T, U>;
+        using type = bitwise_logic_operator_type<T, U>;
     };
 };
 

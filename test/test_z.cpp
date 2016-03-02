@@ -266,13 +266,15 @@ void test(){
     T t;
     U u;
     t + u;
-/*
     t - u;
     t * u;
+
     t / u;
-    t % u;
+    // the operators below are restricted to integral types
+/*
     t << u;
     t >> u;
+    t % u;
     t | u;
     t & u;
     t ^ u;

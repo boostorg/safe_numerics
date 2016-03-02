@@ -516,38 +516,36 @@ struct multiplication_result {
             u_base_type
         >::type;
 
-    // filter out case were overflow cannot occur
-    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
-    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
-    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
-    // for MAX.  Now
-    constexpr static const interval<t_base_type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    };
-
-    constexpr static const interval<u_base_type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    };
-
-    // when we add the temporary intervals above, we'll get a new interval
-    // with the correct range for the sum !
-    constexpr static const checked_result<interval<result_base_type>> r_interval
-        = multiply<result_base_type>(t_interval, u_interval);
-
-    constexpr static bool exception_possible() {
-        return ! r_interval.no_exception();
-    }
-
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
-
     struct safe_type {
+        // filter out case were overflow cannot occur
+        // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
+        // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
+        // Use base_value(T) ( which equals MIN ) to create a new interval. Same
+        // for MAX.  Now
+        constexpr static const interval<t_base_type> t_interval{
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        // when we add the temporary intervals above, we'll get a new interval
+        // with the correct range for the sum !
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = multiply<result_base_type>(t_interval, u_interval);
+
+        constexpr static bool exception_possible() {
+            return ! r_interval.no_exception();
+        }
+        constexpr static const interval<result_base_type> type_interval =
+            exception_possible() ?
+                interval<result_base_type>{}
+            :
+                static_cast<interval<result_base_type>>(r_interval)
+            ;
         using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -564,6 +562,9 @@ struct multiplication_result {
         constexpr static const type make(const result_base_type & t){
             return t;
         }
+        constexpr static bool exception_possible() {
+            return false;
+        }
     };
     using type_helper = typename boost::mpl::if_c<
         std::numeric_limits<result_base_type>::is_integer,
@@ -575,9 +576,8 @@ struct multiplication_result {
     constexpr static const type make(const result_base_type & t){
         return type_helper::make(t);
     }
-
-    constexpr static bool no_exception() {
-        return r_interval.no_exception();
+    constexpr static bool exception_possible() {
+        return type_helper::exception_possible();
     }
 
     // exception possible
@@ -650,36 +650,35 @@ struct division_result {
             u_base_type
         >::type;
 
-    constexpr static const interval<t_base_type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    };
-
-    constexpr static const interval<u_base_type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    };
-
-    constexpr static const checked_result<interval<result_base_type>> r_interval
-        = divide_nz<result_base_type>(t_interval, u_interval);
-
-    constexpr static bool exception_possible() {
-        return
-            // if over/under flow or domain error possible
-            ! r_interval.no_exception()
-            // if the denominator can contain zero
-            || (u_interval.l <= 0 && u_interval.u >=0 )
-        ;
-    }
-
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
-
     struct safe_type {
+        constexpr static const interval<t_base_type> t_interval{
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = divide_nz<result_base_type>(t_interval, u_interval);
+
+        constexpr static bool exception_possible() {
+            return
+                // if over/under flow or domain error possible
+                ! r_interval.no_exception()
+                // if the denominator can contain zero
+                || (u_interval.l <= 0 && u_interval.u >=0 )
+            ;
+        }
+
+        constexpr static const interval<result_base_type> type_interval =
+            exception_possible() ?
+                interval<result_base_type>{}
+            :
+                static_cast<interval<result_base_type>>(r_interval)
+            ;
         using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -696,6 +695,9 @@ struct division_result {
         constexpr static const type make(const result_base_type & t){
             return t;
         }
+        constexpr static bool exception_possible() {
+            return false;
+        }
     };
     using type_helper = typename boost::mpl::if_c<
         std::numeric_limits<result_base_type>::is_integer,
@@ -706,6 +708,9 @@ struct division_result {
 
     constexpr static const type make(const result_base_type & t){
         return type_helper::make(t);
+    }
+    constexpr static bool exception_possible() {
+        return type_helper::exception_possible();
     }
 
     // exception possible
@@ -779,36 +784,36 @@ struct modulus_result {
             u_base_type
         >::type;
 
-    constexpr static const interval<t_base_type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    };
-
-    constexpr static const interval<u_base_type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    };
-
-    constexpr static const checked_result<interval<result_base_type>> r_interval
-        = modulus_nz<result_base_type>(t_interval, u_interval);
-
-    constexpr static bool exception_possible() {
-        return
-            // if over/under flow or domain error possible
-            ! r_interval.no_exception()
-            // if the denominator can contain zero
-            || (u_interval.l <= 0 && u_interval.u >=0 )
-        ;
-    }
-
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
 
     struct safe_type {
+        constexpr static const interval<t_base_type> t_interval{
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = modulus_nz<result_base_type>(t_interval, u_interval);
+
+        constexpr static bool exception_possible() {
+            return
+                // if over/under flow or domain error possible
+                ! r_interval.no_exception()
+                // if the denominator can contain zero
+                || (u_interval.l <= 0 && u_interval.u >=0 )
+            ;
+        }
+
+        constexpr static const interval<result_base_type> type_interval =
+            exception_possible() ?
+                interval<result_base_type>{}
+            :
+                static_cast<interval<result_base_type>>(r_interval)
+            ;
         using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -825,6 +830,9 @@ struct modulus_result {
         constexpr static const type make(const result_base_type & t){
             return t;
         }
+        constexpr static bool exception_possible() {
+            return false;
+        }
     };
     using type_helper = typename boost::mpl::if_c<
         std::numeric_limits<result_base_type>::is_integer,
@@ -835,6 +843,9 @@ struct modulus_result {
 
     constexpr static const type make(const result_base_type & t){
         return type_helper::make(t);
+    }
+    constexpr static bool exception_possible() {
+        return type_helper::exception_possible();
     }
 
     // exception possible
@@ -1071,34 +1082,13 @@ struct left_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    struct safe_type {
-        using type = safe_base<
+    using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
-        constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
-        }
-    };
-    struct unsafe_type {
-        using type = result_base_type;
-        constexpr static const type make(const result_base_type & t){
-            return t;
-        }
-    };
-    using type_helper = typename boost::mpl::if_c<
-        std::numeric_limits<result_base_type>::is_integer,
-        safe_type,
-        unsafe_type
-    >::type;
-    using type = typename type_helper::type;
-
-    constexpr static const type make(const result_base_type & t){
-        return type_helper::make(t);
-    }
 
     // exception possible
     constexpr static result_base_type
@@ -1137,12 +1127,13 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator<<(const T & t, const U & u){
     // INT13-CPP
     using lsr = left_shift_result<T, U>;
-    return lsr::make(
+    return typename lsr::type(
         lsr::return_value(
             t,
             u,
             typename std::integral_constant<bool, lsr::exception_possible()>()
-        )
+        ),
+        std::false_type() // don't need to revalidate
     );
 }
 
@@ -1197,34 +1188,13 @@ struct right_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
-    struct safe_type {
-        using type = safe_base<
+    using type = safe_base<
             result_base_type,
             type_interval.l,
             type_interval.u,
             promotion_policy,
             exception_policy
         >;
-        constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
-        }
-    };
-    struct unsafe_type {
-        using type = result_base_type;
-        constexpr static const type make(const result_base_type & t){
-            return t;
-        }
-    };
-    using type_helper = typename boost::mpl::if_c<
-        std::numeric_limits<result_base_type>::is_integer,
-        safe_type,
-        unsafe_type
-    >::type;
-    using type = typename type_helper::type;
-
-    constexpr static const type make(const result_base_type & t){
-        return type_helper::make(t);
-    }
 
     // exception possible
     constexpr static result_base_type
@@ -1263,12 +1233,13 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator>>(const T & t, const U & u){
     // INT13-CPP
     using rsr = right_shift_result<T, U>;
-    return rsr::make(
+    return typename rsr::type(
         rsr::return_value(
             t,
             u,
             typename std::integral_constant<bool, rsr::exception_possible()>()
-        )
+        ),
+        std::false_type() // don't need to revalidate
     );
 }
 
@@ -1300,11 +1271,6 @@ struct bitwise_or_result {
             t_base_type,
             u_base_type
         >::type;
-
-    static_assert(
-        std::numeric_limits<result_base_type>::is_integer,
-        "bitwise operations must use integers"
-    );
 
     constexpr static result_base_type r =
         safe_compare::greater_than(
@@ -1374,11 +1340,6 @@ struct bitwise_and_result {
             t_base_type,
             u_base_type
         >::type;
-
-    static_assert(
-        std::numeric_limits<result_base_type>::is_integer,
-        "bitwise operations must use integers"
-    );
 
     constexpr static result_base_type r =
         safe_compare::less_than(

@@ -138,7 +138,7 @@ cast(
         // from floating point types are never OK
         checked_result<R>(
             exception_type::range_error,
-            "converted signed value too large"
+            "conversion of integer to float loses precision"
         )
     :
         // for integer to integer conversions
@@ -155,10 +155,24 @@ cast(
 
 namespace detail {
 
+    // result not an integer (float, double, etc)
+    template<class R>
+    typename boost::enable_if_c<
+        ! std::numeric_limits<R>::is_integer,
+        checked_result<R>
+    >::type
+    constexpr add(
+        const R t,
+        const R u
+    ) {
+        return t + u;
+    }
+
     // result unsigned
     template<class R>
     typename boost::enable_if_c<
-        ! std::numeric_limits<R>::is_signed,
+        std::numeric_limits<R>::is_integer
+        && ! std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
     constexpr add(
@@ -180,7 +194,8 @@ namespace detail {
     // result signed
     template<class R>
     typename boost::enable_if_c<
-        std::numeric_limits<R>::is_signed,
+        std::numeric_limits<R>::is_integer
+        && std::numeric_limits<R>::is_signed,
         checked_result<R>
     >::type
     constexpr add(
@@ -208,67 +223,78 @@ constexpr checked_result<R> add(
     const U & u
 ) {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    const checked_result<R> ru = cast<R>(u);
-    const checked_result<R> rt = cast<R>(t);
-    return
-        (! rt.no_exception()) ?
-            rt
-        :
-        (! ru.no_exception()) ?
-            ru
-        :
-            detail::add<R>(t, u)
-    ;
+    const checked_result<R> rt(cast<R>(t));
+    if(! rt.no_exception() )
+        return rt;
+    const checked_result<R> ru(cast<R>(u));
+    if(! ru.no_exception() )
+        return ru;
+    return detail::add<R>(t, u);
 }
 
 ////////////////////////////////////////////////////
 // safe subtraction on primitive types
 namespace detail {
 
-// result unsigned
-template<class R>
-typename boost::enable_if<
-    typename std::is_unsigned<R>,
-    checked_result<R>
->::type
-constexpr subtract(
-    const R t,
-    const R u
-) {
-    // INT30-C. Ensure that unsigned integer operations do not wrap
-    return
-        t < u ?
-            checked_result<R>(
-                exception_type::overflow_error,
-                "subtraction overflow"
-            )
-        :
-            checked_result<R>(t - u)
-    ;
-}
+    // result not an integer (float, double, etc)
+    template<class R>
+    typename boost::enable_if_c<
+        ! std::numeric_limits<R>::is_integer,
+        checked_result<R>
+    >::type
+    constexpr subtract(
+        const R t,
+        const R u
+    ) {
+        return t - u;
+    }
 
-// result signed
-template<class R>
-typename boost::enable_if<
-    typename std::is_signed<R>,
-    checked_result<R>
->::type
-constexpr subtract(
-    const R t,
-    const R u
-) { // INT32-C
-    return
-        // INT32-C. Ensure that operations on signed integers do not result in overflow
-        ((u > 0) && (t < (std::numeric_limits<R>::min() + u)))
-        || ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
-            checked_result<R>(
-                exception_type::overflow_error,
-                "subtraction overflow"
-            )
-        :
-            checked_result<R>(t - u)
-    ;
-}
+    // result unsigned
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && ! std::numeric_limits<R>::is_signed,
+        checked_result<R>
+    >::type
+    constexpr subtract(
+        const R t,
+        const R u
+    ) {
+        // INT30-C. Ensure that unsigned integer operations do not wrap
+        return
+            t < u ?
+                checked_result<R>(
+                    exception_type::overflow_error,
+                    "subtraction overflow"
+                )
+            :
+                checked_result<R>(t - u)
+        ;
+    }
+
+    // result signed
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && std::numeric_limits<R>::is_signed,
+        checked_result<R>
+    >::type
+    constexpr subtract(
+        const R t,
+        const R u
+    ) { // INT32-C
+        return
+            // INT32-C. Ensure that operations on signed integers do not result in overflow
+            ((u > 0) && (t < (std::numeric_limits<R>::min() + u)))
+            || ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
+                checked_result<R>(
+                    exception_type::overflow_error,
+                    "subtraction overflow"
+                )
+            :
+                checked_result<R>(t - u)
+        ;
+    }
 
 } // namespace detail
 
@@ -278,10 +304,10 @@ constexpr checked_result<R> subtract(
     const U & u
 ) {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    checked_result<R> rt(cast<R>(t));
+    const checked_result<R> rt(cast<R>(t));
     if(! rt.no_exception() )
         return rt;
-    checked_result<R> ru(cast<R>(u));
+    const checked_result<R> ru(cast<R>(u));
     if(! ru.no_exception() )
         return ru;
     return detail::subtract<R>(t, u);
@@ -292,134 +318,149 @@ constexpr checked_result<R> subtract(
 
 namespace detail {
 
-// result unsigned
-template<class R>
-typename boost::enable_if_c<
-    std::is_unsigned<R>::value && (sizeof(R) <= (sizeof(std::uintmax_t) / 2)),
-    checked_result<R>
->::type
-constexpr multiply(
-    const R t,
-    const R u
-) {
-    // INT30-C
-    // fast method using intermediate result guaranteed not to overflow
-    // todo - replace std::uintmax_t with a size double the size of R
-    using i_type = std::uintmax_t;
-    return
-        static_cast<i_type>(t) * static_cast<i_type>(u)
-        > std::numeric_limits<R>::max() ?
-            checked_result<R>(
-                exception_type::overflow_error,
-                "multiplication overflow"
-            )
-        :
-            checked_result<R>(t * u)
-    ;
-}
-template<class R>
-typename boost::enable_if_c<
-    std::is_unsigned<R>::value && (sizeof(R) > sizeof(std::uintmax_t) / 2),
-    checked_result<R>
->::type
-constexpr multiply(
-    const R t,
-    const R u
-) {
-    // INT30-C
-    return
-        u > 0 && t > std::numeric_limits<R>::max() / u ?
-            checked_result<R>(
-                exception_type::overflow_error,
-                "multiplication overflow"
-            )
-        :
-            checked_result<R>(t * u)
-    ;
-}
-
-// result signed
-template<class R>
-typename boost::enable_if_c<
-    std::is_signed<R>::value && (sizeof(R) <= (sizeof(std::intmax_t) / 2)),
-    checked_result<R>
->::type
-constexpr multiply(
-    const R t,
-    const R u
-) {
-    // INT30-C
-    // fast method using intermediate result guaranteed not to overflow
-    // todo - replace std::intmax_t with a size double the size of R
-    using i_type = std::intmax_t;
-    return
-        (
+    // result is not an integer (ie float, double)
+    template<class R>
+    typename boost::enable_if_c<
+        ! std::numeric_limits<R>::is_integer,
+        checked_result<R>
+    >::type
+    constexpr multiply(
+        const R t,
+        const R u
+    ){
+        return t * u;
+    }
+    // result unsigned
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && std::is_unsigned<R>::value && (sizeof(R) <= (sizeof(std::uintmax_t) / 2)),
+        checked_result<R>
+    >::type
+    constexpr multiply(
+        const R t,
+        const R u
+    ){
+        // INT30-C
+        // fast method using intermediate result guaranteed not to overflow
+        // todo - replace std::uintmax_t with a size double the size of R
+        using i_type = std::uintmax_t;
+        return
             static_cast<i_type>(t) * static_cast<i_type>(u)
-            > static_cast<i_type>(std::numeric_limits<R>::max())
-        ) ?
-            checked_result<R>(
-                exception_type::overflow_error,
-                "multiplication overflow"
-            )
-        :
-        (
-            static_cast<i_type>(t) * static_cast<i_type>(u)
-            < static_cast<i_type>(std::numeric_limits<R>::min())
-        ) ?
-            checked_result<R>(
-                exception_type::underflow_error,
-                "multiplication underflow"
-            )
-        :
-            checked_result<R>(t * u)
-    ;
-}
-template<class R>
-typename boost::enable_if_c<
-    std::is_signed<R>::value && (sizeof(R) > (sizeof(std::intmax_t) / 2)),
-    checked_result<R>
->::type
-constexpr multiply(
-    const R t,
-    const R u
-) { // INT32-C
-    return t > 0 ?
-        u > 0 ?
-            t > std::numeric_limits<R>::max() / u ?
+            > std::numeric_limits<R>::max() ?
                 checked_result<R>(
                     exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
                 checked_result<R>(t * u)
-        : // u <= 0
-            u < std::numeric_limits<R>::min() / t ?
+        ;
+    }
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && std::is_unsigned<R>::value && (sizeof(R) > sizeof(std::uintmax_t) / 2),
+        checked_result<R>
+    >::type
+    constexpr multiply(
+        const R t,
+        const R u
+    ){
+        // INT30-C
+        return
+            u > 0 && t > std::numeric_limits<R>::max() / u ?
                 checked_result<R>(
                     exception_type::overflow_error,
                     "multiplication overflow"
                 )
             :
                 checked_result<R>(t * u)
-    : // t <= 0
-        u > 0 ?
-            t < std::numeric_limits<R>::min() / u ?
-                checked_result<R>(
-                    exception_type::overflow_error,
-                    "multiplication overflow"
-                )
-            :
-                checked_result<R>(t * u)
-        : // u <= 0
-            t != 0 && u < std::numeric_limits<R>::max() / t ?
-                checked_result<R>(
-                    exception_type::overflow_error,
-                    "multiplication overflow"
-                )
-            :
-                checked_result<R>(t * u)
-    ;
-}
+        ;
+    }
 
+    // result signed
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && std::is_signed<R>::value && (sizeof(R) <= (sizeof(std::intmax_t) / 2)),
+        checked_result<R>
+    >::type
+    constexpr multiply(
+        const R t,
+        const R u
+    ){
+        // INT30-C
+        // fast method using intermediate result guaranteed not to overflow
+        // todo - replace std::intmax_t with a size double the size of R
+        using i_type = std::intmax_t;
+        return
+            (
+                static_cast<i_type>(t) * static_cast<i_type>(u)
+                > static_cast<i_type>(std::numeric_limits<R>::max())
+            ) ?
+                checked_result<R>(
+                    exception_type::overflow_error,
+                    "multiplication overflow"
+                )
+            :
+            (
+                static_cast<i_type>(t) * static_cast<i_type>(u)
+                < static_cast<i_type>(std::numeric_limits<R>::min())
+            ) ?
+                checked_result<R>(
+                    exception_type::underflow_error,
+                    "multiplication underflow"
+                )
+            :
+                checked_result<R>(t * u)
+        ;
+    }
+    template<class R>
+    typename boost::enable_if_c<
+        std::numeric_limits<R>::is_integer
+        && std::is_signed<R>::value && (sizeof(R) > (sizeof(std::intmax_t) / 2)),
+        checked_result<R>
+    >::type
+    constexpr multiply(
+        const R t,
+        const R u
+    ){ // INT32-C
+        return t > 0 ?
+            u > 0 ?
+                t > std::numeric_limits<R>::max() / u ?
+                    checked_result<R>(
+                        exception_type::overflow_error,
+                        "multiplication overflow"
+                    )
+                :
+                    checked_result<R>(t * u)
+            : // u <= 0
+                u < std::numeric_limits<R>::min() / t ?
+                    checked_result<R>(
+                        exception_type::overflow_error,
+                        "multiplication overflow"
+                    )
+                :
+                    checked_result<R>(t * u)
+        : // t <= 0
+            u > 0 ?
+                t < std::numeric_limits<R>::min() / u ?
+                    checked_result<R>(
+                        exception_type::overflow_error,
+                        "multiplication overflow"
+                    )
+                :
+                    checked_result<R>(t * u)
+            : // u <= 0
+                t != 0 && u < std::numeric_limits<R>::max() / t ?
+                    checked_result<R>(
+                        exception_type::overflow_error,
+                        "multiplication overflow"
+                    )
+                :
+                    checked_result<R>(t * u)
+        ;
+    }
 } // namespace detail
 
 template<class R, class T, class U>
