@@ -1,8 +1,13 @@
+#include guard so the common stuff only get's included once.
+
+if(CMake_common_included)
+ return()
+endif()
+set(CMake_common_included TRUE)
+
+message( STATUS "common included")
+
 # CMake build control file for safe numerics Library tests
-
-cmake_minimum_required(VERSION 3.0)
-
-project("SafeIntegers")
 
 #
 # Compiler settings - special settings for known compilers
@@ -124,8 +129,6 @@ elseif()
     message("Boost NOT Found!")
 endif()
 
-include_directories("../include" "${Boost_INCLUDE_DIRS}")
-
 message(STATUS "include directories are:" )
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 foreach(dir ${dirs})
@@ -139,103 +142,9 @@ foreach(dir ${dirs})
   message(STATUS "   ${dir}")
 endforeach()
 
-###########################
-# testing and submitting test results to the test dashboard
+# create script to run all tests and examples
+include(CTest)
 
-include (CTest)
+#use folders in organization of the IDE
+set(USE_FOLDERS TRUE)
 
-if(0)
-
-## Create a file named CTestConfig.cmake adjacent to the current file.
-## This new file should contain the following:
-
-set(CTEST_PROJECT_NAME "Safe Numerics")
-set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
-
-set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "my.cdash.org")
-# set(CTEST_DROP_LOCATION "/cdash/submit.php?project=MyProject")
-set(CTEST_DROP_LOCATION "/index.php?project=Safe+Numerics")
-set(CTEST_DROP_SITE_CDASH TRUE)
-
-endif()
-
-###########################
-# library builds
-
-# header library only - nothing to be built
-#
-# add_library(library_name ../src/sources1.cpp  …)
-
-# end library build
-###########################
-
-###########################
-# test targets
-
-# the "include (CTest)" above includes enable_testing() 
-# so the following line isn't necessary
-# enable_testing()
-
-file(GLOB test_list
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
-  "${CMAKE_CURRENT_SOURCE_DIR}/../test/*.cpp"
-)
-foreach(file_path ${test_list})
-  string(REPLACE "../test/" "" file_name ${file_path})
-  string(REPLACE ".cpp" "" base_name ${file_name})
-  message(STATUS ${base_name})
-  add_executable(${base_name} ${file_path})
-  # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
-  add_test(NAME ${base_name} COMMAND ${base_name})
-endforeach(file_path)
-
-# end test targets
-####################
-
-###########################
-# examples
-
-file(GLOB example_list
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
-  "${CMAKE_CURRENT_SOURCE_DIR}/../examples/*.cpp"
-)
-
-foreach(file_path ${example_list})
-  string(REPLACE "../examples/" "" file_name ${file_path})
-  string(REPLACE ".cpp" "" base_name ${file_name})
-  message(STATUS ${base_name})
-  add_executable(${base_name} ${file_path})
-  # target_link_libraries(${base_name}  ${Boost_LIBRARIES} )
-  add_test(NAME ${base_name} COMMAND ${base_name})
-endforeach(file_path)
-
-set_target_properties(test_z example81 example93 PROPERTIES
-    EXCLUDE_FROM_ALL TRUE
-    EXCLUDE_FROM_DEFAULT_BUILD TRUE
-)
-
-set_target_properties(example84 PROPERTIES
-    WILL_FAIL TRUE
-)
-
-# end examples targets
-####################
-
-####################
-# add include headers to IDE
-
-file(GLOB include_files 
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
-  "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.hpp"
-)
-add_custom_target(include SOURCES ${include_files})
-
-file(GLOB include_concept_files
-  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
-  "${CMAKE_CURRENT_SOURCE_DIR}/../include/concept/*.hpp"
-)
-add_custom_target(include_concept_files SOURCES ${include_concept_files})
-
-# end headers in IDE
-####################
