@@ -8,11 +8,10 @@ include("../CMake/CMakeLists.txt" )
 include_directories("${Boost_INCLUDE_DIRS}")
 include_directories("../include")
 
-# create target to run test of examples
-include (CTest)
-
 ###########################
 # examples
+
+message( STATUS "Runtimes are stored in ${CMAKE_CURRENT_BINARY_DIR}" )
 
 file(GLOB example_list
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
@@ -24,7 +23,7 @@ foreach(file_name ${example_list})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_name})
   add_test(NAME ${base_name} COMMAND ${base_name})
-  set_target_properties(${base_name} PROPERTIES FOLDER "examples")
+  set_target_properties(${base_name} PROPERTIES FOLDER "example")
 endforeach(file_name)
 
 set_target_properties(example84 PROPERTIES
@@ -36,4 +35,17 @@ set_target_properties(example81 example93 PROPERTIES
 )
 
 # end examples targets
+####################
+
+###########################
+# add misc files to IDE
+
+file(GLOB misc_files 
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+)
+add_custom_target(miscellaneous SOURCES ${misc_files})
+set_target_properties(miscellaneous PROPERTIES FOLDER "example")
+
+# end headers in IDE
 ####################

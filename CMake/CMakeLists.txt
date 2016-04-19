@@ -142,9 +142,30 @@ foreach(dir ${dirs})
   message(STATUS "   ${dir}")
 endforeach()
 
+#use folders in organization of the IDE
+set(USE_FOLDERS TRUE)
+
+###########################
+# testing and submitting test results to the test dashboard
+
 # create script to run all tests and examples
 include(CTest)
 
-#use folders in organization of the IDE
-set(USE_FOLDERS TRUE)
+if(0)
+
+## Create a file named CTestConfig.cmake adjacent to the current file.
+## This new file should contain the following:
+
+set(CTEST_PROJECT_NAME "Safe Numerics")
+set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
+
+set(CTEST_DROP_METHOD "http")
+set(CTEST_DROP_SITE "my.cdash.org")
+# set(CTEST_DROP_LOCATION "/cdash/submit.php?project=MyProject")
+set(CTEST_DROP_LOCATION "/index.php?project=Safe+Numerics")
+set(CTEST_DROP_SITE_CDASH TRUE)
+
+endif()
+
+
 

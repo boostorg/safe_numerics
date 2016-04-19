@@ -1,8 +1,6 @@
 ####################
 # add include headers to IDE
 
-set(USE_FOLDERS TRUE)
-
 file(GLOB include_files 
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
   "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
