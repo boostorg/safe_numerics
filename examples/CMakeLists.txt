@@ -15,7 +15,7 @@ message( STATUS "Runtimes are stored in ${CMAKE_CURRENT_BINARY_DIR}" )
 
 file(GLOB example_list
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" 
-  "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+  "*.cpp"
 )
 
 foreach(file_name ${example_list})
