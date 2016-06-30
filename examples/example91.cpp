@@ -47,7 +47,7 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
 >;
 
 #define DESKTOP
-#include "motor1.c"
+#include "Motor1.c"
 
 #include <chrono>
 #include <thread>
