@@ -23,6 +23,7 @@ foreach(file_name ${test_list})
   add_executable(${base_name} ${file_name})
   add_test(NAME ${base_name} COMMAND ${base_name})
   set_target_properties(${base_name} PROPERTIES FOLDER "tests")
+  target_compile_options(${base_name} PUBLIC "-std=c++14")
 endforeach(file_name)
 
 # end test targets
