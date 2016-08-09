@@ -1301,7 +1301,6 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator|(const T & t, const U & u){
     using bwr = bitwise_or_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
-    using exception_policy = typename bwr::exception_policy;
 
     const checked_result<result_base_type> r =
         checked::bitwise_or<result_base_type>(
@@ -1370,7 +1369,6 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator&(const T & t, const U & u){
     using bwr = bitwise_and_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
-    using exception_policy = typename bwr::exception_policy;
 
     const checked_result<result_base_type> r =
         checked::bitwise_and<result_base_type>(
@@ -1407,7 +1405,6 @@ typename boost::lazy_enable_if_c<
 constexpr inline operator^(const T & t, const U & u){
     using bwr = bitwise_or_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
-    using exception_policy = typename bwr::exception_policy;
 
     const checked_result<result_base_type> r =
         checked::bitwise_xor<result_base_type>(t, u);
