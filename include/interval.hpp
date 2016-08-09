@@ -402,7 +402,7 @@ constexpr bool operator!=(
     const interval<T> & t,
     const interval<U> & u
 ){
-    return ! t == u;
+    return ! (t == u);
 }
 
 template<typename T, typename U>

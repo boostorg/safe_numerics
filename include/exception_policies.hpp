@@ -25,12 +25,12 @@ namespace numeric {
 // this would emulate the normal C/C++ behavior of permitting overflows
 // and the like.
 struct ignore_exception {
-    static void no_error(const char * message) {}
-    static void uninitialized_error(const char * message) {}
-    static void overflow_error(const char * message) {}
-    static void underflow_error(const char * message) {}
-    static void range_error(const char * message) {}
-    static void domain_error(const char * message) {}
+    static void no_error(const char *) {}
+    static void uninitialized_error(const char *) {}
+    static void overflow_error(const char *) {}
+    static void underflow_error(const char *) {}
+    static void range_error(const char *) {}
+    static void domain_error(const char *) {}
 };
 
 // example - if you want to specify specific behavior for particular exception
@@ -70,7 +70,7 @@ struct no_exception_support {
 // If an exceptional condition is detected at runtime throw the exception.
 // map our exception list to the ones in stdexcept
 struct throw_exception {
-    static void no_error(const char * message) {
+    static void no_error(const char *) {
     }
     static void unintialized_error(const char * message) {
         throw std::invalid_argument(message);
