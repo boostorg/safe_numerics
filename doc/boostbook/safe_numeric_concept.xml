@@ -205,8 +205,10 @@
               <entry>T</entry>
 
               <entry><para>convert the value of s to type T. If the value of s
-              cannot be correctly represented as a type T, it is an
-              error.</para></entry>
+              cannot be correctly represented as a type T, it is an error.
+              Note that implicit casting from a safe type to a built-in
+              integer type is expressly prohibited and should invoke a compile
+              time error.</para></entry>
             </row>
           </tbody>
         </tgroup>
@@ -226,6 +228,20 @@
       <listitem>
         <para>Binary expressions which are not assignments require that
         promotion and exception policies be identical.</para>
+      </listitem>
+
+      <listitem>
+        <para>Safe Numeric operators will NOT perform standard numeric
+        conversions in order to convert to built-in types.<programlisting>void f(int);
+
+int main(){
+    long x;
+    f(x);         // OK - builtin implicit version
+    safe&lt;long&gt; y;
+    f(y);         // compile time error
+    return 0;
+}</programlisting>This behavior prevents a <code>safe&lt;T&gt;</code> from
+        being a "drop-in" replacement for a <code>T</code>.</para>
       </listitem>
     </itemizedlist>
   </section>

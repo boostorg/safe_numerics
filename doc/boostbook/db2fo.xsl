@@ -137,13 +137,15 @@ General default options go here:
 <!-- ******* Chapter Titles ******* -->
 <xsl:param name="force.blank.pages" select="1"></xsl:param>
 
+<!-- 
 <l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
   <l:l10n language="en"> 
-    <l:context name="title-numbered"> 
+    <l:context name="title-numbered">
       <l:template name="chapter" text="%n.&#160;%t"/> 
     </l:context>    
   </l:l10n>
 </l:i18n>
+-->
 
 <xsl:attribute-set name="chapter.title.properties">
   <xsl:attribute name="font-family">

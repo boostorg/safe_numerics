@@ -178,8 +178,8 @@
     deal with this problem is to substitute our own type promotion rules for
     the C++ ones.</para>
 
-    <section>
-      <title>Drop-in replacement for standard integer type.</title>
+    <section id="safe_numerics.drop_in_replacement">
+      <title>As a Drop-in replacement for standard integer types.</title>
 
       <para>The following program will throw an exception and emit a error
       message at runtime if any of several events result in an incorrect
@@ -202,7 +202,26 @@ void f(){
        std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
     }
     std::cout &lt;&lt; j;
-}</programlisting></para>
+}</programlisting>The term "drop-in replacement" reveals the aspiration of
+      this library. In most cases, this aspiration is realized. But in some
+      cases it isn't and can't be. Consider:<programlisting>void f(int);
+
+int main(){
+    long x;
+    f(x);         // OK - builtin implicit version
+    safe&lt;long&gt; y;
+    f(y);         // compile time error
+    return 0;
+}</programlisting>The built-in integer types are freely and silently converted
+      to other integer types in order to permit passing of integer arguments
+      to other function types. Our view is that this is bad practice and
+      creates the possibility of subtle bugs. It conflicts with the purpose of
+      the library in a fundamental way. The library specifies that these
+      conversions are errors that are to be invoked at compile time. If one
+      wants to switch between save and built-in types via an alias, this type
+      of code will have to be fixed so that implicit conversions to built-in
+      types do not occur. In our view, this will be a net improvement to the
+      code in any case.</para>
     </section>
 
     <section>

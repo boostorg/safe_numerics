@@ -109,8 +109,12 @@ checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
   <section>
     <title>Notes</title>
 
-    <para>Footnotes (if any) that are referred to by other parts of the
-    page.</para>
+    <para>Some compilers have command line switches (e.g. -ftrapv) which
+    enable special behavior such erroneous integer operations are detected at
+    run time. The library has been implemented in such a way that these
+    facilities are not used. It's possible they might be helpful in particular
+    environment. These could be be exploited by re-implementing some functions
+    in this library.</para>
   </section>
 
   <section>

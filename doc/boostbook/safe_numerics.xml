@@ -72,14 +72,14 @@
       </listitem>
 
       <listitem>
-        <para>I could find not test suite for the library.</para>
+        <para>I could find no test suite for the library.</para>
       </listitem>
     </itemizedlist>
 
     <para>This version addresses these issues. It exploits <ulink
     url="www.boost.org">Boost</ulink> facilities such as template
     metaprogramming to reduce the number of lines of source code to
-    approximately 4400. It exploits the Boost Preprocessor Library to generate
+    approximately 4700. It exploits the Boost Preprocessor Library to generate
     exhaustive tests.</para>
 
     <para>All concepts, types and functions documented are declared in the
@@ -157,6 +157,9 @@
   <section id="safe_numerics.library_implementation">
     <title>Library Implementation</title>
 
+    <para>This library should compile and run correctly on any conforming
+    C++14 compiler.</para>
+
     <para>The Safe Numerics library is implemented in terms of some more
     fundamental software components described here. It is not necessary to
     know about these components to use the library. The information has been
@@ -212,6 +215,23 @@
           The best answer is to consider the cases in the section <link
           linkend="safe_numerics.tutorial">Tutorials and Motivating
           Examples</link>.</para>
+        </answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+          <para>Can safe types be used as drop-in replacement for built-in
+          types?</para>
+        </question>
+
+        <answer>
+          <para>Almost. Replacing all built-in types with their safe
+          counterparts should result in a program that will compile and run as
+          expected. In some cases compile time errors will occur and
+          adjustments to the source code will be required. Typically these
+          will result in code which is more correct. See <link
+          linkend="safe_numerics.drop_in_replacement">drop-in
+          replacement</link>.</para>
         </answer>
       </qandaentry>
 
@@ -366,9 +386,9 @@
 
       <listitem>
         <para>Currently the library permits a safe&lt;int&gt; value to be
-        unitialized. This supports the goal of "drop-in" replacement of C++/C
-        built-in types with safe counter parts. On the other hand, this breaks
-        the "always valid" guarantee.</para>
+        uninitialized. This supports the goal of "drop-in" replacement of
+        C++/C built-in types with safe counter parts. On the other hand, this
+        breaks the "always valid" guarantee.</para>
       </listitem>
     </itemizedlist>
   </section>

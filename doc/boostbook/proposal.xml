@@ -14,7 +14,7 @@
               <row>
                 <entry>Document number:</entry>
 
-                <entry>P0228R1</entry>
+                <entry>P0228R2</entry>
               </row>
 
               <row>
@@ -51,8 +51,8 @@
         </informaltable></para>
     </abstract>
 
-    <title>A Proposal to Add Safe Integer Types to the Standard Library
-    Technical Report</title>
+    <title>A Proposal to Add Safe Integer Types to the Standard
+    Library</title>
   </articleinfo>
 
   <section>
