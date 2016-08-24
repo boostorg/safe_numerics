@@ -3,55 +3,57 @@
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <article>
   <articleinfo>
+    <abstract>
+      <para><informaltable>
+          <tgroup cols="2">
+            <colspec colwidth="1*"/>
+
+            <colspec colwidth="2*"/>
+
+            <tbody>
+              <row>
+                <entry>Document number:</entry>
+
+                <entry>P0228R1</entry>
+              </row>
+
+              <row>
+                <entry>Project:</entry>
+
+                <entry>Programming Language C++</entry>
+              </row>
+
+              <row>
+                <entry>Audience:</entry>
+
+                <entry>SG-6</entry>
+              </row>
+
+              <row>
+                <entry>Author:</entry>
+
+                <entry>Robert Ramey</entry>
+              </row>
+
+              <row>
+                <entry>Contact:</entry>
+
+                <entry>ramey@rrsd.com</entry>
+              </row>
+
+              <row>
+                <entry>Date:</entry>
+
+                <entry>2016-02-16</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+    </abstract>
+
     <title>A Proposal to Add Safe Integer Types to the Standard Library
     Technical Report</title>
   </articleinfo>
-
-  <informaltable>
-    <tgroup cols="2">
-      <colspec colwidth="1*"/>
-
-      <colspec colwidth="2*"/>
-
-      <tbody>
-        <row>
-          <entry>Document number:</entry>
-
-          <entry>P0228R1</entry>
-        </row>
-
-        <row>
-          <entry>Project:</entry>
-
-          <entry>Programming Language C++</entry>
-        </row>
-
-        <row>
-          <entry>Audience:</entry>
-
-          <entry>SG-6</entry>
-        </row>
-
-        <row>
-          <entry>Author:</entry>
-
-          <entry>Robert Ramey</entry>
-        </row>
-
-        <row>
-          <entry>Contact:</entry>
-
-          <entry>ramey@rrsd.com</entry>
-        </row>
-
-        <row>
-          <entry>Date:</entry>
-
-          <entry>2016-02-16</entry>
-        </row>
-      </tbody>
-    </tgroup>
-  </informaltable>
 
   <section>
     <title>Motivation</title>
@@ -239,22 +241,22 @@ int8_t f(safe&lt;int8_t&gt; i){
       </simplelist></para>
 
     <para>Without comment, here are implementations of libraries which are in
-    some way similar to this proposal</para>
+    some way similar to this proposal:<itemizedlist>
+        <listitem>
+          <para><ulink url="https://github.com/RobertLeahy/Safe">Robert Leahy,
+          Safe integer utilities for C++11</ulink></para>
+        </listitem>
 
-    <para><simplelist>
-        <member><ulink url="https://github.com/RobertLeahy/Safe">Robert Leahy,
-        Safe integer utilities for C++11</ulink></member>
-      </simplelist></para>
+        <listitem>
+          <para><ulink url="http://safeint.codeplex.com">David LeBlanc,
+          SafeInt</ulink></para>
+        </listitem>
 
-    <para><simplelist>
-        <member><ulink url="http://safeint.codeplex.com">David LeBlanc,
-        SafeInt</ulink></member>
-      </simplelist></para>
-
-    <para><simplelist>
-        <member><ulink url="http://safeint.codeplex.com">David Stone, Bounded
-        Integer</ulink></member>
-      </simplelist></para>
+        <listitem>
+          <para><ulink url="http://safeint.codeplex.com">David Stone, Bounded
+          Integer</ulink></para>
+        </listitem>
+      </itemizedlist></para>
   </section>
 
   <section>

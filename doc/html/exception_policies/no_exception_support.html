@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>no_exception_support&lt;O, U = O, R =O, D = O&gt;</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../exception_policies.html" title="Exception Policies">
 <link rel="prev" href="ignore.html" title="ignore_exception">
@@ -22,7 +22,7 @@
 <a name="safe_numerics.exception_policies.no_exception_support"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm413203233696"></a>Description</h5></div></div></div>
+<a name="idm541778327536"></a>Description</h5></div></div></div>
 <p>This exception policy can be used in an environment where one cannot
     or does not want to use exceptions.</p>
 <p>Parameters are pointers to static functions which are invoked for
@@ -33,7 +33,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm413203230352"></a>Template Parameters</h5></div></div></div>
+<a name="idm541778324192"></a>Template Parameters</h5></div></div></div>
 <p>Function objects to be invoked are specified for each error
     condition are specified via template parameters.</p>
 <div class="informaltable"><table class="table">
@@ -79,19 +79,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm413203210720"></a>Model of</h5></div></div></div>
+<a name="idm541778304560"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm413203209008"></a>Header</h5></div></div></div>
+<a name="idm541778302848"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm413203206448"></a>Example of use</h5></div></div></div>
+<a name="idm541778300288"></a>Example of use</h5></div></div></div>
 <p>[A code fragment involving the type.]</p>
 <pre class="programlisting"><span class="keyword">void</span> <span class="identifier">overflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
 <span class="keyword">void</span> <span class="identifier">underflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>

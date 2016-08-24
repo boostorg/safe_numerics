@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Using safe_range</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../eliminate_runtime_penalty.html" title="Eliminating Runtime Penalty">
 <link rel="prev" href="1.html" title="Using Automatic Type Promotion">
@@ -79,7 +79,7 @@ y = &lt;signed char&gt;[-24,82] = 2
 z = (x + y) = &lt;int&gt;[-48,164] = 4
 (x - y) = &lt;int&gt;[-106,106] = 0
 &lt;int&gt;[-48,164] = 4</pre>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>In this example, standard C++ type promotion rules are used.
         These promote operands to int before invoking the addition operation.
         So addition operation itself won't overflow. The result of addition is

@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Introduction</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="index.html" title="Safe Numerics">
@@ -20,7 +20,7 @@
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.introduction"></a>Introduction</h2></div></div></div>
-<div class="toc"><dl>
+<div class="toc"><dl class="toc">
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.problem">Problem</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.solution">Solution</a></span></dt>
 <dt><span class="section"><a href="introduction.html#safe_numerics.introduction.implementation">Implementation</a></span></dt>
@@ -43,7 +43,7 @@
 </table></div>
 <p>This library is intended as a drop-in replacement for all built-in
   integer types in any program which must:</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>be demonstrably and verifiably correct.</p></li>
 <li class="listitem"><p>detect every user error such as input, assignment, etc.</p></li>
 <li class="listitem"><p>be efficient as possible subject to the constraints above.</p></li>
@@ -68,7 +68,7 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm413214539152"><span class="citation">INT32-C</span></a>]</a> seems
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm541776799472"><span class="citation">INT32-C</span></a>]</a> seems
     to recommend the following approach.</p>
 <pre class="programlisting"><span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
   <span class="keyword">if</span> <span class="special">(</span><span class="special">(</span><span class="special">(</span><span class="identifier">y</span> <span class="special">&gt;</span> <span class="number">0</span><span class="special">)</span> <span class="special">&amp;&amp;</span> <span class="special">(</span><span class="identifier">x</span> <span class="special">&gt;</span> <span class="special">(</span><span class="identifier">INT_MAX</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span><span class="special">)</span> 
@@ -109,7 +109,7 @@
     arithmetic behavior. This will permit one to write arithmetic expressions
     that cannot produce an erroneous result. Instead, one and only one of the
     following is guaranteed to occur.</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>the expression will yield the correct mathematical
           result</p></li>
 <li class="listitem"><p>the expression will emit a compilation error.</p></li>
@@ -148,11 +148,11 @@
     classes</a> which specify the behavior for type promotion and error
     handling. In addition to the usage serving as a drop-in replacement for
     standard integer types, Users of the library can:</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
 <p>Select or define an exception policy class to specify handling
           of exceptions.</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
 <li class="listitem"><p>throw exception or runtime, trap at compile time.</p></li>
 <li class="listitem"><p>trap at compiler time all operations which might fail at
                 runtime.</p></li>
@@ -163,7 +163,7 @@
 <li class="listitem">
 <p>Select or define a promotion policy class to alter the C++
           type promotion rules. This can be used to </p>
-<div class="itemizedlist"><ul class="itemizedlist" type="circle">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
 <li class="listitem"><p>use C++ native type promotion rules so that, except
                 throwing/trapping of exceptions, programs will operate
                 identically when using/not using safe types.</p></li>
@@ -190,7 +190,7 @@
     compiler compatible with the C++14 standard.</p>
 <p>The following Boost Libraries must be installed in order to use this
     library</p>
-<div class="itemizedlist"><ul class="itemizedlist" type="disc">
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>mpl</p></li>
 <li class="listitem"><p>integer</p></li>
 <li class="listitem"><p>config</p></li>

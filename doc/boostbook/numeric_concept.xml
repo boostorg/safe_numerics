@@ -123,13 +123,13 @@
             </row>
 
             <row>
-              <entry><code><entry>os &lt;&lt; T</entry></code></entry>
+              <entry><code>os &lt;&lt; t</code></entry>
 
               <entry>os &amp;i</entry>
             </row>
 
             <row>
-              <entry><code><entry>is &gt;&gt; T</entry></code></entry>
+              <entry><code>is &gt;&gt; t</code></entry>
 
               <entry>is &amp;</entry>
             </row>
@@ -472,7 +472,5 @@
 
     <para><code>int, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></para>
-
-    <para>The definition of this concept</para>
   </section>
 </section>

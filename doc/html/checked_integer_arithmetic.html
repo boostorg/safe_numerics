@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Checked Integer Arithmetic</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
 <link rel="prev" href="checked_result.html" title="checked_result&lt;typename R&gt;">
@@ -20,19 +20,19 @@
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.checked_integer_arithmetic"></a>Checked Integer Arithmetic</h3></div></div></div>
-<div class="toc"><dl>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202990096">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202759216">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202757872">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202755776">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202754624">Header</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202752976">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202740256">Notes</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm413202739008">See Also</a></span></dt>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541778084096">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777853248">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777851904">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777849808">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777848656">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777847008">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777834288">Notes</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm541777833040">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202990096"></a>Synopsis</h4></div></div></div>
+<a name="idm541778084096"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting"><span class="comment">// safe casting on primitive types</span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">&gt;</span>
 <span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
@@ -93,29 +93,29 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202759216"></a>Description</h4></div></div></div>
+<a name="idm541777853248"></a>Description</h4></div></div></div>
 <p>Perform binary operations on arithmetic types. Return either a valid
     result or an error code. Under no circumstances should an incorrect result
     be returned.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202757872"></a>Type requirements</h4></div></div></div>
+<a name="idm541777851904"></a>Type requirements</h4></div></div></div>
 <p>All template parameters of the functions must model <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a> type requirements.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202755776"></a>Complexity</h4></div></div></div>
+<a name="idm541777849808"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202754624"></a>Header</h4></div></div></div>
+<a name="idm541777848656"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include "checked.hpp" </code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202752976"></a>Example of use</h4></div></div></div>
+<a name="idm541777847008"></a>Example of use</h4></div></div></div>
 <p>[A code fragment that illustrates how to use the function.]</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"checked.hpp"</span>
 
@@ -124,13 +124,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202740256"></a>Notes</h4></div></div></div>
+<a name="idm541777834288"></a>Notes</h4></div></div></div>
 <p>Footnotes (if any) that are referred to by other parts of the
     page.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm413202739008"></a>See Also</h4></div></div></div>
+<a name="idm541777833040"></a>See Also</h4></div></div></div>
 <p><a class="link" href="checked_result.html" title="checked_result&lt;typename R&gt;">checked_result&lt;typename
     R&gt;</a></p>
 </div>
