@@ -68,7 +68,7 @@
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which do this. They have to be
     explicitly addressed in the program code. There are a number of ways to do
-    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm541776799472"><span class="citation">INT32-C</span></a>]</a> seems
+    this. See<a class="link" href="bibliography.html#INT32-C">[<a class="citation" href="bibliography.html#idm472546648064"><span class="citation">INT32-C</span></a>]</a> seems
     to recommend the following approach.</p>
 <pre class="programlisting"><span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">int</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
   <span class="keyword">if</span> <span class="special">(</span><span class="special">(</span><span class="special">(</span><span class="identifier">y</span> <span class="special">&gt;</span> <span class="number">0</span><span class="special">)</span> <span class="special">&amp;&amp;</span> <span class="special">(</span><span class="identifier">x</span> <span class="special">&gt;</span> <span class="special">(</span><span class="identifier">INT_MAX</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span><span class="special">)</span> 

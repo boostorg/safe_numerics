@@ -165,7 +165,7 @@ class safe_base {
     >
     friend class safe_base;
 
-    friend struct std::numeric_limits<
+    friend class std::numeric_limits<
         safe_base<Stored, Min, Max, P, E>
     >;
 
@@ -280,7 +280,7 @@ template<
     class P,
     class E
 >
-struct numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
+class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
     : public std::numeric_limits<T>
 {
     using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
