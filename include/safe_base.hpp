@@ -169,15 +169,11 @@ class safe_base {
         safe_base<Stored, Min, Max, P, E>
     >;
 
-    //template<class T>
-    //constexpr bool validate(const T & t) const;
-
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
 
     template<typename T, T N>
     constexpr Stored validated_cast(const safe_literal_impl<T, N> & t) const;
-
 protected:
 
 public:

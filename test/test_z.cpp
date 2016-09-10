@@ -281,6 +281,16 @@ void test(){
 */
 }
 int main(int argc, char *argv[]){
+    // compiles OK but seems to throw with the
+    // following output (Ubuntu 16.06 / clang 3.8):
+    // john macfarland
+    // fixed now
+    float x = 0.0f;
+    float y = std::numeric_limits<float>::min();
+
+    auto s = boost::numeric::safe<int8_t>{0};
+    auto f = static_cast<float>(s);
+
     test<safe<std::int8_t>, float>();
     test<safe<std::int16_t>,float>();
     test<safe<std::int32_t>, float>();
@@ -289,7 +299,5 @@ int main(int argc, char *argv[]){
     // can't handle a compile-only test - make sure it passes trivially.
     return 0;
 }
-
-
 
 

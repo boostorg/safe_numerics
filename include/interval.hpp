@@ -57,10 +57,7 @@ struct interval {
         l(rhs.l),
         u(rhs.u)
     {}
-    constexpr interval() :
-        l(std::numeric_limits<R>::min()),
-        u(std::numeric_limits<R>::max())
-    {}
+    constexpr interval();
 
     // return true if this interval contains every point found in some
     // other inteval t
@@ -81,6 +78,25 @@ struct interval {
         ;
     }
 };
+
+template<class R>
+constexpr interval<R>::interval() :
+    l(std::numeric_limits<R>::min()),
+    u(std::numeric_limits<R>::max())
+{}
+// account for the fact that for floats and doubles
+// the most negative value is called "lowest" rather
+// than min
+template<>
+constexpr interval<float>::interval() :
+    l(std::numeric_limits<float>::lowest()),
+    u(std::numeric_limits<float>::max())
+{}
+template<>
+constexpr interval<double>::interval() :
+    l(std::numeric_limits<double>::lowest()),
+    u(std::numeric_limits<double>::max())
+{}
 
 namespace {
 
