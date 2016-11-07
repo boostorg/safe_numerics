@@ -21,22 +21,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception_type"></a>exception_type</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception_type.html#idm472542025040">Description</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm472542023168">Notation</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm472542004048">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm472541988368">dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
+<dt><span class="section"><a href="exception_type.html#idm531178053984">Description</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm531178052224">Notation</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm531178033136">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm531178017552">dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
     msg)</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm472541944576">See Also</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm531177973760">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472542025040"></a>Description</h4></div></div></div>
+<a name="idm531178053984"></a>Description</h4></div></div></div>
 <p>This <code class="computeroutput">enum</code> holds the information regarding a failed
     operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472542023168"></a>Notation</h4></div></div></div>
+<a name="idm531178052224"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -86,7 +86,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472542004048"></a>Valid Expressions</h4></div></div></div>
+<a name="idm531178033136"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/RandomAccessContainer.html" target="_top">Random Access
     Container</a> and <a href="http://www.sgi.com/tech/stl/BackInsertionSequence.html" target="_top">Back
     Insertion Sequence</a> the following expressions must be valid for any
@@ -124,20 +124,20 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541988368"></a>dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
+<a name="idm531178017552"></a>dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
     msg)</h4></div></div></div>
 <p>This function is used to invoke the exception handling policy for a
     particular exception_type.</p>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm472541987136"></a>Synopsis</h5></div></div></div>
+<a name="idm531178016320"></a>Synopsis</h5></div></div></div>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">EP</span><span class="special">&gt;</span>
 <span class="keyword">constexpr</span> <span class="keyword">void</span>
 <span class="identifier">dispatch</span><span class="special">&lt;</span><span class="identifier">EP</span><span class="special">&gt;</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">exception_type</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm472541972704"></a>Example of use</h5></div></div></div>
+<a name="idm531178001888"></a>Example of use</h5></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">vector</span><span class="special">&gt;</span>
 
 <span class="identifier">vector</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">V</span><span class="special">;</span>
@@ -148,7 +148,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541944576"></a>See Also</h4></div></div></div>
+<a name="idm531177973760"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 </div>

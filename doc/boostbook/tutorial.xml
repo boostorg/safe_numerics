@@ -5,19 +5,19 @@
   <title>Tutorial and Motivating Examples</title>
 
   <section id="safe_numerics.tutorial.1">
-    <title>Arithmetic Expressions Can Yield Incorrect Results.</title>
+    <title>Arithmetic Expressions Can Yield Incorrect Results</title>
 
-    <para>When some operation on signed integer types results in a result which
-    exceeds the capacity of a data variable to hold it, the result is undefined.
-    In the case of unsigned integer types a similar situation results in a value
-    wrap as per modulo arithmetic. In either case the result is different than in
-    integer number arithmetic in the mathematical sense. This is called "overflow".
-    Since word size can differ between machines, code which produces mathematically
-    correct results in one set of circumstances may fail when re-compiled on a
-    machine with different hardware. When this occurs, Most
-    C++ compilers will continue to execute with no indication that the results
-    are wrong. It is the programmer's responsibility to ensure such undefined
-    behavior is avoided.</para>
+    <para>When some operation on signed integer types results in a result
+    which exceeds the capacity of a data variable to hold it, the result is
+    undefined. In the case of unsigned integer types a similar situation
+    results in a value wrap as per modulo arithmetic. In either case the
+    result is different than in integer number arithmetic in the mathematical
+    sense. This is called "overflow". Since word size can differ between
+    machines, code which produces mathematically correct results in one set of
+    circumstances may fail when re-compiled on a machine with different
+    hardware. When this occurs, Most C++ compilers will continue to execute
+    with no indication that the results are wrong. It is the programmer's
+    responsibility to ensure such undefined behavior is avoided.</para>
 
     <para>This program demonstrates this problem. The solution is to replace
     instances of <code>char</code> type with <code>safe&lt;char&gt;</code>
@@ -32,7 +32,7 @@
   </section>
 
   <section id="safe_numerics.tutorial.2">
-    <title>Arithmetic Operations can Overflow Silently</title>
+    <title>Arithmetic Operations Can Overflow Silently</title>
 
     <para>A variation of the above is when a value is incremented/decremented
     beyond it's domain. This is a common problem with for loops.</para>
@@ -46,37 +46,73 @@
   </section>
 
   <section id="safe_numerics.tutorial.4">
-    <title>Implicit Conversions Change Data Values</title>
+    <title>Implicit Conversions Can Lead to Erroneous Results</title>
 
-    <para>A simple assignment or arithmetic expression will convert all the
-    terms to the same type. Sometimes this can silently change values. For
-    example, when a signed data variable contains a negative type, assigning
-    to a unsigned type will be permitted by any C/C++ compiler but will be
-    treated as large unsigned value. Most modern compilers will emit a compile
-    time warning when this conversion is performed. The user may then decide
-    to change some data types or apply a <code>static_cast</code>. This is
-    less than satisfactory for two reasons:</para>
+    <para>At CPPCon 2016 Jon Kalb gave a very entertaining (and disturbing
+    example) <ulink
+    url="https://www.youtube.com/watch?v=wvtFGa6XJDU">lightening talk</ulink>
+    related to C++ expressions.</para>
+
+    <para>The talk included a very, very simple example similar to the
+    following:</para>
+
+    <para><programlisting><xi:include href="../../examples/example4.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+
+    <para>A normal person reads the above code and has to be dumbfounded by
+    this. The code doesn't do what the text - according to the rules of
+    algebra - says it does. But C++ doesn't follow the rules of algebra - it
+    has it's own rules. There is generally no compile time error. You can get
+    a compile time warning if you set some specific compile time switches. The
+    explanation lies in reviewing how C++ reconciles binary expressions
+    (<code>a &lt; b</code> is an expression here) where operands are different
+    types. In processing this expression, the compiler:</para>
 
     <para><itemizedlist>
         <listitem>
-          <para>It may be unwieldy to change all the types to signed or
-          unsigned.</para>
+          <para>Determines the "best" common type for the two operands. In
+          this case, application the the rules in the C++ standard dictate
+          that this type will be an <code>unsigned int</code>.</para>
         </listitem>
 
         <listitem>
-          <para>We may believe that our signed type will never contain a
-          negative value. <code>static_cast</code> changes the data type - not
-          the data value. If we ignore the any compiler warnings or use a
-          <code>static_cast</code> to suppress them, we'll fail to detect a
-          program error when it is committed. This is aways a risk with
-          casts.</para>
+          <para>Converts each operand to this common type. The signed value of
+          -1 is converted to an unsigned value with the same bit-wise
+          contents, 0xFFFFFFFF, on a machine with 32 bit integers. This
+          corresponds to a decimal value of 4294967295.</para>
+        </listitem>
+
+        <listitem>
+          <para>Performs the calculation - in this case it's,
+          <code>&lt;</code>, the "less than" operation. Since 1 is less than
+          4294967295 the program prints "b is less than a".</para>
         </listitem>
       </itemizedlist></para>
 
-    <para>This solution is simple, Just replace instances of the <code>int
-    </code>with <code>safe&lt;int&gt;</code>.<programlisting><xi:include
-          href="../../examples/example4.cpp" parse="text"
-          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+    <para>In order for a programmer to detect and understand this error he
+    should be pretty familiar with the implicit conversion rules of the C++
+    standard. These are available in a copy of the standard and also in the
+    canonical reference book <citetitle><link linkend="stroustrup">The C++
+    Programming Language</link></citetitle> . (both are over 1200 pages
+    long!). Even experienced programmers won't spot this issue and know to
+    take precautions to avoid it. And this is a relatively easy one to spot.
+    In the more general case this will use integers which don't correspond to
+    easily recognizable numbers and/or will be buried as a part of some more
+    complex expression.</para>
+
+    <para>This example generated a good amount of web traffic along with every
+    one's pet suggestions. See for example <ulink
+    url="https://bulldozer00.com/2016/10/16/the-unsigned-conundrum/">a blog
+    post with every one's favorite "solution"</ulink>. All the proposed
+    "solutions" have disadvantages and attempts to agree on how handle this
+    are ultimately fruitless in spite of, or maybe because of, the <ulink
+    url="https://twitter.com/robertramey1/status/795742870045016065">emotional
+    content</ulink>. Our solution is by far the simplest: Just use the safe
+    numerics library as shown in the example above.</para>
+
+    <para>Note that in this particular case, there is absolutely no extra
+    overhead in using the safe integer library. Code generated will either
+    equal or exceed the efficiency of using primitive integer types.</para>
   </section>
 
   <section id="safe_numerics.tutorial.10">
@@ -100,7 +136,7 @@ Using safe numerics
 10000
 detected error:converted negative value to unsigned
 </screen>This solution is simple, Just replace instances of the
-    <code>int</code>with <code>safe&lt;int&gt;</code>.</para>
+    <code>int</code> with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
   <section id="safe_numerics.tutorial.5">

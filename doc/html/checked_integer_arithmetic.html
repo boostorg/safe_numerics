@@ -21,18 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.checked_integer_arithmetic"></a>Checked Integer Arithmetic</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541851872">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541637280">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541635936">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541633840">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541632688">Header</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541631040">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541618320">Notes</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm472541616752">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177881072">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177666480">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177665136">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177663040">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177661888">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177660240">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177647520">Notes</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm531177645952">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541851872"></a>Synopsis</h4></div></div></div>
+<a name="idm531177881072"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting"><span class="comment">// safe casting on primitive types</span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">&gt;</span>
 <span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
@@ -93,29 +93,29 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541637280"></a>Description</h4></div></div></div>
+<a name="idm531177666480"></a>Description</h4></div></div></div>
 <p>Perform binary operations on arithmetic types. Return either a valid
     result or an error code. Under no circumstances should an incorrect result
     be returned.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541635936"></a>Type requirements</h4></div></div></div>
+<a name="idm531177665136"></a>Type requirements</h4></div></div></div>
 <p>All template parameters of the functions must model <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a> type requirements.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541633840"></a>Complexity</h4></div></div></div>
+<a name="idm531177663040"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541632688"></a>Header</h4></div></div></div>
+<a name="idm531177661888"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include "checked.hpp" </code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541631040"></a>Example of use</h4></div></div></div>
+<a name="idm531177660240"></a>Example of use</h4></div></div></div>
 <p>[A code fragment that illustrates how to use the function.]</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"checked.hpp"</span>
 
@@ -124,7 +124,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541618320"></a>Notes</h4></div></div></div>
+<a name="idm531177647520"></a>Notes</h4></div></div></div>
 <p>Some compilers have command line switches (e.g. -ftrapv) which
     enable special behavior such erroneous integer operations are detected at
     run time. The library has been implemented in such a way that these
@@ -134,7 +134,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm472541616752"></a>See Also</h4></div></div></div>
+<a name="idm531177645952"></a>See Also</h4></div></div></div>
 <p><a class="link" href="checked_result.html" title="checked_result&lt;typename R&gt;">checked_result&lt;typename
     R&gt;</a></p>
 </div>

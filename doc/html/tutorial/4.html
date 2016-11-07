@@ -1,12 +1,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Implicit Conversions Change Data Values</title>
+<title>Implicit Conversions Can Lead to Erroneous Results</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="2.html" title="Arithmetic Operations can Overflow Silently">
+<link rel="prev" href="2.html" title="Arithmetic Operations Can Overflow Silently">
 <link rel="next" href="10.html" title="Mixing Data Types Can Create Subtle Errors">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -19,65 +19,99 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.tutorial.4"></a>Implicit Conversions Change Data Values</h3></div></div></div>
-<p>A simple assignment or arithmetic expression will convert all the
-    terms to the same type. Sometimes this can silently change values. For
-    example, when a signed data variable contains a negative type, assigning
-    to a unsigned type will be permitted by any C/C++ compiler but will be
-    treated as large unsigned value. Most modern compilers will emit a compile
-    time warning when this conversion is performed. The user may then decide
-    to change some data types or apply a <code class="computeroutput">static_cast</code>. This is
-    less than satisfactory for two reasons:</p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>It may be unwieldy to change all the types to signed or
-          unsigned.</p></li>
-<li class="listitem"><p>We may believe that our signed type will never contain a
-          negative value. <code class="computeroutput">static_cast</code> changes the data type - not
-          the data value. If we ignore the any compiler warnings or use a
-          <code class="computeroutput">static_cast</code> to suppress them, we'll fail to detect a
-          program error when it is committed. This is aways a risk with
-          casts.</p></li>
-</ul></div>
-<p>This solution is simple, Just replace instances of the <code class="computeroutput">int
-    </code>with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+<a name="safe_numerics.tutorial.4"></a>Implicit Conversions Can Lead to Erroneous Results</h3></div></div></div>
+<p>At CPPCon 2016 Jon Kalb gave a very entertaining (and disturbing
+    example) <a href="https://www.youtube.com/watch?v=wvtFGa6XJDU" target="_top">lightening talk</a>
+    related to C++ expressions.</p>
+<p>The talk included a very, very simple example similar to the
+    following:</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
-<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 4: "</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"implicit conversions change data values"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    
     <span class="comment">// problem: implicit conversions change data values</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">-</span><span class="number">1000</span><span class="special">;</span>
-        <span class="comment">// the following silently produces an incorrect result</span>
-        <span class="keyword">char</span> <span class="identifier">y</span> <span class="special">=</span> <span class="identifier">x</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="keyword">signed</span> <span class="keyword">int</span>   <span class="identifier">a</span><span class="special">{</span><span class="special">-</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">b</span><span class="special">{</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="keyword">if</span><span class="special">(</span><span class="identifier">a</span> <span class="special">&lt;</span> <span class="identifier">b</span><span class="special">)</span><span class="special">{</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is less than b\n"</span><span class="special">;</span>
+        <span class="special">}</span>
+        <span class="keyword">else</span><span class="special">{</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"b is less than a\n"</span><span class="special">;</span>
+        <span class="special">}</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span> <span class="comment">// never arrive here</span>
+        <span class="comment">// never arrive here - just produce the wrong answer!</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
+
     <span class="comment">// solution: replace int with safe&lt;int&gt; and char with safe&lt;char&gt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
         <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">-</span><span class="number">1000</span><span class="special">;</span>
-        <span class="comment">// throws exception when conversion change data value</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y1</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y2</span> <span class="special">=</span> <span class="identifier">x</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">char</span><span class="special">&gt;</span> <span class="identifier">y3</span> <span class="special">=</span> <span class="special">{</span><span class="identifier">x</span><span class="special">}</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">signed</span> <span class="keyword">int</span><span class="special">&gt;</span>   <span class="identifier">a</span><span class="special">{</span><span class="special">-</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">{</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="keyword">if</span><span class="special">(</span><span class="identifier">a</span> <span class="special">&lt;</span> <span class="identifier">b</span><span class="special">)</span><span class="special">{</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is less than b\n"</span><span class="special">;</span>
+        <span class="special">}</span>
+        <span class="keyword">else</span><span class="special">{</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"b is less than a\n"</span><span class="special">;</span>
+        <span class="special">}</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// never arrive here - just produce the correct answer!</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
+<p>A normal person reads the above code and has to be dumbfounded by
+    this. The code doesn't do what the text - according to the rules of
+    algebra - says it does. But C++ doesn't follow the rules of algebra - it
+    has it's own rules. There is generally no compile time error. You can get
+    a compile time warning if you set some specific compile time switches. The
+    explanation lies in reviewing how C++ reconciles binary expressions
+    (<code class="computeroutput">a &lt; b</code> is an expression here) where operands are different
+    types. In processing this expression, the compiler:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>Determines the "best" common type for the two operands. In
+          this case, application the the rules in the C++ standard dictate
+          that this type will be an <code class="computeroutput">unsigned int</code>.</p></li>
+<li class="listitem"><p>Converts each operand to this common type. The signed value of
+          -1 is converted to an unsigned value with the same bit-wise
+          contents, 0xFFFFFFFF, on a machine with 32 bit integers. This
+          corresponds to a decimal value of 4294967295.</p></li>
+<li class="listitem"><p>Performs the calculation - in this case it's,
+          <code class="computeroutput">&lt;</code>, the "less than" operation. Since 1 is less than
+          4294967295 the program prints "b is less than a".</p></li>
+</ul></div>
+<p>In order for a programmer to detect and understand this error he
+    should be pretty familiar with the implicit conversion rules of the C++
+    standard. These are available in a copy of the standard and also in the
+    canonical reference book <em class="citetitle"><a class="link" href="bibliography.html#stroustrup" title="The C++ Programming Language Fourth Edition">The C++
+    Programming Language</a></em> . (both are over 1200 pages
+    long!). Even experienced programmers won't spot this issue and know to
+    take precautions to avoid it. And this is a relatively easy one to spot.
+    In the more general case this will use integers which don't correspond to
+    easily recognizable numbers and/or will be buried as a part of some more
+    complex expression.</p>
+<p>This example generated a good amount of web traffic along with every
+    one's pet suggestions. See for example <a href="https://bulldozer00.com/2016/10/16/the-unsigned-conundrum/" target="_top">a blog
+    post with every one's favorite "solution"</a>. All the proposed
+    "solutions" have disadvantages and attempts to agree on how handle this
+    are ultimately fruitless in spite of, or maybe because of, the <a href="https://twitter.com/robertramey1/status/795742870045016065" target="_top">emotional
+    content</a>. Our solution is by far the simplest: Just use the safe
+    numerics library as shown in the example above.</p>
+<p>Note that in this particular case, there is absolutely no extra
+    overhead in using the safe integer library. Code generated will either
+    equal or exceed the efficiency of using primitive integer types.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
