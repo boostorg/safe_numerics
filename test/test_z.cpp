@@ -303,14 +303,14 @@ int main(int argc, char *argv[]){
 
 #endif
 
+#if 0
 #include <iostream>
 
 #include "../include/safe_range.hpp"
-#include "../include/safe_literal.hpp"
+//#include "../include/safe_literal.hpp"
 #include "../include/native.hpp"
 #include "../include/exception.hpp"
 
-#include "../examples/safe_format.hpp" // prints out range and value of any type
 
 using namespace boost::numeric; // for safe_literal
 
@@ -325,25 +325,9 @@ using safe_t = safe_signed_range<
     trap_exception  // catch problems at compile time
 >;
 
-auto f(const safe_t & x,    const safe_t & y){
-    //safe_t z = x + y; // depending on values of x & y COULD fail
-    auto z = x + y;    // due to C++ type promotion rules,
-                       // we know that this cannot fail
-    std::cout << "(x + y) = " << safe_format(x + y) << std::endl;
-    std::cout << "(x - y) = " << safe_format(x - y) << std::endl;
-    return z;
-}
-
 int main(int argc, const char * argv[]){
-    std::cout << "example 83:\n";
-    constexpr safe_t z1 = 3; // fails to compile
-    constexpr safe_t z2{3}; // fails to compile
-    constexpr safe_t z3(3); // fails to compile
-    const safe_t x(safe_literal<2>{});
-    const safe_t y = safe_literal<2>();  // to avoid runtime penalty
-    std::cout << "x = " << safe_format(x) << std::endl;
-    std::cout << "y = " << safe_format(y) << std::endl;
-    std::cout << "z = " << safe_format(f(x, y)) << std::endl;
+    constexpr safe_t z(3); // fails to compile
     return 0;
 }
 
+#endif

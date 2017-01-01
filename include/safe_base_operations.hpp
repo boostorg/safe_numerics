@@ -98,7 +98,7 @@ validated_cast(const safe_literal_impl<T, N> & t) const {
     // if static values don't overlap, the program can never function
     static_assert(
         this_interval.includes(N),
-        "safe type cannot be constructed value"
+        "safe type cannot be constructed from this value"
     );
     return static_cast<Stored>(t);
 }
