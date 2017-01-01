@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<section id="safe_numerics.notes">
+  <title>Notes</title>
+
+  <para>This library really an re-implementation the facilities provided by
+  <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
+  Library</ulink> using <ulink url="www.boost.org">Boost and C++14</ulink>. I
+  found this library very well done in every way. My main usage was to run
+  unit tests for my embedded systems projects on my PC. Still, I had a few
+  issues.</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>It was a lot of code in one header - 6400 lines. Very unwieldy to
+      understand, modify and maintain.</para>
+    </listitem>
+
+    <listitem>
+      <para>I couldn't find separate documentation other than that in the
+      header file.</para>
+    </listitem>
+
+    <listitem>
+      <para>It didn't use <ulink url="www.boost.org">Boost</ulink> conventions
+      for naming.</para>
+    </listitem>
+
+    <listitem>
+      <para>It required porting to different compilers.</para>
+    </listitem>
+
+    <listitem>
+      <para>It had a very long license associated with it.</para>
+    </listitem>
+
+    <listitem>
+      <para>I could find no test suite for the library.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>This version addresses these issues. It exploits <ulink
+  url="www.boost.org">Boost</ulink> facilities such as template
+  metaprogramming to reduce the number of lines of source code to
+  approximately 4700. It exploits the Boost Preprocessor Library to generate
+  exhaustive tests.</para>
+
+  <para>All concepts, types and functions documented are declared in the name
+  space <code>boost::numeric</code>.</para>
+</section>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<article>
+  <articleinfo>
+    <title>Correct Integer Operations Without Runtime Penalties</title>
+
+    <author>
+      <firstname>Robert</firstname>
+
+      <surname>Ramey</surname>
+
+      <affiliation>
+        <orgname>Robert Ramey Software Development</orgname>
+      </affiliation>
+    </author>
+
+    <pubdate>22 December 2016</pubdate>
+  </articleinfo>
+
+  <xi:include href="safe_introduction.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+  <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+  <xi:include href="notes.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+  <xi:include href="faq.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+  <section id="safe_numerics.pending_issues">
+    <title>Current Status</title>
+
+    <para>The library is currently in the <ulink
+    url="http://www.boost.org/community/review_schedule.html">Boost Review
+    Queue</ulink>. The proposal submission can be found in the <ulink
+    url="http://blincubator.com/bi_library/safe-numerics/?gform_post_id=426">Boost
+    Library Incubator</ulink></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The library is currently limited to integers.</para>
+      </listitem>
+
+      <listitem>
+        <para>Conversions to safe integer types from floating point types is
+        not explicitly addressed.</para>
+      </listitem>
+
+      <listitem>
+        <para>Note that standard library stream conversion functions such as
+        <code>strtoi</code> etc. DO check for valid input and throw the
+        exception <code>std::out_of_range</code> if the string cannot be
+        converted to the specified integer type. In other words,
+        <code>strtoi</code> already contains some of the functionality that
+        <code>safe&lt;int&gt;</code> provides.</para>
+      </listitem>
+
+      <listitem>
+        <para>Although care was taking to make the library portable, it's
+        likely that at least some parts of the implementation - particularly
+        <code>checked</code> arithmetic - depend upon two's complement
+        representation of integers. Hence the library is probably not
+        currently portable to other architectures.</para>
+      </listitem>
+
+      <listitem>
+        <para>Currently the library permits a <code>safe&lt;int&gt;</code>
+        value to be uninitialized. This supports the goal of "drop-in"
+        replacement of C++/C built-in types with safe counter parts. On the
+        other hand, this breaks the "always valid" guarantee.</para>
+      </listitem>
+
+      <listitem>
+        <para>The library is not quite a "drop-in" replacement for all
+        built-in integer types. In particular, C/C++ implements implicit
+        conversions and promotions between certain integer types which are not
+        captured by the operation overloads used to implement the library. In
+        practice these case are few and can be addressed with minor changes to
+        the user program to avoid these silent implicit conversions.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <xi:include href="bibliography.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+</article>

@@ -198,7 +198,7 @@ public:
     constexpr /*explicit*/ safe_base(const T & t);
 
     // note: Rule of Five.  Don't specify
-    // custom destructor, custom destructor, custom assignment
+    // custom constructor, custom destructor, custom assignment
     // custom move, custom move assignment
     // Let the compiler build the defaults.
 public:

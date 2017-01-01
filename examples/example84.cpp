@@ -2,13 +2,12 @@
 #include <iostream>
 
 #include "../include/safe_range.hpp"
-#include "../include/safe_literal.hpp"
 #include "../include/automatic.hpp"
 #include "../include/exception.hpp"
 
 #include "safe_format.hpp" // prints out range and value of any type
 
-using namespace boost::numeric; // for safe_literal
+using namespace boost::numeric;
 
 using safe_t = safe_signed_range<
     -24,

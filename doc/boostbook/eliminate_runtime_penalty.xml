@@ -121,8 +121,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
         </listitem>
 
         <listitem>
-          <para>Since there can be no errors, there is no need for try/catuch
-          blocks.</para>
+          <para>Since there can be no errors, there is no need for
+          <code>try/catch</code> blocks.</para>
         </listitem>
 
         <listitem>
@@ -181,8 +181,8 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
         </listitem>
 
         <listitem>
-          <para>We do not need to use try/catch idiom to handle arithmetic
-          errors - we will have none.</para>
+          <para>We do not need to use <code>try/catch</code> idiom to handle
+          arithmetic errors - we will have none.</para>
         </listitem>
 
         <listitem>
@@ -201,11 +201,11 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     example below, we presume we happen to know that the values we want to
     work with fall in the closed range of -24,82. So we "know" the program
     will always result in a correct result. But since we trust no one, and
-    since the program could change and the expressions replaced with other
+    since the program could change and the expressions be replaced with other
     ones, we'll still use the <link
-    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception" exception
-    policy</code></link> to verify at compile time that what we "know" to be
-    true is in fact true.</para>
+    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
+    exception policy</code></link> to verify at compile time that what we
+    "know" to be true is in fact true.</para>
 
     <programlisting><xi:include href="../../examples/example83.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>

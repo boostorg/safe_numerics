@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<section id="safe_numerics.rationale">
+  <title>Rationale and FAQ</title>
+
+  <qandaset defaultlabel="number">
+    <qandaentry>
+      <question>
+        <para>Is this really necessary? If I'm writing the program with the
+        requisite care and competence, problems noted in the introduction will
+        never arise. Should they arise, they should be fixed "at the source"
+        and not with a "band aid" to cover up bad practice.</para>
+      </question>
+
+      <answer>
+        <para>This surprised me when it was first raised. But some of the
+        feedback I've received makes me thing that it's a widely held view.
+        The best answer is to consider the cases in the section <link
+        linkend="safe_numerics.tutorial">Tutorials and Motivating
+        Examples</link>.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Can safe types be used as drop-in replacement for built-in
+        types?</para>
+      </question>
+
+      <answer>
+        <para>Almost. Replacing all built-in types with their safe
+        counterparts should result in a program that will compile and run as
+        expected. In some cases compile time errors will occur and adjustments
+        to the source code will be required. Typically these will result in
+        code which is more correct. See <link
+        linkend="safe_numerics.drop_in_replacement">drop-in
+        replacement</link>.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why is Boost.Convert not used?</para>
+      </question>
+
+      <answer>
+        <para>I couldn't figure out how to use it from the
+        documentation.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why is the library named "safe ..." rather than something like
+        "checked ..." ?</para>
+      </question>
+
+      <answer>
+        <para>I used "safe" in large part this is what has been used by other
+        similar libraries. Maybe a better word might have been "correct" but
+        that would raise similar concerns. I'm not inclined to change this.
+        I've tried to make it clear in the documentation what the problem that
+        the library addressed is</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Given that the library is called "numerics" why is floating
+        point arithmetic not addressed?</para>
+      </question>
+
+      <answer>
+        <para>Actually, I believe that this can/should be applied to any type
+        T which satisfies the type requirement "Numeric" type as defined in
+        the documentation. So there should be specializations
+        safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
+        etc. But the current version of the library only addresses integer
+        types. Hopefully the library will evolve to match the promise implied
+        by it's name.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Isn't putting a defensive check just before any potential
+        undefined behavior is often considered a bad practice?</para>
+      </question>
+
+      <answer>
+        <para>By whom? Is leaving code which can produce incorrect results
+        better? Note that the documentation contains references to various
+        sources which recommend exactly this approach to mitigate the problems
+        created by this C/C++ behavior. See <link
+        linkend="seacord1"><citation>Seacord</citation></link>, <ulink
+        url="https://www.cert.org">Software Engineering Institute - Carnegie
+        Mellon University</ulink></para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>It looks like the implementation presumes two's complement
+        arithmetic at the hardware level. So this library is not portable -
+        correct? What about other hardware architectures?</para>
+      </question>
+
+      <answer>
+        <para>As far as is known as of this writing, the library does not
+        presume that the underlying hardware is two's compliment. However,
+        this has yet to be verified in a rigorous way.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why do you specialize numeric_limits for "safe" types? Do you
+        need it?</para>
+      </question>
+
+      <answer>
+        <para>safe&lt;T&gt; behaves like a "number" just as int does. It has
+        max, min, etc Any code which uses numeric limits to test a type T
+        should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
+        replacement for T so it has to implement all the operations.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>According to C/C++ standards, unsigned integers cannot overflow
+        - they are modular integers which "warp around". Yet the safe numerics
+        library detects and traps this behavior as errors. Why is that?</para>
+      </question>
+
+      <answer>
+        <para>The guiding purpose of the library is to trap incorrect
+        arithmetic behavior - not just undefined behavior. Although a savvy
+        user may understand and keep present in his mind that an unsigned
+        integer is really modular type, the plain reading of an arithmetic
+        expression conveys the idea that all operands are plain integers. Also
+        in many cases, unsigned integers are used in cases where modular
+        arithmetic is not intended, such as array indexes. Finally, the
+        modulus for such an integer would vary depending upon the machine
+        architecture. For these reasons, in the context of this library, an
+        unsigned integer is considered to a representation of a subset of
+        integers which is expected to provide correct integer results. Note
+        that this decision is consistent with INT30-C, “Ensure that unsigned
+        integer operations do not wrap” in the CERT C Secure Coding Standard
+        [Seacord 2008]..</para>
+      </answer>
+    </qandaentry>
+  </qandaset>
+</section>
