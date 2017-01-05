@@ -145,7 +145,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     characterizing this library as addressing undefined behavior of C/C++
     numeric expressions is misleading.</para>
 
-    <para>All facilities modern C++/14 are employed to minimize any runtime
+    <para>All facilities of modern C++/14 are employed to minimize any runtime
     overhead required to make this guarantee. In many cases there is no
     runtime overhead at all. In other cases, a using program can be slightly
     altered to achieve the above guarantee without any runtime
@@ -248,7 +248,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>enable_if</para>
         </listitem>
-      </itemizedlist>In order to run the test suite, the following the Boost
+      </itemizedlist>In order to run the test suite, the Boost
     preprocessor library is also required.</para>
   </section>
 
