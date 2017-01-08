@@ -1,13 +1,5 @@
 # CMake build control file for safe numerics Library tests
 
-cmake_minimum_required(VERSION 3.0)
-project("SafeIntegersTest")
-
-include("../CMake/CMakeLists.txt" )
-
-include_directories("${Boost_INCLUDE_DIRS}")
-include_directories("../include")
-
 ###########################
 # test targets
 

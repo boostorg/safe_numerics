@@ -169,11 +169,9 @@
     </author>
 
     <title>
-      <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
-        <ulink
-        url="http://boost.2283326.n4.nabble.com/SafeInt-code-proposal-td2663669.html">SafeInt
-        code proposal</ulink>
-      </ulink>
+      <ulink
+      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">SafeInt
+      code proposal</ulink>
     </title>
 
     <publishername>
@@ -309,6 +307,25 @@
     <abbrev>Lions</abbrev>
   </biblioentry>
 
+  <biblioentry id="matthews">
+    <author>
+      <surname>Hubert Matthews</surname>
+    </author>
+
+    <title>
+      <ulink url="https://accu.org/index.php/journals/324">CheckedInt: A
+      Policy-Based Range-Checked Integer</ulink>
+    </title>
+
+    <publishername>
+      <ulink url="https://accu.org/index.php">Overload Journal #58</ulink>
+    </publishername>
+
+    <date>December 2003</date>
+
+    <abbrev>Matthews</abbrev>
+  </biblioentry>
+
   <biblioentry id="mouawad">
     <author>
       <surname>Jad Mouawad</surname>
@@ -405,7 +422,7 @@
 
     <title>
       <ulink
-      url="https://www.securecoding.cert.org/confluence/display/c/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow">INT32-C.
+      url="https://www.securecoding.cert.org/confluence/display/c/INT30-C.+Ensure+that+unsigned+integer+operations+do+not+wrap">INT32-C.
       Ensure that operations on signed integers do not result in
       overflow</ulink>
     </title>

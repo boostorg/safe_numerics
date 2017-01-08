@@ -9,6 +9,27 @@ int main(int argc, const char * argv[]){
     std::cout << "example 1:";
     std::cout << "undetected erroneous expression evaluation" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
+    try{
+        int x = INT_MAX;
+        int y = 2;
+        int z;
+        // this produces an invalid result !
+        z = x + y;
+        // but assert fails to detect it since C++ implicitly
+        // converts variables to int before evaluating he expression!
+        std::cout << "x == " << x << '\n';
+        std::cout << "y == " << y << '\n';
+        std::cout << "z == " << z << '\n';
+        std::cout << std::boolalpha;
+        std::cout << "does z == x + y? " << (z == x + y) << std::endl;
+
+        assert(z == x + y);
+        std::cout << z << " != " << x + y << std::endl;
+        std::cout << "error NOT detected!" << std::endl;
+    }
+    catch(std::exception){
+        std::cout << "error detected!" << std::endl;
+    }
     // problem: arithmetic operations can yield incorrect results.
     try{
         std::int8_t x = 127;
@@ -18,6 +39,12 @@ int main(int argc, const char * argv[]){
         z = x + y;
         // but assert fails to detect it since C++ implicitly
         // converts variables to int before evaluating he expression!
+        std::cout << "x == " << static_cast<int>(x) << '\n';
+        std::cout << "y == " << static_cast<int>(y) << '\n';
+        std::cout << "z == " << static_cast<int>(z) << '\n';
+        std::cout << std::boolalpha;
+        std::cout << "does z == x + y? " << (z == x + y) << std::endl;
+
         // assert(z == x + y);
         std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
         std::cout << "error NOT detected!" << std::endl;

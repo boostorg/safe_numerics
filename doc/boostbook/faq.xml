@@ -78,7 +78,7 @@
         safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
         etc. But the current version of the library only addresses integer
         types. Hopefully the library will evolve to match the promise implied
-        by it's name.</para>
+        by its name.</para>
       </answer>
     </qandaentry>
 

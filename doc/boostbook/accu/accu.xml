@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <article>
   <articleinfo>
-    <title>Correct Integer Operations Without Runtime Penalties</title>
+    <title>Correct Integer Operations With Minimal Runtime Penalties</title>
 
     <author>
       <firstname>Robert</firstname>
@@ -18,16 +18,16 @@
     <pubdate>22 December 2016</pubdate>
   </articleinfo>
 
-  <xi:include href="safe_introduction.xml" xpointer="element(/1)"
+  <xi:include href="../safe_introduction.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
+  <xi:include href="../eliminate_runtime_penalty.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <xi:include href="notes.xml" xpointer="element(/1)"
+  <xi:include href="../notes.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <xi:include href="faq.xml" xpointer="element(/1)"
+  <xi:include href="../faq.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
   <section id="safe_numerics.pending_issues">
@@ -84,6 +84,6 @@
     </itemizedlist>
   </section>
 
-  <xi:include href="bibliography.xml" xpointer="element(/1)"
+  <xi:include href="../bibliography.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 </article>

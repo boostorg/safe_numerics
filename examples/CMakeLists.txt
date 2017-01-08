@@ -1,13 +1,5 @@
 # CMake build control file for safe numerics Library Examples
 
-cmake_minimum_required(VERSION 3.0)
-project("SafeIntegersExamples")
-
-include("../CMake/CMakeLists.txt" )
-
-include_directories("${Boost_INCLUDE_DIRS}")
-include_directories("../include")
-
 ###########################
 # examples
 
@@ -22,17 +14,32 @@ foreach(file_name ${example_list})
   string(REPLACE ".cpp" "" base_name ${file_name})
   message(STATUS ${base_name})
   add_executable(${base_name} ${file_name})
-  add_test(NAME ${base_name} COMMAND ${base_name})
   set_target_properties(${base_name} PROPERTIES FOLDER "example")
   target_compile_options(${base_name} PUBLIC "-std=c++14")
 endforeach(file_name)
 
-set_target_properties(example84 PROPERTIES
+function( test_example base_name )
+  add_test(NAME ${base_name} COMMAND ${base_name})
+endfunction(test_example)
+
+test_example(example1)
+test_example(example2)
+test_example(example3)
+test_example(example4)
+test_example(example5)
+test_example(example6)
+test_example(example7)
+# test_example(example81)
+test_example(example82)
+test_example(example83)
+#test_example(example84)
+test_example(example91)
+test_example(example92)
+# test_example(example93)
+test_example(example10)
+
+set_target_properties(example81 example84 example93 PROPERTIES
     WILL_FAIL TRUE
-)
-set_target_properties(example81 example93 PROPERTIES
-    EXCLUDE_FROM_ALL TRUE
-    EXCLUDE_FROM_DEFAULT_BUILD TRUE
 )
 
 # end examples targets

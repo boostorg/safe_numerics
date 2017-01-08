@@ -93,7 +93,7 @@ bool test_right_shift(
         catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in addition "
+                    << "erroneously detected error in right shift "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " >> " << av2
                     << ' ' << e.what()

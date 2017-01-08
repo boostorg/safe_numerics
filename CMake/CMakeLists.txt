@@ -148,9 +148,6 @@ set(USE_FOLDERS TRUE)
 ###########################
 # testing and submitting test results to the test dashboard
 
-# create script to run all tests and examples
-include(CTest)
-
 if(0)
 
 ## Create a file named CTestConfig.cmake adjacent to the current file.

@@ -45,7 +45,7 @@ int main(int argc, const char * argv[]){
     catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
-        return false;
+        return 1;
     }
     return 0;
 }

@@ -643,6 +643,16 @@ constexpr check_shift(
            "shifting more bits than available is undefined behavior"
         );
     }
+    // the following are prohibited by the standard.  However
+    // on all known modern machines with will yield the correct
+    // result.  I'll err on the conservative side and trap this
+    // as undefined behavior.  But someone is going to complain
+    if(t < 0){
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting a negative value is undefined behavior"
+        );
+    }
     return cast<R>(t);
 }
 
@@ -655,7 +665,7 @@ constexpr check_shift(
     const T & t,
     const U & u
 ) {
-    // INT34-C C++ standard paragraph 5.8
+    // INT34-C and C++ standard paragraph 5.8
     if(std::numeric_limits<U>::max() > std::numeric_limits<T>::digits){
         if(u > std::numeric_limits<T>::digits){
             return checked_result<R>(
@@ -664,11 +674,20 @@ constexpr check_shift(
             );
         }
     }
-    // INT34-C C++ standard paragraph 5.8
+    // the following are prohibited by the standard.  However
+    // on all known modern machines with will yield the correct
+    // result.  I'll err on the conservative side and trap this
+    // as undefined behavior.  But someone is going to complain
     if(u < 0){
         return checked_result<R>(
            exception_type::domain_error,
            "shifting negative amount is undefined behavior"
+        );
+    }
+    if(t < 0){
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting a negative value is undefined behavior"
         );
     }
     return cast<R>(t);

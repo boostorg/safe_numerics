@@ -311,7 +311,6 @@ int main(int argc, char *argv[]){
 #include "../include/native.hpp"
 #include "../include/exception.hpp"
 
-
 using namespace boost::numeric; // for safe_literal
 
 // create a type for holding small integers.  We "know" that C++ type
@@ -331,3 +330,8 @@ int main(int argc, const char * argv[]){
 }
 
 #endif
+
+int main(int argc, const char * argv[]){
+    return 0;
+}
+
