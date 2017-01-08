@@ -39,9 +39,6 @@ clone_folder: c:\projects\safe_numerics
 # fetch repository as zip archive
 shallow_clone: true                 # default is "false"
 
-# set clone depth
-# clone_depth: 5                      # clone entire repository history if not defined
-
 # environment variables
 environment:
   MSVC_DEFAULT_OPTIONS: ON
@@ -62,17 +59,19 @@ before_build:
   - cmd: cd C:\projects\safe_numerics
   - cmd: md build
   - cmd: cd build
-  - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%"
+  - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%" ..
 
 # scripts to run after build
 after_build:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - cmd: nmake
+  - cmd: cd C:\projects\safe_numerics\build
+  - cmd: nmake /f makefile
+
 
 # to disable automatic builds
-#build: off
+build: off
 
 #---------------------------------#
 #       tests configuration       #
@@ -80,9 +79,9 @@ build_script:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - cmd: cd build
-  - cmd: nmake test
+  - cmd: cd C:\projects\safe_numerics\build
+  - cmd: nmake /f makefile test
 
 # to disable automatic tests
-#test: off
+test: off
 
