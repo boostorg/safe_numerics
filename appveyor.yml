@@ -12,7 +12,7 @@ branches:
     - develop
 
 # Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
-#skip_commits:
+skip_commits:
   files:
     - doc/*
 #    - '**/*.html'
@@ -24,6 +24,7 @@ max_jobs: 1
 init:
   - cmd: cmake --version
   - cmd: msbuild /version
+  - git config --global core.autocrlf input
 
 #---------------------------------#
 #    environment configuration    #
@@ -31,10 +32,6 @@ init:
 
 # Build worker image (VM template)
 image: Visual Studio 2015
-
-# scripts that are called at very beginning, before repo cloning
-init:
-  - git config --global core.autocrlf input
 
 # clone directory
 clone_folder: c:\projects\safe_numerics
@@ -94,6 +91,7 @@ build_script:
 
 # to run your custom scripts instead of automatic tests
 test_script:
+  - cmd: cd build
   - cmd: ctest --build-config %configuration% --output-on-failure
 
 # to disable automatic tests
