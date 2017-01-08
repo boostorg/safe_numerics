@@ -23,7 +23,6 @@ max_jobs: 1
 # scripts that are called at very beginning, before repo cloning
 init:
   - cmd: cmake --version
-  - cmd: msbuild /version
   - git config --global core.autocrlf input
 
 #---------------------------------#
@@ -31,7 +30,7 @@ init:
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2015
+image: Visual Studio 2014
 
 # clone directory
 clone_folder: c:\projects\safe_numerics
@@ -56,19 +55,21 @@ configuration:
 
 # scripts to run before build
 before_build:
+  - cmd: echo "before build"
   - cmd: cd C:\projects\safe_numerics
   - cmd: md build
   - cmd: cd build
   - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%" ..
+  - cmd: dir
 
 # scripts to run after build
 after_build:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
+  - cmd: echo "build script"
   - cmd: cd C:\projects\safe_numerics\build
   - cmd: nmake /f makefile
-
 
 # to disable automatic builds
 build: off
@@ -79,6 +80,7 @@ build: off
 
 # to run your custom scripts instead of automatic tests
 test_script:
+  - cmd: echo "test script"
   - cmd: cd C:\projects\safe_numerics\build
   - cmd: nmake /f makefile test
 
