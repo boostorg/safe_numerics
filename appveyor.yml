@@ -52,35 +52,24 @@ environment:
 #       build configuration       #
 #---------------------------------#
 
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
-
 # to add several configurations to build matrix:
 configuration:
   - Debug
-  - Release
+  # - Release
 
 # scripts to run before build
 before_build:
   - cmd: cd C:\projects\safe_numerics
   - cmd: md build
   - cmd: cd build
-  # We generate project files for Visual Studio 14 because the boost binaries installed on the test server are for Visual Studio 14.
-  - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015
-  - cmd: if "%platform%"=="x64"   set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64
-  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_LIBRARYDIR%" -DBoost_USE_STATIC_LIBS="ON" ..
-
-build:
-  project: safe_numerics.sln      # path to Visual Studio solution or project
-
-# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
-before_package:
+  - cmd: cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%"
 
 # scripts to run after build
 after_build:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
+  - cmd: nmake
 
 # to disable automatic builds
 #build: off
@@ -92,7 +81,7 @@ build_script:
 # to run your custom scripts instead of automatic tests
 test_script:
   - cmd: cd build
-  - cmd: ctest --build-config %configuration% --output-on-failure
+  - cmd: nmake test
 
 # to disable automatic tests
 #test: off
