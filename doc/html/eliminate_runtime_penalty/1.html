@@ -77,8 +77,8 @@
           is no need to check for errors - they can't happen !!! The usage of
           <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
           exception policy</code></a> enforces this guarantee</p></li>
-<li class="listitem"><p>Since there can be no errors, there is no need for try/catuch
-          blocks.</p></li>
+<li class="listitem"><p>Since there can be no errors, there is no need for
+          <code class="computeroutput">try/catch</code> blocks.</p></li>
 <li class="listitem"><p>The only runtime error checking we need to do is when safe
           values are initialized or assigned using smaller types. These are
           infrequent occurrences which generally have little or no impact on
@@ -147,8 +147,8 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
           type.</p></li>
 <li class="listitem"><p>our program compiles without error - even when using the
           trap_exception exception policy</p></li>
-<li class="listitem"><p>We do not need to use try/catch idiom to handle arithmetic
-          errors - we will have none.</p></li>
+<li class="listitem"><p>We do not need to use <code class="computeroutput">try/catch</code> idiom to handle
+          arithmetic errors - we will have none.</p></li>
 <li class="listitem"><p>We only needed to change two lines of code to achieve our
           goal</p></li>
 </ul></div>

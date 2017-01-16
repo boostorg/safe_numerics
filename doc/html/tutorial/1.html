@@ -45,11 +45,10 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 1:"</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"undetected erroneous expression evaluation"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="comment">// problem: arithmetic operations can yield incorrect results.</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
+        <span class="keyword">int</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="keyword">int</span> <span class="identifier">z</span><span class="special">;</span>
         <span class="comment">// this produces an invalid result !</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
         <span class="comment">// but assert fails to detect it since C++ implicitly</span>
@@ -61,13 +60,13 @@
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
-    <span class="comment">// solution: replace std::int8_t with safe&lt;std::int8_t&gt;</span>
+    <span class="comment">// solution: replace int with safe&lt;int&gt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
         <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
         <span class="comment">// rather than producing and invalid result an exception is thrown</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="special">}</span>

@@ -170,7 +170,7 @@ detected error:converted negative value to unsigned
     externally produced input.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.6">
+  <section id="safe_numerics.tutorial.7">
     <title>Cannot Recover From Arithmetic Errors</title>
 
     <para>If a divide by zero error occurs in a program, it's detected by
@@ -203,7 +203,7 @@ detected error:converted negative value to unsigned
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
   </section>
 
-  <section id="safe_numerics.tutorial.7">
+  <section id="safe_numerics.tutorial.8">
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has

@@ -21,37 +21,38 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale and FAQ</h2></div></div></div>
 <div class="qandaset">
-<a name="idm531177459952"></a><dl>
-<dt>1. <a href="rationale.html#idm531177459456">Is this really necessary? If I'm writing the program with the
-          requisite care and competence, problems noted in the introduction
-          will never arise. Should they arise, they should be fixed "at the
-          source" and not with a "band aid" to cover up bad practice.</a>
+<a name="idm165826797776"></a><dl>
+<dt>1. <a href="rationale.html#idm165826797280">Is this really necessary? If I'm writing the program with the
+        requisite care and competence, problems noted in the introduction will
+        never arise. Should they arise, they should be fixed "at the source"
+        and not with a "band aid" to cover up bad practice.</a>
 </dt>
-<dt>2. <a href="rationale.html#idm531177456144">Can safe types be used as drop-in replacement for built-in
-          types?</a>
+<dt>2. <a href="rationale.html#idm165826793968">Can safe types be used as drop-in replacement for built-in
+        types?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm531177452912">Why is Boost.Convert not used?</a>
+<dt>3. <a href="rationale.html#idm165826790736">Why is Boost.Convert not used?</a>
 </dt>
-<dt>4. <a href="rationale.html#idm531177450880">Why is the library named "safe ..." rather than something like
-          "checked ..." ?</a>
+<dt>4. <a href="rationale.html#idm165826788704">Why is the library named "safe ..." rather than something like
+        "checked ..." ?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm531177448512">Given that the library is called "numerics" why is floating
-          point arithmetic not addressed?</a>
+<dt>5. <a href="rationale.html#idm165826786352">Given that the library is called "numerics" why is floating
+        point arithmetic not addressed?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm531177446192">Isn't putting a defensive check just before any potential
-          undefined behavior is often considered a bad practice?</a>
+<dt>6. <a href="rationale.html#idm165826784048">Isn't putting a defensive check just before any potential
+        undefined behavior is often considered a bad practice?</a>
 </dt>
-<dt>7. <a href="rationale.html#idm531177442640">It looks like the implementation presumes two's complement
-          arithmetic at the hardware level. So this library is not portable -
-          correct? What about other hardware architectures?</a>
+<dt>7. <a href="rationale.html#idm165826780528">It looks like the implementation presumes two's complement
+        arithmetic at the hardware level. So this library is not portable -
+        correct? What about other hardware architectures?</a>
 </dt>
-<dt>8. <a href="rationale.html#idm531177440304">Why do you specialize numeric_limits for "safe" types? Do you
-          need it?</a>
+<dt>8. <a href="rationale.html#idm165826778208">Why do you specialize numeric_limits for "safe" types? Do you
+        need it?</a>
 </dt>
-<dt>9. <a href="rationale.html#idm531184302272">According to C/C++ standards, unsigned integers cannot
-          overflow - they are modular integers which "warp around". Yet the
-          safe numerics library detects and traps this behavior as errors. Why
-          is that?</a>
+<dt>9. <a href="rationale.html#idm165826775856">According to C/C++ standards, unsigned integers cannot overflow
+        - they are modular integers which "warp around". Yet the safe numerics
+        library detects and traps this behavior as errors. Why is that?</a>
+</dt>
+<dt>10. <a href="rationale.html#idm165826773712">Why does the library require C++14?</a>
 </dt>
 </dl>
 <table border="0" style="width: 100%;">
@@ -62,147 +63,170 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177459456"></a><a name="idm531177459200"></a><p><b>1.</b></p>
+<a name="idm165826797280"></a><a name="idm165826797024"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Is this really necessary? If I'm writing the program with the
-          requisite care and competence, problems noted in the introduction
-          will never arise. Should they arise, they should be fixed "at the
-          source" and not with a "band aid" to cover up bad practice.</p></td>
+        requisite care and competence, problems noted in the introduction will
+        never arise. Should they arise, they should be fixed "at the source"
+        and not with a "band aid" to cover up bad practice.</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>This surprised me when it was first raised. But some of the
-          feedback I've received makes me thing that it's a widely held view.
-          The best answer is to consider the cases in the section <a class="link" href="tutorial.html" title="Tutorial and Motivating Examples">Tutorials and Motivating
-          Examples</a>.</p></td>
+        feedback I've received makes me thing that it's a widely held view.
+        The best answer is to consider the cases in the section <a class="link" href="tutorial.html" title="Tutorial and Motivating Examples">Tutorials and Motivating
+        Examples</a>.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177456144"></a><a name="idm531177455888"></a><p><b>2.</b></p>
+<a name="idm165826793968"></a><a name="idm165826793712"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top"><p>Can safe types be used as drop-in replacement for built-in
-          types?</p></td>
+        types?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>Almost. Replacing all built-in types with their safe
-          counterparts should result in a program that will compile and run as
-          expected. In some cases compile time errors will occur and
-          adjustments to the source code will be required. Typically these
-          will result in code which is more correct. See <a class="link" href="safe.html#safe_numerics.drop_in_replacement" title="As a Drop-in replacement for standard integer types.">drop-in
-          replacement</a>.</p></td>
+        counterparts should result in a program that will compile and run as
+        expected. In some cases compile time errors will occur and adjustments
+        to the source code will be required. Typically these will result in
+        code which is more correct. See <a class="link" href="safe.html#safe_numerics.drop_in_replacement" title="As a Drop-in replacement for standard integer types.">drop-in
+        replacement</a>.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177452912"></a><a name="idm531177452656"></a><p><b>3.</b></p>
+<a name="idm165826790736"></a><a name="idm165826790480"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is Boost.Convert not used?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>I couldn't figure out how to use it from the
-          documentation.</p></td>
+        documentation.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177450880"></a><a name="idm531177450624"></a><p><b>4.</b></p>
+<a name="idm165826788704"></a><a name="idm165826788448"></a><p><b>4.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
-          "checked ..." ?</p></td>
+        "checked ..." ?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
-<td align="left" valign="top"><p>I used "safe" in large part this is what has been used by
-          other similar libraries. Maybe a better word might have been
-          "correct" but that would raise similar concerns. I'm not inclined to
-          change this. I've tried to make it clear in the documentation what
-          the problem that the library addressed is</p></td>
+<td align="left" valign="top"><p>I used "safe" in large part this is what has been used by other
+        similar libraries. Maybe a better word might have been "correct" but
+        that would raise similar concerns. I'm not inclined to change this.
+        I've tried to make it clear in the documentation what the problem that
+        the library addressed is</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177448512"></a><a name="idm531177448256"></a><p><b>5.</b></p>
+<a name="idm165826786352"></a><a name="idm165826786096"></a><p><b>5.</b></p>
 </td>
 <td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
-          point arithmetic not addressed?</p></td>
+        point arithmetic not addressed?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
-<td align="left" valign="top"><p>Actually, I believe that this can/should be applied to any
-          type T which satisfies the type requirement "Numeric" type as
-          defined in the documentation. So there should be specializations
-          safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
-          etc. But the current version of the library only addresses integer
-          types. Hopefully the library will evolve to match the promise
-          implied by it's name.</p></td>
+<td align="left" valign="top"><p>Actually, I believe that this can/should be applied to any type
+        T which satisfies the type requirement "Numeric" type as defined in
+        the documentation. So there should be specializations
+        safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
+        etc. But the current version of the library only addresses integer
+        types. Hopefully the library will evolve to match the promise implied
+        by its name.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177446192"></a><a name="idm531177445936"></a><p><b>6.</b></p>
+<a name="idm165826784048"></a><a name="idm165826783792"></a><p><b>6.</b></p>
 </td>
 <td align="left" valign="top"><p>Isn't putting a defensive check just before any potential
-          undefined behavior is often considered a bad practice?</p></td>
+        undefined behavior is often considered a bad practice?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>By whom? Is leaving code which can produce incorrect results
-          better? Note that the documentation contains references to various
-          sources which recommend exactly this approach to mitigate the
-          problems created by this C/C++ behavior. See <a class="link" href="bibliography.html#seacord1" title="Secure Coding in C and C++">[<a class="citation" href="bibliography.html#seacord1"><span class="citation">Seacord</span></a>]</a>, <a href="https://www.cert.org" target="_top">Software Engineering Institute - Carnegie
-          Mellon University</a></p></td>
+        better? Note that the documentation contains references to various
+        sources which recommend exactly this approach to mitigate the problems
+        created by this C/C++ behavior. See <a class="link" href="bibliography.html#seacord1" title="Secure Coding in C and C++">[<a class="citation" href="bibliography.html#seacord1"><span class="citation">Seacord</span></a>]</a>, <a href="https://www.cert.org" target="_top">Software Engineering Institute - Carnegie
+        Mellon University</a></p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177442640"></a><a name="idm531177442384"></a><p><b>7.</b></p>
+<a name="idm165826780528"></a><a name="idm165826780272"></a><p><b>7.</b></p>
 </td>
 <td align="left" valign="top"><p>It looks like the implementation presumes two's complement
-          arithmetic at the hardware level. So this library is not portable -
-          correct? What about other hardware architectures?</p></td>
+        arithmetic at the hardware level. So this library is not portable -
+        correct? What about other hardware architectures?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>As far as is known as of this writing, the library does not
-          presume that the underlying hardware is two's compliment. However,
-          this has yet to be verified in a rigorous way.</p></td>
+        presume that the underlying hardware is two's compliment. However,
+        this has yet to be verified in a rigorous way.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531177440304"></a><a name="idm531177440048"></a><p><b>8.</b></p>
+<a name="idm165826778208"></a><a name="idm165826777952"></a><p><b>8.</b></p>
 </td>
 <td align="left" valign="top"><p>Why do you specialize numeric_limits for "safe" types? Do you
-          need it?</p></td>
+        need it?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>safe&lt;T&gt; behaves like a "number" just as int does. It has
-          max, min, etc Any code which uses numeric limits to test a type T
-          should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
-          replacement for T so it has to implement all the operations.</p></td>
+        max, min, etc Any code which uses numeric limits to test a type T
+        should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
+        replacement for T so it has to implement all the operations.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm531184302272"></a><a name="idm531184302016"></a><p><b>9.</b></p>
+<a name="idm165826775856"></a><a name="idm165826775600"></a><p><b>9.</b></p>
 </td>
-<td align="left" valign="top"><p>According to C/C++ standards, unsigned integers cannot
-          overflow - they are modular integers which "warp around". Yet the
-          safe numerics library detects and traps this behavior as errors. Why
-          is that?</p></td>
+<td align="left" valign="top"><p>According to C/C++ standards, unsigned integers cannot overflow
+        - they are modular integers which "warp around". Yet the safe numerics
+        library detects and traps this behavior as errors. Why is that?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>The guiding purpose of the library is to trap incorrect
-          arithmetic behavior - not just undefined behavior. Although a savvy
-          user may understand and keep present in his mind that an unsigned
-          integer is really modular type, the plain reading of an arithmetic
-          expression conveys the idea that all operands are plain integers.
-          Also in many cases, unsigned integers are used in cases where
-          modular arithmetic is not intended, such as array indexes. Finally,
-          the modulus for such an integer would vary depending upon the
-          machine architecture. For these reasons, in the context of this
-          library, an unsigned integer is considered to a representation of a
-          subset of integers which is expected to provide correct integer
-          results. Note that this decision is consistent with INT30-C, &#8220;Ensure
-          that unsigned integer operations do not wrap&#8221; in the CERT C Secure
-          Coding Standard [Seacord 2008]..</p></td>
+        arithmetic behavior - not just undefined behavior. Although a savvy
+        user may understand and keep present in his mind that an unsigned
+        integer is really modular type, the plain reading of an arithmetic
+        expression conveys the idea that all operands are plain integers. Also
+        in many cases, unsigned integers are used in cases where modular
+        arithmetic is not intended, such as array indexes. Finally, the
+        modulus for such an integer would vary depending upon the machine
+        architecture. For these reasons, in the context of this library, an
+        unsigned integer is considered to a representation of a subset of
+        integers which is expected to provide correct integer results. Note
+        that this decision is consistent with INT30-C, &#8220;Ensure that unsigned
+        integer operations do not wrap&#8221; in the CERT C Secure Coding Standard
+        [Seacord 2008]..</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm165826773712"></a><a name="idm165826773456"></a><p><b>10.</b></p>
+</td>
+<td align="left" valign="top"><p>Why does the library require C++14?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>THe original version of the library used C++11. Feedback from
+        CPPCon, <a href="www.blincubator.com" target="_top">Boost Library
+        Incubator</a> and Boost developer's mailing list convinced me that
+        I had to address the issue of run-time penalty much more seriously. I
+        resolved to eliminate or minimize it. This led to more elaborate
+        meta-programming. But this wasn't enough. It became apparent that the
+        only way to really minimize run-time penalty was to implement
+        compile-time integer range arithmetic - a pretty elaborate sub
+        library. By doing range arithmetic at compiler-time, I could skip
+        runtime checking on many/most integer operations. C++11 constexpr
+        wasn't quite enough to do the job. C++14 constexpr can do the job. The
+        library currently relies very heavily on C++14 constexpr. I think that
+        those who delve into the library will be very surprised at the extent
+        that minor changes in user code can produce guaranteed correct integer
+        code with zero run-time penalty. </p></td>
 </tr>
 </tbody>
 </table>

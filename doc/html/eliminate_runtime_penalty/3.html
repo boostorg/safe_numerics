@@ -28,13 +28,12 @@
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_literal.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
 
 <span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span> <span class="comment">// for safe_literal</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
 
 <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
@@ -72,7 +71,7 @@
     <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="comment">// none of the above should trap. Mark failure if they do</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-        <span class="keyword">return</span> <span class="keyword">false</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="number">1</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
