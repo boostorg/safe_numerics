@@ -57,8 +57,7 @@ before_build:
   - echo "before build"
   - cd C:\projects\safe_numerics
   - md build
-  - cd build
-  - cmake --build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="%BOOST_ROOT%" ..
+  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="BOOST_ROOT% --build build
   - dir
 
 # scripts to run after build
