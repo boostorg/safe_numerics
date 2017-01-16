@@ -48,7 +48,7 @@ struct validate_detail {
                 checked::cast<R>(t)
             :
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::domain_error,
                     "Value out of range for this safe type"
                 )
             ;
@@ -91,16 +91,16 @@ validated_cast(const T & t) const {
 }
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
-template<typename T, T N>
+template<typename T, T N, class P1, class E1>
 constexpr Stored safe_base<Stored, Min, Max, P, E>::
-validated_cast(const safe_literal_impl<T, N> & t) const {
+validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
     constexpr const interval<Stored> this_interval{};
     // if static values don't overlap, the program can never function
     static_assert(
         this_interval.includes(N),
         "safe type cannot be constructed from this value"
     );
-    return static_cast<Stored>(t);
+    return static_cast<Stored>(N);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -665,11 +665,16 @@ struct division_result {
             = divide_nz<result_base_type>(t_interval, u_interval);
 
         constexpr static bool exception_possible() {
+            // denominator better not be zero
+            static_assert(
+                (u_interval.l != 0 || u_interval.u != 0),
+                "cannot divide by zero"
+            );
             return
                 // if over/under flow or domain error possible
                 ! r_interval.no_exception()
                 // if the denominator can contain zero
-                || (u_interval.l <= 0 && u_interval.u >=0 )
+                || (u_interval.l <= 0 && u_interval.u >= 0 )
             ;
         }
 
@@ -1485,7 +1490,7 @@ std::istream & operator>>(
     Temp<T> tx;
     is >> tx.value;
     if(is.fail())
-        E::range_error("error in file input");
+        E::domain_error("error in file input");
     t = tx.value;
     return is;
 }

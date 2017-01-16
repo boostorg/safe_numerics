@@ -48,25 +48,48 @@
 
     <para>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.<informaltable>
-        <tgroup cols="2">
-          <colspec align="left"/>
+        <tgroup cols="3">
+          <colspec align="left" colwidth="3*"/>
 
-          <colspec align="left"/>
+          <colspec align="left" colwidth="1*"/>
+
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>
               <entry align="left">Expression</entry>
 
               <entry>Return Value</entry>
+
+              <entry>Comment</entry>
             </row>
           </thead>
 
           <tbody>
             <row>
+              <entry><code>EP::no_error(const char * message)</code></entry>
+
+              <entry>void</entry>
+
+              <entry>Unused.</entry>
+            </row>
+
+            <row>
+              <entry><code>EP::uninitialized_error(const char *
+              message)</code></entry>
+
+              <entry>void</entry>
+
+              <entry>Argument uninitialized.</entry>
+            </row>
+
+            <row>
               <entry><code>EP::overflow_error(const char *
               message)</code></entry>
 
               <entry>void</entry>
+
+              <entry/>
             </row>
 
             <row>
@@ -74,6 +97,8 @@
               message)</code></entry>
 
               <entry>void</entry>
+
+              <entry/>
             </row>
 
             <row>
@@ -81,6 +106,17 @@
               message)</code></entry>
 
               <entry>void</entry>
+
+              <entry>Divide by zero.</entry>
+            </row>
+
+            <row>
+              <entry><code>EP::domain_error(const char *
+              message)</code></entry>
+
+              <entry>void</entry>
+
+              <entry>Argument outside permitted range.</entry>
             </row>
           </tbody>
         </tgroup>

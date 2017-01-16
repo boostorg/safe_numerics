@@ -37,7 +37,6 @@ bool test_log(){
 
 bool test1(){
     using namespace boost::numeric;
-    using t1 = signed_stored_type<-256, 254>;
 
     safe_signed_range<-128, 127> s1(1);
     safe_signed_range<-256, 254> s2(2);

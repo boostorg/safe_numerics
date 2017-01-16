@@ -52,13 +52,13 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::overflow_error,
                     "converted signed value too large"
                 )
             :
             t < std::numeric_limits<R>::min() ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::overflow_error,
                     "converted signed value too small"
                 )
             :
@@ -75,7 +75,7 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::overflow_error,
                     "converted unsigned value too large"
                 )
             :
@@ -92,7 +92,7 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::overflow_error,
                     "converted unsigned value too large"
                 )
             :
@@ -107,13 +107,13 @@ namespace detail {
             return
             t < 0 ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::domain_error,
                     "converted negative value to unsigned"
                 )
             :
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    exception_type::overflow_error,
                     "converted signed value too large"
                 )
             :
@@ -137,7 +137,7 @@ cast(
         // conversions to integer types
         // from floating point types are never OK
         checked_result<R>(
-            exception_type::range_error,
+            exception_type::domain_error,
             "conversion of integer to float loses precision"
         )
     :

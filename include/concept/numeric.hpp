@@ -26,20 +26,6 @@ struct Numeric {
         std::numeric_limits<T>::is_specialized,
         "std::numeric_limits<T> has not been specialized for this type"
     );
-    // verify that T is an integer type
-    static_assert(
-        std::numeric_limits<T>::is_integer,
-        "T is not an integer type"
-    );
-};
-
-template <class T>
-class Integer : public Numeric<T> {
-    // integer types must have the corresponding numeric trait.
-    static_assert(
-        std::numeric_limits<T>::is_integer,
-        "integer types must have the corresponding numeric trait"
-    );
 };
 
 } // numeric

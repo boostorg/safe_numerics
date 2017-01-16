@@ -13,6 +13,7 @@ function( test_example base_name )
 endfunction(test_example)
 
 test_example(example1)
+test_example(example11)
 test_example(example2)
 test_example(example3)
 test_example(example4)
@@ -27,6 +28,7 @@ test_example(example91)
 test_example(example92)
 # test_example(example93)
 test_example(example10)
+test_example(example13)
 
 # end examples targets
 ####################

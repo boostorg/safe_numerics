@@ -151,5 +151,29 @@
         [Seacord 2008]..</para>
       </answer>
     </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why does the library require C++14?</para>
+      </question>
+
+      <answer>
+        <para>THe original version of the library used C++11. Feedback from
+        CPPCon, <ulink url="www.blincubator.com">Boost Library
+        Incubator</ulink> and Boost developer's mailing list convinced me that
+        I had to address the issue of run-time penalty much more seriously. I
+        resolved to eliminate or minimize it. This led to more elaborate
+        meta-programming. But this wasn't enough. It became apparent that the
+        only way to really minimize run-time penalty was to implement
+        compile-time integer range arithmetic - a pretty elaborate sub
+        library. By doing range arithmetic at compiler-time, I could skip
+        runtime checking on many/most integer operations. C++11 constexpr
+        wasn't quite enough to do the job. C++14 constexpr can do the job. The
+        library currently relies very heavily on C++14 constexpr. I think that
+        those who delve into the library will be very surprised at the extent
+        that minor changes in user code can produce guaranteed correct integer
+        code with zero run-time penalty. </para>
+      </answer>
+    </qandaentry>
   </qandaset>
 </section>

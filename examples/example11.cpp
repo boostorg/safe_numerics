@@ -9,28 +9,26 @@ int main(int argc, const char * argv[]){
     std::cout << "example 1:";
     std::cout << "undetected erroneous expression evaluation" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
+    // problem: arithmetic operations can yield incorrect results.
     try{
-        int x = INT_MAX;
-        int y = 2;
-        int z;
+        std::int8_t x = 127;
+        std::int8_t y = 2;
+        std::int8_t z;
         // this produces an invalid result !
         z = x + y;
-        // but assert fails to detect it since C++ implicitly
-        // converts variables to int before evaluating he expression!
-        // assert(z == x + y);
         std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){
         std::cout << "error detected!" << std::endl;
     }
-    // solution: replace int with safe<int>
+    // solution: replace std::int8_t with safe<std::int8_t>
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;
-        safe<int> x = 127;
-        safe<int> y = 2;
-        safe<int> z;
+        safe<std::int8_t> x = 127;
+        safe<std::int8_t> y = 2;
+        safe<std::int8_t> z;
         // rather than producing and invalid result an exception is thrown
         z = x + y;
     }

@@ -53,11 +53,11 @@ struct bit {
             m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_literal<0>){
+    bit & operator=(const boost::numeric::safe_unsigned_literal<0>){
         m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_literal<1>){
+    bit & operator=(const boost::numeric::safe_unsigned_literal<1>){
         m_word |= (1 << N);
         return *this;
     }

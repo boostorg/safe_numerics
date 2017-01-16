@@ -170,6 +170,39 @@ detected error:converted negative value to unsigned
     externally produced input.</para>
   </section>
 
+  <section id="safe_numerics.tutorial.6">
+    <title>Cannot Recover From Arithmetic Errors</title>
+
+    <para>If a divide by zero error occurs in a program, it's detected by
+    hardware. The way this manifests itself to the program can and will depend
+    upon</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>data type - int, float, etc</para>
+        </listitem>
+
+        <listitem>
+          <para>setting of compile time command line switches</para>
+        </listitem>
+
+        <listitem>
+          <para>invocation some configuration functions which convert these
+          hardware events into C++ exceptions</para>
+        </listitem>
+      </itemizedlist>It's not all that clear how one would detect and recover
+    from a divide by zero error in a simple portable way. Usually, users just
+    ignore the issue which usually results in immediate program termination
+    when this situation occurs.</para>
+
+    <para>This library will detect for divide by zero errors before the
+    operation is invoked. Any errors of this nature are handled according to
+    the ErrorPolicy selected by the library user.</para>
+
+    <para><programlisting><xi:include href="../../examples/example13.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+  </section>
+
   <section id="safe_numerics.tutorial.7">
     <title>Programming by Contract is Too Slow</title>
 

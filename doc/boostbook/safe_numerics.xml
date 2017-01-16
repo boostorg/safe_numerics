@@ -181,7 +181,7 @@
         likely that at least some parts of the implementation - particularly
         <code>checked</code> arithmetic - depend upon two's complement
         representation of integers. Hence the library is probably not
-        currently portable to other architectures.</para>
+        currently portable to all other possible C++ architectures.</para>
       </listitem>
 
       <listitem>
@@ -191,6 +191,56 @@
         breaks the "always valid" guarantee.</para>
       </listitem>
     </itemizedlist>
+  </section>
+
+  <section>
+    <title>Acknowledgements</title>
+
+    <para>This library would never have been created without inspiration,
+    collaboration and constructive criticism from multiple sources. </para>
+
+    <para><glosslist>
+        <glossentry>
+          <glossterm>David LaBlanc</glossterm>
+
+          <glossdef>
+            <para>This library is inspired by <ulink
+            url="http://safeint.codeplex.com">David LeBlanc's SafeInt
+            Library</ulink> . I found this library very well done in every way
+            and useful in my embedded systems work. This motivated me to take
+            to the "next level".</para>
+          </glossdef>
+        </glossentry>
+
+        <glossentry>
+          <glossterm><ulink url="https://akrzemi1.wordpress.com">Andrzej
+          Krzemieński</ulink></glossterm>
+
+          <glossdef>
+            <para>Andrzej Commented and reviewed the library as it was
+            originally posted on the <ulink url="www.blincubator.com">Boost
+            Library Incubator</ulink>. The the consequent back and forth
+            motivated me to invest more effort in developing documentation and
+            examples to justify the utility, indeed the necessity, for this
+            library. He also noted many errors in code, documentation, and
+            tests. Without his interested and effort, I do not believe the
+            library would have progressed beyond it's initial stages.</para>
+          </glossdef>
+        </glossentry>
+
+        <glossentry>
+          <glossterm><ulink url="www.boost.org">Boost</ulink></glossterm>
+
+          <glossdef>
+            <para>As always, the Boost Developer's mailing list has been the
+            source of many useful observations from potential users and
+            constructive criticism from very knowledgeable developers. Boost
+            also supplies a widely accepted list of standards and requirements
+            for quality software. Finally, the Boost infrastructure for
+            testing, documentation is close to indispensable.</para>
+          </glossdef>
+        </glossentry>
+      </glosslist></para>
   </section>
 
   <section id="safe_numerics.change_log">

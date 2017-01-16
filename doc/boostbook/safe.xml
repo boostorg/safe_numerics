@@ -2,8 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe">
-  <title>safe&lt;T, PP = boost::numeric::native, EP =
-  boost::numeric::throw_exception&gt;</title>
+  <title>safe&lt;T, PP, EP&gt;</title>
 
   <?dbhtml stop-chunking?>
 

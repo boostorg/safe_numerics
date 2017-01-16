@@ -32,8 +32,8 @@ auto f(const safe_t & x,    const safe_t & y){
 int main(int argc, const char * argv[]){
     std::cout << "example 83:\n";
     // constexpr const safe_t z = 3; // fails to compile
-    const safe_t x(safe_literal<2>{});
-    const safe_t y = safe_literal<2>();  // to avoid runtime penalty
+    const safe_t x(safe_signed_literal<2>{});
+    const safe_t y = safe_signed_literal<2>();  // to avoid runtime penalty
     std::cout << "x = " << safe_format(x) << std::endl;
     std::cout << "y = " << safe_format(y) << std::endl;
     std::cout << "z = " << safe_format(f(x, y)) << std::endl;

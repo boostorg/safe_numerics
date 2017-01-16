@@ -15,7 +15,7 @@
 #include <limits>
 #include <typetraits>
 #include <boost/concept/usage.hpp>
-#include "numeric.hpp"
+#include "concept/numeric.hpp"
 
 namespace boost {
 namespace numeric {

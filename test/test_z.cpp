@@ -331,7 +331,35 @@ int main(int argc, const char * argv[]){
 
 #endif
 
+// test safe_literal.
+// can't make this an offcial test yet as we need implement
+// some baroque CMake logic to create a test which passes
+// when the program fails to compile
+#include <stdexcept>
+#include <iostream>
+#include "../include/safe_integer.hpp"
+#include "../include/safe_literal.hpp"
+
 int main(int argc, const char * argv[]){
+    using namespace boost::numeric;
+
+    constexpr safe_signed_literal<1000> x;
+    constexpr safe_signed_literal<0> y;
+    // should compile and execute without problem
+    std::cout << x << '\n';
+    // all the following statements should fail to compile
+    /*
+    constexpr safe<int> z = x / y;
+    y++;
+    y--;
+    ++y;
+    --y;
+    y = 1;
+    y += 1;
+    y -= 1;
+    y *= 1;
+    y /= 1;
+    */
     return 0;
 }
 

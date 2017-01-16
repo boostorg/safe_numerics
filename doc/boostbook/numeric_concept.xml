@@ -13,13 +13,13 @@
 
     <para>More specifically, a type T is Numeric if there exists
     specialization of <code>std::numeric_limits&lt;T&gt;</code>. See the
-    documentation for standard library class numeric_limits. The standard
-    library includes such specializations for all the primitive numeric types.
-    Note that this concept is distinct from the C++ standard library type
-    traits <code>is_integral</code> and <code>is_arithmetic</code>. These
-    latter fulfill the requirement of the concept Numeric. But there are types
-    T which fulfill this concept for which <code>is_arithmetic&lt;T&gt;::value
-    == false</code>. For example see
+    documentation for standard library class <code>numeric_limits</code>. The
+    standard library includes such specializations for all the built-in
+    numeric types. Note that this concept is distinct from the C++ standard
+    library type traits <code>is_integral</code> and
+    <code>is_arithmetic</code>. These latter fulfill the requirement of the
+    concept Numeric. But there are types T which fulfill this concept for
+    which <code>is_arithmetic&lt;T&gt;::value == false</code>. For example see
     <code>safe_signed_integer&lt;int&gt;</code>.</para>
   </section>
 
@@ -48,7 +48,7 @@
           <row>
             <entry><code>os</code></entry>
 
-            <entry>An object of type std::base_ostreami</entry>
+            <entry>An object of type std::base_ostream</entry>
           </row>
 
           <row>
@@ -109,23 +109,29 @@
 
           <tbody>
             <row>
-              <entry><code>std::numeric_limits&lt;T&gt;.is_bounded
+              <entry><code>std::numeric_limits&lt;T&gt;::is_bounded
               </code></entry>
 
-              <entry>true</entry>
+              <entry>true or false</entry>
             </row>
 
             <row>
-              <entry><code>std::numeric_limits&lt;T&gt;.is_specialized
+              <entry><code>std::numeric_limits&lt;T&gt;::is_specialized
               </code></entry>
 
-              <entry>true</entry>
+              <entry>true or false</entry>
+            </row>
+
+            <row>
+              <entry><code>std::numeric_limits&lt;T&gt;::is_integer</code></entry>
+
+              <entry>true or false</entry>
             </row>
 
             <row>
               <entry><code>os &lt;&lt; t</code></entry>
 
-              <entry>os &amp;i</entry>
+              <entry>os &amp;</entry>
             </row>
 
             <row>
@@ -205,14 +211,6 @@
 
             <entry>pre increment</entry>
           </row>
-
-          <row>
-            <entry><code>~</code></entry>
-
-            <entry>T</entry>
-
-            <entry>complement</entry>
-          </row>
         </tbody>
       </tgroup>
     </table>
@@ -279,22 +277,6 @@
           </row>
 
           <row>
-            <entry><code>t &lt;&lt; u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>shift t left u bits</entry>
-          </row>
-
-          <row>
-            <entry><code>t &gt;&gt; u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>shift t right by u bits</entry>
-          </row>
-
-          <row>
             <entry><code>t &lt; u</code></entry>
 
             <entry>bool</entry>
@@ -344,31 +326,6 @@
           </row>
 
           <row>
-            <entry><code>t &amp; u</code></entry>
-
-            <entry>V</entry>
-
-            <entry>and of t and u padded out max # bits in t, u</entry>
-          </row>
-
-          <row>
-            <entry><code>t | u</code></entry>
-
-            <entry>V</entry>
-
-            <entry>or of t and u padded out max # bits in t, u</entry>
-          </row>
-
-          <row>
-            <entry><code>t ^ u</code></entry>
-
-            <entry>V</entry>
-
-            <entry>exclusive or of t and u padded out max # bits in t,
-            u</entry>
-          </row>
-
-          <row>
             <entry><code>t = u</code></entry>
 
             <entry><code>T</code></entry>
@@ -407,54 +364,6 @@
 
             <entry>divide t by u and assign to t</entry>
           </row>
-
-          <row>
-            <entry><code>t &amp;= u</code></entry>
-
-            <entry><code>T</code></entry>
-
-            <entry>and t with u and assign to t</entry>
-          </row>
-
-          <row>
-            <entry><code>t &lt;&lt;= u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>left shift the value of t by u bits</entry>
-          </row>
-
-          <row>
-            <entry><code>t &gt;&gt;= u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>right shift the value of t by u bits</entry>
-          </row>
-
-          <row>
-            <entry><code>t &amp;= u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>and the value of t with u and assign to t</entry>
-          </row>
-
-          <row>
-            <entry><code>t |= u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>or the value of t with u and assign to t</entry>
-          </row>
-
-          <row>
-            <entry><code>t ^= u</code></entry>
-
-            <entry>T</entry>
-
-            <entry>exclusive or the value of t with u and assign to t</entry>
-          </row>
         </tbody>
       </tgroup>
     </table>
@@ -470,7 +379,7 @@
   <section>
     <title>Models</title>
 
-    <para><code>int, safe_signed_integer&lt;int&gt;,
+    <para><code>int, float, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></para>
   </section>
 </section>

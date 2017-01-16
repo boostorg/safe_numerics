@@ -2,7 +2,8 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.safe_literal">
-  <title>safe_literal&lt;Value&gt;, safe_unsigned_literal&lt;Value&gt;</title>
+  <title>safe_signed_literal&lt;Value, PP , EP&gt; and
+  safe_unsigned_literal&lt;Value, PP, EP&gt;</title>
 
   <?dbhtml stop-chunking?>
 
@@ -14,6 +15,34 @@
     generated. It is also useful when creating constexpr versions of safe
     types. It contains one immutable value known at compile time and hence can
     be used in any constexpr expression.</para>
+  </section>
+
+  <section>
+    <title>Associated Types</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <tbody>
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry>A type which specifies the result type of an expression
+            using safe types.</entry>
+          </row>
+
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry>A type containing members which are called when a correct
+            result cannot be returned</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
   </section>
 
   <section>
@@ -45,6 +74,27 @@
             linkend="safe_numerics.numeric">Integer</link></code></entry>
 
             <entry>value used to initialize the literal</entry>
+          </row>
+
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.promotion_policy.models.native">boost::numeric::native</link></para></entry>
+          </row>
+
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry><link linkend="safe_numerics.numeric"><link
+            linkend="safe_numerics.exception_policy">Exception
+            Policy&lt;EP&gt;</link></link></entry>
+
+            <entry><para>Default value is <link
+            linkend="safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</link></para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -84,8 +134,7 @@
 
     <programlisting>#include &lt;safe/numeric/safe_literal.hpp&gt;
 
-using namespace boost::numeric;
-constexpr safe&lt;int&gt; x = safe_literal&lt;42&gt;{};
+constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
 </programlisting>
   </section>
 </section>

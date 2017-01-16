@@ -22,7 +22,7 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
-#include "concept/numeric.hpp"
+#include "concept/integer.hpp"
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"
 
@@ -107,7 +107,7 @@ template<
     class T,
     T Min,
     T Max,
-    class P, // promotion polic
+    class P, // promotion policy
     class E  // exception policy
 >
 std::ostream & operator<<(
@@ -119,7 +119,7 @@ template<
     class T,
     T Min,
     T Max,
-    class P, // promotion polic
+    class P, // promotion policy
     class E  // exception policy
 >
 std::istream & operator>>(
@@ -127,7 +127,12 @@ std::istream & operator>>(
     safe_base<T, Min, Max, P, E> & t
 );
 
-template<typename T, T N>
+template<
+    typename T,
+    T N,
+    class P, // promotion policy
+    class E  // exception policy
+>
 class safe_literal_impl;
 
 /////////////////////////////////////////////////////////////////
@@ -172,8 +177,10 @@ class safe_base {
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
 
-    template<typename T, T N>
-    constexpr Stored validated_cast(const safe_literal_impl<T, N> & t) const;
+    template<typename T, T N, class P1, class E1>
+    constexpr Stored validated_cast(
+        const safe_literal_impl<T, N, P1, E1> & t
+    ) const;
 protected:
 
 public:

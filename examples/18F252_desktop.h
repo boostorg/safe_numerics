@@ -59,11 +59,11 @@ struct bit {
             m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_literal<0>){
+    bit & operator=(const boost::numeric::safe_unsigned_literal<0>){
         m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_literal<1>){
+    bit & operator=(const boost::numeric::safe_unsigned_literal<1>){
         m_word |= (1 << N);
         return *this;
     }
@@ -76,7 +76,7 @@ struct bit {
 // define a macro for literal types.  This may not be strictly necessary
 // but it provides more information at compile time to the safe numerics
 // library which may result in faster code.
-//#define literal(x) boost::numeric::safe_literal<x>{}
+//#define literal(x) boost::numeric::safe_unsigned_literal<x>{}
 #define literal(x) x
 #endif
 

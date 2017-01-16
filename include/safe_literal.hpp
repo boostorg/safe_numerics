@@ -12,43 +12,55 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cstdint> // for intmax
-
+#include <cstdint> // for intmax_t/uintmax_t
 #include "utility.hpp"
+#include "safe_base.hpp"
+#include "safe_base_operations.hpp"
+#include "native.hpp"
+#include "exception_policies.hpp"
 
 namespace boost {
 namespace numeric {
 
-template<typename T, T N>
+template<typename T, T N, class P, class E>
 class safe_literal_impl;
 
-template<typename T, T N>
-struct is_safe<safe_literal_impl<T, N> > : public std::false_type
+template<typename T, T N, class P, class E>
+struct is_safe<safe_literal_impl<T, N, P, E> > : public std::true_type
 {};
 
-template<typename T, T N>
-struct base_type<safe_literal_impl<T, N> > {
+template<typename T, T N, class P, class E>
+struct get_promotion_policy<safe_literal_impl<T, N, P, E> > {
+    using type = P;
+};
+
+template<typename T, T N, class P, class E>
+struct get_exception_policy<safe_literal_impl<T, N, P, E> > {
+    using type = E;
+};
+template<typename T, T N, class P, class E>
+struct base_type<safe_literal_impl<T, N, P, E> > {
     using type = T;
 };
 
-template<typename T, T N>
+template<typename T, T N, class P, class E>
 constexpr T base_value(
-    const safe_literal_impl<T, N>  & st
+    const safe_literal_impl<T, N, P, E>  & st
 ) {
     return N;
 }
 
-template<typename T, T N>
+template<typename T, T N, class P, class E>
 std::ostream & operator<<(
     std::ostream & os,
-    const safe_literal_impl<T, N> & t
-);
+    const safe_literal_impl<T, N, P, E> & t
+){
+    return os << N;
+}
 
-template<typename T, T N>
+template<typename T, T N, class P, class E>
 class safe_literal_impl {
-    T m_t;
-
-    friend std::ostream & operator<< <T, N> (
+    friend std::ostream & operator<< <T, N, P, E> (
         std::ostream & os,
         const safe_literal_impl & t
     );
@@ -58,9 +70,7 @@ public:
     ////////////////////////////////////////////////////////////
     // constructors
     // default constructor
-    constexpr safe_literal_impl() :
-        m_t(N)
-    {}
+    constexpr safe_literal_impl(){}
 
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
@@ -70,25 +80,37 @@ public:
     template<
         class R,
         typename std::enable_if<
-            !boost::numeric::is_safe<R>::value,
+            ! boost::numeric::is_safe<R>::value,
             int
         >::type = 0
     >
     constexpr operator R () const {
-        return m_t;
+        return N;
     }
 };
 
-template<std::intmax_t N>
-using safe_literal = safe_literal_impl<
+template<
+    std::intmax_t N,
+    class P = native,
+    class E = throw_exception
+>
+using safe_signed_literal = safe_literal_impl<
     typename boost::numeric::signed_stored_type<N, N>,
-    N
+    N,
+    P,
+    E
 >;
 
-template<std::uintmax_t N>
+template <
+    std::uintmax_t N,
+    class P = native,
+    class E = throw_exception
+>
 using safe_unsigned_literal = safe_literal_impl<
     typename boost::numeric::unsigned_stored_type<N, N>,
-    N
+    N,
+    P,
+    E
 >;
 
 } // numeric
