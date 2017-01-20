@@ -24,17 +24,17 @@
     integer types are handled. Here is a simplified version of the
     rules:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>promote any operand smaller than int to an int or unsigned
-        int.</p></li>
+<li class="listitem"><p>promote any operand smaller than <code class="computeroutput">int</code> to an
+        <code class="computeroutput">int</code> or <code class="computeroutput">unsigned int</code>.</p></li>
 <li class="listitem"><p>if the signed operand is larger than the signed one, the result
         will be signed, otherwise the result will be unsigned.</p></li>
 <li class="listitem"><p>expand the smaller operand to the size of the larger one</p></li>
 </ul></div>
-<p>So the result of the sum of two integer types will result in another
-    integer type. If the values are large, they will exceed the size that the
-    resulting integer type can hold. This is what we call "overflow". Standard
-    C/C++ does just truncates the result to fit into the result type - which
-    sometimes will make the result arithmetically incorrect.</p>
+<p>So the result of the sum of two integer types may result in another
+    integer type. If the values are large, the result can exceed the size that
+    the resulting integer type can hold. This is what we call "overflow".
+    Standard C/C++ does just truncates the result to fit into the result type
+    - which sometimes will make the result arithmetically incorrect.</p>
 <p>The complete signature for a safe integer type is:</p>
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span>
     <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span>                  <span class="comment">// underlying integer type</span>
@@ -52,7 +52,7 @@
     promotion policy</a>, we can change the rules of C++ arithmetic for
     safe types to something like the following:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>for any C++ numeric types, we know from
+<li class="listitem"><p>for any C++ numeric type, we know from
           <code class="computeroutput">std::numeric::limits</code> what the maximum and minimum
           values that a variable can be - this defines a closed
           interval.</p></li>
@@ -75,20 +75,20 @@
 </li>
 <li class="listitem"><p>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
-          <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
-          exception policy</code></a> enforces this guarantee</p></li>
+          <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.trap_exception">"trap_exception"
+          exception policy</a> enforces this guarantee</p></li>
 <li class="listitem"><p>Since there can be no errors, there is no need for
           <code class="computeroutput">try/catch</code> blocks.</p></li>
 <li class="listitem"><p>The only runtime error checking we need to do is when safe
-          values are initialized or assigned using smaller types. These are
-          infrequent occurrences which generally have little or no impact on
-          program running time. And many times, one can make small adjustments
-          in selecting the types in order to eliminate all runtime
-          penalties.</p></li>
+          values are initialized or assigned from values which are "too
+          large". These are infrequent occurrences which generally have little
+          or no impact on program running time. And many times, one can make
+          small adjustments in selecting the types in order to eliminate all
+          runtime penalties.</p></li>
 </ul></div>
-<p>In short, given a binary operation, we promote the types of the
-    operands to a larger so that the result type cannot overflow. This is a
-    fundamental departure from the C++ Standard behavior.</p>
+<p>In short, given a binary operation, we silently promote the types of
+    the operands to a wider result type so the result cannot overflow. This is
+    a fundamental departure from the C++ Standard behavior.</p>
 <p>If the interval of the result cannot be contained in the largest
     type that the machine can handle (usually 64 bits these days), the largest
     available integer type with the correct result sign is used. So even with
@@ -103,6 +103,7 @@
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
@@ -112,20 +113,13 @@
     <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
-<span class="keyword">auto</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span> <span class="comment">// note use of "auto"</span>
-    <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// note change to "auto"</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x + y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x - y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="keyword">return</span> <span class="identifier">z</span><span class="special">;</span>
-<span class="special">}</span>
-
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 82:\n"</span><span class="special">;</span>
     <span class="identifier">safe_t</span> <span class="identifier">x</span><span class="special">(</span><span class="identifier">INT_MAX</span><span class="special">)</span><span class="special">;</span>
     <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 
@@ -134,9 +128,7 @@
 <pre class="screen">example 82:
 x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
 y = &lt;int&gt;[-2147483648,2147483647] = 2
-z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
-(x - y) = &lt;long&gt;[-4294967295,4294967295] = 2147483645
-&lt;long&gt;[-4294967296,4294967294] = 2147483649
+z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 </pre>
 <p>The output uses a custom output manipulator for safe types to
     display the underlying type and its range as well as current value. Note

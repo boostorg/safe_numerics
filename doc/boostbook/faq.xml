@@ -92,10 +92,8 @@
         <para>By whom? Is leaving code which can produce incorrect results
         better? Note that the documentation contains references to various
         sources which recommend exactly this approach to mitigate the problems
-        created by this C/C++ behavior. See <link
-        linkend="seacord1"><citation>Seacord</citation></link>, <ulink
-        url="https://www.cert.org">Software Engineering Institute - Carnegie
-        Mellon University</ulink></para>
+        created by this C/C++ behavior. See
+        <citation>Seacord</citation></para>
       </answer>
     </qandaentry>
 
@@ -138,17 +136,16 @@
         <para>The guiding purpose of the library is to trap incorrect
         arithmetic behavior - not just undefined behavior. Although a savvy
         user may understand and keep present in his mind that an unsigned
-        integer is really modular type, the plain reading of an arithmetic
-        expression conveys the idea that all operands are plain integers. Also
-        in many cases, unsigned integers are used in cases where modular
+        integer is really a modular type, the plain reading of an arithmetic
+        expression conveys the idea that all operands are integers. Also in
+        many cases, unsigned integers are used in cases where modular
         arithmetic is not intended, such as array indexes. Finally, the
         modulus for such an integer would vary depending upon the machine
         architecture. For these reasons, in the context of this library, an
         unsigned integer is considered to a representation of a subset of
-        integers which is expected to provide correct integer results. Note
-        that this decision is consistent with INT30-C, “Ensure that unsigned
-        integer operations do not wrap” in the CERT C Secure Coding Standard
-        [Seacord 2008]..</para>
+        integers. Note that this decision is consistent with INT30-C, “Ensure
+        that unsigned integer operations do not wrap” in the CERT C Secure
+        Coding Standard <citation>Seacord</citation>.</para>
       </answer>
     </qandaentry>
 
@@ -158,7 +155,7 @@
       </question>
 
       <answer>
-        <para>THe original version of the library used C++11. Feedback from
+        <para>The original version of the library used C++11. Feedback from
         CPPCon, <ulink url="www.blincubator.com">Boost Library
         Incubator</ulink> and Boost developer's mailing list convinced me that
         I had to address the issue of run-time penalty much more seriously. I
@@ -172,7 +169,76 @@
         library currently relies very heavily on C++14 constexpr. I think that
         those who delve into the library will be very surprised at the extent
         that minor changes in user code can produce guaranteed correct integer
-        code with zero run-time penalty. </para>
+        code with zero run-time penalty.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>This is a C++ library - yet you refer to C/C++. Which is
+        it?</para>
+      </question>
+
+      <answer>
+        <para>C++ has evolved way beyond the original C language. But C++ it's
+        still (mostly) compatible with C. So most C programs can be compiled
+        with a C++ compiler. The problems of incorrect arithmetic afflict both
+        C and C++. Suppose we have a legacy C program designed for some
+        embedded system.<itemizedlist>
+            <listitem>
+              <para>Replace all <code>int</code> declarations with
+              <code>int16_t</code> and all <code>long</code> declarations with
+              <code>int32_t</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Create a file containing something like the following and
+              include it at the beginning of every source file.</para>
+
+              <programlisting>#ifdef TEST
+// using C++ on test platform
+#include  &lt;cstdint&gt;
+#include &lt;safe_integer.hpp&gt;
+#include &lt;cpp.hpp&gt;
+using pic16_promotion = boost::numeric::cpp&lt;
+    8,  // char
+    8,  // short
+    8,  // int
+    16, // long
+    32  // long long
+&gt;;
+// define safe types used desktop version of the program.
+template &lt;typename T&gt; // T is char, int, etc data type
+using safe_t = boost::numeric::safe&lt;
+    T,
+    pic16_promotion,
+    boost::numeric::throw_exception // use for compiling and running tests
+&gt;;
+typedef safe_t&lt;std::int16_t&gt; int16_t;
+typedef safe_t&lt;std::int32_t&gt; int32_t;
+#else
+/* using C on embedded platform */
+typedef int int16_t;
+typedef long int32_t;
+#endif
+
+</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>Compile tests on the desktop with a C++14 compiler and
+              with the macro TEST defined.</para>
+            </listitem>
+
+            <listitem>
+              <para>Run the tests and change code to address any thrown
+              exceptions.</para>
+            </listitem>
+          </itemizedlist></para>
+
+        <para>This example illustrates how this library, implemented with
+        C++14 can be useful in the development of correct code for programs
+        written in C. </para>
       </answer>
     </qandaentry>
   </qandaset>

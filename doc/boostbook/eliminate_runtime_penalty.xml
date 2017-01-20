@@ -6,12 +6,11 @@
 
   <para>Up until now, we've focused on detecting when incorrect results are
   produced and handling these occurrences either by throwing an exception or
-  invoking some designated function. We've achieved our goal of enforcing
-  arithmetically correct behavior - but at what cost. For many C++ programmers
-  any runtime penalty is unacceptable. Whether or not one agrees with this
-  trade off, its a fact that many C++ programmers feel this way. So the
-  question arises as to how we alter our program to minimize or eliminate any
-  runtime penalty.</para>
+  invoking some designated function. We've achieved our goal of detecting and
+  handling arithmetically incorrect behavior - but at what cost. It is a fact
+  that many C++ programmers will find this trade-off unacceptable. So the
+  question arises as to how we might minimize or eliminate this runtime
+  penalty.</para>
 
   <para>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
@@ -21,7 +20,7 @@
   <para><programlisting><xi:include href="../../examples/example81.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
   any expression which <emphasis><emphasis
-  role="bold">MIGHT</emphasis></emphasis> fail at runtime is flagged with a
+  role="bold">might</emphasis></emphasis> fail at runtime is flagged with a
   compile time error. There is no longer any need for <code>try/catch
   blocks</code>. Since this program does not compile, the <emphasis
   role="bold">library absolutely <emphasis role="bold">guarantees that no
@@ -38,8 +37,8 @@
 
     <itemizedlist>
       <listitem>
-        <para>promote any operand smaller than int to an int or unsigned
-        int.</para>
+        <para>promote any operand smaller than <code>int</code> to an
+        <code>int</code> or <code>unsigned int</code>.</para>
       </listitem>
 
       <listitem>
@@ -52,11 +51,11 @@
       </listitem>
     </itemizedlist>
 
-    <para>So the result of the sum of two integer types will result in another
-    integer type. If the values are large, they will exceed the size that the
-    resulting integer type can hold. This is what we call "overflow". Standard
-    C/C++ does just truncates the result to fit into the result type - which
-    sometimes will make the result arithmetically incorrect.</para>
+    <para>So the result of the sum of two integer types may result in another
+    integer type. If the values are large, the result can exceed the size that
+    the resulting integer type can hold. This is what we call "overflow".
+    Standard C/C++ does just truncates the result to fit into the result type
+    - which sometimes will make the result arithmetically incorrect.</para>
 
     <para>The complete signature for a safe integer type is:</para>
 
@@ -82,7 +81,7 @@ safe;
 
     <para><itemizedlist>
         <listitem>
-          <para>for any C++ numeric types, we know from
+          <para>for any C++ numeric type, we know from
           <code>std::numeric::limits</code> what the maximum and minimum
           values that a variable can be - this defines a closed
           interval.</para>
@@ -116,8 +115,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
           <link
-          linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
-          exception policy</code></link> enforces this guarantee</para>
+          linkend="safe_numerics.exception_policy.models.trap_exception">"trap_exception"
+          exception policy</link> enforces this guarantee</para>
         </listitem>
 
         <listitem>
@@ -127,17 +126,17 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
 
         <listitem>
           <para>The only runtime error checking we need to do is when safe
-          values are initialized or assigned using smaller types. These are
-          infrequent occurrences which generally have little or no impact on
-          program running time. And many times, one can make small adjustments
-          in selecting the types in order to eliminate all runtime
-          penalties.</para>
+          values are initialized or assigned from values which are "too
+          large". These are infrequent occurrences which generally have little
+          or no impact on program running time. And many times, one can make
+          small adjustments in selecting the types in order to eliminate all
+          runtime penalties.</para>
         </listitem>
       </itemizedlist></para>
 
-    <para>In short, given a binary operation, we promote the types of the
-    operands to a larger so that the result type cannot overflow. This is a
-    fundamental departure from the C++ Standard behavior.</para>
+    <para>In short, given a binary operation, we silently promote the types of
+    the operands to a wider result type so the result cannot overflow. This is
+    a fundamental departure from the C++ Standard behavior.</para>
 
     <para>If the interval of the result cannot be contained in the largest
     type that the machine can handle (usually 64 bits these days), the largest
@@ -161,9 +160,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     <para><screen>example 82:
 x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
 y = &lt;int&gt;[-2147483648,2147483647] = 2
-z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
-(x - y) = &lt;long&gt;[-4294967295,4294967295] = 2147483645
-&lt;long&gt;[-4294967296,4294967294] = 2147483649
+z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 </screen></para>
 
     <para>The output uses a custom output manipulator for safe types to
@@ -197,12 +194,12 @@ z = (x + y) = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     linkend="safe_numerics.safe_range">safe_range</link></title>
 
     <para>Instead of relying on automatic type promotion, we can just create
-    our own types in such a way that we known they won't overflow. In the
-    example below, we presume we happen to know that the values we want to
-    work with fall in the closed range of -24,82. So we "know" the program
-    will always result in a correct result. But since we trust no one, and
-    since the program could change and the expressions be replaced with other
-    ones, we'll still use the <link
+    our own types in such a way that we know they won't overflow. In the
+    example below, we presume we know that the values we want to work with
+    fall in the closed range of -24,82. So we "know" the program will always
+    result in a correct result. But since we trust no one, and since the
+    program could change and the expressions be replaced with other ones,
+    we'll still use the <link
     linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
     exception policy</code></link> to verify at compile time that what we
     "know" to be true is in fact true.</para>
@@ -243,9 +240,9 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
         attempt to fix the problem by using <code>constexpr</code> fails. The
         fix for this is to use <code>safe_literal</code> to initialize safe
         types. safe_literal is a special safe type which wraps a constant
-        defined at compile time. It cannot be assigned to, or changed. Subject
-        to this restriction, it can participate in safe arithmetic
-        operations.</para>
+        defined at compile time. It cannot be initialized, assigned to, or
+        changed. Subject to this restriction, it can participate in safe
+        arithmetic operations.</para>
       </listitem>
     </itemizedlist>
 
@@ -270,41 +267,38 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
 
     <para><itemizedlist>
         <listitem>
-          <para>As before we define a safe_t to reflect our view of legal
-          values for this program. This uses automatic type policy as well as
-          trapping exception policy to enforce elimination of runtime
-          penalties.</para>
+          <para>As before, we define a <code>safe_t</code> to reflect our view
+          of legal values for this program. This uses automatic type promotion
+          policy as well as trapping exception policy to enforce elimination
+          of runtime penalties.</para>
         </listitem>
 
         <listitem>
-          <para>In addition we define input_safe_t to be used when reading
-          variables from the program console. Clearly, these can only be
-          checked at runtime so they use the throw_exception policy.</para>
+          <para>The function f accepts only safe_t types so there is no need
+          to check the input values. This performs the functionality of
+          <emphasis><emphasis role="bold">programming by
+          contract</emphasis></emphasis> with no runtime cost. </para>
         </listitem>
 
         <listitem>
-          <para>When variables are read from the console and assigned to
-          safe_t variables x and y, they are checked for legal values. We need
-          at hoc code to do this, as these types are guaranteed to contain
-          legal values and will throw an exception when this guarantee is
-          violated. In other words, we automatically get checking of input
-          variables with no additional programming.</para>
+          <para>In addition we define <code>input_safe_t</code> to be used
+          when reading variables from the program console. Clearly, these can
+          only be checked at runtime so they use the throw_exception policy.
+          When variables are read from the console they are checked for legal
+          values. We need no hoc code to do this, as these types are
+          guaranteed to contain legal values and will throw an exception when
+          this guarantee is violated. In other words, we automatically get
+          checking of input variables with no additional programming.</para>
         </listitem>
 
         <listitem>
-          <para>On calling of the function f, the variables of type
-          input_safe_t are converted to variables of safe_t. This conversion
-          invokes any needed checking. In this case there is none necessary.
-          If checker were necessary, the usage of the trap_exception policy
-          for safe_t types would cause a compile time error.</para>
-        </listitem>
-
-        <listitem>
-          <para>The function f accepts only safe_t types so we have no need to
-          check the input types. This performs the functionality of
-          <emphasis>programming by contract</emphasis> with no runtime cost.
-          Due to our usage of trap_exception as a policy in safe_t, any
-          violation in our "contract" will result in a runtime error.</para>
+          <para>On calling of the function f with variables of type
+          input_safe_t are converted to variables of safe_t. In this
+          particular example, it can be determined at compile time that
+          construction of an instance of a safe_t from an input_safe_t can
+          never fail. Hence, no try/catch block is necessary. The usage of the
+          trap_exception policy for safe_t types would cause a compile time
+          error.</para>
         </listitem>
       </itemizedlist>Here is the output from the program when values 12 and 32
     are input from the console:</para>

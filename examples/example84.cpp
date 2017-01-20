@@ -35,17 +35,17 @@ auto f(const safe_t & x, const safe_t & y){
 
 int main(int argc, const char * argv[]){
     std::cout << "example 84:\n";
+    input_safe_t x, y;
     try{
-        input_safe_t x, y;
-        std::cin >> x >> y; // read varibles, throw exception
-        std::cout << "x" << safe_format(x) << std::endl;
-        std::cout << "y" << safe_format(y) << std::endl;
-        std::cout << safe_format(f(x, y)) << std::endl;
+        std::cin >> x >> y; // read varibles, maybe throw exception
     }
     catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return 1;
     }
+    std::cout << "x" << safe_format(x) << std::endl;
+    std::cout << "y" << safe_format(y) << std::endl;
+    std::cout << safe_format(f(x, y)) << std::endl;
     return 0;
 }

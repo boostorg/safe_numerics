@@ -22,7 +22,7 @@
 <a name="safe_numerics.exception_policies.no_exception_support"></a>no_exception_support&lt;O, U = O, R =O, D = O&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm165827478928"></a>Description</h5></div></div></div>
+<a name="idm301847884656"></a>Description</h5></div></div></div>
 <p>This exception policy can be used in an environment where one cannot
     or does not want to use exceptions.</p>
 <p>Parameters are pointers to static functions which are invoked for
@@ -33,7 +33,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm165827475584"></a>Template Parameters</h5></div></div></div>
+<a name="idm301847881312"></a>Template Parameters</h5></div></div></div>
 <p>Function objects to be invoked are specified for each error
     condition are specified via template parameters.</p>
 <div class="informaltable"><table class="table">
@@ -79,19 +79,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm165827455952"></a>Model of</h5></div></div></div>
+<a name="idm301847861680"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm165827454240"></a>Header</h5></div></div></div>
+<a name="idm301847859968"></a>Header</h5></div></div></div>
 <p><code class="computeroutput"><a href="../../include/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/exception_policy.hpp&gt;
     </code></a></code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm165827451680"></a>Example of use</h5></div></div></div>
+<a name="idm301847857408"></a>Example of use</h5></div></div></div>
 <p>[A code fragment involving the type.]</p>
 <pre class="programlisting"><span class="keyword">void</span> <span class="identifier">overflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>
 <span class="keyword">void</span> <span class="identifier">underflow</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span>

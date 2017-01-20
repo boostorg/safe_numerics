@@ -22,21 +22,20 @@
 <a name="safe_numerics.eliminate_runtime_penalty.2"></a>Using <a class="link" href="safe_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;">safe_range</a>
 </h3></div></div></div>
 <p>Instead of relying on automatic type promotion, we can just create
-    our own types in such a way that we known they won't overflow. In the
-    example below, we presume we happen to know that the values we want to
-    work with fall in the closed range of -24,82. So we "know" the program
-    will always result in a correct result. But since we trust no one, and
-    since the program could change and the expressions be replaced with other
-    ones, we'll still use the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
+    our own types in such a way that we know they won't overflow. In the
+    example below, we presume we know that the values we want to work with
+    fall in the closed range of -24,82. So we "know" the program will always
+    result in a correct result. But since we trust no one, and since the
+    program could change and the expressions be replaced with other ones,
+    we'll still use the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
     exception policy</code></a> to verify at compile time that what we
     "know" to be true is in fact true.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_literal.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/native.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
-
+<span class="preprocessor">#include</span> <span class="string">"../include/native.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
 <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span> <span class="comment">// for safe_literal</span>
@@ -52,23 +51,14 @@
     <span class="identifier">trap_exception</span>  <span class="comment">// catch problems at compile time</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
-<span class="keyword">auto</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span>    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
-    <span class="comment">//safe_t z = x + y; // depending on values of x &amp; y COULD fail</span>
-    <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>    <span class="comment">// due to C++ type promotion rules,</span>
-                       <span class="comment">// we know that this cannot fail</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x + y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"(x - y) = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">-</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="keyword">return</span> <span class="identifier">z</span><span class="special">;</span>
-<span class="special">}</span>
-
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 83:\n"</span><span class="special">;</span>
-    <span class="comment">// constexpr const safe_t z = 3; // fails to compile</span>
-    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">x</span><span class="special">(</span><span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span><span class="special">{</span><span class="special">}</span><span class="special">)</span><span class="special">;</span>
-    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span><span class="special">(</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// to avoid runtime penalty</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
@@ -96,9 +86,9 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
         attempt to fix the problem by using <code class="computeroutput">constexpr</code> fails. The
         fix for this is to use <code class="computeroutput">safe_literal</code> to initialize safe
         types. safe_literal is a special safe type which wraps a constant
-        defined at compile time. It cannot be assigned to, or changed. Subject
-        to this restriction, it can participate in safe arithmetic
-        operations.</p></li>
+        defined at compile time. It cannot be initialized, assigned to, or
+        changed. Subject to this restriction, it can participate in safe
+        arithmetic operations.</p></li>
 </ul></div>
 <p>We've used simple expressions in this illustration. But since binary
     operations on safe types result in other safe types, expressions can be

@@ -32,31 +32,6 @@
 
         <tbody>
           <row>
-            <entry><code>C</code></entry>
-
-            <entry>checked_result&lt;R&gt;</entry>
-          </row>
-
-          <row>
-            <entry><code>c</code></entry>
-
-            <entry>an instance of checked_result&lt;R&gt;</entry>
-          </row>
-
-          <row>
-            <entry><code>t</code></entry>
-
-            <entry>an instance of checked_result&lt;T&gt; for some type T not
-            necessarily the same as R</entry>
-          </row>
-
-          <row>
-            <entry><code>r</code></entry>
-
-            <entry>An object of type R</entry>
-          </row>
-
-          <row>
             <entry><code>EP</code></entry>
 
             <entry><link
@@ -83,13 +58,6 @@
 
   <section>
     <title>Valid Expressions</title>
-
-    <para>In addition to the expressions defined in <ulink
-    url="http://www.sgi.com/tech/stl/RandomAccessContainer.html">Random Access
-    Container</ulink> and <ulink
-    url="http://www.sgi.com/tech/stl/BackInsertionSequence.html">Back
-    Insertion Sequence</ulink> the following expressions must be valid for any
-    object <code>v</code> of type <code>vector&lt;T&gt;</code> .</para>
 
     <para><informaltable>
         <tgroup cols="2">
@@ -134,8 +102,6 @@
           </tbody>
         </tgroup>
       </informaltable></para>
-
-    <para/>
   </section>
 
   <section>
@@ -156,12 +122,9 @@ dispatch&lt;EP&gt;(const exception_type &amp; e, const char * msg);</programlist
     <section>
       <title>Example of use</title>
 
-      <programlisting>#include &lt;vector&gt;
+      <programlisting>#include "exception_policy.hpp"
 
-vector&lt;int&gt; V;
-V.insert(V.begin(), 3);
-assert(V.size() == 1 &amp;&amp; V.capacity() &gt;= 1 &amp;&amp; V[0] == 3);
-</programlisting>
+dispatch(overflow_error, "operation resulted in overflow");</programlisting>
     </section>
   </section>
 

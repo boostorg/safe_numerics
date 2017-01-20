@@ -61,45 +61,45 @@
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 84:\n"</span><span class="special">;</span>
+    <span class="identifier">input_safe_t</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="identifier">input_safe_t</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">x</span> <span class="special">&gt;&gt;</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// read varibles, throw exception</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">x</span> <span class="special">&gt;&gt;</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// read varibles, maybe throw exception</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="comment">// none of the above should trap. Mark failure if they do</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="keyword">return</span> <span class="number">1</span><span class="special">;</span>
     <span class="special">}</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y"</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>As before we define a safe_t to reflect our view of legal
-          values for this program. This uses automatic type policy as well as
-          trapping exception policy to enforce elimination of runtime
-          penalties.</p></li>
-<li class="listitem"><p>In addition we define input_safe_t to be used when reading
-          variables from the program console. Clearly, these can only be
-          checked at runtime so they use the throw_exception policy.</p></li>
-<li class="listitem"><p>When variables are read from the console and assigned to
-          safe_t variables x and y, they are checked for legal values. We need
-          at hoc code to do this, as these types are guaranteed to contain
-          legal values and will throw an exception when this guarantee is
-          violated. In other words, we automatically get checking of input
-          variables with no additional programming.</p></li>
-<li class="listitem"><p>On calling of the function f, the variables of type
-          input_safe_t are converted to variables of safe_t. This conversion
-          invokes any needed checking. In this case there is none necessary.
-          If checker were necessary, the usage of the trap_exception policy
-          for safe_t types would cause a compile time error.</p></li>
-<li class="listitem"><p>The function f accepts only safe_t types so we have no need to
-          check the input types. This performs the functionality of
-          <span class="emphasis"><em>programming by contract</em></span> with no runtime cost.
-          Due to our usage of trap_exception as a policy in safe_t, any
-          violation in our "contract" will result in a runtime error.</p></li>
+<li class="listitem"><p>As before, we define a <code class="computeroutput">safe_t</code> to reflect our view
+          of legal values for this program. This uses automatic type promotion
+          policy as well as trapping exception policy to enforce elimination
+          of runtime penalties.</p></li>
+<li class="listitem"><p>The function f accepts only safe_t types so there is no need
+          to check the input values. This performs the functionality of
+          <span class="emphasis"><em><span class="bold"><strong>programming by
+          contract</strong></span></em></span> with no runtime cost. </p></li>
+<li class="listitem"><p>In addition we define <code class="computeroutput">input_safe_t</code> to be used
+          when reading variables from the program console. Clearly, these can
+          only be checked at runtime so they use the throw_exception policy.
+          When variables are read from the console they are checked for legal
+          values. We need no hoc code to do this, as these types are
+          guaranteed to contain legal values and will throw an exception when
+          this guarantee is violated. In other words, we automatically get
+          checking of input variables with no additional programming.</p></li>
+<li class="listitem"><p>On calling of the function f with variables of type
+          input_safe_t are converted to variables of safe_t. In this
+          particular example, it can be determined at compile time that
+          construction of an instance of a safe_t from an input_safe_t can
+          never fail. Hence, no try/catch block is necessary. The usage of the
+          trap_exception policy for safe_t types would cause a compile time
+          error.</p></li>
 </ul></div>
 <p>Here is the output from the program when values 12 and 32
     are input from the console:</p>

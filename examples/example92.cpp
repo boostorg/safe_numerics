@@ -12,7 +12,6 @@
 #include <boost/integer.hpp>
 
 #include "../include/cpp.hpp"
-#include "../include/automatic.hpp"
 #include "../include/exception.hpp"
 #include "../include/safe_integer.hpp"
 #include "../include/safe_range.hpp"

@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="exception_safety.html" title="Exception Safety">
-<link rel="next" href="exception_type.html" title="exception_type">
+<link rel="next" href="interval.html" title="interval&lt;typename R&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,26 +15,60 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_type.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="interval.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.library_implementation"></a>Library Implementation</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception_type.html">exception_type</a></span></dt>
-<dt><span class="section"><a href="checked_result.html">checked_result&lt;typename R&gt;</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html">Checked Integer Arithmetic</a></span></dt>
 <dt><span class="section"><a href="interval.html">interval&lt;typename R&gt;</a></span></dt>
+<dt><span class="section"><a href="checked_result.html">checked_result&lt;typename R&gt;</a></span></dt>
+<dt><span class="section"><a href="exception_type.html">exception_type</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html">Checked Integer Arithmetic</a></span></dt>
 </dl></div>
 <p>This library should compile and run correctly on any conforming
     C++14 compiler.</p>
 <p>The Safe Numerics library is implemented in terms of some more
     fundamental software components described here. It is not necessary to
-    know about these components to use the library. The information has been
+    know about these components to use the library. This information has been
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand it's limitations.
     These components are also interesting in their own right. For all these
-    reasons, they are documented here.</p>
+    reasons, they are documented here. In general terms, the library works in
+    the following manner:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>All unary/binary expressions where one of the operands is a
+        "safe" type are Overloaded. These overloads are declared and defined
+        in the header file "safe_integer.hpp". SFINAE - "Substitution Failure
+        Is Not An Error and <code class="computeroutput">std::enable_if</code> are key features of
+        C++ used to define these overloads in a correct manner.</p></li>
+<li class="listitem">
+<p>Each overloaded operation implements the following:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
+<li class="listitem"><p>Retrieve range of values for each operand of type T from
+              <code class="computeroutput">std::numeric_limits&lt;T&gt;::min()</code> and
+              <code class="computeroutput">std::numeric_limits&lt;T&gt;::max()</code>.</p></li>
+<li class="listitem"><p>Given the ranges of the operands, determine the range of
+              the result of the operation using interval arithmetic. This is
+              implemented in the "interval.hpp" header file using constexpr
+              facility of C++14.</p></li>
+<li class="listitem"><p>if the range of the result type includes the range of the
+              result of the operation, no run time checking of the result is
+              necessary. So the operation reduces to the original built-in
+              C/C++ operation.</p></li>
+<li class="listitem"><p>Otherwise, the operation is implemented as a "checked
+              integer operation" at run time. This operation returns a variant
+              which will contain either a correct result or an exception enum
+              indicating why a correct result could not be obtained. The
+              variant object is implemented in the header file
+              "checked_result.hpp" and the checked operations are implemented
+              in "checked.hpp".</p></li>
+<li class="listitem"><p>if a valid result has been obtained, it is passed to the
+              caller.</p></li>
+<li class="listitem"><p>Otherwise, an exception is invoked.</p></li>
+</ul></div>
+</li>
+</ul></div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -44,7 +78,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_type.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="interval.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

@@ -2,7 +2,6 @@
 #include <cstdint>
 
 #include "../include/safe_integer.hpp"
-#include "../include/cpp.hpp"
 
 using namespace std;
 using namespace boost::numeric;

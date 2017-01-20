@@ -4,12 +4,12 @@
 <section id="safe_numerics.notes">
   <title>Notes</title>
 
-  <para>This library is really a re-implementation of the facilities provided
-  by <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
-  Library</ulink> using <ulink url="www.boost.org">Boost and C++14</ulink>. I
-  found this library very well done in every way. My main usage was to run
-  unit tests for my embedded systems projects on my PC. Still, I had a few
-  issues.</para>
+  <para>This library is a re-implementation of the facilities provided by
+  <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
+  Library</ulink> using C++14 and the <ulink url="www.boost.org">Boost
+  Libraries</ulink>. I found this library very well done in every way. My main
+  usage was to run unit tests for my embedded systems projects on my PC.
+  Still, I had a few issues.</para>
 
   <itemizedlist>
     <listitem>
