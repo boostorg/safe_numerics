@@ -8,10 +8,10 @@
 
 using namespace boost::numeric; // for safe_literal
 
-// create a type for holding small integers.  We "know" that C++ type
-// promotion rules will work such that operations on this type
-// will never overflow. If change the program to break this, the
-// usage of the trap_exception promotion policy will prevent compilation.
+// create a type for holding small integers.  We "know" that C++
+// type promotion rules will work such that addition will never
+// overflow. If we change the program to break this, the usage
+// of the trap_exception promotion policy will prevent compilation.
 using safe_t = safe_signed_range<
     -24,
     82,
@@ -21,8 +21,13 @@ using safe_t = safe_signed_range<
 
 int main(int argc, const char * argv[]){
     std::cout << "example 83:\n";
-    const safe_signed_literal<2> x;
-    const safe_signed_literal<2> y;
+    // the following would result in a compile time error
+    // since the sum of x and y wouldn't be in the legal
+    // range for z.
+    // const safe_signed_literal<20> x;
+    const safe_signed_literal<10> x;    // no problem
+    const safe_signed_literal<67> y;
+
     const safe_t z = x + y;
     std::cout << "x = " << safe_format(x) << std::endl;
     std::cout << "y = " << safe_format(y) << std::endl;

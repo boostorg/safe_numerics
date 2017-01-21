@@ -14,6 +14,7 @@
 #include "../include/safe_common.hpp"
 
 namespace {
+
 // create an output manipulator which prints variable type and limits
 // as well as value
 template<typename T>

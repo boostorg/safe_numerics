@@ -231,7 +231,7 @@
       </listitem>
 
       <listitem>
-        <para>Although care was taking to make the library portable, it's
+        <para>Although care has been taken to make the library portable, it's
         likely that at least some parts of the implementation - particularly
         <code>checked</code> arithmetic - depend upon two's complement
         representation of integers. Hence the library is probably not

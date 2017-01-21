@@ -1446,7 +1446,7 @@ std::ostream & operator<<(
     std::ostream & os,
     const safe_base<T, Min, Max, P, E> & t
 ){
-    os << (
+    return os << (
         (std::is_same<T, signed char>::value
         || std::is_same<T, unsigned char>::value
         ) ?
@@ -1454,7 +1454,6 @@ std::ostream & operator<<(
         :
             t.m_t
     );
-    return os;
 }
 
 namespace {

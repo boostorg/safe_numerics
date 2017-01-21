@@ -147,8 +147,8 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type.</para></entry>
+              <entry><para>invoke safe C++ operator <code>prefix_op</code> and
+              return another SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -156,8 +156,8 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator op and return another
-              SafeNumeric type.</para></entry>
+              <entry><para>invoke safe C++ operator <code>postfix_op</code>
+              and return another SafeNumeric type.</para></entry>
             </row>
 
             <row>

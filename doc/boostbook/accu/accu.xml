@@ -28,7 +28,7 @@
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
   <section id="safe_numerics.library_implementation">
-    <title>Library Implementation</title>
+    <title>Library Internals</title>
 
     <para>This library should compile and run correctly on any conforming
     C++14 compiler.</para>

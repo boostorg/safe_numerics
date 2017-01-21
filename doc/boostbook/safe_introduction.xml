@@ -44,10 +44,10 @@
     <para>It is incumbent up the C/C++ programmer to guarantee that this
     behavior does not result in incorrect or unexpected operation of the
     program. There are no language facilities which implement such a
-    guarantee. A programmer needs to each expression individually to know that
-    his program will not return an invalid result.There are a number of ways
-    to do this. See <citation>INT32-C</citation> seems to recommend the
-    following approach:</para>
+    guarantee. A programmer needs to examine each expression individually to
+    know that his program will not return an invalid result.There are a number
+    of ways to do this. See <citation>INT32-C</citation> seems to recommend
+    the following approach:</para>
 
     <programlisting>int f(int x, int y){
   if (((y &gt; 0) &amp;&amp; (x &gt; (INT_MAX - y))) 
@@ -130,7 +130,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   </section>
 
   <section id="safe_numerics.introduction.implementation">
-    <title>Implementation</title>
+    <title>How It Works</title>
 
     <para>The library implements special versions of int, unsigned, etc. named
     <code>safe&lt;int&gt;</code>, <code>safe&lt;unsigned int&gt;</code> etc.
@@ -212,9 +212,9 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
         <listitem>
           <para>Enforce of other program requirements using ranged integer
-          types. The library includes types safe_range(Min, Max) and
-          safe_literal(N). These types can be used to improve program
-          correctness and performance.</para>
+          types. The library includes types <code>safe_range(Min, Max)</code>
+          and <code>safe_literal(N)</code>. These types can be used to improve
+          program correctness and performance.</para>
         </listitem>
       </itemizedlist></para>
   </section>

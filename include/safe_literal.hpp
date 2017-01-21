@@ -55,7 +55,14 @@ std::ostream & operator<<(
     std::ostream & os,
     const safe_literal_impl<T, N, P, E> & t
 ){
-    return os << N;
+    return os << (
+        (std::is_same<T, signed char>::value
+        || std::is_same<T, unsigned char>::value
+        ) ?
+            static_cast<int>(N)
+        :
+            N
+    );
 }
 
 template<typename T, T N, class P, class E>

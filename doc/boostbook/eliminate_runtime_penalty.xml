@@ -53,9 +53,14 @@
 
     <para>So the result of the sum of two integer types may result in another
     integer type. If the values are large, the result can exceed the size that
-    the resulting integer type can hold. This is what we call "overflow".
-    Standard C/C++ does just truncates the result to fit into the result type
-    - which sometimes will make the result arithmetically incorrect.</para>
+    the resulting integer type can hold. This is what we call "overflow". The
+    C/C++ standard characterises this as undefined behavior and leaves to
+    compiler implementors the decision as to how such a situation will be
+    handled. Usually, this means just truncating the result to fit into the
+    result type - which sometimes will make the result arithmetically
+    incorrect. However, depending on the compiler, compile time switch
+    settings, the such case may result in some sort of run time
+    exception.</para>
 
     <para>The complete signature for a safe integer type is:</para>
 
@@ -82,9 +87,8 @@ safe;
     <para><itemizedlist>
         <listitem>
           <para>for any C++ numeric type, we know from
-          <code>std::numeric::limits</code> what the maximum and minimum
-          values that a variable can be - this defines a closed
-          interval.</para>
+          <code>std::numeric_limits</code> what the maximum and minimum values
+          that a variable can be - this defines a closed interval.</para>
         </listitem>
 
         <listitem>
@@ -196,10 +200,10 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     <para>Instead of relying on automatic type promotion, we can just create
     our own types in such a way that we know they won't overflow. In the
     example below, we presume we know that the values we want to work with
-    fall in the closed range of -24,82. So we "know" the program will always
-    result in a correct result. But since we trust no one, and since the
-    program could change and the expressions be replaced with other ones,
-    we'll still use the <link
+    fall in the range [-24,82]. So we "know" the program will always result in
+    a correct result. But since we trust no one, and since the program could
+    change and the expressions be replaced with other ones, we'll still use
+    the <link
     linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
     exception policy</code></link> to verify at compile time that what we
     "know" to be true is in fact true.</para>
@@ -207,51 +211,39 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     <programlisting><xi:include href="../../examples/example83.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
-    <para>which produces the following output.</para>
+    <para><itemizedlist>
+        <listitem>
+          <para><code><code>safe_signed_range</code></code> defines a type
+          which is limited to the indicated range. Out of range assignments
+          will be detected at compile time if possible (as in this case) or at
+          run time if necessary.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>safe_literal</code> defines a constant with a specific
+          value. Defining constants in this way enables the library to
+          correctly anticipate the range of the results of arithmetic
+          expressions.</para>
+        </listitem>
+
+        <listitem>
+          <para>The usage of "trap exception" will mean that any assignment to
+          z which could be outside the legal range will result in a compile
+          time error.</para>
+        </listitem>
+
+        <listitem>
+          <para>So if this program compiles, it's guaranteed to return a valid
+          result.</para>
+        </listitem>
+      </itemizedlist>This program produces the following run time
+    output.</para>
 
     <screen>example 83:
-x = &lt;signed char&gt;[-24,82] = 2
-y = &lt;signed char&gt;[-24,82] = 2
-z = (x + y) = &lt;int&gt;[-48,164] = 4
-(x - y) = &lt;int&gt;[-106,106] = 0
-&lt;int&gt;[-48,164] = 4</screen>
-
-    <itemizedlist>
-      <listitem>
-        <para>In this example, standard C++ type promotion rules are used.
-        These promote operands to int before invoking the addition operation.
-        So addition operation itself won't overflow. The result of addition is
-        another unnamed safe type guaranteed to be able to hold the some of
-        any pair of safe types. In this example the result is a safe type
-        based on the C++ built-in type of <code>short</code>.</para>
-      </listitem>
-
-      <listitem>
-        <para>So when we try to assign the result to z we could get an error.
-        This is because our custom <code>safe_t</code> cannot be guaranteed to
-        hold the some of all possible pairs of <code>safe_t</code> instances.
-        We fix the by using an "auto" for the sum.</para>
-      </listitem>
-
-      <listitem>
-        <para>We now have a problem when we try to initialize our
-        <code>safe_t</code> variable with an initial literal value. This
-        operation could overflow at runtime. To our disappointment, our
-        attempt to fix the problem by using <code>constexpr</code> fails. The
-        fix for this is to use <code>safe_literal</code> to initialize safe
-        types. safe_literal is a special safe type which wraps a constant
-        defined at compile time. It cannot be initialized, assigned to, or
-        changed. Subject to this restriction, it can participate in safe
-        arithmetic operations.</para>
-      </listitem>
-    </itemizedlist>
-
-    <para>We've used simple expressions in this illustration. But since binary
-    operations on safe types result in other safe types, expressions can be
-    made arbitrarily elaborate - just as they can be with intrinsic integer
-    types. That is, safe integer types are drop in replacements for intrinsic
-    integer types. We are guaranteed never to produce an incorrect result
-    regardless of how elaborate the expression might be.</para>
+x = &lt;signed char&gt;[10,10] = 10
+y = &lt;signed char&gt;[67,67] = 67
+z = &lt;signed char&gt;[-24,82] = 77
+</screen>
   </section>
 
   <section id="safe_numerics.eliminate_runtime_penalty.3">
@@ -277,7 +269,7 @@ z = (x + y) = &lt;int&gt;[-48,164] = 4
           <para>The function f accepts only safe_t types so there is no need
           to check the input values. This performs the functionality of
           <emphasis><emphasis role="bold">programming by
-          contract</emphasis></emphasis> with no runtime cost. </para>
+          contract</emphasis></emphasis> with no runtime cost.</para>
         </listitem>
 
         <listitem>
