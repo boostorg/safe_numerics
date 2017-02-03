@@ -329,7 +329,6 @@ int main(int argc, const char * argv[]){
     return 0;
 }
 
-#endif
 
 // test safe_literal.
 // can't make this an offcial test yet as we need implement
@@ -362,4 +361,34 @@ int main(int argc, const char * argv[]){
     */
     return 0;
 }
+
+#endif
+
+auto val()
+{
+  return -0xFFFFFFFF;
+}
+
+#include <stdexcept>
+#include <iostream>
+#include "../include/safe_integer.hpp"
+#include "../include/safe_literal.hpp"
+
+auto val1()
+{
+    constexpr boost::numeric::safe<unsigned int> x = boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+    return -x;
+}
+
+auto val2()
+{
+    return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+}
+
+int main(){
+    std::cout << val() << std::endl;
+    std::cout << val1() << std::endl;
+    std::cout << val2() << std::endl;
+}
+
 

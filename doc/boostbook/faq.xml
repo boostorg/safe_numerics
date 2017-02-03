@@ -16,9 +16,9 @@
       <answer>
         <para>This surprised me when it was first raised. But some of the
         feedback I've received makes me thing that it's a widely held view.
-        The best answer is to consider the cases in the section <link
+        The best answer is to consider the examples in the <link
         linkend="safe_numerics.tutorial">Tutorials and Motivating
-        Examples</link>.</para>
+        Examples</link> section of the library documentation.</para>
       </answer>
     </qandaentry>
 
@@ -33,9 +33,7 @@
         counterparts should result in a program that will compile and run as
         expected. In some cases compile time errors will occur and adjustments
         to the source code will be required. Typically these will result in
-        code which is more correct. See <link
-        linkend="safe_numerics.drop_in_replacement">drop-in
-        replacement</link>.</para>
+        code which is more correct.</para>
       </answer>
     </qandaentry>
 
@@ -61,7 +59,7 @@
         similar libraries. Maybe a better word might have been "correct" but
         that would raise similar concerns. I'm not inclined to change this.
         I've tried to make it clear in the documentation what the problem that
-        the library addressed is</para>
+        the library addressed is.</para>
       </answer>
     </qandaentry>
 
@@ -75,10 +73,10 @@
         <para>Actually, I believe that this can/should be applied to any type
         T which satisfies the type requirement "Numeric" type as defined in
         the documentation. So there should be specializations
-        safe&lt;float&gt; et. al. and eventually safe&lt;fixed_decimal&gt;
-        etc. But the current version of the library only addresses integer
-        types. Hopefully the library will evolve to match the promise implied
-        by its name.</para>
+        <code>safe&lt;float&gt;</code> and related types as well as new types
+        like <code>safe&lt;fixed_decimal&gt;</code> etc. But the current
+        version of the library only addresses integer types. Hopefully the
+        library will evolve to match the promise implied by its name.</para>
       </answer>
     </qandaentry>
 
@@ -113,22 +111,23 @@
 
     <qandaentry>
       <question>
-        <para>Why do you specialize numeric_limits for "safe" types? Do you
-        need it?</para>
+        <para>Why do you specialize <code>numeric_limits</code> for "safe"
+        types? Do you need it?</para>
       </question>
 
       <answer>
-        <para>safe&lt;T&gt; behaves like a "number" just as int does. It has
-        max, min, etc Any code which uses numeric limits to test a type T
-        should works with safe&lt;T&gt;. safe&lt;T&gt; is a drop-in
-        replacement for T so it has to implement all the operations.</para>
+        <para><code>safe&lt;T&gt;</code> behaves like a "number" just as int
+        does. It has max, min, etc Any code which uses numeric limits to test
+        a type <code>T</code> should works with <code>safe&lt;T&gt;</code>.
+        <code>safe&lt;T&gt;</code> is a drop-in replacement for <code>T</code>
+        so it has to implement all the operations.</para>
       </answer>
     </qandaentry>
 
     <qandaentry>
       <question>
         <para>According to C/C++ standards, unsigned integers cannot overflow
-        - they are modular integers which "warp around". Yet the safe numerics
+        - they are modular integers which "wrap around". Yet the safe numerics
         library detects and traps this behavior as errors. Why is that?</para>
       </question>
 
@@ -143,9 +142,10 @@
         modulus for such an integer would vary depending upon the machine
         architecture. For these reasons, in the context of this library, an
         unsigned integer is considered to a representation of a subset of
-        integers. Note that this decision is consistent with INT30-C, “Ensure
-        that unsigned integer operations do not wrap” in the CERT C Secure
-        Coding Standard <citation>Seacord</citation>.</para>
+        integers. Note that this decision is consistent with
+        <citation>INT30-C</citation>, “Ensure that unsigned integer operations
+        do not wrap” in the CERT C Secure Coding Standard
+        <citation>Seacord</citation>.</para>
       </answer>
     </qandaentry>
 
@@ -156,7 +156,7 @@
 
       <answer>
         <para>The original version of the library used C++11. Feedback from
-        CPPCon, <ulink url="www.blincubator.com">Boost Library
+        CPPCon, <ulink url="http://www.blincubator.com">Boost Library
         Incubator</ulink> and Boost developer's mailing list convinced me that
         I had to address the issue of run-time penalty much more seriously. I
         resolved to eliminate or minimize it. This led to more elaborate
@@ -238,7 +238,7 @@ typedef long int32_t;
 
         <para>This example illustrates how this library, implemented with
         C++14 can be useful in the development of correct code for programs
-        written in C. </para>
+        written in C.</para>
       </answer>
     </qandaentry>
   </qandaset>

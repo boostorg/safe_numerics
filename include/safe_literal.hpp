@@ -13,6 +13,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <cstdint> // for intmax_t/uintmax_t
+#include <boost/mpl/if.hpp>
+
 #include "utility.hpp"
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"
@@ -94,6 +96,18 @@ public:
     constexpr operator R () const {
         return N;
     }
+    // return a safe type. This guarantees that result will
+    // be checked upon return
+    constexpr safe_literal_impl<decltype(-N), -N, P, E> operator-() const { // unary minus
+        return 0 - N; // this will check for overflow
+    }
+    constexpr safe_literal_impl<decltype(~N), -N, P, E> operator~() const {
+        static_assert(
+            std::numeric_limits<T>::is_signed,
+            "Bitwise inversion of signed value is an error"
+        );
+        return ~N;
+    }
 };
 
 template<
@@ -108,7 +122,7 @@ using safe_signed_literal = safe_literal_impl<
     E
 >;
 
-template <
+template<
     std::uintmax_t N,
     class P = native,
     class E = throw_exception
@@ -119,6 +133,13 @@ using safe_unsigned_literal = safe_literal_impl<
     P,
     E
 >;
+
+#define safe_literal(n)                               \
+    boost::mpl::if_c<                                 \
+        std::numeric_limits<decltype<n>>::is_signed>. \
+        safe_unsigned_literal<n, void, void>,               \
+        safe_signed_literal<n, void, void>                  \
+    >::type
 
 } // numeric
 } // boost

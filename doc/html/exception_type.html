@@ -21,22 +21,22 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception_type"></a>exception_type</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception_type.html#idm301847533184">Description</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm301847531312">Notation</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm301847519088">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm301847507152">dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
+<dt><span class="section"><a href="exception_type.html#idm50878094064">Description</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm50878092192">Notation</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm50878079968">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm50878068032">dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
     msg)</a></span></dt>
-<dt><span class="section"><a href="exception_type.html#idm301847485136">See Also</a></span></dt>
+<dt><span class="section"><a href="exception_type.html#idm50878046016">See Also</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301847533184"></a>Description</h4></div></div></div>
+<a name="idm50878094064"></a>Description</h4></div></div></div>
 <p>This <code class="computeroutput">enum</code> holds the information regarding a failed
     operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301847531312"></a>Notation</h4></div></div></div>
+<a name="idm50878092192"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -69,7 +69,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301847519088"></a>Valid Expressions</h4></div></div></div>
+<a name="idm50878079968"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -102,20 +102,20 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301847507152"></a>dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
+<a name="idm50878068032"></a>dispatch&lt;EP&gt;(const exception_type &amp; e, const char *
     msg)</h4></div></div></div>
 <p>This function is used to invoke the exception handling policy for a
     particular exception_type.</p>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm301847505920"></a>Synopsis</h5></div></div></div>
+<a name="idm50878066800"></a>Synopsis</h5></div></div></div>
 <pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">EP</span><span class="special">&gt;</span>
 <span class="keyword">constexpr</span> <span class="keyword">void</span>
 <span class="identifier">dispatch</span><span class="special">&lt;</span><span class="identifier">EP</span><span class="special">&gt;</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">exception_type</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm301847491488"></a>Example of use</h5></div></div></div>
+<a name="idm50878052368"></a>Example of use</h5></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"exception_policy.hpp"</span>
 
 <span class="identifier">dispatch</span><span class="special">(</span><span class="identifier">overflow_error</span><span class="special">,</span> <span class="string">"operation resulted in overflow"</span><span class="special">)</span><span class="special">;</span></pre>
@@ -123,7 +123,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301847485136"></a>See Also</h4></div></div></div>
+<a name="idm50878046016"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 </div>

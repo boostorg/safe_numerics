@@ -12,10 +12,10 @@
 
 <!--
 Make all hyperlinks blue colored:
--->
 <xsl:attribute-set name="xref.properties">
   <xsl:attribute name="color">blue</xsl:attribute>
 </xsl:attribute-set>
+-->
 
 <!--
 Put a box around admonishments and keep them together:
@@ -110,6 +110,7 @@ General default options go here:
 * Set default image paths to pull down direct from SVN: individual Jamfiles can override this
   and pass an absolute path to local versions of the images, but we can't get that here, so
   we'll use SVN instead so that most things "just work".
+* don't spell out url's
 -->
 <xsl:param name="body.start.indent">0pt</xsl:param>
 <xsl:param name="admon.graphics">1</xsl:param>
@@ -123,6 +124,7 @@ General default options go here:
 <xsl:param name="section.autolabel" select="1"></xsl:param>
 <xsl:param name="section.autolabel.max.depth">2</xsl:param>
 <xsl:param name="alignment">left</xsl:param>
+<xsl:param name="ulink.show">0</xsl:param>
 
 <xsl:param name="admon.graphics.path">http://svn.boost.org/svn/boost/trunk/doc/src/images/</xsl:param>
 <xsl:param name="callout.graphics.path">http://svn.boost.org/svn/boost/trunk/doc/src/images/callouts/</xsl:param>

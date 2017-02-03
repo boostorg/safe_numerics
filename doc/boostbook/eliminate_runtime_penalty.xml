@@ -73,16 +73,15 @@ safe;
 </programlisting></para>
 
     <para>The standard C++ type promotion rules are consistent with the
-    default <link
-    linkend="safe_numerics.promotion_policy.models.native">"native" type
-    promotion policy</link>. Up until now, we've focused on detecting when
-    this happens and invoking an interrupt or other kind of error
-    handler.</para>
+    default <code><link
+    linkend="safe_numerics.promotion_policy.models.native">native</link></code>
+    type promotion policy. Up until now, we've focused on detecting when this
+    happens and invoking an interrupt or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
-    linkend="safe_numerics.promotion_policy.models.automatic">"automatic" type
-    promotion policy</link>, we can change the rules of C++ arithmetic for
-    safe types to something like the following:</para>
+    linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+    type promotion policy, we can change the rules of C++ arithmetic for safe
+    types to something like the following:</para>
 
     <para><itemizedlist>
         <listitem>
@@ -110,17 +109,17 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>One could do this by editing his code manually, but such a
           task would be tedious, error prone, and leave the resulting code
           hard to read and verify. Using the <link
-          linkend="safe_numerics.promotion_policy.models.automatic">"automatic"
-          type promotion policy</link> will achieve the equivalent result
-          without these problems</para>
+          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          type promotion policy will achieve the equivalent result without
+          these problems</para>
         </listitem>
 
         <listitem>
           <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
           <link
-          linkend="safe_numerics.exception_policy.models.trap_exception">"trap_exception"
-          exception policy</link> enforces this guarantee</para>
+          linkend="safe_numerics.exception_policy.models.trap_exception"><code>trap_exception</code></link>
+          exception policy enforces this guarantee</para>
         </listitem>
 
         <listitem>
@@ -150,8 +149,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     Depending on the application, it should be rare to generate error checking
     code, and even more rare to actually invoke it. Any such instances are
     detected by the <link
-    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
-    exception policy</code></link> .</para>
+    linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+    exception policy.</para>
 
     <para>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</para>
@@ -171,14 +170,16 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     display the underlying type and its range as well as current value. Note
     that:<itemizedlist>
         <listitem>
-          <para>automatic type promotion policy has rendered the result of the
-          some of two <code>integers</code> as a <code>long</code>
-          type.</para>
+          <para>the <link
+          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          type promotion policy has rendered the result of the some of two
+          <code>integers</code> as a <code>long</code> type.</para>
         </listitem>
 
         <listitem>
-          <para>our program compiles without error - even when using the
-          trap_exception exception policy</para>
+          <para>our program compiles without error - even when using the <link
+          linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+          exception policy</para>
         </listitem>
 
         <listitem>
@@ -204,9 +205,9 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     a correct result. But since we trust no one, and since the program could
     change and the expressions be replaced with other ones, we'll still use
     the <link
-    linkend="safe_numerics.exception_policies.trap_exception"><code>"trap_exception"
-    exception policy</code></link> to verify at compile time that what we
-    "know" to be true is in fact true.</para>
+    linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+    exception policy to verify at compile time that what we "know" to be true
+    is in fact true.</para>
 
     <programlisting><xi:include href="../../examples/example83.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
@@ -259,38 +260,42 @@ z = &lt;signed char&gt;[-24,82] = 77
 
     <para><itemizedlist>
         <listitem>
-          <para>As before, we define a <code>safe_t</code> to reflect our view
-          of legal values for this program. This uses automatic type promotion
-          policy as well as trapping exception policy to enforce elimination
-          of runtime penalties.</para>
+          <para>As before, we define a type <code>safe_t</code> to reflect our
+          view of legal values for this program. This uses <link
+          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          type promotion policy as well as <link
+          linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+          exception policy to enforce elimination of runtime penalties.</para>
         </listitem>
 
         <listitem>
-          <para>The function f accepts only safe_t types so there is no need
-          to check the input values. This performs the functionality of
-          <emphasis><emphasis role="bold">programming by
-          contract</emphasis></emphasis> with no runtime cost.</para>
+          <para>The function f accepts only arguments of type
+          <code>safe_t</code> so there is no need to check the input values.
+          This performs the functionality of <emphasis><emphasis
+          role="bold">programming by contract</emphasis></emphasis> with no
+          runtime cost.</para>
         </listitem>
 
         <listitem>
-          <para>In addition we define <code>input_safe_t</code> to be used
+          <para>In addition, we define <code>input_safe_t</code> to be used
           when reading variables from the program console. Clearly, these can
           only be checked at runtime so they use the throw_exception policy.
           When variables are read from the console they are checked for legal
-          values. We need no hoc code to do this, as these types are
+          values. We need no ad hoc code to do this, as these types are
           guaranteed to contain legal values and will throw an exception when
           this guarantee is violated. In other words, we automatically get
           checking of input variables with no additional programming.</para>
         </listitem>
 
         <listitem>
-          <para>On calling of the function f with variables of type
-          input_safe_t are converted to variables of safe_t. In this
-          particular example, it can be determined at compile time that
-          construction of an instance of a safe_t from an input_safe_t can
-          never fail. Hence, no try/catch block is necessary. The usage of the
-          trap_exception policy for safe_t types would cause a compile time
-          error.</para>
+          <para>On calling of the function f, arguments of type
+          <code>input_safe_t</code> are converted to values of type
+          <code>safe_t</code> . In this particular example, it can be
+          determined at compile time that construction of an instance of a
+          <code>safe_t</code> from an <code>input_safe_t</code> can never
+          fail. Hence, no <code>try/catch</code> block is necessary. The usage
+          of the <code>trap_exception</code> policy for <code>safe_t</code>
+          types would cause a compile time error.</para>
         </listitem>
       </itemizedlist>Here is the output from the program when values 12 and 32
     are input from the console:</para>

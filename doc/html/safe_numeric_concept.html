@@ -21,18 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_numeric_concept"></a>SafeNumeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848888032">Description</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848886640">Refinement of</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848884960">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848868560">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848811056">Complexity Guarantees</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848809712">Invariants</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848808544">Header</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm301848805456">Models</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879449728">Description</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879448336">Refinement of</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879446656">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879430256">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879371216">Complexity Guarantees</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879369872">Invariants</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879368272">Header</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm50879366032">Models</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848888032"></a>Description</h4></div></div></div>
+<a name="idm50879449728"></a>Description</h4></div></div></div>
 <p>This holds an arithmetic value which can be used as a replacement
     for built-in C++ arithmetic values. These types differ from their built-in
     counter parts in that the are guaranteed not to produce invalid arithmetic
@@ -40,12 +40,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848886640"></a>Refinement of</h4></div></div></div>
+<a name="idm50879448336"></a>Refinement of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848884960"></a>Notation</h4></div></div></div>
+<a name="idm50879446656"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -94,7 +94,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848868560"></a>Valid Expressions</h4></div></div></div>
+<a name="idm50879430256"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -128,14 +128,14 @@
 <tr>
 <td align="left"><code class="computeroutput">prefix_op S</code></td>
 <td align="left">unspecified S</td>
-<td align="left"><p>invoke safe C++ operator op and return another
-              SafeNumeric type.</p></td>
+<td align="left"><p>invoke safe C++ operator <code class="computeroutput">prefix_op</code> and
+              return another SafeNumeric type.</p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">S postfix_op</code></td>
 <td align="left">unspecified S</td>
-<td align="left"><p>invoke safe C++ operator op and return another
-              SafeNumeric type.</p></td>
+<td align="left"><p>invoke safe C++ operator <code class="computeroutput">postfix_op</code>
+              and return another SafeNumeric type.</p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">s assign_op t</code></td>
@@ -203,14 +203,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848811056"></a>Complexity Guarantees</h4></div></div></div>
+<a name="idm50879371216"></a>Complexity Guarantees</h4></div></div></div>
 <p>There are no explicit complexity guarantees here. However, it would
     be very surprising if any implementation were to be more complex that
     O(0);</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848809712"></a>Invariants</h4></div></div></div>
+<a name="idm50879369872"></a>Invariants</h4></div></div></div>
 <p>The fundamental requirement of a SafeNumeric type is that implements
     all C++ operations permitted on it's base type in a way the prevents the
     return of an incorrect arithmetic result. Various implementations of this
@@ -220,13 +220,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848808544"></a>Header</h4></div></div></div>
+<a name="idm50879368272"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;safe_numerics/include/concepts/safe_numeric.hpp&gt;</code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm301848805456"></a>Models</h4></div></div></div>
+<a name="idm50879366032"></a>Models</h4></div></div></div>
 <p>safe&lt;T&gt;</p>
 <p>safe_signed_range&lt;-11, 11&gt;</p>
 <p>safe_unsigned_range&lt;0, 11&gt;</p>

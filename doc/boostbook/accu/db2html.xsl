@@ -14,7 +14,7 @@ Override boost book implemenation of header.navigation with our own
     <xsl:param name = "nav.context"/>
     <table cellpadding = "2" width = "100%"><tr>
         <td valign = "top">
-            <img href="index.html" height="164px" src="pre-boost.jpg" alt="Library Documentation Index" />
+            <img href="index.html" height="164px" src="accu_logo.png" alt="Library Documentation Index" />
         </td>
         <td><h2>Safe Numerics</h2></td>
     </tr></table>

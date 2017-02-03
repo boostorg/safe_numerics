@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Notes</title>
+<title>Background</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
@@ -19,10 +19,10 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
-<a name="safe_numerics.notes"></a>Notes</h2></div></div></div>
+<a name="safe_numerics.notes"></a>Background</h2></div></div></div>
 <p>This library is a re-implementation of the facilities provided by
   <a href="http://safeint.codeplex.com" target="_top">David LeBlanc's SafeInt
-  Library</a> using C++14 and the <a href="www.boost.org" target="_top">Boost
+  Library</a> using C++14 and the <a href="http://www.boost.org" target="_top">Boost
   Libraries</a>. I found this library very well done in every way. My main
   usage was to run unit tests for my embedded systems projects on my PC.
   Still, I had a few issues.</p>
@@ -31,13 +31,13 @@
       understand, modify and maintain.</p></li>
 <li class="listitem"><p>I couldn't find separate documentation other than that in the
       header file.</p></li>
-<li class="listitem"><p>It didn't use <a href="www.boost.org" target="_top">Boost</a> conventions
-      for naming.</p></li>
+<li class="listitem"><p>It didn't use <a href="http://www.boost.org" target="_top">Boost</a>
+      conventions for naming.</p></li>
 <li class="listitem"><p>It required porting to different compilers.</p></li>
 <li class="listitem"><p>It had a very long license associated with it.</p></li>
 <li class="listitem"><p>I could find no test suite for the library.</p></li>
 </ul></div>
-<p>This version addresses these issues. It exploits <a href="www.boost.org" target="_top">Boost</a> facilities such as template
+<p>This version addresses these issues. It exploits <a href="http://www.boost.org" target="_top">Boost</a> facilities such as template
   metaprogramming to reduce the number of lines of source code to
   approximately 4700. It exploits the Boost Preprocessor Library to generate
   exhaustive tests.</p>

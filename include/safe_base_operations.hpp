@@ -184,12 +184,6 @@ struct common_policies {
     );
 
     static_assert(
-        ! std::is_same<t_promotion_policy, void>::value
-        || !std::is_same<void, u_promotion_policy>::value,
-        "at least one promotion polcy must be non void"
-    );
-
-    static_assert(
         ! (std::is_same<t_promotion_policy, void>::value
         && std::is_same<void, u_promotion_policy>::value),
         "at least one promotion policy must not be void"

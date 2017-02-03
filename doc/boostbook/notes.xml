@@ -6,7 +6,7 @@
 
   <para>This library is a re-implementation of the facilities provided by
   <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
-  Library</ulink> using C++14 and the <ulink url="www.boost.org">Boost
+  Library</ulink> using C++14 and the <ulink url="http://www.boost.org">Boost
   Libraries</ulink>. I found this library very well done in every way. My main
   usage was to run unit tests for my embedded systems projects on my PC.
   Still, I had a few issues.</para>
@@ -23,8 +23,8 @@
     </listitem>
 
     <listitem>
-      <para>It didn't use <ulink url="www.boost.org">Boost</ulink> conventions
-      for naming.</para>
+      <para>It didn't use <ulink url="http://www.boost.org">Boost</ulink>
+      conventions for naming.</para>
     </listitem>
 
     <listitem>
@@ -41,7 +41,7 @@
   </itemizedlist>
 
   <para>This version addresses these issues. It exploits <ulink
-  url="www.boost.org">Boost</ulink> facilities such as template
+  url="http://www.boost.org">Boost</ulink> facilities such as template
   metaprogramming to reduce the number of lines of source code to
   approximately 4700. It exploits the Boost Preprocessor Library to generate
   exhaustive tests.</para>

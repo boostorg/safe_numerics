@@ -7,7 +7,7 @@
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../eliminate_runtime_penalty.html" title="Eliminating Runtime Penalty">
 <link rel="prev" href="2.html" title="Using safe_range">
-<link rel="next" href="../notes.html" title="Notes">
+<link rel="next" href="../notes.html" title="Background">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -77,29 +77,30 @@
 <span class="special">}</span>
 </pre>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>As before, we define a <code class="computeroutput">safe_t</code> to reflect our view
-          of legal values for this program. This uses automatic type promotion
-          policy as well as trapping exception policy to enforce elimination
-          of runtime penalties.</p></li>
-<li class="listitem"><p>The function f accepts only safe_t types so there is no need
-          to check the input values. This performs the functionality of
-          <span class="emphasis"><em><span class="bold"><strong>programming by
-          contract</strong></span></em></span> with no runtime cost. </p></li>
-<li class="listitem"><p>In addition we define <code class="computeroutput">input_safe_t</code> to be used
+<li class="listitem"><p>As before, we define a type <code class="computeroutput">safe_t</code> to reflect our
+          view of legal values for this program. This uses <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic"><code class="computeroutput">automatic</code></a>
+          type promotion policy as well as <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+          exception policy to enforce elimination of runtime penalties.</p></li>
+<li class="listitem"><p>The function f accepts only arguments of type
+          <code class="computeroutput">safe_t</code> so there is no need to check the input values.
+          This performs the functionality of <span class="emphasis"><em><span class="bold"><strong>programming by contract</strong></span></em></span> with no
+          runtime cost.</p></li>
+<li class="listitem"><p>In addition, we define <code class="computeroutput">input_safe_t</code> to be used
           when reading variables from the program console. Clearly, these can
           only be checked at runtime so they use the throw_exception policy.
           When variables are read from the console they are checked for legal
-          values. We need no hoc code to do this, as these types are
+          values. We need no ad hoc code to do this, as these types are
           guaranteed to contain legal values and will throw an exception when
           this guarantee is violated. In other words, we automatically get
           checking of input variables with no additional programming.</p></li>
-<li class="listitem"><p>On calling of the function f with variables of type
-          input_safe_t are converted to variables of safe_t. In this
-          particular example, it can be determined at compile time that
-          construction of an instance of a safe_t from an input_safe_t can
-          never fail. Hence, no try/catch block is necessary. The usage of the
-          trap_exception policy for safe_t types would cause a compile time
-          error.</p></li>
+<li class="listitem"><p>On calling of the function f, arguments of type
+          <code class="computeroutput">input_safe_t</code> are converted to values of type
+          <code class="computeroutput">safe_t</code> . In this particular example, it can be
+          determined at compile time that construction of an instance of a
+          <code class="computeroutput">safe_t</code> from an <code class="computeroutput">input_safe_t</code> can never
+          fail. Hence, no <code class="computeroutput">try/catch</code> block is necessary. The usage
+          of the <code class="computeroutput">trap_exception</code> policy for <code class="computeroutput">safe_t</code>
+          types would cause a compile time error.</p></li>
 </ul></div>
 <p>Here is the output from the program when values 12 and 32
     are input from the console:</p>

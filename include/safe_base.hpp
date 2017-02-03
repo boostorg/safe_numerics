@@ -253,15 +253,17 @@ public:
         --(*this);
         return old_t;
     }
-    safe_base operator-(){ // unary minus
-        return *this = 0 - *this; // this will check for overflow
+    // return a safe type. This guarantees that result will
+    // be checked upon return
+    constexpr safe_base operator-() const { // unary minus
+        return 0 - *this; // this will check for overflow
     }
-    safe_base operator~(){
+    constexpr safe_base operator~() const {
         static_assert(
             std::numeric_limits<Stored>::is_signed,
             "Bitwise inversion of signed value is an error"
         );
-        return *this = ~(m_t);
+        return ~(m_t);
     }
 };
 

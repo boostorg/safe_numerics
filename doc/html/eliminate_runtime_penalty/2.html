@@ -24,12 +24,12 @@
 <p>Instead of relying on automatic type promotion, we can just create
     our own types in such a way that we know they won't overflow. In the
     example below, we presume we know that the values we want to work with
-    fall in the closed range of -24,82. So we "know" the program will always
-    result in a correct result. But since we trust no one, and since the
-    program could change and the expressions be replaced with other ones,
-    we'll still use the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">"trap_exception"
-    exception policy</code></a> to verify at compile time that what we
-    "know" to be true is in fact true.</p>
+    fall in the range [-24,82]. So we "know" the program will always result in
+    a correct result. But since we trust no one, and since the program could
+    change and the expressions be replaced with other ones, we'll still use
+    the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+    exception policy to verify at compile time that what we "know" to be true
+    is in fact true.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
@@ -40,10 +40,10 @@
 
 <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span> <span class="comment">// for safe_literal</span>
 
-<span class="comment">// create a type for holding small integers.  We "know" that C++ type</span>
-<span class="comment">// promotion rules will work such that operations on this type</span>
-<span class="comment">// will never overflow. If change the program to break this, the</span>
-<span class="comment">// usage of the trap_exception promotion policy will prevent compilation.</span>
+<span class="comment">// create a type for holding small integers.  We "know" that C++</span>
+<span class="comment">// type promotion rules will work such that addition will never</span>
+<span class="comment">// overflow. If we change the program to break this, the usage</span>
+<span class="comment">// of the trap_exception promotion policy will prevent compilation.</span>
 <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
@@ -53,8 +53,13 @@
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 83:\n"</span><span class="special">;</span>
-    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>
-    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">2</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="comment">// the following would result in a compile time error</span>
+    <span class="comment">// since the sum of x and y wouldn't be in the legal</span>
+    <span class="comment">// range for z.</span>
+    <span class="comment">// const safe_signed_literal&lt;20&gt; x;</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">10</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>    <span class="comment">// no problem</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">67</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
+
     <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
@@ -62,40 +67,28 @@
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<p>which produces the following output.</p>
-<pre class="screen">example 83:
-x = &lt;signed char&gt;[-24,82] = 2
-y = &lt;signed char&gt;[-24,82] = 2
-z = (x + y) = &lt;int&gt;[-48,164] = 4
-(x - y) = &lt;int&gt;[-106,106] = 0
-&lt;int&gt;[-48,164] = 4</pre>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>In this example, standard C++ type promotion rules are used.
-        These promote operands to int before invoking the addition operation.
-        So addition operation itself won't overflow. The result of addition is
-        another unnamed safe type guaranteed to be able to hold the some of
-        any pair of safe types. In this example the result is a safe type
-        based on the C++ built-in type of <code class="computeroutput">short</code>.</p></li>
-<li class="listitem"><p>So when we try to assign the result to z we could get an error.
-        This is because our custom <code class="computeroutput">safe_t</code> cannot be guaranteed to
-        hold the some of all possible pairs of <code class="computeroutput">safe_t</code> instances.
-        We fix the by using an "auto" for the sum.</p></li>
-<li class="listitem"><p>We now have a problem when we try to initialize our
-        <code class="computeroutput">safe_t</code> variable with an initial literal value. This
-        operation could overflow at runtime. To our disappointment, our
-        attempt to fix the problem by using <code class="computeroutput">constexpr</code> fails. The
-        fix for this is to use <code class="computeroutput">safe_literal</code> to initialize safe
-        types. safe_literal is a special safe type which wraps a constant
-        defined at compile time. It cannot be initialized, assigned to, or
-        changed. Subject to this restriction, it can participate in safe
-        arithmetic operations.</p></li>
+<li class="listitem"><p><code class="computeroutput"><code class="computeroutput">safe_signed_range</code></code> defines a type
+          which is limited to the indicated range. Out of range assignments
+          will be detected at compile time if possible (as in this case) or at
+          run time if necessary.</p></li>
+<li class="listitem"><p><code class="computeroutput">safe_literal</code> defines a constant with a specific
+          value. Defining constants in this way enables the library to
+          correctly anticipate the range of the results of arithmetic
+          expressions.</p></li>
+<li class="listitem"><p>The usage of "trap exception" will mean that any assignment to
+          z which could be outside the legal range will result in a compile
+          time error.</p></li>
+<li class="listitem"><p>So if this program compiles, it's guaranteed to return a valid
+          result.</p></li>
 </ul></div>
-<p>We've used simple expressions in this illustration. But since binary
-    operations on safe types result in other safe types, expressions can be
-    made arbitrarily elaborate - just as they can be with intrinsic integer
-    types. That is, safe integer types are drop in replacements for intrinsic
-    integer types. We are guaranteed never to produce an incorrect result
-    regardless of how elaborate the expression might be.</p>
+<p>This program produces the following run time
+    output.</p>
+<pre class="screen">example 83:
+x = &lt;signed char&gt;[10,10] = 10
+y = &lt;signed char&gt;[67,67] = 67
+z = &lt;signed char&gt;[-24,82] = 77
+</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
