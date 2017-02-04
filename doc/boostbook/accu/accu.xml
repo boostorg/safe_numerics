@@ -39,7 +39,7 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand it's limitations.
     These components are also interesting in their own right. For all these
-    reasons, they are documented here. In general terms, the library works in
+    reasons, they are described here. In general terms, the library works in
     the following manner:</para>
 
     <itemizedlist>
@@ -52,7 +52,8 @@
       </listitem>
 
       <listitem>
-        <para>Each overloaded operation implements the following:<itemizedlist>
+        <para>Each overloaded operation implements the following at compile
+        time:<itemizedlist>
             <listitem>
               <para>Retrieve range of values for each operand of type T from
               <code>std::numeric_limits&lt;T&gt;::min()</code> and
@@ -111,20 +112,6 @@
     <itemizedlist>
       <listitem>
         <para>The library is currently limited to integers.</para>
-      </listitem>
-
-      <listitem>
-        <para>Conversions to safe integer types from floating point types is
-        not explicitly addressed.</para>
-      </listitem>
-
-      <listitem>
-        <para>Note that standard library stream conversion functions such as
-        <code>strtoi</code> etc. DO check for valid input and throw the
-        exception <code>std::out_of_range</code> if the string cannot be
-        converted to the specified integer type. In other words,
-        <code>strtoi</code> already contains some of the functionality that
-        <code>safe&lt;int&gt;</code> provides.</para>
       </listitem>
 
       <listitem>

@@ -72,11 +72,12 @@
 safe;
 </programlisting></para>
 
-    <para>The standard C++ type promotion rules are consistent with the
-    default <code><link
+    <para>The promotion rules implemented in the default <code><link
     linkend="safe_numerics.promotion_policy.models.native">native</link></code>
-    type promotion policy. Up until now, we've focused on detecting when this
-    happens and invoking an interrupt or other kind of error handler.</para>
+    type promotion policy are consistent with those of standard C++ </para>
+
+    <para>Up until now, we've focused on detecting when this happens and
+    invoking an interrupt or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
     linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
@@ -111,7 +112,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           hard to read and verify. Using the <link
           linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
           type promotion policy will achieve the equivalent result without
-          these problems</para>
+          these problems.</para>
         </listitem>
 
         <listitem>
@@ -119,7 +120,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           is no need to check for errors - they can't happen !!! The usage of
           <link
           linkend="safe_numerics.exception_policy.models.trap_exception"><code>trap_exception</code></link>
-          exception policy enforces this guarantee</para>
+          exception policy enforces this guarantee.</para>
         </listitem>
 
         <listitem>
@@ -141,14 +142,14 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     the operands to a wider result type so the result cannot overflow. This is
     a fundamental departure from the C++ Standard behavior.</para>
 
-    <para>If the interval of the result cannot be contained in the largest
-    type that the machine can handle (usually 64 bits these days), the largest
-    available integer type with the correct result sign is used. So even with
-    our "automatic" type promotion scheme, it's still possible to overflow. In
-    this case, and only this case, is runtime error checking code generated.
-    Depending on the application, it should be rare to generate error checking
-    code, and even more rare to actually invoke it. Any such instances are
-    detected by the <link
+    <para>If the interval of the result cannot be guaranteed to fit in the
+    largest type that the machine can handle (usually 64 bits these days), the
+    largest available integer type with the correct result sign is used. So
+    even with our "automatic" type promotion scheme, it's still possible to
+    overflow. In this case, and only this case, is runtime error checking code
+    generated. Depending on the application, it should be rare to generate
+    error checking code, and even more rare to actually invoke it. Any such
+    instances are detected at compile time by the <link
     linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
     exception policy.</para>
 
@@ -221,16 +222,16 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
         </listitem>
 
         <listitem>
-          <para><code>safe_literal</code> defines a constant with a specific
-          value. Defining constants in this way enables the library to
-          correctly anticipate the range of the results of arithmetic
+          <para><code>safe_signed_literal</code> defines a constant with a
+          specific value. Defining constants in this way enables the library
+          to correctly anticipate the range of the results of arithmetic
           expressions.</para>
         </listitem>
 
         <listitem>
-          <para>The usage of "trap exception" will mean that any assignment to
-          z which could be outside the legal range will result in a compile
-          time error.</para>
+          <para>The usage of <code>trap_exception</code> will mean that any
+          assignment to z which could be outside the legal range will result
+          in a compile time error.</para>
         </listitem>
 
         <listitem>
@@ -295,7 +296,7 @@ z = &lt;signed char&gt;[-24,82] = 77
           <code>safe_t</code> from an <code>input_safe_t</code> can never
           fail. Hence, no <code>try/catch</code> block is necessary. The usage
           of the <code>trap_exception</code> policy for <code>safe_t</code>
-          types would cause a compile time error.</para>
+          types guarantees this to be true at compile time.</para>
         </listitem>
       </itemizedlist>Here is the output from the program when values 12 and 32
     are input from the console:</para>

@@ -99,14 +99,14 @@ public:
     // return a safe type. This guarantees that result will
     // be checked upon return
     constexpr safe_literal_impl<decltype(-N), -N, P, E> operator-() const { // unary minus
-        return 0 - N; // this will check for overflow
+        return 0 - N;
     }
-    constexpr safe_literal_impl<decltype(~N), -N, P, E> operator~() const {
+    constexpr safe_literal_impl<T, ~N, P, E> operator~() const {
         static_assert(
             std::numeric_limits<T>::is_signed,
             "Bitwise inversion of signed value is an error"
         );
-        return ~N;
+        return safe_literal_impl<T, ~N, P, E>();
     }
 };
 

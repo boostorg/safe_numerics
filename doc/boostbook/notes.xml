@@ -4,10 +4,9 @@
 <section id="safe_numerics.notes">
   <title>Background</title>
 
-  <para>This library is a re-implementation of the facilities provided by
-  <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
-  Library</ulink> using C++14 and the <ulink url="http://www.boost.org">Boost
-  Libraries</ulink>. I found this library very well done in every way. My main
+  <para>This library started out as a re-implementation of the facilities
+  provided by <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
+  Library</ulink>. I found this library to be well done in every way. My main
   usage was to run unit tests for my embedded systems projects on my PC.
   Still, I had a few issues.</para>
 
@@ -40,12 +39,7 @@
     </listitem>
   </itemizedlist>
 
-  <para>This version addresses these issues. It exploits <ulink
-  url="http://www.boost.org">Boost</ulink> facilities such as template
-  metaprogramming to reduce the number of lines of source code to
-  approximately 4700. It exploits the Boost Preprocessor Library to generate
-  exhaustive tests.</para>
-
-  <para>All concepts, types and functions documented are declared in the name
-  space <code>boost::numeric</code>.</para>
+  <para>This version addresses these issues. It exploits many facilities of
+  C++14 and the <ulink url="http://www.boost.org">Boost libraries</ulink> to
+  reduce the number of lines of source code to approximately 4700.</para>
 </section>
