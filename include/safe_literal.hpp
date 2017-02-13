@@ -81,6 +81,15 @@ public:
     // default constructor
     constexpr safe_literal_impl(){}
 
+    // used during implicit conversion of a type T to a safe literal
+    // of that type.  Should trap if an attempt is made to construct
+    // a literal from an integer not equal to the literal.
+    constexpr safe_literal_impl(T & t){
+        // hmmmm - needs to be more elaborate to handle both compile
+        // time and runtime exceptions.
+        static_assert(t == N, "invalid value");
+    }
+
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
     // convert to any type which is not safe.  safe types need to be
@@ -96,17 +105,11 @@ public:
     constexpr operator R () const {
         return N;
     }
+    // unary minus
     // return a safe type. This guarantees that result will
     // be checked upon return
-    constexpr safe_literal_impl<decltype(-N), -N, P, E> operator-() const { // unary minus
+    constexpr safe_literal_impl operator-() const { // unary minus
         return 0 - N;
-    }
-    constexpr safe_literal_impl<T, ~N, P, E> operator~() const {
-        static_assert(
-            std::numeric_limits<T>::is_signed,
-            "Bitwise inversion of signed value is an error"
-        );
-        return safe_literal_impl<T, ~N, P, E>();
     }
 };
 

@@ -364,6 +364,7 @@ int main(int argc, const char * argv[]){
 
 #endif
 
+#if 0
 auto val()
 {
   return -0xFFFFFFFF;
@@ -374,21 +375,33 @@ auto val()
 #include "../include/safe_integer.hpp"
 #include "../include/safe_literal.hpp"
 
-auto val1()
+
+constexpr boost::numeric::safe<unsigned int> val1()
 {
     constexpr boost::numeric::safe<unsigned int> x = boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
     return -x;
 }
 
-auto val2()
+constexpr boost::numeric::safe<unsigned int> val2()
+{
+    boost::numeric::safe<unsigned int> x = - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+    return x;
+}
+
+constexpr boost::numeric::safe<unsigned int> val3()
 {
     return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
 }
 
+
 int main(){
-    std::cout << val() << std::endl;
     std::cout << val1() << std::endl;
     std::cout << val2() << std::endl;
+    std::cout << val3() << std::endl;
 }
 
+#endif
 
+int main(){
+    return 0;
+}

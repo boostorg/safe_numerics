@@ -38,13 +38,12 @@ using mod8 = boost::uint_t<8>::exact;
 // this types is meant to implement operations of naming bits
 // which are part of a larger word.
 // example
-//  unsigned int x.
-//  bit<unsigned int, 2> switch; // switch now refers to the
-//  second bit from the right of the variable x.  So now can use:
-//
-//  switch = 1;
-//  if(switch)
-//      ...
+//    unsigned int x;
+//    bit<unsigned int, 2> ready_bit(x);
+//    ready_bit = 0;
+//    ready_bit = boost::numeric::safe_unsigned_literal<0>();
+//    if(ready_bit)
+//        ...
 
 template<typename T, std::int8_t N>
 struct bit {
@@ -67,10 +66,20 @@ struct bit {
         m_word |= (1 << N);
         return *this;
     }
-    operator safe_bool_t () const {
-        return m_word >> N & 1;
+    operator bool () const {
+        return (m_word >> N) & 1;
     }
 };
+
+void ftest(){
+    unsigned int x;
+    bit<unsigned int, 2> ready_bit(x);
+    ready_bit = 0;
+    ready_bit = boost::numeric::safe_unsigned_literal<0>();
+    if(ready_bit)
+        return;
+}
+
 
 #if ! defined(literal)
 // define a macro for literal types.  This may not be strictly necessary

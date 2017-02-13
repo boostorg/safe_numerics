@@ -166,28 +166,13 @@ operator Stored () const {
 // binary operators
 
 template<class T, class U>
-struct common_policies {
+struct common_exception_policy {
     static_assert(is_safe<T>::value || is_safe<U>::value,
         "at least one type must be a safe type"
     );
 
-    using t_promotion_policy = typename get_promotion_policy<T>::type;
-    using u_promotion_policy = typename get_promotion_policy<U>::type;
     using t_exception_policy = typename get_exception_policy<T>::type;
     using u_exception_policy = typename get_exception_policy<U>::type;
-
-    static_assert(
-        std::is_same<t_promotion_policy, u_promotion_policy>::value
-        ||std::is_same<t_promotion_policy, void>::value
-        ||std::is_same<void, u_promotion_policy>::value,
-        "if the promotion policies are different, one must be void!"
-    );
-
-    static_assert(
-        ! (std::is_same<t_promotion_policy, void>::value
-        && std::is_same<void, u_promotion_policy>::value),
-        "at least one promotion policy must not be void"
-    );
 
     static_assert(
         std::is_same<t_exception_policy, u_exception_policy>::value
@@ -199,26 +184,10 @@ struct common_policies {
     static_assert(
         ! (std::is_same<t_exception_policy, void>::value
         && std::is_same<void, u_exception_policy>::value),
-        "at least one promotion policy must not be void"
+        "at least one exception policy must not be void"
     );
 
-    using promotion_policy =
-        typename boost::mpl::if_c<
-            ! std::is_same<void, u_promotion_policy>::value,
-            u_promotion_policy,
-        typename boost::mpl::if_c<
-            ! std::is_same<void, t_promotion_policy>::value,
-            t_promotion_policy,
-        //
-            void
-        >::type >::type;
-
-    static_assert(
-        ! std::is_same<void, promotion_policy>::value,
-        "promotion_policy is void"
-    );
-
-    using exception_policy =
+    using type =
         typename boost::mpl::if_c<
             !std::is_same<void, u_exception_policy>::value,
             u_exception_policy,
@@ -230,9 +199,46 @@ struct common_policies {
         >::type >::type;
 
     static_assert(
-        !std::is_same<void, exception_policy>::value,
+        !std::is_same<void, type>::value,
         "exception_policy is void"
     );
+};
+
+template<class T, class U>
+struct common_promotion_policy {
+    static_assert(is_safe<T>::value || is_safe<U>::value,
+        "at least one type must be a safe type"
+    );
+    using t_promotion_policy = typename get_promotion_policy<T>::type;
+    using u_promotion_policy = typename get_promotion_policy<U>::type;
+    static_assert(
+        std::is_same<t_promotion_policy, u_promotion_policy>::value
+        ||std::is_same<t_promotion_policy, void>::value
+        ||std::is_same<void, u_promotion_policy>::value,
+        "if the promotion policies are different, one must be void!"
+    );
+    static_assert(
+        ! (std::is_same<t_promotion_policy, void>::value
+        && std::is_same<void, u_promotion_policy>::value),
+        "at least one promotion policy must not be void"
+    );
+
+    using type =
+        typename boost::mpl::if_c<
+            ! std::is_same<void, u_promotion_policy>::value,
+            u_promotion_policy,
+        typename boost::mpl::if_c<
+            ! std::is_same<void, t_promotion_policy>::value,
+            t_promotion_policy,
+        //
+            void
+        >::type >::type;
+
+    static_assert(
+        ! std::is_same<void, type>::value,
+        "promotion_policy is void"
+    );
+
 };
 
 // Note: the following global operators will be only found via
@@ -245,10 +251,8 @@ struct common_policies {
 
 template<class T, class U>
 struct addition_result {
-    using P = common_policies<T, U>;
-
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -375,9 +379,8 @@ constexpr inline operator+=(T & t, const U & u){
 
 template<class T, class U>
 struct subtraction_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -499,9 +502,8 @@ constexpr inline operator-=(T & t, const U & u){
 
 template<class T, class U>
 struct multiplication_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -633,9 +635,8 @@ constexpr inline operator*=(T & t, const U & u){
 
 template<class T, class U>
 struct division_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -772,9 +773,8 @@ constexpr inline operator/=(T & t, const U & u){
 
 template<class T, class U>
 struct modulus_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -1045,9 +1045,8 @@ constexpr operator<=(const T & lhs, const U & rhs) {
 // left shift
 template<class T, class U>
 struct left_shift_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -1151,9 +1150,8 @@ constexpr inline operator<<=(T & t, const U & u){
 // right shift
 template<class T, class U>
 struct right_shift_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -1260,9 +1258,8 @@ constexpr inline operator>>=(T & t, const U & u){
 // operator |
 template<class T, class U>
 struct bitwise_or_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
@@ -1328,9 +1325,8 @@ constexpr inline operator|=(T & t, const U & u){
 // operator &
 template<class T, class U>
 struct bitwise_and_result {
-    using P = common_policies<T, U>;
-    using exception_policy = typename P::exception_policy;
-    using promotion_policy = typename P::promotion_policy;
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
