@@ -236,7 +236,7 @@ public:
     constexpr safe_base &
     operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
 
-    // unary operators
+    // mutating unary operators
     safe_base operator++(){      // pre increment
         return *this = *this + 1;
     }
@@ -253,20 +253,15 @@ public:
         --(*this);
         return old_t;
     }
-    // return a safe type. This guarantees that result will
-    // be checked upon return
-    constexpr safe_base operator-() const { // unary minus
-        return 0 - *this; // this will check for overflow
+    // non mutating unary operators
+    constexpr auto operator-() const { // unary minus
+        return 0 - *this;
     }
-    constexpr safe_base operator~() const {
-        static_assert(
-            std::numeric_limits<Stored>::is_signed,
-            "Bitwise inversion of signed value is an error"
-        );
-        return ~(m_t);
+    template<class T>
+    constexpr auto operator~() const { // unary minus
+        return ~Stored(0) ^ *this;
     }
 };
-
 
 } // numeric
 } // boost
