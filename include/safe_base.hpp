@@ -260,7 +260,7 @@ public:
     }
     constexpr safe_base operator~() const {
         static_assert(
-            std::numeric_limits<Stored>::is_signed,
+            std::numeric_limits<Stored>::is_unsigned,
             "Bitwise inversion of signed value is an error"
         );
         return ~(m_t);
