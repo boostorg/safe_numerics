@@ -97,7 +97,7 @@ struct checked_result {
     }
     template<class T>
     constexpr boost::logic::tribool  operator<=(const checked_result<T> & t) const {
-        return ! operator>(t) && ! operator<(t);
+        return ! operator>(t);
     }
     template<class T>
     constexpr boost::logic::tribool operator!=(const checked_result<T> & t) const {
