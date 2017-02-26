@@ -23,7 +23,7 @@ unsigned int convert(
 }
 
 // Use safe numeric to enforce program contract automatically
-// define convient typenames for hours and minutes hh:mm
+// define convenient typenames for hours and minutes hh:mm
 using hours_t = boost::numeric::safe_unsigned_range<0, 23>;
 using minutes_t = boost::numeric::safe_unsigned_range<0, 59>;
 
@@ -36,7 +36,7 @@ auto safe_convert(const hours_t & hours, const minutes_t & minutes) {
 }
 
 int main(int argc, const char * argv[]){
-    std::cout << "example 7: ";
+    std::cout << "example 8: ";
     std::cout << "enforce contracts with zero runtime cost" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
 
@@ -52,10 +52,10 @@ int main(int argc, const char * argv[]){
     std::cout << "Using safe numerics" << std::endl;
 
     try {
-        // parameters are guarenteed to meet requirements
+        // parameters are guaranteed to meet requirements
         hours_t hours(10);
         minutes_t minutes(83);  // interrupt thrown here
-        // so the following will never throw
+        // so the following will never fail
         safe_convert(hours, minutes);
     }
     catch(std::exception e){
@@ -65,7 +65,7 @@ int main(int argc, const char * argv[]){
     }
 
     try {
-        // parameters are guarenteed to meet requirements when
+        // parameters are guaranteed to meet requirements when
         // constructed on the stack
         safe_convert(hours_t(10), minutes_t(83));
     }
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]){
     }
 
     try {
-        // parameters are guarenteed to meet requirements when
+        // parameters are guaranteed to meet requirements when
         // implicitly constructed to safe types to match function signature
         safe_convert(10, 83);
     }
@@ -102,7 +102,7 @@ int main(int argc, const char * argv[]){
         convert(hours, minutes); // zero (depending on compiler) runtime overhead
 
         // since unsafe types can be implicitly converted to corresponding
-        // safe types we can just pass the unsafe types.  checkin will occur
+        // safe types we can just pass the unsafe types.  checking will occur
         // when the safe type is constructed.
         safe_convert(10, 17); // runtime cost in creating parameters
 

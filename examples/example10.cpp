@@ -17,7 +17,7 @@ void safe_f(
 }
 
 int main(){
-    cout << "example 10: ";
+    cout << "example 4: ";
     cout << "mixing types produces surprising results" << endl;
     try {
         std::cout << "Not using safe numerics" << std::endl;

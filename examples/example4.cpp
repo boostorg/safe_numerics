@@ -4,7 +4,7 @@
 #include "../include/safe_integer.hpp"
 
 int main(){
-    std::cout << "example 4: ";
+    std::cout << "example 3: ";
     std::cout << "implicit conversions change data values" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
     

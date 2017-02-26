@@ -129,6 +129,12 @@
             </row>
 
             <row>
+              <entry><code>std::numeric_limits&lt;T&gt;::is_signed</code></entry>
+
+              <entry>true or false</entry>
+            </row>
+
+            <row>
               <entry><code>os &lt;&lt; t</code></entry>
 
               <entry>os &amp;</entry>
