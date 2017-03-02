@@ -202,7 +202,7 @@ detected error:converted negative value to unsigned
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has
-    been much written about it has been proposed as an addition to the C++
+    been much written about it and it has been proposed as an addition to the C++
     language <citation>Garcia</citation><citation>Crowl &amp;
     Ottosen</citation>. It (mostly) depends upon runtime checking of parameter
     and object values upon entry to and exit from every function. This can
@@ -215,15 +215,15 @@ detected error:converted negative value to unsigned
     runtime cost.</para>
 
     <para>The Safe Numerics Library has facilities which, in many cases, can
-    check guarantee parameter requirements with little or no runtime overhead.
+    check guaranteed parameter requirements with little or no runtime overhead.
     Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../examples/example7.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
 
-    <para>In the example above the function convert incurs significant runtime
+    <para>In the example above, the function <code>convert</code> incurs significant runtime
     cost every time the function is called. By using "safe" types, this cost
-    is moved to moment when the parameters are constructed. Depending on how
+    is moved to the moment when the parameters are constructed. Depending on how
     the program is constructed, this may totally eliminate extraneous
     computations for parameter requirement type checking. In this scenario,
     there is no reason to suppress the checking for release mode and our
