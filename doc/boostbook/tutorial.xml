@@ -130,7 +130,7 @@ Not using safe numerics
 Using safe numerics
 10000
 detected error:converted negative value to unsigned
-</screen>This solution is simple, Just replace instances of the
+</screen>This solution is simple, just replace instances of
     <code>int</code> with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
@@ -144,10 +144,10 @@ detected error:converted negative value to unsigned
 
     <para><programlisting><xi:include href="../../examples/example5.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Collections
-    like standard arrays, vectors do array index checking in some function
+    like standard arrays and vectors do array index checking in some function
     calls and not in others so this may not be the best example. However it
     does illustrate the usage of <code>safe_range&lt;T&gt;</code> for
-    assigning legal range to variables. This will guarantee that under no
+    assigning legal ranges to variables. This will guarantee that under no
     circumstances will the variable contain a value outside of the specified
     range.</para>
   </section>
