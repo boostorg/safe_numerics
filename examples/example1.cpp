@@ -15,10 +15,7 @@ int main(int argc, const char * argv[]){
         int z;
         // this produces an invalid result !
         z = x + y;
-        // but assert fails to detect it since C++ implicitly
-        // converts variables to int before evaluating he expression!
-        // assert(z == x + y);
-        std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
+        std::cout << z << " != " << x + y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){
@@ -28,14 +25,14 @@ int main(int argc, const char * argv[]){
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;
-        safe<int> x = 127;
+        safe<int> x = INT_MAX;
         safe<int> y = 2;
         safe<int> z;
-        // rather than producing and invalid result an exception is thrown
+        // rather than producing an invalid result an exception is thrown
         z = x + y;
     }
     catch(std::exception & e){
-        // which can catch here
+        // which we can catch here
         std::cout << e.what() << std::endl;
     }
     return 0;
