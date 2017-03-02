@@ -20,15 +20,11 @@
     responsibility to ensure such undefined behavior is avoided.</para>
 
     <para>This program demonstrates this problem. The solution is to replace
-    instances of <code>char</code> type with <code>safe&lt;char&gt;</code>
+    instances of <code>int</code> type with <code>safe&lt;int&gt;</code>
     type.</para>
 
     <programlisting><xi:include href="../../examples/example1.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
-
-    <para>Note that I've used <code>char</code> types in this example to make
-    the problem and solution easier to see. The exact same example could have
-    been done with <code>int</code> types albeit with different values.</para>
   </section>
 
   <section id="safe_numerics.tutorial.2">
