@@ -118,7 +118,7 @@
     fundamental software components described here. It is not necessary to
     know about these components to use the library. This information has been
     included to help those who want to understand how the library works so
-    they can extend it, correct bugs in it, or understand it's limitations.
+    they can extend it, correct bugs in it, or understand its limitations.
     These components are also interesting in their own right. For all these
     reasons, they are documented here. In general terms, the library works in
     the following manner:</para>
@@ -126,9 +126,9 @@
     <itemizedlist>
       <listitem>
         <para>All unary/binary expressions where one of the operands is a
-        "safe" type are Overloaded. These overloads are declared and defined
+        "safe" type are overloaded. These overloads are declared and defined
         in the header file "safe_integer.hpp". SFINAE - "Substitution Failure
-        Is Not An Error and <code>std::enable_if</code> are key features of
+        Is Not An Error" and <code>std::enable_if</code> are key features of
         C++ used to define these overloads in a correct manner.</para>
       </listitem>
 
@@ -143,12 +143,12 @@
             <listitem>
               <para>Given the ranges of the operands, determine the range of
               the result of the operation using interval arithmetic. This is
-              implemented in the "interval.hpp" header file using constexpr
+              implemented in the "interval.hpp" header file using the <code>constexpr</code>
               facility of C++14.</para>
             </listitem>
 
             <listitem>
-              <para>if the range of the result type includes the range of the
+              <para>If the range of the result type includes the range of the
               result of the operation, no run time checking of the result is
               necessary. So the operation reduces to the original built-in
               C/C++ operation.</para>
@@ -165,7 +165,7 @@
             </listitem>
 
             <listitem>
-              <para>if a valid result has been obtained, it is passed to the
+              <para>If a valid result has been obtained, it is passed to the
               caller.</para>
             </listitem>
 
