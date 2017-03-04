@@ -192,10 +192,10 @@
   <section id="safe_numerics.performance_tests">
     <title>Performance Tests</title>
 
-    <para>Our goal creating facilities which make it possible write programs
+    <para>Our goal is to create facilities which make it possible to write programs
     known to be correct. But we also want programmers to actually use the
     facilities we provide here. This won't happen if using these facilities
-    impacts performance to a significant degree. Although we've take
+    impacts performance to a significant degree. Although we've taken
     precautions to avoid doing this, the only real way to know is to create
     and run some tests.</para>
 
