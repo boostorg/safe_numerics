@@ -11,7 +11,7 @@
 
     <para>This holds an arithmetic value which can be used as a replacement
     for built-in C++ arithmetic values. These types differ from their built-in
-    counter parts in that the are guaranteed not to produce invalid arithmetic
+    counterparts in that they are guaranteed not to produce invalid arithmetic
     results.</para>
   </section>
 
@@ -175,7 +175,7 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>construct a instance of S from a value of type T. f
+              <entry><para>construct an instance of S from a value of type T. If
               the value t cannot be represented as an instance of type S1, it
               is an error.</para></entry>
             </row>
@@ -185,7 +185,7 @@
 
               <entry>S</entry>
 
-              <entry><para>construct a uninitialized instance of
+              <entry><para>construct an uninitialized instance of
               S.</para></entry>
             </row>
 
@@ -216,7 +216,7 @@
 
     <itemizedlist>
       <listitem>
-        <para>Result of any binary operation where one or both of the operands
+        <para>The result of any binary operation where one or both of the operands
         is a SafeNumeric type is also a SafeNumeric type.</para>
       </listitem>
 
@@ -250,18 +250,18 @@ int main(){
     <title>Complexity Guarantees</title>
 
     <para>There are no explicit complexity guarantees here. However, it would
-    be very surprising if any implementation were to be more complex that
+    be very surprising if any implementation were to be more complex than
     O(0);</para>
   </section>
 
   <section>
     <title>Invariants</title>
 
-    <para>The fundamental requirement of a SafeNumeric type is that implements
-    all C++ operations permitted on it's base type in a way the prevents the
+    <para>The fundamental requirement of a SafeNumeric type is that it implements
+    all C++ operations permitted on its base type in a way the prevents the
     return of an incorrect arithmetic result. Various implementations of this
-    concept may handle circumstances which produce such results differently (
-    throw exception, compile time trap, etc..) no implementation should return
+    concept may handle circumstances which produce such results differently 
+    (throw exception, compile time trap, etc..) no implementation should return
     an arithmetically incorrect result.</para>
   </section>
 
