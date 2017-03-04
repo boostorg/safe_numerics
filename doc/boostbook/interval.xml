@@ -16,7 +16,7 @@
   <section>
     <title>Template Parameters</title>
 
-    <para>R must model the type requirements <link
+    <para>R must model the type requirements of<link
     linkend="safe_numerics.numeric">Numeric</link></para>
   </section>
 
@@ -59,7 +59,7 @@
           <row>
             <entry><code>l, u</code></entry>
 
-            <entry>lower and upper Numeric limits of an interval</entry>
+            <entry>Lower and upper Numeric limits of an interval</entry>
           </row>
 
           <row>
@@ -103,7 +103,7 @@
   <section>
     <title>Valid Expressions</title>
 
-    <para>Note that all expressions are constexpr .</para>
+    <para>Note that all expressions are constexpr.</para>
 
     <para><informaltable>
         <tgroup cols="3">
