@@ -43,7 +43,7 @@ int main(){
     // In such cases, there is no runtime overhead from using safe types.
     safe_t x = 127;
     safe_t y = 2;
-    auto z = x + y; // z is guarenteed correct without any runtime overhead or interrupt.
+    auto z = x + y; // z is guaranteed correct without any runtime overhead or exception.
 
     return 0;
 }</programlisting>
