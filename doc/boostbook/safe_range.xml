@@ -14,7 +14,7 @@
     [MIN, MAX]. A <code>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
     anywhere an arithmetic type is permitted. Any expression which uses either
-    of these types is guaranteed to return an arithmetically correct value or
+    of these types is guaranteed to return an arithmetically correct value or to
     trap in some way.</para>
   </section>
 
@@ -100,7 +100,7 @@
           <row>
             <entry><code>MIN</code></entry>
 
-            <entry>must be non-integer literal</entry>
+            <entry>must be a non-negative literal</entry>
 
             <entry>The minimum non-negative integer value that this type may
             hold</entry>
@@ -162,7 +162,7 @@
 
     <para>Implements all expressions and only those expressions defined by the
     <link linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
-    requirements. This, the result type of such an expression will be another
+    requirements. Thus, the result type of such an expression will be another
     safe type. The actual type of the result of such an expression will depend
     upon the specific promotion policy template parameter.</para>
   </section>
