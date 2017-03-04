@@ -7,7 +7,7 @@
   <para>Up until now, we've focused on detecting when incorrect results are
   produced and handling these occurrences either by throwing an exception or
   invoking some designated function. We've achieved our goal of detecting and
-  handling arithmetically incorrect behavior - but at what cost. It is a fact
+  handling arithmetically incorrect behavior - but at what cost? It is a fact
   that many C++ programmers will find this trade-off unacceptable. So the
   question arises as to how we might minimize or eliminate this runtime
   penalty.</para>
