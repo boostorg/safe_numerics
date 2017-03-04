@@ -16,7 +16,7 @@
 char y;
 auto z = x + y</programlisting>the type of <code>z</code> will be an
     <code>int</code>. This is a consequence for the standard rules for type
-    promotion for C/C++ arithmetic. A key feature of library permits one to
+    promotion for C/C++ arithmetic. A key feature of the library permits one to
     specify his own type promotion rules via a PromotionPolicy class.</para>
   </section>
 
@@ -46,7 +46,7 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
           <row>
             <entry><code>t, u, v</code></entry>
 
-            <entry>An object of type modeling Numeric</entry>
+            <entry>An object of a type modeling Numeric</entry>
           </row>
         </tbody>
       </tgroup>
@@ -174,7 +174,7 @@ char y;
 auto z = x + y; // could result in overflow
 safe&lt;int&gt; sx;
 auto sz = sx + y; // promotes expression type to a safe&lt;long int&gt; which requires no result checking
-is guaranteed not to overflow.
+// is guaranteed not to overflow.
 
 safe_unsigned_range&lt;1, 4&gt; a;
 safe_unsigned_range&lt;2, 4&gt; b;
@@ -182,12 +182,12 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
 
         <para>Type sz will be a <link
         linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
-        which is guaranteed to hold he result of x + y. In this case that will
+        which is guaranteed to hold the result of x + y. In this case that will
         be a long int (or perhaps a long long) depending upon the compiler and
         machine architecture. In this case, there will be no need for any
         special checking on the result and there can be no overflow.</para>
 
-        <para>Type of c will be a signed character as that type can be
+        <para>The type of c will be a signed character as that type can be
         guaranteed to hold the sum so no overflow checking is done.</para>
 
         <para>This policy is documented in <link
