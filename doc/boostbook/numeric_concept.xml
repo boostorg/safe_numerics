@@ -11,9 +11,9 @@
 
     <para>A type is Numeric if it has the properties of a number.</para>
 
-    <para>More specifically, a type T is Numeric if there exists
+    <para>More specifically, a type T is Numeric if there exists a
     specialization of <code>std::numeric_limits&lt;T&gt;</code>. See the
-    documentation for standard library class <code>numeric_limits</code>. The
+    documentation for the standard library class <code>numeric_limits</code>. The
     standard library includes such specializations for all the built-in
     numeric types. Note that this concept is distinct from the C++ standard
     library type traits <code>is_integral</code> and
@@ -42,7 +42,7 @@
           <row>
             <entry><code>t, u</code></entry>
 
-            <entry>An object of type modeling Numeric</entry>
+            <entry>An object of a type modeling Numeric</entry>
           </row>
 
           <row>
