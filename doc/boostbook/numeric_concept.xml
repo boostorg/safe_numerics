@@ -36,7 +36,7 @@
           <row>
             <entry><code>T, U, V</code></entry>
 
-            <entry>A type that is a model of the Numeric</entry>
+            <entry>A type that is a model of Numeric</entry>
           </row>
 
           <row>
