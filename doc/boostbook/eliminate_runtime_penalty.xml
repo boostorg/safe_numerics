@@ -54,12 +54,12 @@
     <para>So the result of the sum of two integer types may result in another
     integer type. If the values are large, the result can exceed the size that
     the resulting integer type can hold. This is what we call "overflow". The
-    C/C++ standard characterises this as undefined behavior and leaves to
+    C/C++ standard characterizes this as undefined behavior and leaves to
     compiler implementors the decision as to how such a situation will be
     handled. Usually, this means just truncating the result to fit into the
     result type - which sometimes will make the result arithmetically
-    incorrect. However, depending on the compiler, compile time switch
-    settings, the such case may result in some sort of run time
+    incorrect. However, depending on the compiler and compile time switch
+    settings, such cases may result in some sort of run time
     exception.</para>
 
     <para>The complete signature for a safe integer type is:</para>
@@ -77,7 +77,7 @@ safe;
     type promotion policy are consistent with those of standard C++ </para>
 
     <para>Up until now, we've focused on detecting when this happens and
-    invoking an interrupt or other kind of error handler.</para>
+    invoking an exception or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
     linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
@@ -117,7 +117,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
 
         <listitem>
           <para>Since the result type is guaranteed to hold the result, there
-          is no need to check for errors - they can't happen !!! The usage of
+          is no need to check for errors - they can't happen!!! The usage of the
           <link
           linkend="safe_numerics.exception_policy.models.trap_exception"><code>trap_exception</code></link>
           exception policy enforces this guarantee.</para>
@@ -173,7 +173,7 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
         <listitem>
           <para>the <link
           linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
-          type promotion policy has rendered the result of the some of two
+          type promotion policy has rendered the result of the sum of two
           <code>integers</code> as a <code>long</code> type.</para>
         </listitem>
 
@@ -184,7 +184,7 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
         </listitem>
 
         <listitem>
-          <para>We do not need to use <code>try/catch</code> idiom to handle
+          <para>We do not need to use the <code>try/catch</code> idiom to handle
           arithmetic errors - we will have none.</para>
         </listitem>
 
@@ -262,15 +262,15 @@ z = &lt;signed char&gt;[-24,82] = 77
     <para><itemizedlist>
         <listitem>
           <para>As before, we define a type <code>safe_t</code> to reflect our
-          view of legal values for this program. This uses <link
+          view of legal values for this program. This uses the <link
           linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
-          type promotion policy as well as <link
+          type promotion policy as well as the <link
           linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
           exception policy to enforce elimination of runtime penalties.</para>
         </listitem>
 
         <listitem>
-          <para>The function f accepts only arguments of type
+          <para>The function <code>f</code> accepts only arguments of type
           <code>safe_t</code> so there is no need to check the input values.
           This performs the functionality of <emphasis><emphasis
           role="bold">programming by contract</emphasis></emphasis> with no
@@ -289,7 +289,7 @@ z = &lt;signed char&gt;[-24,82] = 77
         </listitem>
 
         <listitem>
-          <para>On calling of the function f, arguments of type
+          <para>On calling of the function <code>f</code>, arguments of type
           <code>input_safe_t</code> are converted to values of type
           <code>safe_t</code> . In this particular example, it can be
           determined at compile time that construction of an instance of a
