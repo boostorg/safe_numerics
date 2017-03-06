@@ -112,8 +112,8 @@ using safe_signed_literal = safe_literal_impl<
 
 template<
     std::uintmax_t N,
-    class P = native,
-    class E = throw_exception
+    class P = void,
+    class E = void
 >
 using safe_unsigned_literal = safe_literal_impl<
     typename boost::numeric::unsigned_stored_type<N, N>,
@@ -131,5 +131,33 @@ using safe_unsigned_literal = safe_literal_impl<
 
 } // numeric
 } // boost
+
+/////////////////////////////////////////////////////////////////
+// numeric limits for safe<int> etc.
+
+#include <limits>
+
+namespace std {
+
+template<
+    typename T,
+    T N,
+    class P,
+    class E
+>
+class numeric_limits<boost::numeric::safe_literal_impl<T, N, P, E> >
+    : public std::numeric_limits<T>
+{
+    using SL = boost::numeric::safe_literal_impl<T, N, P, E>;
+public:
+    constexpr static SL min() noexcept {
+        return SL();
+    }
+    constexpr static SL max() noexcept {
+        return SL();
+    }
+};
+
+} // std
 
 #endif // BOOST_NUMERIC_SAFE_LITERAL_HPP

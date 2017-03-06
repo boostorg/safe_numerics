@@ -251,7 +251,6 @@ struct common_promotion_policy {
 
 template<class T, class U>
 struct addition_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -292,6 +291,7 @@ struct addition_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
         using type = safe_base<
             result_base_type,
@@ -379,7 +379,6 @@ constexpr inline operator+=(T & t, const U & u){
 
 template<class T, class U>
 struct subtraction_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -415,6 +414,7 @@ struct subtraction_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
         using type = safe_base<
             result_base_type,
@@ -502,7 +502,6 @@ constexpr inline operator-=(T & t, const U & u){
 
 template<class T, class U>
 struct multiplication_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -512,6 +511,7 @@ struct multiplication_result {
             u_base_type
         >::type;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
         // filter out case were overflow cannot occur
         // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
@@ -635,7 +635,6 @@ constexpr inline operator*=(T & t, const U & u){
 
 template<class T, class U>
 struct division_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -645,6 +644,7 @@ struct division_result {
             u_base_type
         >::type;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
         constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
@@ -773,7 +773,6 @@ constexpr inline operator/=(T & t, const U & u){
 
 template<class T, class U>
 struct modulus_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -784,6 +783,7 @@ struct modulus_result {
         >::type;
 
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
         constexpr static const interval<t_base_type> t_interval{
             base_value(std::numeric_limits<T>::min()),
@@ -813,6 +813,7 @@ struct modulus_result {
             :
                 static_cast<interval<result_base_type>>(r_interval)
             ;
+
         using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -1045,7 +1046,6 @@ constexpr operator<=(const T & lhs, const U & rhs) {
 // left shift
 template<class T, class U>
 struct left_shift_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -1080,6 +1080,7 @@ struct left_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -1124,6 +1125,13 @@ typename boost::lazy_enable_if_c<
 >::type
 constexpr inline operator<<(const T & t, const U & u){
     // INT13-CPP
+    // C++ standards document N4618 & 5.8.2
+    static_assert(
+        std::numeric_limits<T>::is_integer, "shifted value must be an integer"
+    );
+    static_assert(
+        std::numeric_limits<U>::is_integer, "shift amount must be an integer"
+    );
     using lsr = left_shift_result<T, U>;
     return typename lsr::type(
         lsr::return_value(
@@ -1150,7 +1158,6 @@ constexpr inline operator<<=(T & t, const U & u){
 // right shift
 template<class T, class U>
 struct right_shift_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -1185,6 +1192,7 @@ struct right_shift_result {
             static_cast<interval<result_base_type>>(r_interval)
         ;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
             result_base_type,
             type_interval.l,
@@ -1229,6 +1237,12 @@ typename boost::lazy_enable_if_c<
 >::type
 constexpr inline operator>>(const T & t, const U & u){
     // INT13-CPP
+    static_assert(
+        std::numeric_limits<T>::is_integer, "shifted value must be an integer"
+    );
+    static_assert(
+        std::numeric_limits<U>::is_integer, "shift amount must be an integer"
+    );
     using rsr = right_shift_result<T, U>;
     return typename rsr::type(
         rsr::return_value(
@@ -1255,10 +1269,16 @@ constexpr inline operator>>=(T & t, const U & u){
 /////////////////////////////////////////////////////////////////
 // bitwise operators
 
+//  I considered making this illegal on signed integers because
+//  I'm thinking it doesn't make much sense from the point of
+//  view of an applications programmer.  But after running some
+//  test on user code I see it's going to create problems.  So
+//  I'm going to follow strictly the standard sections 5.11-5.13
+//  related to bitwise operators
+
 // operator |
 template<class T, class U>
 struct bitwise_or_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
@@ -1278,6 +1298,7 @@ struct bitwise_or_result {
             base_value(std::numeric_limits<U>::max())
         ;
 
+    using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
             result_base_type,
             0,
@@ -1295,6 +1316,14 @@ typename boost::lazy_enable_if_c<
     bitwise_or_result<T, U>
 >::type
 constexpr inline operator|(const T & t, const U & u){
+    // see above
+    /*
+    static_assert(
+        ! std::numeric_limits<T>::is_signed
+        && ! std::numeric_limits<U>::is_signed,
+        "bitwise or on signed integer types is not always well defined"
+    );
+    */
     using bwr = bitwise_or_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 
@@ -1362,6 +1391,14 @@ typename boost::lazy_enable_if_c<
     bitwise_and_result<T, U>
 >::type
 constexpr inline operator&(const T & t, const U & u){
+    // see above
+    /*
+    static_assert(
+        ! std::numeric_limits<T>::is_signed
+        && ! std::numeric_limits<U>::is_signed,
+        "bitwise and on signed integer types is not always well defined"
+    );
+    */
     using bwr = bitwise_and_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 
@@ -1398,6 +1435,14 @@ typename boost::lazy_enable_if_c<
     bitwise_or_result<T, U>
 >::type
 constexpr inline operator^(const T & t, const U & u){
+    // see above
+    /*
+    static_assert(
+        ! std::numeric_limits<T>::is_signed
+        && ! std::numeric_limits<U>::is_signed,
+        "bitwise xor on signed integer types is not always well defined"
+    );
+    */
     using bwr = bitwise_or_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 

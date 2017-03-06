@@ -42,7 +42,7 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 /*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*13*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+/*13*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
@@ -64,8 +64,8 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 /*27*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*30*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*31*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx"
+/*30*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
 
 #include <boost/preprocessor/stringize.hpp>

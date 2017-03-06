@@ -7,7 +7,7 @@
 
 // NOT using safe numerics - enforce program contract explicitly
 // return total number of minutes
-unsigned int convert(
+unsigned int contract_convert(
     const unsigned int & hours,
     const unsigned int & minutes
 ) {
@@ -26,90 +26,56 @@ unsigned int convert(
 // define convenient typenames for hours and minutes hh:mm
 using hours_t = boost::numeric::safe_unsigned_range<0, 23>;
 using minutes_t = boost::numeric::safe_unsigned_range<0, 59>;
+using minutes_total_t = boost::numeric::safe_unsigned_range<0, 59>;
 
 // return total number of minutes
 // type returned is safe_unsigned_range<0, 24*60 - 1>
-auto safe_convert(const hours_t & hours, const minutes_t & minutes) {
-    // no need for checking as parameters are guaranteed to be within limits
-    // expression below cannot throw ! zero runtime overhead
+auto convert(const hours_t & hours, const minutes_t & minutes) {
+    // no need to test pre-conditions
+    // input parameters are guaranteed to hold legitimate values
+    // no need to test post-conditions
+    // return value guaranteed to hold result
     return hours * 60 + minutes;
+}
+
+unsigned int test(
+    unsigned int hours,
+    unsigned int minutes
+){
+    // problem: checking of externally produced value can be expensive
+    // invalid parameters - detected - but at a heavy cost
+    return contract_convert(hours, minutes);
+
+    // solution: use safe numerics
+    // safe types can be implicitly constructed base types
+    // construction guarentees corectness
+    // return value is known to fit in unsigned int
+    return convert(hours, minutes);
+
+    // actually we don't even need the convert function any more
+    return hours_t(hours) * 60 + minutes_t(minutes);
 }
 
 int main(int argc, const char * argv[]){
     std::cout << "example 8: ";
     std::cout << "enforce contracts with zero runtime cost" << std::endl;
-    std::cout << "Not using safe numerics" << std::endl;
 
-    // problem: checking of externally produced value can be expensive
-    try {
-        convert(10, 83); // invalid parameters - detected - but at a heavy cost
-    }
-    catch(std::exception e){
-        std::cout << "exception thrown for parameter error" << std::endl;
-    }
-
-    // solution: use safe range to restrict parameters
-    std::cout << "Using safe numerics" << std::endl;
+    unsigned int total_minutes;
 
     try {
-        // parameters are guaranteed to meet requirements
-        hours_t hours(10);
-        minutes_t minutes(83);  // interrupt thrown here
-        // so the following will never fail
-        safe_convert(hours, minutes);
+        total_minutes = test(17, 83);
     }
     catch(std::exception e){
-        std::cout
-            << "exception thrown when invalid arguments are constructed"
-            << std::endl;
+        std::cout << "parameter error detected" << std::endl;
     }
 
     try {
-        // parameters are guaranteed to meet requirements when
-        // constructed on the stack
-        safe_convert(hours_t(10), minutes_t(83));
+        total_minutes = test(17, 10);
     }
     catch(std::exception e){
-        std::cout
-            << "exception thrown when invalid arguments are constructed on the stack"
-            << std::endl;
+        // should never arrive here
+        std::cout << "parameter error erroneously detected" << std::endl;
+        return 1;
     }
-
-    try {
-        // parameters are guaranteed to meet requirements when
-        // implicitly constructed to safe types to match function signature
-        safe_convert(10, 83);
-    }
-    catch(std::exception e){
-        std::cout
-            << "exception thrown when invalid arguments are implicitly constructed"
-            << std::endl;
-    }
-
-    try {
-        // the following will never throw as the values meet requirements.
-        const hours_t hours(10);
-        const minutes_t minutes(17);
-
-        // note zero runtime overhead once values are constructed
-
-        // the following will never throw because it cannot be called with
-        // invalid parameters
-        safe_convert(hours, minutes); // zero runtime overhead
-
-        // since safe types can be converted to their underlying unsafe types
-        // we can still call an unsafe function with safe types
-        convert(hours, minutes); // zero (depending on compiler) runtime overhead
-
-        // since unsafe types can be implicitly converted to corresponding
-        // safe types we can just pass the unsafe types.  checking will occur
-        // when the safe type is constructed.
-        safe_convert(10, 17); // runtime cost in creating parameters
-
-    }
-    catch(std::exception e){
-        std::cout << "error detected!" << std::endl;
-    }
-
     return 0;
 }

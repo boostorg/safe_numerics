@@ -80,17 +80,16 @@ void ftest(){
         return;
 }
 
-
 #if ! defined(literal)
 // define a macro for literal types.  This may not be strictly necessary
 // but it provides more information at compile time to the safe numerics
 // library which may result in faster code.
-//#define literal(x) boost::numeric::safe_unsigned_literal<x>{}
-#define literal(x) x
+#define literal(x) boost::numeric::safe_unsigned_literal<x>{}
+//#define literal(x) x
 #endif
 
 // make a 16 bit value from two 8 bit ones
-int16 inline make16(int8 h, int8 l){
+uint16 inline make16(uint8 h, uint8 l){
     return (h << literal(8)) | l;
 }
 

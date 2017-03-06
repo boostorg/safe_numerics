@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <exception>
+#include <limits>
 
 #include "../include/safe_integer.hpp"
 #include "../include/native.hpp"
@@ -38,11 +39,11 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 /* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
 /* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 9*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+/* 9*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*13*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+/*13*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
@@ -60,23 +61,24 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 
 /*24*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*25*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*26*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*27*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+/*26*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*27*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
 /*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*30*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*31*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx"
+/*30*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
 
 #include <boost/preprocessor/stringize.hpp>
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_left_shift(      \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
+
+#define TEST_IMPL(v1, v2, result)   \
+    rval &= test_left_shift(        \
+        v1,                         \
+        v2,                         \
+        BOOST_PP_STRINGIZE(v1),     \
+        BOOST_PP_STRINGIZE(v2),     \
+        result                      \
     );
 /**/
 

@@ -18,21 +18,24 @@
 
 namespace boost {
 namespace numeric {
+    // the number of bits required to render the value in x
     template<typename T>
     typename std::enable_if<
+        // T being unsigned
         ! std::is_signed<T>::value,
-        unsigned int
+        std::uintmax_t
     >::type
     constexpr log(T x){
-        unsigned i = 0;
+        std::uintmax_t i = 0;
         for(; x > 0; ++i)
             x >>= 1;
         return i;
     }
     template<typename T>
     typename std::enable_if<
+        // T being signed
         std::is_signed<T>::value,
-        unsigned int
+        std::uintmax_t
     >::type
     constexpr log(T x){
         if(x < 0)
@@ -41,10 +44,12 @@ namespace numeric {
             static_cast<typename std::make_unsigned<T>::type>(x)
         ) + 1;
     }
+    // return type required to store a particular range
     template<
         std::intmax_t Min,
         std::intmax_t Max
     >
+    // signed range
     using signed_stored_type = typename boost::int_t<
         std::max({log(Min), log(Max)})
     >::least ;
@@ -53,11 +58,10 @@ namespace numeric {
         std::uintmax_t Min,
         std::uintmax_t Max
     >
+    // unsigned range
     using unsigned_stored_type = typename boost::uint_t<
         std::max({log(Min), log(Max)})
     >::least ;
-
-
 } // numeric
 } // boost
 

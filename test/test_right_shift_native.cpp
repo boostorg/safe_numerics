@@ -49,23 +49,23 @@ const char *test_right_shift_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
-/*16*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*17*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*18*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*19*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*20*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*21*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*22*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*23*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+/*16*/ "..xx..xx..xx..xx................",
+/*17*/ "..xx..xx..xx..xx................",
+/*18*/ "..xx..xx..xx..xx................",
+/*19*/ "..xx..xx..xx..xx................",
+/*20*/ "..xx..xx..xx..xx................",
+/*21*/ "..xx..xx..xx..xx................",
+/*22*/ "..xx..xx..xx..xx................",
+/*23*/ "..xx..xx..xx..xx................",
 
-/*24*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*25*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*26*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*27*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*30*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*31*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx"
+/*24*/ "..xx..xx..xx..xx................",
+/*25*/ "..xx..xx..xx..xx................",
+/*26*/ "..xx..xx..xx..xx................",
+/*27*/ "..xx..xx..xx..xx................",
+/*28*/ "..xx..xx..xx..xx................",
+/*29*/ "..xx..xx..xx..xx................",
+/*30*/ "..xx..xx..xx..xx................",
+/*31*/ "..xx..xx..xx..xx................"
 };
 
 #include <boost/preprocessor/stringize.hpp>

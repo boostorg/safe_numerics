@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]){
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;
-        safe<int> x = 127;
+        safe<int> x = INT_MAX;
         safe<int> y = 2;
         safe<int> z;
         // rather than producing and invalid result an exception is thrown

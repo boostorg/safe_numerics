@@ -203,8 +203,8 @@ detected error:converted negative value to unsigned
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has
-    been much written about it has been proposed as an addition to the C++
-    language <citation>Garcia</citation><citation>Crowl &amp;
+    been much written about it and it has been proposed as an addition to the
+    C++ language <citation>Garcia</citation><citation>Crowl &amp;
     Ottosen</citation>. It (mostly) depends upon runtime checking of parameter
     and object values upon entry to and exit from every function. This can
     slow the program down considerably which in turn undermines the main
@@ -224,10 +224,10 @@ detected error:converted negative value to unsigned
 
     <para>In the example above the function convert incurs significant runtime
     cost every time the function is called. By using "safe" types, this cost
-    is moved to moment when the parameters are constructed. Depending on how
-    the program is constructed, this may totally eliminate extraneous
-    computations for parameter requirement type checking. In this scenario,
-    there is no reason to suppress the checking for release mode and our
-    program can be guaranteed to be always arithmetically correct.</para>
+    is moved to moment when the parameters are constructed. This may totally
+    eliminate extraneous computations for parameter requirement type checking.
+    In this scenario, there is no reason to suppress the checking for release
+    mode and our program can be guaranteed to be always arithmetically
+    correct.</para>
   </section>
 </section>

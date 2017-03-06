@@ -21,6 +21,7 @@
 #include <cstdint>     // (u)intmax_t,
 #include <type_traits> // true_type, false_type, is_same
 #include <boost/mpl/if.hpp>
+#include <boost/mpl/min_max.hpp>
 
 #include "utility.hpp"
 #include "safe_common.hpp"
@@ -325,17 +326,108 @@ struct automatic {
     }
 
     ///////////////////////////////////////////////////////////////////////
+    // temporary version 
+/*
+    template<typename T, typename U>
+    struct left_shift_result {
+        // calculate the number of bits were going to need to hold
+        // the shifted result
+        constexpr static int result_base_digits = boost::static_signed_min<
+            // the largest number of bits possible
+            std::numeric_limits<std::uintmax_t>::digits,
+                // the largest number of bits that the shifted result might be
+                std::numeric_limits<T>::digits +
+                // the number of bits in the max possible value of U
+                boost::static_signed_min<
+                    // the largest number of bits of any type
+                    std::numeric_limits<std::uintmax_t>::digits,
+                    // the number bits to hold the maximum value of U
+                    // static_cast<long>(std::numeric_limits<U>::max())
+                    std::numeric_limits<U>::max() % std::numeric_limits<int>::max()
+                >::value
+        >::value;
+
+        using result_base_type = typename boost::mpl::if_c<
+            std::numeric_limits<T>::is_signed,
+            typename boost::int_t<result_base_digits>::least,
+            typename boost::uint_t<result_base_digits>::least
+        >::type;
+
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+        constexpr static const interval<t_base_type> t_interval{
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
+        };
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+        // when we add the temporary intervals above, we'll get a new interval
+        // with the correct range for the shifted result !
+        constexpr static const checked_result<interval<result_base_type>> r_interval
+            = left_shift<result_base_type>(t_interval, u_interval);
+            
+        constexpr static const interval<result_base_type> result_interval =
+            r_interval.no_exception() ?
+                static_cast<interval<result_base_type>>(r_interval)
+            :
+                interval<result_base_type>{}
+            ;
+        using type = typename result_type<
+            result_base_type,
+            result_interval.l,
+            result_interval.u
+        >::type;
+
+    };
+*/
     template<typename T, typename U>
     struct left_shift_result {
         using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
         constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<t_base_type>::min()),
-            base_value(std::numeric_limits<t_base_type>::max())
+            base_value(std::numeric_limits<T>::min()),
+            base_value(std::numeric_limits<T>::max())
         };
+
+        constexpr static const interval<u_base_type> u_interval{
+            base_value(std::numeric_limits<U>::min()),
+            base_value(std::numeric_limits<U>::max())
+        };
+
+        constexpr static const checked_result<interval<std::uintmax_t>> r_interval =
+            left_shift<std::uintmax_t>(t_interval, u_interval);
+
+        constexpr static const interval<std::uintmax_t> result_interval =
+            r_interval.no_exception() ?
+            static_cast<interval<std::uintmax_t>>(r_interval) :
+            interval<std::uintmax_t>()
+        ;
+
+        constexpr static const std::uintmax_t upper_bound =
+            r_interval.no_exception() ?
+            static_cast<interval<std::uintmax_t>>(r_interval).u :
+            std::numeric_limits<std::uintmax_t>::max();
+
+        constexpr static const std::uintmax_t lower_bound =
+            r_interval.no_exception() ?
+            static_cast<interval<std::uintmax_t>>(r_interval).l :
+            std::numeric_limits<std::uintmax_t>::min();
+
+        using r_base_type = typename boost::mpl::if_c<
+            r_interval.no_exception(),
+            typename boost::numeric::unsigned_stored_type<
+                lower_bound,
+                upper_bound
+            >,
+            std::uintmax_t
+        >::type;
+
         using type = typename result_type<
-            T,
-            t_interval.l,
-            t_interval.u
+            r_base_type,
+            lower_bound,
+            upper_bound
         >::type;
     };
 

@@ -627,61 +627,83 @@ constexpr modulus(
 
 namespace detail {
 
+// INT34-C C++
+
+// standard paragraph 5.8 / 2
+// The value of E1 << E2 is E1 left-shifted E2 bit positions;
+// vacated bits are zero-filled.
 template<class R, class T, class U>
 typename std::enable_if<
-    ! std::numeric_limits<U>::is_signed,
+    // If E1 has an unsigned type
+    ! std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr check_shift(
+constexpr checked_left_shift(
     const T & t,
     const U & u
-) {
-    // INT34-C C++ standard paragraph 5.8
-    if(u > std::numeric_limits<T>::digits){
+) noexcept {
+    // the value of the result is E1 x 2^E2, reduced modulo one more than
+    // the maximum value representable in the result type.
+    /*
+    if(u >= std::numeric_limits<T>::digits){
+        return cast<R>(0);
+    }
+    */
+    // note: we are intentionally varying from the standards language here.
+    // a safe<unsigned> is meant to be value preserving.  That is t << u should
+    // equal an arithmetically correct value or fail in some visible manner.
+    // So we're going to fail if are shift loses higher order bits.
+    //
+    // note: there is a good argument for following exactly the standards
+    // language above.  Reasonable people can disagree.
+
+    if(u == 0){
+        // behavior is undefined
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting all bits off the left is undefined behavior"
+        );
+    }
+
+    const int max_shift = std::numeric_limits<R>::digits - u;
+
+    if(max_shift < 0
+    || u >= max_shift
+    || t >= (cast<R>(1) << max_shift)
+    ){
+        // behavior is undefined
         return checked_result<R>(
            exception_type::domain_error,
            "shifting more bits than available is undefined behavior"
         );
     }
-    // the following are prohibited by the standard.  However
-    // on all known modern machines with will yield the correct
-    // result.  I'll err on the conservative side and trap this
-    // as undefined behavior.  But someone is going to complain
-    if(t < 0){
-        return checked_result<R>(
-           exception_type::domain_error,
-           "shifting a negative value is undefined behavior"
-        );
-    }
-    return cast<R>(t);
+
+    return cast<R>(t) << u;
 }
 
 template<class R, class T, class U>
 typename std::enable_if<
-    std::numeric_limits<U>::is_signed,
+    // if E1 has a signed type
+    std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr check_shift(
+constexpr checked_left_shift(
     const T & t,
     const U & u
 ) {
-    // INT34-C and C++ standard paragraph 5.8
-    if(std::numeric_limits<U>::max() > std::numeric_limits<T>::digits){
-        if(u > std::numeric_limits<T>::digits){
-            return checked_result<R>(
-               exception_type::domain_error,
-               "shifting more bits than available is undefined behavior"
-            );
-        }
-    }
-    // the following are prohibited by the standard.  However
-    // on all known modern machines with will yield the correct
-    // result.  I'll err on the conservative side and trap this
-    // as undefined behavior.  But someone is going to complain
-    if(u < 0){
+    // and E1 x 2^E2 is representable in the corresponding
+    // unsigned type of the result type,
+
+    const int max_shift = std::numeric_limits<R>::digits - u - 1;
+
+    if(max_shift < 0
+    || u >= max_shift
+    || t >= (cast<R>(1) << max_shift)
+    ){
+        // behavior is undefined
         return checked_result<R>(
            exception_type::domain_error,
-           "shifting negative amount is undefined behavior"
+           "shifting more bits than available is undefined behavior"
         );
     }
     if(t < 0){
@@ -690,59 +712,8 @@ constexpr check_shift(
            "shifting a negative value is undefined behavior"
         );
     }
-    return cast<R>(t);
-}
-
-template<class R, class U>
-typename std::enable_if<
-    ! std::numeric_limits<R>::is_signed,
-    checked_result<R>
->::type
-constexpr left_shift(
-    const R & r,
-    const U & u
-){
-    return static_cast<R>(r << u);
-}
-
-template<class R, class U>
-typename std::enable_if<
-    std::numeric_limits<R>::is_signed,
-    checked_result<R>
->::type
-constexpr left_shift(
-    const R & r,
-    const U & u
-){
-    // INT13-C. Use bitwise operators only on unsigned operands
-    // cannot shift negative values to the left
-    return (r < 0) ?
-        checked_result<R>(
-           exception_type::domain_error,
-           "shifting negative values off left is undefined"
-        )
-    :
-        checked_result<R>(r << u)
-    ;
-
-    /*
-    // if a negative value is shifted left, then it could all of
-    // a sudden change sign - we inhibit this here.
-    if(r < 0){
-        U ui = u;
-        R ri = r;
-        while(ui-- > 0){
-            ri <<= 1;
-            if(ri >= 0){
-                return checked_result<R>(
-                   exception_type::domain_error,
-                   "shifting negative values off left is undefined"
-                );
-            }
-        }
-    }
-    return r;
-    */
+    // shift and convert the resulting value to the result type
+    return cast<R>(t) << u;
 }
 
 } // detail
@@ -752,19 +723,73 @@ template<class R, class T, class U>
 constexpr checked_result<R> left_shift(
     const T & t,
     const U & u
-) {
-    // INT13-C Note: We don't enforce recommendation as acually written
-    // as it would break too many programs.  Specifically, we permit signed
-    // integer operands but require that they not be negative.  This we can only
-    // enforce at runtime.
-
-    const checked_result<R> rx = detail::check_shift<R>(t, u);
-
-    if(! rx.no_exception())
-        return rx;
-
-    return detail::left_shift<R>(rx, u);
+){
+    // INT13-C Note:
+    // on all known modern machines with will yield the correct
+    // result.  I'll err on the conservative side and trap this
+    // as undefined behavior.  But someone is going to complain
+    if(u < 0){
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting negative amount is undefined behavior"
+        );
+    }
+    if(t == 0)
+        return cast<R>(0);
+    return detail::checked_left_shift<R>(t, u);
 }
+
+namespace detail {
+
+// standard paragraph 5.8 / 3
+// The value of E1 >> E2 is E1 right-shifted E2 bit positions;
+template<class R, class T, class U>
+typename std::enable_if<
+    // If E1 has an unsigned type
+    ! std::numeric_limits<T>::is_signed,
+    checked_result<R>
+>::type
+constexpr checked_right_shift(
+    const T & t,
+    const U & u
+) noexcept {
+    // the value of the result is E1 / 2^E2, reduced modulo one more than
+    // the maximum value representable in the result type.
+    if(u > std::numeric_limits<T>::digits){
+        return cast<R>(0);
+    }
+    return cast<R>(t >> u);
+}
+
+template<class R, class T, class U>
+typename std::enable_if<
+    // or if E1 has a signed type
+    std::numeric_limits<T>::is_signed,
+    checked_result<R>
+>::type
+constexpr checked_right_shift(
+    const T & t,
+    const U & u
+) {
+    // and a non-negative value
+    if(t < 0){
+        return checked_result<R>(
+           exception_type::domain_error,
+           "shifting a negative value is undefined behavior"
+        );
+    }
+
+    if(u >= std::numeric_limits<T>::digits){
+        return checked_result<R>(
+            exception_type::domain_error,
+            "shifting more bits than argument size is an error"
+       );
+    }
+    // the value is the integral part of E1 / 2^E2,
+    return cast<R>(t) >> u;
+}
+
+} // detail
 
 // right shift
 template<class R, class T, class U>
@@ -772,23 +797,18 @@ constexpr checked_result<R> right_shift(
     const T & t,
     const U & u
 ) {
-    // INT13-C Note: We don't enforce recommendation as acually written
-    // as it would break too many programs.  Specifically, we permit signed
-    // integer operand but require that it not be negative.  This we can only
-    // enforce at runtime.
-
-    const checked_result<R> rx = detail::check_shift<R>(t, u);
-
-    if(! rx.no_exception())
-        return rx;
-
-    if(u > std::numeric_limits<T>::digits){
+    // on all known modern machines with will yield the correct
+    // result.  I'll err on the conservative side and trap this
+    // as undefined behavior.  But someone is going to complain
+    if(u < 0){
         return checked_result<R>(
            exception_type::domain_error,
-           "shifting more bits than available is undefined behavior"
+           "shifting negative amount is undefined behavior"
         );
     }
-    return static_cast<R>(rx) >> u;
+    if(t == 0)
+        return cast<R>(0);
+    return detail::checked_right_shift<R>(t, u);
 }
 
 ///////////////////////////////////

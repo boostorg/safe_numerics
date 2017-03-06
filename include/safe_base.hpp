@@ -257,9 +257,12 @@ public:
     constexpr auto operator-() const { // unary minus
         return 0 - *this;
     }
+    constexpr auto operator+() const { // unary plus
+        return *this;
+    }
     template<class T>
-    constexpr auto operator~() const { // unary minus
-        return ~Stored(0) ^ *this;
+    constexpr auto operator~() const { // complement
+        return ~Stored(0u) ^ *this;
     }
 };
 
