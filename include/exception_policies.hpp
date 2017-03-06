@@ -16,6 +16,7 @@
 #include <functional>
 #include <type_traits> // is_base_of, is_same
 #include <exception>
+#include <boost/throw_exception.hpp>
 
 namespace boost {
 namespace numeric {
@@ -73,19 +74,19 @@ struct throw_exception {
     static void no_error(const char *) {
     }
     static void unintialized_error(const char * message) {
-        throw std::invalid_argument(message);
+        boost::throw_exception((message));
     }
     static void overflow_error(const char * message) {
-        throw std::overflow_error(message);
+        boost::throw_exception((message));
     }
     static void underflow_error(const char * message) {
-        throw std::underflow_error(message);
+        boost::throw_exception((message));
     }
     static void range_error(const char * message) {
-        throw std::range_error(message);
+        boost::throw_exception((message));
     }
     static void domain_error(const char * message) {
-        throw std::domain_error(message);
+        boost::throw_exception((message));
     }
 };
 
