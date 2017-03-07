@@ -74,19 +74,19 @@ struct throw_exception {
     static void no_error(const char *) {
     }
     static void unintialized_error(const char * message) {
-        boost::throw_exception((message));
+        boost::throw_exception(std::invalid_argument(message));
     }
     static void overflow_error(const char * message) {
-        boost::throw_exception((message));
+        boost::throw_exception(std::overflow_error(message));
     }
     static void underflow_error(const char * message) {
-        boost::throw_exception((message));
+        boost::throw_exception(std::underflow_error(message));
     }
     static void range_error(const char * message) {
-        boost::throw_exception((message));
+        boost::throw_exception(std::range_error(message));
     }
     static void domain_error(const char * message) {
-        boost::throw_exception((message));
+        boost::throw_exception(std::domain_error(message));
     }
 };
 
