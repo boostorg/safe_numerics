@@ -101,10 +101,10 @@ constexpr interval<double>::interval() :
 namespace {
 
 template<typename R>
-constexpr checked_result<interval<R>> failed_result(
-    exception_type::domain_error,
-    "indefinite interval"
-);
+constexpr checked_result<interval<R>> failed_result = {
+	exception_type::domain_error,
+	"indefinite interval"
+};
 
 // create constexpr versions of stl algorthms which are not (yet)
 // constexpr.
