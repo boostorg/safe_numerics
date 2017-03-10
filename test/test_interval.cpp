@@ -2,13 +2,16 @@
 #include <iostream>
 #include <ostream>
 #include <cstdint>
-#include <cxxabi.h>
 #include <algorithm> // max, min
 
 #include <boost/logic/tribool_io.hpp>
 
 #include "../include/checked_result.hpp"
 #include "../include/interval.hpp"
+
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif
 
 bool test1(){
     using namespace boost::numeric;
@@ -130,17 +133,29 @@ namespace test4 {
         std::cout << "test4::test1 int8_t / int8_t new range ignoring zero" << std::endl;
         const interval<std::int8_t> t;
         std::cout
-            << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#else
+			<< typeid(t).name()
+#endif
             << " t = "
             << t << std::endl;
         const interval<std::int8_t> u;
         std::cout
-            << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#else
+			<< typeid(u).name()
+#endif
             << " u = "
             << u << std::endl;
         const interval<max_t> rx = r(t, u);
         std::cout
-            << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#else
+			<< typeid(rx).name()
+#endif
             << " rx = "
             << rx
             << std::endl;
@@ -152,17 +167,29 @@ namespace test4 {
         std::cout << "test4::test2 int8_t / int64_t new range ignoring zero" << std::endl;
         const interval<std::int8_t> t;
         std::cout
-            << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#else
+			<< typeid(t).name()
+#endif
             << " t = "
             << t << std::endl;
         const interval<std::int64_t> u;
         std::cout
-            << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#else
+			<< typeid(u).name()
+#endif
             << " u = "
             << u << std::endl;
         const interval<max_t> rx = r(t, u);
         std::cout
-            << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#else
+			<< typeid(rx).name()
+#endif
             << " rx = "
             << rx
             << std::endl;
@@ -174,17 +201,29 @@ namespace test4 {
         std::cout << "test4::test3  int8_t / int64_t new range ignoring zer0" << std::endl;
         const interval<std::int8_t> t;
         std::cout
-            << abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t).name(),0,0,&status)
+#else
+			<< typeid(t).name()
+#endif
             << " t = "
             << t << std::endl;
         const interval<std::uint64_t> u;
         std::cout
-            << abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u).name(),0,0,&status)
+#else
+			<< typeid(u).name()
+#endif
             << " u = "
             << u << std::endl;
         const checked_result<interval<max_t>> rx = r(t, u);
         std::cout
-            << abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(rx).name(),0,0,&status)
+#else
+			<< typeid(rx).name()
+#endif
             << " rx = "
             << rx
             << std::endl;
@@ -200,7 +239,11 @@ namespace test4 {
             base_value(std::numeric_limits<T>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#else
+			<< typeid(t_interval).name()
+#endif
             << " t_interval = "
             << t_interval
             << std::endl;
@@ -209,7 +252,11 @@ namespace test4 {
             base_value(std::numeric_limits<U>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#else
+			<< typeid(u_interval).name()
+#endif
             << " u_interval = "
             << u_interval
             << std::endl;
@@ -217,7 +264,11 @@ namespace test4 {
         const checked_result<interval<R> > r_interval
             = multiply<R>(t_interval, u_interval);
         std::cout
-            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#else
+			<< typeid(r_interval).name()
+#endif
             << " r_interval = "
             << r_interval
             << std::endl;
@@ -233,7 +284,11 @@ namespace test4 {
             base_value(std::numeric_limits<T>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#else
+			<< typeid(t_interval).name()
+#endif
             << " t_interval = "
             << t_interval
             << std::endl;
@@ -242,7 +297,11 @@ namespace test4 {
             base_value(std::numeric_limits<U>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#else
+			<< typeid(u_interval).name()
+#endif
             << " u_interval = "
             << u_interval
             << std::endl;
@@ -250,7 +309,11 @@ namespace test4 {
         const checked_result<interval<R> > r_interval
             = divide_nz<R>(t_interval, u_interval);
         std::cout
-            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#else
+			<< typeid(r_interval).name()
+#endif
             << " r_interval = "
             << r_interval
             << std::endl;
@@ -266,7 +329,11 @@ namespace test4 {
             base_value(std::numeric_limits<T>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#else
+			<< typeid(t_interval).name()
+#endif
             << " t_interval = "
             << t_interval
             << std::endl;
@@ -275,7 +342,11 @@ namespace test4 {
             base_value(std::numeric_limits<U>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#else
+			<< typeid(u_interval).name()
+#endif
             << " u_interval = "
             << u_interval
             << std::endl;
@@ -283,7 +354,11 @@ namespace test4 {
         const checked_result<interval<R> > r_interval
             = subtract<R>(t_interval, u_interval);
         std::cout
-            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#else
+			<< typeid(r_interval).name()
+#endif
             << " r_interval = "
             << r_interval
             << std::endl;
@@ -299,7 +374,11 @@ namespace test4 {
             base_value(std::numeric_limits<T>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(t_interval).name(),0,0,&status)
+#else
+			<< typeid(t_interval).name()
+#endif
             << " t_interval = "
             << t_interval
             << std::endl;
@@ -308,7 +387,11 @@ namespace test4 {
             base_value(std::numeric_limits<U>::max())
         };
         std::cout
-            << abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(u_interval).name(),0,0,&status)
+#else
+			<< typeid(u_interval).name()
+#endif
             << " u_interval = "
             << u_interval
             << std::endl;
@@ -316,7 +399,11 @@ namespace test4 {
         const checked_result<interval<R> > r_interval
             = left_shift<R>(t_interval, u_interval);
         std::cout
-            << abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#ifdef __GNUC__
+			<< abi::__cxa_demangle(typeid(r_interval).name(),0,0,&status)
+#else
+			<< typeid(r_interval).name()
+#endif
             << " r_interval = "
             << r_interval
             << std::endl;

@@ -14,24 +14,24 @@ void display_log(T Max){
 
 bool test_log(){
     using namespace boost::numeric;
-    assert(log(127u) == 7); // 7 bits
-    assert(log(127u) == 7); // 7 bits
-    assert(log(128u) == 8); // 8 bits
-    assert(log(129u) == 8); // 8 bits
-    assert(log(255u) == 8); // 8 bits
-    assert(log(256u) == 9); // 9 bits
+    assert(boost::numeric::log(127u) == 7); // 7 bits
+    assert(boost::numeric::log(127u) == 7); // 7 bits
+    assert(boost::numeric::log(128u) == 8); // 8 bits
+    assert(boost::numeric::log(129u) == 8); // 8 bits
+    assert(boost::numeric::log(255u) == 8); // 8 bits
+    assert(boost::numeric::log(256u) == 9); // 9 bits
 
-    assert(log(127) == 8); // 7 bits + 1 sign bit
-    assert(log(128) == 9); // 8 bits + 1 sign bit
-    assert(log(129) == 9); // 8 bits + 1 sign bit
-    assert(log(255) == 9); // 8 bits + 1 sign bit
-    assert(log(256) == 10); // 9 bits + 1 sign bit
+    assert(boost::numeric::log(127) == 8); // 7 bits + 1 sign bit
+    assert(boost::numeric::log(128) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(129) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(255) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(256) == 10); // 9 bits + 1 sign bit
 
-    assert(log(-127) == 8); // 7 bits + 1 sign bit
-    assert(log(-128) == 8); // 7 bits + 1 sign bit
-    assert(log(-129) == 9); // 8 bits + 1 sign bit
-    assert(log(-255) == 9); // 8 bits + 1 sign bit
-    assert(log(-256) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(-127) == 8); // 7 bits + 1 sign bit
+    assert(boost::numeric::log(-128) == 8); // 7 bits + 1 sign bit
+    assert(boost::numeric::log(-129) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(-255) == 9); // 8 bits + 1 sign bit
+    assert(boost::numeric::log(-256) == 9); // 8 bits + 1 sign bit
     return true;
 }
 
