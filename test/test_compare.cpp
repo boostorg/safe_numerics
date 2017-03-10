@@ -7,9 +7,12 @@
 #include <iostream>
 #include <cassert>
 #include <typeinfo>
-#include <cxxabi.h> 
 
 #include "../include/safe_integer.hpp"
+
+#ifdef __GNU_C__
+
+#include <cxxabi.h> 
 
 template<class T1, class T2>
 void print_argument_types(
@@ -24,6 +27,22 @@ void print_argument_types(
         << abi::__cxa_demangle(ti1.name(),0,0,&status) << ','
         << abi::__cxa_demangle(ti2.name(),0,0,&status) << ',';
 }
+#else
+
+template<class T1, class T2>
+void print_argument_types(
+    T1 v1,
+    T2 v2
+){
+    const std::type_info & ti1 = typeid(v1);
+    const std::type_info & ti2 = typeid(v2);
+    int status;
+
+    std::cout
+        << ti1.name() << ','
+        << ti2.name() << ',';
+}
+#endif
 
 template<class T1, class T2>
 bool test_compare_detail(
@@ -184,5 +203,5 @@ int main(int argc, char * argv[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return ! rval ;
+   return ! rval ;
 }

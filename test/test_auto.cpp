@@ -6,26 +6,27 @@
 
 int test_log(){
     using namespace boost::numeric;
-    assert(log(127u) == 7);
-    assert(log(128u) == 8);
-    assert(log(129u) == 8);
-    assert(log(255u) == 8);
-    assert(log(256u) == 9);
+    assert(boost::numeric::log(127u) == 7);
+    assert(boost::numeric::log(128u) == 8);
+    assert(boost::numeric::log(129u) == 8);
+    assert(boost::numeric::log(255u) == 8);
+    assert(boost::numeric::log(256u) == 9);
 
-    assert(log(127) == 8);
-    assert(log(128) == 9);
-    assert(log(129) == 9);
-    assert(log(255) == 9);
-    assert(log(256) == 10);
+    assert(boost::numeric::log(127) == 8);
+    assert(boost::numeric::log(128) == 9);
+    assert(boost::numeric::log(129) == 9);
+    assert(boost::numeric::log(255) == 9);
+    assert(boost::numeric::log(256) == 10);
 
-    assert(log(-127) == 8);
-    assert(log(-128) == 8);
-    assert(log(-129) == 9);
-    assert(log(-255) == 9);
-    assert(log(-256) == 9);
+    assert(boost::numeric::log(-127) == 8);
+    assert(boost::numeric::log(-128) == 8);
+    assert(boost::numeric::log(-129) == 9);
+    assert(boost::numeric::log(-255) == 9);
+    assert(boost::numeric::log(-256) == 9);
     return 0;
 }
 
+#ifdef __GNUC__
 #include <cxxabi.h>
 
 template<class T>
@@ -35,6 +36,17 @@ void print_argument_type(const T & t){
     std::cout
         << abi::__cxa_demangle(ti.name(),0,0,&status) << ' ' << t << std::endl;
 }
+
+#else
+template<class T>
+void print_argument_type(const T & t){
+    const std::type_info & ti = typeid(T);
+    int status;
+    std::cout
+        << ti.name() << std::endl;
+}
+
+#endif
 
 int test_auto(){
     using namespace boost::numeric;

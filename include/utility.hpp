@@ -41,12 +41,23 @@ namespace numeric {
             static_cast<typename std::make_unsigned<T>::type>(x)
         ) + 1;
     }
+
+#ifdef BOOST_MSVC
+	//
+	// If we use std::max in here we get internal compiler errors
+	// (tested VC2017) ...
+	//
+	template <class T> inline constexpr T msvc_max(T x, T y)
+	{
+		return x > y ? x : y;
+	}
+
     template<
         std::intmax_t Min,
         std::intmax_t Max
     >
     using signed_stored_type = typename boost::int_t<
-        std::max({log(Min), log(Max)})
+		msvc_max(log(Min), log(Max))
     >::least ;
 
     template<
@@ -54,9 +65,25 @@ namespace numeric {
         std::uintmax_t Max
     >
     using unsigned_stored_type = typename boost::uint_t<
-        std::max({log(Min), log(Max)})
+		msvc_max(log(Min), log(Max))
     >::least ;
+#else
+    template<
+        std::intmax_t Min,
+        std::intmax_t Max
+    >
+	using signed_stored_type = typename boost::int_t<
+		std::max({ log(Min), log(Max) })
+	>::least;
 
+	template<
+		std::uintmax_t Min,
+		std::uintmax_t Max
+	>
+	using unsigned_stored_type = typename boost::uint_t<
+		std::max({ log(Min), log(Max) })
+	>::least; 
+#endif
 
 } // numeric
 } // boost

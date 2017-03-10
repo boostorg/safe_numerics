@@ -9,7 +9,9 @@
 
 #include <iostream>
 #include <exception>
+#ifdef __GNUC__
 #include <cxxabi.h>
+#endif
 
 #include "../include/safe_integer.hpp"
 
@@ -44,7 +46,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     t1 * v2;
@@ -61,7 +67,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     t1 * v2;
@@ -89,7 +99,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     v1 * t2;
@@ -106,7 +120,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     v1 * t2;
@@ -136,7 +154,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     t1 * t2;
@@ -153,7 +175,11 @@ bool test_multiply(
                 int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#ifdef __GNUC__
+					<< abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+#else
+					<< ti.name() << '\n'
+#endif
                     << std::endl;
                 try{
                     t1 * t2;
