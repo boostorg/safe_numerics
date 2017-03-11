@@ -28,6 +28,7 @@
 #include "safe_compare.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
+#include "io.hpp"
 
 namespace boost {
 namespace numeric {
@@ -1426,61 +1427,40 @@ constexpr inline operator^=(T & t, const U & u){
 // stream operators
 
 template<
+    class CharT,
+    class Traits,
     class T,
     T Min,
     T Max,
     class P, // promotion polic
     class E  // exception policy
 >
-std::ostream & operator<<(
-    std::ostream & os,
+inline std::basic_ostream<CharT, Traits> &
+operator<<(std::basic_ostream<CharT, Traits> & os,
     const safe_base<T, Min, Max, P, E> & t
 ){
-    return os << (
-        (std::is_same<T, signed char>::value
-        || std::is_same<T, unsigned char>::value
-        ) ?
-            static_cast<int>(t.m_t)
-        :
-            t.m_t
-    );
-}
-
-namespace {
-    template<class T>
-    struct Temp {
-        T value;
-    }; // primary template
-    template<> struct Temp<signed char> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<unsigned char> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<signed wchar_t> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<unsigned wchar_t> {
-        int value;
-    }; // secondary template
+    return os << detail::output(static_cast<T>(t));
 }
 
 template<
+    class CharT,
+    class Traits,
     class T,
     T Min,
     T Max,
     class P, // promotion polic
     class E  // exception policy
 >
-std::istream & operator>>(
-    std::istream & is,
+inline std::basic_istream<CharT, Traits> &
+operator>>(
+    std::basic_istream<CharT, Traits> & is,
     safe_base<T, Min, Max, P, E> & t
 ){
-    Temp<T> tx;
-    is >> tx.value;
+    detail::input_t<T> value;
+    is >> value;
     if(is.fail())
         E::domain_error("error in file input");
-    t = tx.value;
+    t = value;
     return is;
 }
 

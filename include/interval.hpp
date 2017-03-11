@@ -25,6 +25,7 @@
 #include "utility.hpp" // log
 #include "checked_result.hpp"
 #include "checked.hpp"
+#include "io.hpp"
 
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
@@ -437,32 +438,13 @@ constexpr boost::logic::tribool operator>=(
     return ! (t < u);
 }
 
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(std::basic_ostream<CharT, Traits> & os, const interval<T> & i){
+    return os << '[' << detail::output(i.l) << ',' << detail::output(i.u) << ']';
+}
+
 } // numeric
 } // boost
-
-#include <iosfwd>
-
-namespace std {
-
-template<typename T>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> & i){
-    os << "[" << i.l << "," << i.u << "]";
-    return os;
-}
-
-template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<unsigned char> & i){
-    os << "[" << (unsigned)i.l << "," << (unsigned)i.u << "]";
-    return os;
-}
-
-template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<signed char> & i){
-    os << "[" << (int)i.l << "," << (int)i.u << "]";
-    return os;
-}
-
-} // std
-
 
 #endif // BOOST_NUMERIC_INTERVAL_HPP

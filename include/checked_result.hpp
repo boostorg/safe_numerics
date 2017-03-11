@@ -15,12 +15,15 @@
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 
+#include <istream>
+#include <ostream>
 #include <cassert>
 #include <boost/logic/tribool.hpp>
 
 #include "safe_common.hpp"
 #include "safe_compare.hpp"
 #include "exception.hpp"
+#include "io.hpp"
 
 namespace boost {
 namespace numeric {
@@ -131,75 +134,31 @@ constexpr bool no_exception(const checked_result<R> & cr){
     return cr.no_exception();
 }
 
-} // numeric
-} // boost
-
-#include <ostream>
-#include <istream>
-
-namespace std {
-
-template<typename R>
-std::ostream & operator<<(
-    std::ostream & os,
-    const boost::numeric::checked_result<R> & r
-){
+template<typename CharT, typename Traits, typename R>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(std::basic_ostream<CharT, Traits> & os,
+    const checked_result<R> & r){
     if(r.no_exception())
-        os << static_cast<R>(r);
-    else
-        os << r.m_msg; //static_cast<const char *>(r);
-    return os;
-}
-
-template<>
-std::ostream & operator<<(
-    std::ostream & os,
-    const boost::numeric::checked_result<std::int8_t> & r
-){
-    if(r.no_exception())
-        os << static_cast<std::int16_t>(r);
-    else
-        os << r.m_msg; //static_cast<const char *>(r);
-    return os;
-}
-
-template<>
-std::ostream & operator<<(
-    std::ostream & os,
-    const boost::numeric::checked_result<std::uint8_t> & r
-){
-    if(r.no_exception())
-        os << static_cast<std::uint16_t>(r);
+        os << detail::output(r.m_r);
     else
         os << r.m_msg; //static_cast<const char *>(r);
     return os;
 }
 
 /*
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<R> & r){
-    is >> r.m_r;
-    return is;
-}
-
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<std::int8_t> & r){
-    std::int16_t i;
-    is >> i;
-    r.m_r = i;
-    return is;
-}
-
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<std::uint8_t> & r){
-    std::uint16_t i;
-    is >> i;
-    r.m_r = i;
+template<typename CharT, typename Traits, typename R>
+inline std::basic_istream<CharT, Traits> &
+operator>>(std::basic_istream<CharT, Traits> & is,
+    checked_result<R> & r){
+    detail::input_t<R> value;
+    is >> value;
+    r.m_r = value;
     return is;
 }
 */
 
-} // std
+} // numeric
+} // boost
 
 /////////////////////////////////////////////////////////////////
 // numeric limits for checked<R>

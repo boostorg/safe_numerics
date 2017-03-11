@@ -52,28 +52,15 @@ constexpr T base_value(
     return N;
 }
 
-template<typename T, T N, class P, class E>
-std::ostream & operator<<(
-    std::ostream & os,
-    const safe_literal_impl<T, N, P, E> & t
-){
-    return os << (
-        (std::is_same<T, signed char>::value
-        || std::is_same<T, unsigned char>::value
-        ) ?
-            static_cast<int>(N)
-        :
-            N
-    );
+template<class CharT, class Traits, class T, T N, class P, class E>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(std::basic_ostream<CharT, Traits> & os,
+    const safe_literal_impl<T, N, P, E> & t){
+    return os << detail::output(N);
 }
 
 template<typename T, T N, class P, class E>
 class safe_literal_impl {
-    friend std::ostream & operator<< <T, N, P, E> (
-        std::ostream & os,
-        const safe_literal_impl & t
-    );
-
 public:
 
     ////////////////////////////////////////////////////////////
