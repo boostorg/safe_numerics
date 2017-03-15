@@ -450,13 +450,13 @@ std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> &
     return os;
 }
 
-template<>
+template<> inline
 std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<unsigned char> & i){
     os << "[" << (unsigned)i.l << "," << (unsigned)i.u << "]";
     return os;
 }
 
-template<>
+template<> inline
 std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<signed char> & i){
     os << "[" << (int)i.l << "," << (int)i.u << "]";
     return os;
