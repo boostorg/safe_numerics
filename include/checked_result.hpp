@@ -151,7 +151,7 @@ std::ostream & operator<<(
     return os;
 }
 
-template<>
+template<> inline
 std::ostream & operator<<(
     std::ostream & os,
     const boost::numeric::checked_result<std::int8_t> & r
@@ -163,7 +163,7 @@ std::ostream & operator<<(
     return os;
 }
 
-template<>
+template<> inline
 std::ostream & operator<<(
     std::ostream & os,
     const boost::numeric::checked_result<std::uint8_t> & r
