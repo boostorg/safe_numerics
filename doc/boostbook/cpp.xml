@@ -121,11 +121,11 @@
     other problems), make our algorithm testing environment differ from our
     target environment. We can address this by defining INT as a safe integer
     with a range of 8 bits. By using a custom promotion policy, we can force
-    the evaluation of C++ expressions test environment to be the same as that
-    in the target environment. Also in our target environment, we can trap any
-    overflows or other errors. So we can write and test our code on our
-    desktop system and download the code to the target knowing that it just
-    has to work. This is a huge time saver and confidence builder. The
+    the evaluation of C++ expressions int the test environment to be the same
+    as that in the target environment. Also in our target environment, we can
+    trap any overflows or other errors. So we can write and test our code on
+    our desktop system and download the code to the target knowing that it
+    just has to work. This is a huge time saver and confidence builder. The
     following code is taken from a real project which has used this
     method.</para>
 
@@ -182,8 +182,6 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
 ...</programlisting>
 
     <para>Note the usage of the compile time trap policy in order to detect at
-    compile time any possible error conditions. As I write this, this is still
-    being refined. Hopefully this will be available by the time you read
-    this.</para>
+    compile time any possible error conditions.</para>
   </section>
 </section>

@@ -44,7 +44,8 @@
             <entry><code>T, U</code></entry>
 
             <entry>Types fulfilling <link
-            linkend="safe_numerics.numeric">Numeric</link> type
+            linkend="safe_numerics.numeric">Numeric</link> or <link
+            linkend="safe_numerics.integer">Integer</link> type
             requirements</entry>
           </row>
 
@@ -55,7 +56,7 @@
           </row>
 
           <row>
-            <entry>S, S1, S2</entry>
+            <entry>S</entry>
 
             <entry>A type fulfilling SafeNumeric type requirements</entry>
           </row>
@@ -69,19 +70,20 @@
           <row>
             <entry>op</entry>
 
-            <entry>C++ infix operator</entry>
+            <entry>C++ infix operator which is supported by underlying numeric
+            type</entry>
           </row>
 
           <row>
             <entry>prefix_op</entry>
 
-            <entry>C++ prefix operator: -, +, ~</entry>
+            <entry>C++ prefix operator: ++, --, -, +, ~</entry>
           </row>
 
           <row>
             <entry>postfix_op</entry>
 
-            <entry>C++ postfix operator</entry>
+            <entry>C++ postfix operator: ++, --</entry>
           </row>
 
           <row>
@@ -99,7 +101,7 @@
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="2*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <colspec align="left" colwidth="2*"/>
 
@@ -146,7 +148,7 @@
             <row>
               <entry><code>prefix_op S</code></entry>
 
-              <entry>unspecified S</entry>
+              <entry>S</entry>
 
               <entry><para>invoke safe C++ operator <code>prefix_op</code> and
               return another SafeNumeric type.</para></entry>
@@ -155,7 +157,7 @@
             <row>
               <entry><code>S postfix_op</code></entry>
 
-              <entry>unspecified S</entry>
+              <entry>S</entry>
 
               <entry><para>invoke safe C++ operator <code>postfix_op</code>
               and return another SafeNumeric type.</para></entry>
@@ -164,20 +166,20 @@
             <row>
               <entry><code>s assign_op t</code></entry>
 
-              <entry>S1</entry>
+              <entry>S</entry>
 
               <entry><para>convert t to type S1 and assign it to s1. If the
-              value t cannot be represented as an instance of type S1, it is
-              an error.</para></entry>
+              value t cannot be represented as an instance of type S, it is an
+              error.</para></entry>
             </row>
 
             <row>
               <entry><code>S(t)</code></entry>
 
-              <entry>unspecified S</entry>
+              <entry>S</entry>
 
               <entry><para>construct a instance of S from a value of type T. f
-              the value t cannot be represented as an instance of type S1, it
+              the value t cannot be represented as an instance of type S, it
               is an error.</para></entry>
             </row>
 
@@ -201,15 +203,56 @@
             </row>
 
             <row>
+              <entry><code>get_promotion_policy&lt;S&gt;::type</code></entry>
+
+              <entry>PP</entry>
+
+              <entry><para>return the Promotion Policy associated with this
+              type. </para><para>If there is no such policy associated with
+              this type, <code>void</code> shall be returned.</para></entry>
+            </row>
+
+            <row>
+              <entry><code>get_exception_policy&lt;S&gt;::type</code></entry>
+
+              <entry>EP</entry>
+
+              <entry><para>return the Exception Policy associated with this
+              type. </para><para>If there is no such policy associated with
+              this type, <code>void</code> shall be returned.</para></entry>
+            </row>
+
+            <row>
+              <entry><code>base_type&lt;S&gt;::type</code></entry>
+
+              <entry>Numeric</entry>
+
+              <entry><para>return the underlying Numeric type on which this
+              Safe type is based. </para></entry>
+            </row>
+
+            <row>
+              <entry><code>base_value(s)</code></entry>
+
+              <entry>T</entry>
+
+              <entry><para>return the underlying value of an instance of the
+              Safe type.</para></entry>
+            </row>
+
+            <row>
               <entry><code>static_cast&lt;T&gt;(s)</code></entry>
 
               <entry>T</entry>
 
-              <entry><para>convert the value of s to type T. If the value of s
-              cannot be correctly represented as a type T, it is an error.
-              Note that implicit casting from a safe type to a built-in
-              integer type is expressly prohibited and should invoke a compile
-              time error.</para></entry>
+              <entry><para>convert the value of s to type T. In contrast to
+              base_value(s) described above, T may be any Numeric type. If the
+              value of s cannot be correctly represented as a type T, it is an
+              error which will be handled according to the Exception Policy of
+              the variable s. This is an explicit, checked cast. Implicit
+              casting from a safe type to a built-in integer type is expressly
+              prohibited and should invoke a compile time
+              error.</para></entry>
             </row>
           </tbody>
         </tgroup>
@@ -227,8 +270,19 @@
       </listitem>
 
       <listitem>
-        <para>Binary expressions which are not assignments require that
-        promotion and exception policies be identical.</para>
+        <para>Binary expressions that are not assignments place similar
+        requirements on both Exception and Promotion policies of Safe
+        arguments.<itemizedlist>
+            <listitem>
+              <para>at least one argument must be a Safe type with a non void
+              policy.</para>
+            </listitem>
+
+            <listitem>
+              <para>if both arguments are Safe types with non void policies,
+              the policies must be the same.</para>
+            </listitem>
+          </itemizedlist></para>
       </listitem>
 
       <listitem>
@@ -241,8 +295,9 @@ int main(){
     safe&lt;long&gt; y;
     f(y);         // compile time error
     return 0;
-}</programlisting>This behavior prevents a <code>safe&lt;T&gt;</code> from
-        being a "drop-in" replacement for a <code>T</code>.</para>
+}</programlisting>This behavior distinguishes a Safe type from its underlying
+        type T and prevents a <code>safe&lt;T&gt;</code> from being a
+        "drop-in" replacement for a <code>T</code>.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -250,20 +305,20 @@ int main(){
   <section>
     <title>Complexity Guarantees</title>
 
-    <para>There are no complexity guarantees explicitly enforced here.
-    However, it would be very surprising if any implementation were to be more
-    complex that O(0);</para>
+    <para>There are no complexity guarantees explicitly enforced here. Usage
+    of safe operations should add a fixed amount of time to compilation with
+    each usage.</para>
   </section>
 
   <section>
     <title>Invariants</title>
 
     <para>The fundamental requirement of a SafeNumeric type is that implements
-    all C++ operations permitted on it's base type in a way the prevents the
+    all C++ operations permitted on its base type in a way the prevents the
     return of an incorrect arithmetic result. Various implementations of this
-    concept may handle circumstances which produce such results differently (
-    throw exception, compile time trap, etc..) no implementation should return
-    an arithmetically incorrect result.</para>
+    concept may handle circumstances which produce such results differently
+    (throw exception, compile time trap, etc..) no implementation should
+    return an arithmetically incorrect result.</para>
   </section>
 
   <section>

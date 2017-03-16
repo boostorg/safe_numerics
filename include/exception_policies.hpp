@@ -1,5 +1,5 @@
-#ifndef BOOST_NUMERIC_POLICIES_HPP
-#define BOOST_NUMERIC_POLICIES_HPP
+#ifndef BOOST_NUMERIC_EXCEPTION_POLICIES_HPP
+#define BOOST_NUMERIC_EXCEPTION_POLICIES_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -41,9 +41,9 @@ template<
     void (*FUNCTION_NO_EXCEPTION)(const char *),
     void (*FUNCTION_UNINITIALIZED)(const char *),
     void (*FUNCTION_OVERFLOW)(const char *),
-    void (*FUNCTION_UNDERFLOW)(const char *) = FUNCTION_OVERFLOW,
-    void (*FUNCTION_RANGE)(const char *) = FUNCTION_OVERFLOW,
-    void (*FUNCTION_DOMAIN)(const char *) = FUNCTION_OVERFLOW
+    void (*FUNCTION_UNDERFLOW)(const char *),
+    void (*FUNCTION_RANGE)(const char *),
+    void (*FUNCTION_DOMAIN)(const char *)
 >
 struct no_exception_support {
     static void no_error(const char * message) {
@@ -100,4 +100,4 @@ struct trap_exception {
 } // namespace numeric
 } // namespace boost
 
-#endif // BOOST_NUMERIC_POLICIES_HPP
+#endif // BOOST_NUMERIC_EXCEPTION_POLICIES_HPP

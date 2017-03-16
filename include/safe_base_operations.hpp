@@ -14,13 +14,10 @@
 
 #include <limits>
 #include <type_traits> // is_base_of, is_same, enable_if
-#include <ostream>
-#include <istream>
 
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
-
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
 
 #include "safe_base.hpp"
@@ -28,6 +25,7 @@
 #include "safe_compare.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
+#include "checked.hpp"
 
 namespace boost {
 namespace numeric {
@@ -241,10 +239,8 @@ struct common_promotion_policy {
 
 };
 
-// Note: the following global operators will be only found via
-// argument dependent lookup.  So they won't conflict any
-// other global operators for types in namespaces other than
-// boost::numeric
+// Note: the following global operators will be found via
+// argument dependent lookup.
 
 /////////////////////////////////////////////////////////////////
 // addition
@@ -252,38 +248,29 @@ struct common_promotion_policy {
 template<class T, class U>
 struct addition_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
         typename promotion_policy::template addition_result<
-            t_base_type,
-            u_base_type
+            T,
+            U
         >::type;
 
-    // filter out case were overflow cannot occur
-    // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
-    // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
-    // Use base_value(T) ( which equals MIN ) to create a new interval. Same
-    // for MAX.  Now
-    constexpr static const interval<t_base_type> t_interval{
+    constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     };
 
-    constexpr static const interval<u_base_type> u_interval{
+    constexpr static const interval<typename base_type<U>::type> u_interval{
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     };
-
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
     constexpr static const checked_result<interval<result_base_type>> r_interval =
         add<result_base_type>(t_interval, u_interval);
 
     constexpr static bool exception_possible() {
-        return ! r_interval.no_exception();
+        return r_interval.exception();
     }
-
     constexpr static const interval<result_base_type> type_interval =
         exception_possible() ?
             interval<result_base_type>{}
@@ -292,6 +279,7 @@ struct addition_result {
         ;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
+    
     struct safe_type {
         using type = safe_base<
             result_base_type,
@@ -345,11 +333,11 @@ struct addition_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    addition_result<T, U>
+    typename addition_result<T, U>::type
 >::type
 constexpr inline operator+(const T & t, const U & u){
     using ar = addition_result<T, U>;
@@ -363,11 +351,11 @@ constexpr inline operator+(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator+=(T & t, const U & u){
     t = static_cast<T>(t + u);
@@ -406,7 +394,6 @@ struct subtraction_result {
     constexpr static bool exception_possible() {
         return ! r_interval.no_exception();
     }
-
     constexpr static const interval<result_base_type> type_interval =
         exception_possible() ?
             interval<result_base_type>{}
@@ -468,11 +455,11 @@ struct subtraction_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    subtraction_result<T, U>
+    typename subtraction_result<T, U>::type
 >::type
 constexpr operator-(const T & t, const U & u){
     using sr = subtraction_result<T, U>;
@@ -486,11 +473,11 @@ constexpr operator-(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator-=(T & t, const U & u){
     t = static_cast<T>(t - u);
@@ -600,11 +587,11 @@ struct multiplication_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    multiplication_result<T, U>
+    typename multiplication_result<T, U>::type
 >::type
 constexpr operator*(const T & t, const U & u){
     // argument dependent lookup should guarentee that we only get here
@@ -619,11 +606,11 @@ constexpr operator*(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator*=(T & t, const U & u){
     t = static_cast<T>(t * u);
@@ -667,7 +654,7 @@ struct division_result {
             );
             return
                 // if over/under flow or domain error possible
-                ! r_interval.no_exception()
+                r_interval.exception()
                 // if the denominator can contain zero
                 || (u_interval.l <= 0 && u_interval.u >= 0 )
             ;
@@ -738,14 +725,13 @@ struct division_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    division_result<T, U>
+    typename division_result<T, U>::type
 >::type
 constexpr operator/(const T & t, const U & u){
-    // argument dependent lookup should guarentee that we only get here
     using dr = division_result<T, U>;
     return dr::make(
         dr::return_value(
@@ -757,11 +743,11 @@ constexpr operator/(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator/=(T & t, const U & u){
     t = static_cast<T>(t / u);
@@ -801,7 +787,7 @@ struct modulus_result {
         constexpr static bool exception_possible() {
             return
                 // if over/under flow or domain error possible
-                ! r_interval.no_exception()
+                r_interval.exception()
                 // if the denominator can contain zero
                 || (u_interval.l <= 0 && u_interval.u >=0 )
             ;
@@ -872,11 +858,11 @@ struct modulus_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    modulus_result<T, U>
+    typename modulus_result<T, U>::type
 >::type
 inline operator%(const T & t, const U & u){
     using mr = modulus_result<T, U>;
@@ -890,11 +876,11 @@ inline operator%(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator%=(T & t, const U & u){
     t = static_cast<T>(t % u);
@@ -905,11 +891,11 @@ constexpr inline operator%=(T & t, const U & u){
 // comparison
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<bool>
+    bool
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
     using t_base_type = typename base_type<T>::type;
@@ -926,61 +912,48 @@ constexpr operator<(const T & lhs, const U & rhs) {
         base_value(std::numeric_limits<U>::max())
     );
 
-    constexpr const boost::logic::tribool r =
-        t_interval < u_interval;
-
-    return
-        // if the ranges don't overlap
-        (! boost::logic::indeterminate(r)) ?
-            // values in those ranges can't be equal
-            false
-        :
-            // otherwise we have to check
-            safe_compare::less_than(base_value(lhs), base_value(rhs));
-        ;
+    return safe_compare::less_than(base_value(lhs), base_value(rhs));        ;
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<bool>
+    bool
 >::type
 constexpr operator>(const T & lhs, const U & rhs) {
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
-
-    constexpr const interval<t_base_type> t_interval(
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    );
-
-    constexpr const interval<u_base_type> u_interval(
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    );
-
-    constexpr const boost::logic::tribool r =
-        t_interval > u_interval;
-
-    return
-        // if the ranges don't overlap
-        (! boost::logic::indeterminate(r)) ?
-            // values in those ranges can't be equal
-            false
-        :
-            // otherwise we have to check
-            safe_compare::greater_than(base_value(lhs), base_value(rhs));
-        ;
+    return rhs < lhs;
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<bool>
+    bool
+>::type
+constexpr operator>=(const T & lhs, const U & rhs) {
+    return ! ( rhs < lhs );
+}
+
+template<class T, class U>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
+    bool
+>::type
+constexpr operator<=(const T & lhs, const U & rhs) {
+    return ! ( lhs > rhs );
+}
+
+template<class T, class U>
+typename std::enable_if<
+    boost::numeric::is_safe<T>::value
+    || boost::numeric::is_safe<U>::value
+    ,
+    bool
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
     using t_base_type = typename base_type<T>::type;
@@ -1008,36 +981,14 @@ constexpr operator==(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<bool>
+    bool
 >::type
 constexpr operator!=(const T & lhs, const U & rhs) {
     return ! (lhs == rhs);
-}
-
-template<class T, class U>
-typename boost::lazy_enable_if_c<
-    boost::numeric::is_safe<T>::value
-    || boost::numeric::is_safe<U>::value
-    ,
-    boost::mpl::identity<bool>
->::type
-constexpr operator>=(const T & lhs, const U & rhs) {
-    return ! ( rhs < lhs );
-}
-
-template<class T, class U>
-typename boost::lazy_enable_if_c<
-    boost::numeric::is_safe<T>::value
-    || boost::numeric::is_safe<U>::value
-    ,
-    boost::mpl::identity<bool>
->::type
-constexpr operator<=(const T & lhs, const U & rhs) {
-    return ! ( lhs > rhs );
 }
 
 /////////////////////////////////////////////////////////////////
@@ -1144,11 +1095,11 @@ constexpr inline operator<<(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator<<=(T & t, const U & u){
     t = static_cast<T>(t << u);
@@ -1177,11 +1128,11 @@ struct right_shift_result {
         base_value(std::numeric_limits<U>::max())
     };
 
-    constexpr static const checked_result<interval<result_base_type>> r_interval {
+    constexpr static const checked_result<interval<result_base_type>> r_interval{
         right_shift<result_base_type>(t_interval, u_interval)
     };
 
-    constexpr static bool exception_possible() {
+    constexpr static bool exception_possible(){
         return ! r_interval.no_exception();
     }
 
@@ -1227,7 +1178,7 @@ struct right_shift_result {
 template<class T, class U>
 typename boost::lazy_enable_if_c<
     // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
-    // exclude std::ostream << ...
+    // exclude std::istream << ...
     (! std::is_base_of<std::ios_base, T>::value)
     && (
         boost::numeric::is_safe<T>::value
@@ -1255,11 +1206,11 @@ constexpr inline operator>>(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator>>=(T & t, const U & u){
     t = static_cast<T>(t >> u);
@@ -1269,13 +1220,6 @@ constexpr inline operator>>=(T & t, const U & u){
 /////////////////////////////////////////////////////////////////
 // bitwise operators
 
-//  I considered making this illegal on signed integers because
-//  I'm thinking it doesn't make much sense from the point of
-//  view of an applications programmer.  But after running some
-//  test on user code I see it's going to create problems.  So
-//  I'm going to follow strictly the standard sections 5.11-5.13
-//  related to bitwise operators
-
 // operator |
 template<class T, class U>
 struct bitwise_or_result {
@@ -1283,20 +1227,15 @@ struct bitwise_or_result {
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_result<
+        typename promotion_policy::template bitwise_or_result<
             t_base_type,
             u_base_type
         >::type;
 
-    constexpr static result_base_type r =
-        safe_compare::greater_than(
-            base_value(std::numeric_limits<T>::max()),
-            base_value(std::numeric_limits<U>::max())
-        ) ?
-            base_value(std::numeric_limits<T>::max())
-        :
-            base_value(std::numeric_limits<U>::max())
-        ;
+    constexpr const static checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(
+        base_value(std::numeric_limits<T>::max()),
+        base_value(std::numeric_limits<U>::max())
+    );
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
@@ -1309,21 +1248,13 @@ struct bitwise_or_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    bitwise_or_result<T, U>
+    typename bitwise_or_result<T, U>::type
 >::type
 constexpr inline operator|(const T & t, const U & u){
-    // see above
-    /*
-    static_assert(
-        ! std::numeric_limits<T>::is_signed
-        && ! std::numeric_limits<U>::is_signed,
-        "bitwise or on signed integer types is not always well defined"
-    );
-    */
     using bwr = bitwise_or_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 
@@ -1340,11 +1271,11 @@ constexpr inline operator|(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator|=(T & t, const U & u){
     t = static_cast<T>(t | u);
@@ -1359,7 +1290,7 @@ struct bitwise_and_result {
     using t_base_type = typename base_type<T>::type;
     using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_result<
+        typename promotion_policy::template bitwise_and_result<
             t_base_type,
             u_base_type
         >::type;
@@ -1384,21 +1315,13 @@ struct bitwise_and_result {
 };
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    bitwise_and_result<T, U>
+    typename bitwise_and_result<T, U>::type
 >::type
 constexpr inline operator&(const T & t, const U & u){
-    // see above
-    /*
-    static_assert(
-        ! std::numeric_limits<T>::is_signed
-        && ! std::numeric_limits<U>::is_signed,
-        "bitwise and on signed integer types is not always well defined"
-    );
-    */
     using bwr = bitwise_and_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 
@@ -1415,11 +1338,11 @@ constexpr inline operator&(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator&=(T & t, const U & u){
     t = static_cast<T>(t & u);
@@ -1428,22 +1351,45 @@ constexpr inline operator&=(T & t, const U & u){
 
 // operator ^
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+struct bitwise_xor_result {
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
+    using t_base_type = typename base_type<T>::type;
+    using u_base_type = typename base_type<U>::type;
+    using result_base_type =
+        typename promotion_policy::template bitwise_xor_result<
+            t_base_type,
+            u_base_type
+        >::type;
+
+    constexpr static result_base_type r =
+        safe_compare::less_than(
+            base_value(std::numeric_limits<T>::max()),
+            base_value(std::numeric_limits<U>::max())
+        ) ?
+            base_value(std::numeric_limits<T>::max())
+        :
+            base_value(std::numeric_limits<U>::max())
+        ;
+
+    using type = safe_base<
+            result_base_type,
+            0,
+            r,
+            promotion_policy,
+            exception_policy
+        >;
+};
+
+template<class T, class U>
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    bitwise_or_result<T, U>
+    typename bitwise_xor_result<T, U>::type
 >::type
 constexpr inline operator^(const T & t, const U & u){
-    // see above
-    /*
-    static_assert(
-        ! std::numeric_limits<T>::is_signed
-        && ! std::numeric_limits<U>::is_signed,
-        "bitwise xor on signed integer types is not always well defined"
-    );
-    */
-    using bwr = bitwise_or_result<T, U>;
+    using bwr = bitwise_xor_result<T, U>;
     using result_base_type = typename bwr::result_base_type;
 
     const checked_result<result_base_type> r =
@@ -1456,77 +1402,15 @@ constexpr inline operator^(const T & t, const U & u){
 }
 
 template<class T, class U>
-typename boost::lazy_enable_if_c<
+typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    boost::mpl::identity<T &>
+    T
 >::type
 constexpr inline operator^=(T & t, const U & u){
     t = static_cast<T>(t ^ u);
     return t;
-}
-
-/////////////////////////////////////////////////////////////////
-// stream operators
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P, // promotion polic
-    class E  // exception policy
->
-std::ostream & operator<<(
-    std::ostream & os,
-    const safe_base<T, Min, Max, P, E> & t
-){
-    return os << (
-        (std::is_same<T, signed char>::value
-        || std::is_same<T, unsigned char>::value
-        ) ?
-            static_cast<int>(t.m_t)
-        :
-            t.m_t
-    );
-}
-
-namespace {
-    template<class T>
-    struct Temp {
-        T value;
-    }; // primary template
-    template<> struct Temp<signed char> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<unsigned char> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<signed wchar_t> {
-        int value;
-    }; // secondary template
-    template<> struct Temp<unsigned wchar_t> {
-        int value;
-    }; // secondary template
-}
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P, // promotion polic
-    class E  // exception policy
->
-std::istream & operator>>(
-    std::istream & is,
-    safe_base<T, Min, Max, P, E> & t
-){
-    Temp<T> tx;
-    is >> tx.value;
-    if(is.fail())
-        E::domain_error("error in file input");
-    t = tx.value;
-    return is;
 }
 
 } // numeric

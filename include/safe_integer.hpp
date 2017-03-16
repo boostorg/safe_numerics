@@ -28,8 +28,8 @@ template <
 >
 using safe = safe_base<
     T,
-    std::numeric_limits<T>::min(),
-    std::numeric_limits<T>::max(),
+    ::std::numeric_limits<T>::min(),
+    ::std::numeric_limits<T>::max(),
     P,
     E
 >;

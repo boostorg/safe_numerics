@@ -13,6 +13,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <cstdint> // for intmax_t/uintmax_t
+#include <iosfwd>
+#include <type_traits>
 #include <boost/mpl/if.hpp>
 
 #include "utility.hpp"
@@ -52,9 +54,9 @@ constexpr T base_value(
     return N;
 }
 
-template<typename T, T N, class P, class E>
-std::ostream & operator<<(
-    std::ostream & os,
+template<typename CharT, typename Traits, typename T, T N, class P, class E>
+inline std::basic_ostream<CharT, Traits> & operator<<(
+    std::basic_ostream<CharT, Traits> & os,
     const safe_literal_impl<T, N, P, E> & t
 ){
     return os << (
@@ -69,10 +71,25 @@ std::ostream & operator<<(
 
 template<typename T, T N, class P, class E>
 class safe_literal_impl {
-    friend std::ostream & operator<< <T, N, P, E> (
-        std::ostream & os,
+
+    template<
+        class CharT,
+        class Traits
+    >
+    friend std::basic_ostream<CharT, Traits> & operator<<(
+        std::basic_ostream<CharT, Traits> & os,
         const safe_literal_impl & t
-    );
+    ){
+        return os << (
+            (::std::is_same<T, signed char>::value
+            || ::std::is_same<T, unsigned char>::value
+            || ::std::is_same<T, wchar_t>::value
+            ) ?
+                static_cast<int>(N)
+            :
+                N
+        );
+    };
 
 public:
 
@@ -100,8 +117,8 @@ public:
 
 template<
     std::intmax_t N,
-    class P = native,
-    class E = throw_exception
+    class P = void,
+    class E = void
 >
 using safe_signed_literal = safe_literal_impl<
     typename boost::numeric::signed_stored_type<N, N>,

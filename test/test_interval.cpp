@@ -2,7 +2,7 @@
 #include <iostream>
 #include <ostream>
 #include <cstdint>
-#include <cxxabi.h>
+#include <cxxabi.h> // demangle
 #include <algorithm> // max, min
 
 #include <boost/logic/tribool_io.hpp>

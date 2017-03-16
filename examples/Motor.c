@@ -116,7 +116,6 @@ void isr_motor_step()
   } // if (ramp_sts != ramp_idle)
 } // isr_motor_step()
 
-
 void motor_run(short pos_new)
 { // set up to drive motor to pos_new (absolute step#)
   if (pos_new < motor_pos) // get direction & #steps

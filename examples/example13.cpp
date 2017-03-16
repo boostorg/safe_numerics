@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]){
         safe<int> x = 1;
         safe<int> y = 0;
         std::cout << x / y;
-        std::cout << " error detected!" << std::endl;
+        std::cout << " error NOT detected!" << std::endl;
     }
     catch(std::exception & e){
         std::cout << e.what() << std::endl;

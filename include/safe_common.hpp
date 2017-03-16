@@ -42,20 +42,6 @@ struct get_exception_policy {
     using type = void;
 };
 
-// used for debugging
-// usage - print_type<T>;
-// provokes error message with name of type T
-
-template<typename Tx>
-using print_type = typename Tx::error_message;
-
-template<int N> 
-struct print_value
-{
-    enum test : unsigned char {
-        value = N + 256
-    };
-};
 
 } // numeric
 } // boost

@@ -25,8 +25,8 @@ int main(int argc, const char * argv[]){
     // since the sum of x and y wouldn't be in the legal
     // range for z.
     // const safe_signed_literal<20> x;
-    const safe_signed_literal<10> x;    // no problem
-    const safe_signed_literal<67> y;
+    const safe_signed_literal<10, native, trap_exception> x;    // no problem
+    const safe_signed_literal<67, native, trap_exception> y;
 
     const safe_t z = x + y;
     std::cout << "x = " << safe_format(x) << std::endl;

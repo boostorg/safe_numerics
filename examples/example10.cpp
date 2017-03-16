@@ -35,7 +35,7 @@ int main(){
         safe_f(100, 100);  // works as expected
         safe_f(100, -100); // throw error
     }
-    catch(const exception & e){
+    catch(const std::exception & e){
         cout << "detected error:" << e.what() << endl;;
     }
     return 0;

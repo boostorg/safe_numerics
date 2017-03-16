@@ -22,7 +22,7 @@
 #include <boost/integer.hpp> // integer type selection
 #include <boost/mpl/if.hpp>
 
-#include "utility.hpp"
+#include "utility.hpp" // rank
 #include "safe_common.hpp"
 #include "checked.hpp"
 
@@ -49,26 +49,6 @@ struct cpp {
     using local_int_type = typename boost::int_t<IntBits>::exact;
     using local_long_type = typename boost::int_t<LongBits>::exact;
     using local_long_long_type = typename boost::int_t<LongLongBits>::exact;
-
-    template<class T>
-    using rank =
-        typename boost::mpl::if_c<
-            sizeof(char) == sizeof(T),
-            std::integral_constant<int, 1>,
-        typename boost::mpl::if_c<
-            sizeof(short) == sizeof(T),
-            std::integral_constant<int, 2>,
-        typename boost::mpl::if_c<
-            sizeof(int) == sizeof(T),
-            std::integral_constant<int, 3>,
-        typename boost::mpl::if_c<
-            sizeof(long) == sizeof(T),
-            std::integral_constant<int, 4>,
-        typename boost::mpl::if_c<
-            sizeof(long long) == sizeof(T),
-            std::integral_constant<int, 5>,
-            void
-        >::type >::type >::type >::type >::type;
 
     // section 4.5 integral promotions
     template<class T>
@@ -136,8 +116,8 @@ struct cpp {
 
     template<typename T, typename U>
     using result_type = usual_arithmetic_conversions<
-        integral_promotion<T>,
-        integral_promotion<U>
+        integral_promotion<typename base_type<T>::type>,
+        integral_promotion<typename base_type<U>::type>
     >;
 
     template<typename T, typename U>
@@ -188,7 +168,15 @@ struct cpp {
        using type = result_type<T, U>;
     };
     template<typename T, typename U>
-    struct bitwise_result {
+    struct bitwise_and_result {
+       using type = result_type<T, U>;
+    };
+    template<typename T, typename U>
+    struct bitwise_or_result {
+       using type = result_type<T, U>;
+    };
+    template<typename T, typename U>
+    struct bitwise_xor_result {
        using type = result_type<T, U>;
     };
 };

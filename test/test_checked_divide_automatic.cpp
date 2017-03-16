@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <exception>
-#include <cxxabi.h>
+//#include <cxxabi.h>
 #include <cstdlib>   // EXIT_SUCCESS
 #include <iostream>
 #include <boost/integer.hpp> // int_t<bits>::fast
@@ -50,7 +50,7 @@ bool test_checked_divide(
         return false;
     }
     else
-    if(! result.no_exception()
+    if(result.exception()
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "

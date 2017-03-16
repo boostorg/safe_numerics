@@ -408,6 +408,89 @@ int main(){
     return 0;
 }
 
+// test utility
+#include "../include/utility.hpp"
+
+int main(){
+    using namespace boost::numeric;
+    using x = unsigned_stored_type<0, 42>;
+    print_type<x> p1;
+
+    return 0;
+}
+
+
+// test automatic type promotion
+#include "../include/automatic.hpp"
+#include "../include/safe_integer.hpp"
+#include <type_traits>
+#include <cstdint>
+#include <iostream>
+
+int main(){
+    using namespace boost::numeric;
+    using ar = automatic::addition_result<std::uint8_t, std::uint8_t>;
+    static_assert(
+        std::is_same<ar::type, std::uint16_t>::value,
+        "sum of two 8 bit unsigned integers should fit in on 16 bit unsigned integer"
+    );
+    return 0;
+}
+
+
+// test automatic type promotion
+#include "../include/safe_integer.hpp"
+#include "../include/safe_range.hpp"
+#include "../include/safe_literal.hpp"
+#include "../include/automatic.hpp"
+#include <type_traits>
+#include <cstdint>
+#include <iostream>
+
+int main(){
+    using namespace boost::numeric;
+    unsigned char t1 = 1;
+    constexpr const safe_unsigned_literal<42, automatic, throw_exception> v2;
+    using result_type = decltype(t1 + v2);
+
+    static_assert(
+        std::is_same<
+            result_type,
+            safe_unsigned_range<42, 297, automatic, throw_exception>
+        >::value,
+        "result type should have a range 42-297"
+    );
+    return 0;
+}
+void f1(){
+    using namespace boost::numeric;
+    constexpr safe<int> j = 0;
+    constexpr safe<int> k = 3;
+    constexpr safe<int> l = j + k; // compile error
+}
+
+void f2(){
+    using namespace boost::numeric;
+    constexpr safe<int> j = boost::numeric::safe_signed_literal<0>();
+    constexpr safe<int> k = boost::numeric::safe_signed_literal<3>();
+    constexpr safe<int> l = j + k; // compile error
+}
+
+void f3(){
+    using namespace boost::numeric;
+    constexpr auto j = safe_signed_literal<0, native, trap_exception>();
+    constexpr auto k = safe_signed_literal<3>();
+    constexpr const safe<int> l = j + k;
+}
+
+void f4(){
+    using namespace boost::numeric;
+    safe_signed_literal<0, native, trap_exception> j;
+    safe_signed_literal<3> k;
+    constexpr auto l = safe_signed_literal<3>();
+    constexpr const safe<int> l2 = j + k;
+}
+
 #endif
 
 int main(){

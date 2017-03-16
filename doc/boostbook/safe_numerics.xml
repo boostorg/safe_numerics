@@ -118,7 +118,7 @@
     fundamental software components described here. It is not necessary to
     know about these components to use the library. This information has been
     included to help those who want to understand how the library works so
-    they can extend it, correct bugs in it, or understand it's limitations.
+    they can extend it, correct bugs in it, or understand its limitations.
     These components are also interesting in their own right. For all these
     reasons, they are documented here. In general terms, the library works in
     the following manner:</para>
@@ -179,10 +179,10 @@
     <xi:include href="interval.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="checked_result.xml" xpointer="element(/1)"
+    <xi:include href="exception_type.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="exception_type.xml" xpointer="element(/1)"
+    <xi:include href="checked_result.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
     <xi:include href="checked.xml" xpointer="element(/1)"

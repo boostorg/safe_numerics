@@ -7,7 +7,7 @@
   <section>
     <title>Description</title>
 
-    <para>This exception policy will trap at compile time any operation
+    <para>This exception policy will trap at compile time any operation which
     <emphasis><emphasis role="bold">COULD</emphasis></emphasis> result in a
     runtime exception. It can be used in an environment which can tolerate
     neither arithmetic errors nor runtime overhead. Usage of this policy will

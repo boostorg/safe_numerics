@@ -20,6 +20,8 @@ struct ExceptionPolicy {
     const char * message;
     /*
     BOOST_CONCEPT_USAGE(ExceptionPolicy){
+        EP::no_error(message);
+        EP::uninitialize_error(message);
         EP::overflow_error(message);
         EP::underflow_error(message);
         EP::range_error(message);

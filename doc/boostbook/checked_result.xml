@@ -99,7 +99,14 @@
           <row>
             <entry><code>r</code></entry>
 
-            <entry>An object of type R</entry>
+            <entry>An instance of type R</entry>
+          </row>
+
+          <row>
+            <entry><code>e</code></entry>
+
+            <entry>An instance of type <link
+            linkend="safe_numerics.exception_type">exception_type</link></entry>
           </row>
 
           <row>
@@ -164,9 +171,9 @@
             <row>
               <entry><code>static_cast&lt;const char *&gt;(c)</code></entry>
 
-              <entry>R</entry>
+              <entry>const char *</entry>
 
-              <entry>extract wrapped value - asserts if not possible</entry>
+              <entry>returns pointer to error message</entry>
             </row>
 
             <row>
@@ -187,7 +194,7 @@
               <entry>boost::logic::tribool</entry>
 
               <entry>compare the wrapped values of two checked_result
-              instances. If either one contains an invalid value, return
+              instances. If either one contains an error_type value, return
               boost::logic::tribool::indeterminant.</entry>
             </row>
 

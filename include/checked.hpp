@@ -87,7 +87,7 @@ namespace detail {
         template<class R, class T>
         constexpr static checked_result<R>
         invoke(const T & t){
-            // INT32-C Ensure that operations on signed
+            // INT32-C Ensure that operations on unsigned
             // integers do not overflow
             return
             t > std::numeric_limits<R>::max() ?
@@ -224,10 +224,10 @@ constexpr checked_result<R> add(
 ) {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
-    if(! rt.no_exception() )
+    if(rt.exception() )
         return rt;
     const checked_result<R> ru(cast<R>(u));
-    if(! ru.no_exception() )
+    if(ru.exception() )
         return ru;
     return detail::add<R>(t, u);
 }
@@ -408,8 +408,8 @@ namespace detail {
                 < static_cast<i_type>(std::numeric_limits<R>::min())
             ) ?
                 checked_result<R>(
-                    exception_type::underflow_error,
-                    "multiplication underflow"
+                    exception_type::overflow_error,
+                    "multiplication overflow"
                 )
             :
                 checked_result<R>(t * u)
@@ -528,15 +528,15 @@ constexpr divide(
             "divide by zero"
         );
     }
-    auto tx = cast<R>(t);
-    auto ux = cast<R>(u);
-    if(!tx.no_exception()
-    || !ux.no_exception())
+    checked_result<R> tx = cast<R>(t);
+    checked_result<R> ux = cast<R>(u);
+    if(tx.exception()
+    || ux.exception())
         return checked_result<R>(
             exception_type::overflow_error,
             "failure converting argument types"
         );
-    return detail::divide<R>(tx.m_r, ux.m_r);
+    return detail::divide<R>(tx, ux);
 }
 
 namespace detail_automatic {
@@ -596,6 +596,7 @@ constexpr divide_automatic(
 ////////////////////////////////
 // safe modulus on unsafe types
 
+// built-in abs isn't constexpr - so fix this here
 template<class T>
 constexpr std::make_unsigned_t<T>
 abs(const T & t){
@@ -619,11 +620,20 @@ constexpr modulus(
             "denominator is zero"
         );
 
-    return cast<R>(abs(t) % abs(u));
+    // why to we need abs here? the sign of the modulus is the sign
+    // consider -128 % -1  The result of this operation should be -1
+    // but if I use t % u the x86 hardware uses the divide instruction
+    // capturing the modulus as a side effect.  When it does this, it
+    // invokes the operation -128 / -1 -> 128 which overflows a signed type
+    // and provokes a hardware exception.  We can fix this using abs()
+    // since -128 % -1 = -128 % 1 = 0
+    return t % abs(u);
 }
 
 ///////////////////////////////////
 // shift operations
+
+// left shift
 
 namespace detail {
 
@@ -718,7 +728,6 @@ constexpr checked_left_shift(
 
 } // detail
 
-// left shift
 template<class R, class T, class U>
 constexpr checked_result<R> left_shift(
     const T & t,
@@ -739,6 +748,7 @@ constexpr checked_result<R> left_shift(
     return detail::checked_left_shift<R>(t, u);
 }
 
+// right shift
 namespace detail {
 
 // standard paragraph 5.8 / 3
@@ -836,19 +846,21 @@ namespace detail {
     check_bitwise_operand(const T & t){
         return true;
     }
-}
+} // detail
 
 template<class R, class T, class U>
 constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
 ) {
+    /*
     if(! detail::check_bitwise_operand(t))
         return checked_result<R>(
            exception_type::domain_error,
            "bitwise operands cannot be negative"
         );
-
+    */
+    
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;

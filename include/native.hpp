@@ -24,11 +24,6 @@ namespace boost {
 namespace numeric {
 
 struct native {
-    // Standard C++ type promotion for expressions doesn't depend
-    // on the operation being performed so we can just as well
-    // use any operation to determine it.  We choose + for this
-    // purpose.
-
     template<typename T, typename U>
     using additive_operator_type =
         decltype(
@@ -107,7 +102,15 @@ struct native {
     };
 
     template<typename T, typename U>
-    struct bitwise_result {
+    struct bitwise_or_result {
+        using type = bitwise_logic_operator_type<T, U>;
+    };
+    template<typename T, typename U>
+    struct bitwise_and_result {
+        using type = bitwise_logic_operator_type<T, U>;
+    };
+    template<typename T, typename U>
+    struct bitwise_xor_result {
         using type = bitwise_logic_operator_type<T, U>;
     };
 };

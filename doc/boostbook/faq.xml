@@ -24,7 +24,7 @@
 
     <qandaentry>
       <question>
-        <para>Can safe types be used as drop-in replacement for built-in
+        <para>Can safe types be used as drop-in replacements for built-in
         types?</para>
       </question>
 
@@ -214,12 +214,12 @@ using safe_t = boost::numeric::safe&lt;
     pic16_promotion,
     boost::numeric::throw_exception // use for compiling and running tests
 &gt;;
-typedef safe_t&lt;std::int16_t&gt; int16_t;
-typedef safe_t&lt;std::int32_t&gt; int32_t;
+typedef safe_t&lt;std::int_least16_t&gt; int16_t;
+typedef safe_t&lt;std::int_least32_t&gt; int32_t;
 #else
 /* using C on embedded platform */
-typedef int int16_t;
-typedef long int32_t;
+typedef int int_least16_t;
+typedef long int_least16_t;
 #endif
 
 </programlisting>

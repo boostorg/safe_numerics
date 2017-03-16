@@ -79,9 +79,9 @@
     applies to other operations such as subtraction, multiplication etc. .
     C/C++ often automatically and silently converts some integer types to
     others in the course of implementing binary operations and similar
-    problems occur in this case as well. Since the problems and their solution
-    are similar, We'll confine the current discussion to just this one
-    example.</para>
+    problems occur in this case as well. Since the problems and their
+    solutions are similar, we'll confine the current discussion to just this
+    one example.</para>
   </section>
 
   <section id="safe_numerics.introduction.solution">
@@ -90,10 +90,11 @@
     <para>This library implements special versions of <code>int</code>,
     <code>unsigned</code>, etc. which behave exactly like the original ones
     <emphasis role="bold">except</emphasis> that the results of these
-    operations are guaranteed to be either arithmetically correct or invoke an
-    error. Using this library, the above example would be rendered as:</para>
+    operations are guaranteed to be either to be arithmetically correct or to
+    invoke an error. Using this library, the above example would be rendered
+    as:</para>
 
-    <programlisting>#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
+    <programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt;
 using namespace boost::numeric;
 safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   return x + y; // throw exception if correct result cannot be returned
@@ -215,9 +216,9 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
         <listitem>
           <para>Enforce of other program requirements using ranged integer
-          types. The library includes the types <code>safe_range&lt;Min,
-          Max&gt;</code> and <code>safe_literal&lt;N</code>&gt;. These types
-          can be used to improve program correctness and performance.</para>
+          types. The library includes types <code>for safe ranges and safe
+          literals of signed and unsigned types</code>. These types can be
+          used to improve program correctness and performance.</para>
         </listitem>
       </itemizedlist></para>
   </section>

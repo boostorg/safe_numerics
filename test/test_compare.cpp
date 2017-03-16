@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cassert>
 #include <typeinfo>
-#include <cxxabi.h> 
+#include <cxxabi.h>
 
 #include "../include/safe_integer.hpp"
 

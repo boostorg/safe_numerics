@@ -18,6 +18,40 @@
 
 namespace boost {
 namespace numeric {
+    // section 4.13 integer conversion rank
+    template<class T>
+    struct rank;
+
+    template<>
+    struct rank<char> : public std::integral_constant<unsigned char, 1>{};
+    template<>
+    struct rank<signed char> : public std::integral_constant<unsigned char, 1>{};
+    template<>
+    struct rank<unsigned char> : public std::integral_constant<unsigned char, 1>{};
+
+    template<>
+    struct rank<wchar_t> : public std::integral_constant<unsigned char, 2>{};
+
+    template<>
+    struct rank<short> : public std::integral_constant<unsigned char, 3>{};
+    template<>
+    struct rank<unsigned short> : public std::integral_constant<unsigned char, 3>{};
+
+    template<>
+    struct rank<int> : public std::integral_constant<unsigned char, 4>{};
+    template<>
+    struct rank<unsigned int> : public std::integral_constant<unsigned char, 4>{};
+
+    template<>
+    struct rank<long> : public std::integral_constant<unsigned char, 5>{};
+    template<>
+    struct rank<unsigned long> : public std::integral_constant<unsigned char, 5>{};
+
+    template<>
+    struct rank<long long> : public std::integral_constant<unsigned char, 6>{};
+    template<>
+    struct rank<unsigned long long> : public std::integral_constant<unsigned char, 6>{};
+
     // the number of bits required to render the value in x
     template<typename T>
     typename std::enable_if<
@@ -62,6 +96,22 @@ namespace numeric {
     using unsigned_stored_type = typename boost::uint_t<
         std::max({log(Min), log(Max)})
     >::least ;
+
+    // used for debugging
+    // usage - print_type<T>;
+    // provokes error message with name of type T
+
+    template<typename Tx>
+    using print_type = typename Tx::error_message;
+
+    template<int N> 
+    struct print_value
+    {
+        enum test : unsigned char {
+            value = N + 256
+        };
+    };
+
 } // numeric
 } // boost
 

@@ -37,8 +37,6 @@ bool test_multiply(
 
         try{
             result = t1 * v2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
@@ -54,8 +52,6 @@ bool test_multiply(
             }
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
                 int status;
@@ -82,8 +78,6 @@ bool test_multiply(
 
         try{
             result = v1 * t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
@@ -99,8 +93,6 @@ bool test_multiply(
             }
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
                 int status;
@@ -129,8 +121,6 @@ bool test_multiply(
 
         try{
             result = t1 * t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
                 int status;
@@ -146,8 +136,6 @@ bool test_multiply(
             }
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
                 int status;

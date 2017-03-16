@@ -124,7 +124,7 @@ dispatch&lt;EP&gt;(const exception_type &amp; e, const char * msg);</programlist
 
       <programlisting>#include "exception_policy.hpp"
 
-dispatch(overflow_error, "operation resulted in overflow");</programlisting>
+dispatch&lt;boost::numeric::throw_exception&gt;(overflow_error, "operation resulted in overflow");</programlisting>
     </section>
   </section>
 

@@ -25,9 +25,9 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
 
     <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="4*"/>
 
         <tbody>
           <row>
@@ -38,15 +38,16 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
           </row>
 
           <row>
-            <entry><code>T, U, V</code></entry>
+            <entry><code>T, U</code></entry>
 
             <entry>A type that is a model of the Numeric concept</entry>
           </row>
 
           <row>
-            <entry><code>t, u, v</code></entry>
+            <entry><code>R</code></entry>
 
-            <entry>An object of type modeling Numeric</entry>
+            <entry>An object of type modeling Numeric which can be used to
+            construct a SafeNumeric type.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -56,8 +57,11 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
   <section>
     <title>Valid Expressions</title>
 
-    <para>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.<informaltable>
+    <para> Any operations which result in integers which cannot be represented
+    as some Numeric type will throw an exception.These expressions return a
+    type which can be used as the basis create a SafeNumeric type. </para>
+
+    <para><informaltable>
         <tgroup cols="2">
           <colspec align="left"/>
 
@@ -107,19 +111,21 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
             </row>
 
             <row>
-              <entry><code>PP::left_shift_result&lt;T&gt;::type</code></entry>
+              <entry><code>PP::left_shift_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::right_shift_result&lt;T&gt;::type</code></entry>
+              <entry><code>PP::right_shift_result&lt;T,
+              u&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
 
             <row>
-              <entry><code>PP::bitwise_result&lt;T&gt;::type</code></entry>
+              <entry><code>PP::bitwise_result&lt;T, U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
@@ -150,12 +156,16 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
         <programlisting name="cpp">int x;
 char y;
 auto z = x + y; // could result in overflow
-safe&lt;int&gt; sx;
-auto sz = sx + y; // includes code which traps overflows at runtime</programlisting></para>
+safe&lt;int, native&gt; sx;
+auto sz = sx + y; // standard C++ code which detects errors</programlisting></para>
 
-        <para>The type of sz will be safe&lt; type of z &gt;.</para>
+        <para>Type sz will be a <link
+        linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
+        based on <code>int</code>. If the result exceeds the maximum value
+        that can be stored in an <code>int</code>, an error is
+        detected.</para>
 
-        <para>This policy is documented in <link
+        <para>The <code>native</code> policy is documented in <link
         linkend="safe_numerics.promotion_policies.native">Promotion Policies -
         native</link>.</para>
       </listitem>
@@ -172,13 +182,14 @@ auto sz = sx + y; // includes code which traps overflows at runtime</programlist
         example:<programlisting>int x;
 char y;
 auto z = x + y; // could result in overflow
-safe&lt;int&gt; sx;
-auto sz = sx + y; // promotes expression type to a safe&lt;long int&gt; which requires no result checking
-is guaranteed not to overflow.
-
+safe&lt;int, automatic&gt; sx;
+auto sz = sx + y; 
+    // sz is a safe type based on long
+    // hence sz is guaranteed not to overflow.
 safe_unsigned_range&lt;1, 4&gt; a;
 safe_unsigned_range&lt;2, 4&gt; b;
-auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</programlisting></para>
+auto c = a + b; // c will be a safe type with a range [3,8] and cannot overflow
+</programlisting></para>
 
         <para>Type sz will be a <link
         linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
@@ -191,8 +202,8 @@ auto c = a + b; // c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot 
         guaranteed to hold the sum so no overflow checking is done.</para>
 
         <para>This policy is documented in <link
-        linkend="safe_numerics.promotion_policies.automatic">Promotion Policies -
-        automatic</link></para>
+        linkend="safe_numerics.promotion_policies.automatic">Promotion
+        Policies - automatic</link></para>
       </listitem>
     </itemizedlist>
   </section>

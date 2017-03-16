@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.promotion_policies.native">
+<section id="safe_numerics.types.native">
   <title>native</title>
 
   <section>
@@ -12,7 +12,7 @@
 
     <para>Usage of this policy with safe types will produce the exact same
     arithmetic results that using normal unsafe integer types will. Hence this
-    policy is suitable as a drop-in replacement for these unsafe types. It's
+    policy is suitable as a drop-in replacement for these unsafe types. Its
     main function is to trap incorrect arithmetic results when using C++ for
     integer arithmetic.</para>
   </section>
@@ -56,7 +56,7 @@ void int f(safe_int x, safe_int y){
     <para>The following example illustrates the <code>native</code> type being
     passed as a template parameter for the type <code>safe&lt;int&gt;</code>.
     This example is slightly contrived in that <code>safe&lt;int&gt;</code>
-    has <code>native</code> as it's default promotion parameter so explicitly
+    has <code>native</code> as its default promotion parameter so explicitly
     using <code>native</code> is not necessary.</para>
 
     <programlisting>#include &lt;cassert&gt;

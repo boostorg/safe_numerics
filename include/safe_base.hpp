@@ -104,30 +104,6 @@ constexpr T base_value(
 }
 
 template<
-    class T,
-    T Min,
-    T Max,
-    class P, // promotion policy
-    class E  // exception policy
->
-std::ostream & operator<<(
-    std::ostream & os,
-    const safe_base<T, Min, Max, P, E> & t
-);
-
-template<
-    class T,
-    T Min,
-    T Max,
-    class P, // promotion policy
-    class E  // exception policy
->
-std::istream & operator>>(
-    std::istream & is,
-    safe_base<T, Min, Max, P, E> & t
-);
-
-template<
     typename T,
     T N,
     class P, // promotion policy
@@ -146,20 +122,54 @@ template<
     class E  // exception policy
 >
 class safe_base {
+//public:
     BOOST_CONCEPT_ASSERT((Integer<Stored>));
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     Stored m_t;
 
-    friend std::ostream & operator<< <Stored, Min, Max, P, E> (
-        std::ostream & os,
+    template<
+        class CharT,
+        class Traits
+    >
+    friend std::basic_ostream<CharT, Traits> & operator<<(
+        std::basic_ostream<CharT, Traits> & os,
         const safe_base & t
-    );
+    ){
+        return os << (
+            (::std::is_same<Stored, signed char>::value
+            || ::std::is_same<Stored, unsigned char>::value
+            || ::std::is_same<Stored, wchar_t>::value
+            ) ?
+                static_cast<int>(t.m_t)
+            :
+                t.m_t
+        );
+    };
 
-    friend std::istream & operator>> <Stored, Min, Max, P, E> (
-        std::istream & is,
+    template<
+        class CharT,
+        class Traits
+     >
+    friend std::basic_istream<CharT, Traits> & operator>>(
+        std::basic_istream<CharT, Traits> & is,
         safe_base & t
-    );
+    ){
+        int tx;
+        if(::std::is_same<Stored, signed char>::value
+        || ::std::is_same<Stored, unsigned char>::value
+        || ::std::is_same<Stored, wchar_t>::value
+        ){
+            is >> tx;
+            t = tx;
+        }
+        else{
+            is >> t;
+        }
+        if(is.fail())
+            E::domain_error("error in file input");
+        return is;
+    }
 
     template<
         class StoredX,
@@ -170,9 +180,7 @@ class safe_base {
     >
     friend class safe_base;
 
-    friend class std::numeric_limits<
-        safe_base<Stored, Min, Max, P, E>
-    >;
+    friend class std::numeric_limits<safe_base>;
 
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
@@ -188,7 +196,9 @@ public:
     // constructors
 
     constexpr explicit safe_base(const Stored & rhs, std::false_type);
+
     // default constructor
+    /*
     constexpr explicit safe_base() {
         // this permits creating of invalid instances.  This is inline
         // with C++ built-in but violates the premises of the whole library
@@ -200,6 +210,8 @@ public:
         // "overhead"
         // still pending on this.
     }
+    */
+    constexpr safe_base() = default;
 
     template<class T>
     constexpr /*explicit*/ safe_base(const T & t);
@@ -237,10 +249,10 @@ public:
     operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
 
     // mutating unary operators
-    safe_base operator++(){      // pre increment
+    safe_base & operator++(){      // pre increment
         return *this = *this + 1;
     }
-    safe_base operator--(){      // pre increment
+    safe_base & operator--(){      // pre decrement
         return *this = *this - 1;
     }
     safe_base operator++(int){   // post increment
@@ -248,18 +260,27 @@ public:
         ++(*this);
         return old_t;
     }
-    safe_base & operator--(int){ // post decrement
+    safe_base operator--(int){ // post decrement
         safe_base old_t = *this;
         --(*this);
         return old_t;
     }
     // non mutating unary operators
-    constexpr auto operator-() const { // unary minus
-        return 0 - *this;
-    }
-    constexpr auto operator+() const { // unary plus
+    constexpr safe_base & operator+() const { // unary plus
         return *this;
     }
+    // after much consideration, I've permited the resulting value of a unary
+    // - to change the type.  The C++ standard does invoke integral promotions
+    // so it's changing the type as well.
+    constexpr auto operator-() const { // unary minus
+        // if this is a unsigned type and the promotion policy is native
+        // the result will be unsigned. But then the operation will fail
+        // according to the requirements of arithmetic correctness.
+        // if this is an unsigned type and the promotion policy is automatic.
+        // the result will be signed.
+        return 0 - *this;
+    }
+    // argument or this is the same as the argument above
     template<class T>
     constexpr auto operator~() const { // complement
         return ~Stored(0u) ^ *this;

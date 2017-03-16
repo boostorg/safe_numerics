@@ -17,6 +17,12 @@
   special exception policy: <link
   linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>.</para>
 
+  <note>
+    <para>In this document we use the term "trap" to mean invocation of some
+    message at compile time. We use "throw" to indicate a runtime exception.
+    </para>
+  </note>
+
   <para><programlisting><xi:include href="../../examples/example81.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
   any expression which <emphasis><emphasis
@@ -73,16 +79,16 @@ safe;
 </programlisting></para>
 
     <para>The promotion rules implemented in the default <code><link
-    linkend="safe_numerics.promotion_policy.models.native">native</link></code>
-    type promotion policy are consistent with those of standard C++ </para>
+    linkend="safe_numerics.types.native">native</link></code> type promotion
+    policy are consistent with those of standard C++</para>
 
     <para>Up until now, we've focused on detecting when this happens and
     invoking an interrupt or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
-    linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
-    type promotion policy, we can change the rules of C++ arithmetic for safe
-    types to something like the following:</para>
+    linkend="safe_numerics.types.automatic"><code>automatic</code></link> type
+    promotion policy, we can change the rules of C++ arithmetic for safe types
+    to something like the following:</para>
 
     <para><itemizedlist>
         <listitem>
@@ -110,7 +116,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>One could do this by editing his code manually, but such a
           task would be tedious, error prone, and leave the resulting code
           hard to read and verify. Using the <link
-          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          linkend="safe_numerics.types.automatic"><code>automatic</code></link>
           type promotion policy will achieve the equivalent result without
           these problems.</para>
         </listitem>
@@ -119,7 +125,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>Since the result type is guaranteed to hold the result, there
           is no need to check for errors - they can't happen !!! The usage of
           <link
-          linkend="safe_numerics.exception_policy.models.trap_exception"><code>trap_exception</code></link>
+          linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
           exception policy enforces this guarantee.</para>
         </listitem>
 
@@ -150,7 +156,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     generated. Depending on the application, it should be rare to generate
     error checking code, and even more rare to actually invoke it. Any such
     instances are detected at compile time by the <link
-    linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+    linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
     exception policy.</para>
 
     <para>This small example illustrates how to use automatic type promotion
@@ -172,14 +178,14 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     that:<itemizedlist>
         <listitem>
           <para>the <link
-          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          linkend="safe_numerics.types.automatic"><code>automatic</code></link>
           type promotion policy has rendered the result of the some of two
           <code>integers</code> as a <code>long</code> type.</para>
         </listitem>
 
         <listitem>
           <para>our program compiles without error - even when using the <link
-          linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
+          linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
           exception policy</para>
         </listitem>
 

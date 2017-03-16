@@ -12,10 +12,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// policy which creates results types equal to that of C++ promotions.
-// Using the policy will permit the program to build and run in release
-// mode which is identical to that in debug mode except for the fact
-// that errors aren't trapped.
+// policy which creates expanded results types designed
+// to avoid overflows.
 
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
@@ -23,7 +21,6 @@
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/min_max.hpp>
 
-#include "utility.hpp"
 #include "safe_common.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
@@ -32,73 +29,8 @@ namespace boost {
 namespace numeric {
 
 struct automatic {
-    // section 4.13 integer conversion rank
-    template<class T>
-    using rank =
-        typename boost::mpl::if_c<
-            sizeof(char) == sizeof(T),
-            std::integral_constant<int, 1>,
-        typename boost::mpl::if_c<
-            sizeof(short) == sizeof(T),
-            std::integral_constant<int, 2>,
-        typename boost::mpl::if_c<
-            sizeof(int) == sizeof(T),
-            std::integral_constant<int, 3>,
-        typename boost::mpl::if_c<
-            sizeof(long) == sizeof(T),
-            std::integral_constant<int, 4>,
-        typename boost::mpl::if_c<
-            sizeof(long long) == sizeof(T),
-            std::integral_constant<int, 5>,
-            void
-        >::type >::type >::type >::type >::type;
-
-    // note presumption that T & U don't have he same sign
-    // if that's not true, these won't work
-    template<class T, class U>
-    using select_signed = typename boost::mpl::if_c<
-        std::numeric_limits<T>::is_signed,
-        T,
-        U
-    >::type;
-
-    template<class T, class U>
-    using select_unsigned = typename boost::mpl::if_c<
-        std::numeric_limits<T>::is_signed,
-        U,
-        T
-    >::type;
-
-    template<class T, class U>
-    using calculate_max_t =
-        typename boost::mpl::if_c<
-            // clause 1 - if both operands have the same sign
-            std::numeric_limits<T>::is_signed
-            == std::numeric_limits<U>::is_signed,
-            // use that sign
-            typename boost::mpl::if_c<
-                std::numeric_limits<T>::is_signed,
-                std::intmax_t,
-                std::uintmax_t
-            >::type,
-        // clause 2 - otherwise if the rank of the unsigned type exceeds
-        // the rank of the of the maximum signed type
-        typename boost::mpl::if_c<
-            (rank< select_unsigned<T, U>>::value
-            > rank< std::intmax_t >::value),
-            // use unsigned type
-            std::uintmax_t,
-        // clause 3 - otherwise if the type of the signed integer type can
-        // represent all the values of the unsigned type
-        typename boost::mpl::if_c<
-            std::numeric_limits< std::intmax_t >::digits >=
-            std::numeric_limits< select_unsigned<T, U> >::digits,
-            // use signed type
-            std::intmax_t,
-        // clause 4 - otherwise use unsigned version of the signed type
-            std::uintmax_t
-        >::type >::type >::type;
-
+    // the following returns the "true" type.  After calculating the new max and min
+    // these return the minimum size type which can hold the expected result.
     template<typename T, T Min, T Max>
     struct defer_stored_signed_lazily {
         using type = signed_stored_type<Min, Max>;
@@ -117,43 +49,42 @@ struct automatic {
             defer_stored_unsigned_lazily<T, Min, Max>
         >::type;
 
+
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct addition_result {
+        using temp_base_type = typename boost::mpl::if_c<
+            // if both arguments are unsigned
+            ! std::numeric_limits<T>::is_signed
+            && ! std::numeric_limits<U>::is_signed,
+            // result is unsigned
+            std::uintmax_t,
+            // otherwise result is signed
+            std::intmax_t
+        >::type;
 
-        using result_base_type = calculate_max_t<T, U>;
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-
-        // filter out case were overflow cannot occur
-        // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
-        // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
-        // Use base_value(T) ( which equals MIN ) to create a new interval. Same
-        // for MAX.  Now
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        // when we add the temporary intervals above, we'll get a new interval
-        // with the correct range for the sum !
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = add<result_base_type>(t_interval, u_interval);
+        constexpr static const checked_result<interval<temp_base_type>>
+        r_interval = add<temp_base_type>(t_interval, u_interval);
 
-        constexpr static const interval<result_base_type> result_interval =
-            r_interval.no_exception() ?
-                static_cast<interval<result_base_type>>(r_interval)
+        constexpr static const interval<temp_base_type>
+        result_interval = r_interval.no_exception() ?
+                static_cast<interval<temp_base_type>>(r_interval)
             :
-                interval<result_base_type>{}
+                interval<temp_base_type>{}
             ;
 
         using type = typename result_type<
-            result_base_type,
+            temp_base_type,
             result_interval.l,
             result_interval.u
         >::type;
@@ -162,34 +93,30 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct subtraction_result {
-        // subtraction can result in negative result regardless of the
-        // operand types !
-        using result_base_type = std::intmax_t;
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
+        // result of subtraction are always signed.
+        using temp_base_type = intmax_t;
 
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
-
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = subtract<result_base_type>(t_interval, u_interval);
-
-        constexpr static const interval<result_base_type> result_interval =
+        constexpr static const checked_result<interval<temp_base_type>>
+        r_interval = subtract<temp_base_type>(t_interval, u_interval);
+        
+        constexpr static const interval<temp_base_type> result_interval =
             r_interval.no_exception() ?
-                static_cast<interval<result_base_type>>(r_interval)
+                static_cast<interval<temp_base_type>>(r_interval)
             :
-                interval<result_base_type>{}
+                interval<temp_base_type>{}
             ;
 
         using type = typename result_type<
-            result_base_type,
+            temp_base_type,
             result_interval.l,
             result_interval.u
         >::type;
@@ -198,32 +125,38 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct multiplication_result {
-        using result_base_type = calculate_max_t<T, U>;
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
+        using temp_base_type = typename boost::mpl::if_c<
+            // if both arguments are unsigned
+            ! std::numeric_limits<T>::is_signed
+            && ! std::numeric_limits<U>::is_signed,
+            // result is unsigned
+            std::uintmax_t,
+            // otherwise result is signed
+            std::intmax_t
+        >::type;
 
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = multiply<result_base_type>(t_interval, u_interval);
+        constexpr static const checked_result<interval<temp_base_type>>
+        r_interval = multiply<temp_base_type>(t_interval, u_interval);
 
-        constexpr static const interval<result_base_type> result_interval =
+        constexpr static const interval<temp_base_type> result_interval =
             r_interval.no_exception() ?
-                static_cast<interval<result_base_type>>(r_interval)
+                static_cast<interval<temp_base_type>>(r_interval)
             :
-                interval<result_base_type>{}
+                interval<temp_base_type>{}
             ;
 
         using type = typename result_type<
-            result_base_type,
+            temp_base_type,
             result_interval.l,
             result_interval.u
         >::type;
@@ -232,39 +165,39 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct division_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
+        using temp_base_type = typename boost::mpl::if_c<
+            // if both arguments are unsigned
+            ! std::numeric_limits<T>::is_signed
+            && ! std::numeric_limits<U>::is_signed,
+            // result is unsigned
+            std::uintmax_t,
+            // otherwise result is signed
+            std::intmax_t
+        >::type;
 
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        using result_base_type = typename boost::mpl::if_c<
-            std::numeric_limits<t_base_type>::is_signed
-            || std::numeric_limits<u_base_type>::is_signed,
-            std::intmax_t,
-            std::uintmax_t
-        >::type;
+        constexpr static const checked_result<interval<temp_base_type>>
+        r_interval = divide_nz<temp_base_type>(t_interval, u_interval);
 
-        constexpr static checked_result<interval<result_base_type>> r {
-            divide_nz<result_base_type>(t_interval, u_interval)
-        };
 
-        constexpr static const interval<result_base_type> result_interval {
-            r.no_exception() ?
-                static_cast<interval<result_base_type>>(r)
+        constexpr static const interval<temp_base_type> result_interval {
+            r_interval.no_exception() ?
+                static_cast<interval<temp_base_type>>(r_interval)
             :
-                interval<result_base_type>{}
+                interval<temp_base_type>{}
          };
 
         using type = typename result_type<
-            result_base_type,
+            temp_base_type,
             result_interval.l,
             result_interval.u
         >::type;
@@ -283,33 +216,39 @@ struct automatic {
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct modulus_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
+        using temp_base_type = typename boost::mpl::if_c<
+            // if both arguments are unsigned
+            ! std::numeric_limits<T>::is_signed
+            && ! std::numeric_limits<U>::is_signed,
+            // result is unsigned
+            std::uintmax_t,
+            // otherwise result is signed
+            std::intmax_t
+        >::type;
 
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        using r_base_type = std::make_unsigned_t<u_base_type>;
+        constexpr static const checked_result<interval<temp_base_type>>
+        r_interval = modulus_nz<temp_base_type>(t_interval, u_interval);
 
-        constexpr static const checked_result<interval<r_base_type>> r
-            { modulus_nz<r_base_type>(t_interval, u_interval) };
 
-        constexpr static const interval<r_base_type> result_interval =
-            r.no_exception() ?
-                static_cast<interval<r_base_type>>(r)
+        constexpr static const interval<temp_base_type> result_interval {
+            r_interval.no_exception() ?
+                static_cast<interval<temp_base_type>>(r_interval)
             :
-                interval<r_base_type>{}
-            ;
+                interval<temp_base_type>{}
+         };
 
         using type = typename result_type<
-            r_base_type,
+            temp_base_type,
             result_interval.l,
             result_interval.u
         >::type;
@@ -326,62 +265,8 @@ struct automatic {
     }
 
     ///////////////////////////////////////////////////////////////////////
-    // temporary version 
-/*
-    template<typename T, typename U>
-    struct left_shift_result {
-        // calculate the number of bits were going to need to hold
-        // the shifted result
-        constexpr static int result_base_digits = boost::static_signed_min<
-            // the largest number of bits possible
-            std::numeric_limits<std::uintmax_t>::digits,
-                // the largest number of bits that the shifted result might be
-                std::numeric_limits<T>::digits +
-                // the number of bits in the max possible value of U
-                boost::static_signed_min<
-                    // the largest number of bits of any type
-                    std::numeric_limits<std::uintmax_t>::digits,
-                    // the number bits to hold the maximum value of U
-                    // static_cast<long>(std::numeric_limits<U>::max())
-                    std::numeric_limits<U>::max() % std::numeric_limits<int>::max()
-                >::value
-        >::value;
+    // shift operations
 
-        using result_base_type = typename boost::mpl::if_c<
-            std::numeric_limits<T>::is_signed,
-            typename boost::int_t<result_base_digits>::least,
-            typename boost::uint_t<result_base_digits>::least
-        >::type;
-
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-        constexpr static const interval<u_base_type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
-        // when we add the temporary intervals above, we'll get a new interval
-        // with the correct range for the shifted result !
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = left_shift<result_base_type>(t_interval, u_interval);
-            
-        constexpr static const interval<result_base_type> result_interval =
-            r_interval.no_exception() ?
-                static_cast<interval<result_base_type>>(r_interval)
-            :
-                interval<result_base_type>{}
-            ;
-        using type = typename result_type<
-            result_base_type,
-            result_interval.l,
-            result_interval.u
-        >::type;
-
-    };
-*/
     template<typename T, typename U>
     struct left_shift_result {
         using t_base_type = typename base_type<T>::type;
@@ -448,7 +333,27 @@ struct automatic {
 
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
-    struct bitwise_result {
+    struct bitwise_and_result {
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+        using type = typename boost::mpl::if_c<
+            (sizeof(t_base_type) > sizeof(u_base_type)),
+            u_base_type,
+            t_base_type
+        >::type;
+    };
+    template<typename T, typename U>
+    struct bitwise_or_result {
+        using t_base_type = typename base_type<T>::type;
+        using u_base_type = typename base_type<U>::type;
+        using type = typename boost::mpl::if_c<
+            (sizeof(t_base_type) > sizeof(u_base_type)),
+            t_base_type,
+            u_base_type
+        >::type;
+    };
+    template<typename T, typename U>
+    struct bitwise_xor_result {
         using t_base_type = typename base_type<T>::type;
         using u_base_type = typename base_type<U>::type;
         using type = typename boost::mpl::if_c<

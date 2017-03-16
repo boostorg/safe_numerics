@@ -82,8 +82,7 @@
             <entry><link linkend="safe_numerics.numeric"><link
             linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
 
-            <entry><para>Default value is <link
-            linkend="safe_numerics.promotion_policy.models.native">boost::numeric::native</link></para></entry>
+            <entry><para>Default value is <code>void</code></para></entry>
           </row>
 
           <row>
@@ -93,8 +92,7 @@
             linkend="safe_numerics.exception_policy">Exception
             Policy&lt;EP&gt;</link></link></entry>
 
-            <entry><para>Default value is <link
-            linkend="safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</link></para></entry>
+            <entry><para>Default value is <code>void</code></para></entry>
           </row>
         </tbody>
       </tgroup>

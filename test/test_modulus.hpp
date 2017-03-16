@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <exception>
-#include <cxxabi.h>
+//#include <cxxabi.h>
 
 #include "../include/safe_integer.hpp"
 
@@ -21,23 +21,25 @@ bool test_modulus(
     const char *av2,
     char expected_result
 ){
-    std::cout
-        << "testing  "
-        << av1 << " % " << av2
-        << std::endl;
+    std::cout << "testing"<< std::endl;
     {
         safe_t<T1> t1 = v1;
-        safe_t<decltype(v1 % v2)> result;
-
+        using result_type = decltype(t1 % v2);
+        std::cout << "safe<" << av1 << "> & " << av2 << " -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T1> >::value,
+            "safe_t not safe!"
+        );
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
+        result_type result;
         try{
             result = t1 % v2;
-
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 + v2)>::value,
-                "Expression failed to return safe type"
-            );
-            
-            if(expected_result != '.'){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
+            if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
@@ -50,8 +52,10 @@ bool test_modulus(
                 return false;
             }
         }
-        catch(std::exception){
-            if(expected_result != 'x'){
+        catch(std::exception e){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
+            if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
@@ -67,17 +71,23 @@ bool test_modulus(
     }
     {
         safe_t<T2> t2 = v2;
-        safe_t<decltype(v1 % v2)> result;
+        using result_type = decltype(v1 + t2);
+        std::cout << av1 << " % " << "safe<" << av2 << "> -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T2> >::value,
+            "safe_t not safe!"
+        );
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
+        result_type result;
 
         try{
             result = v1 % t2;
-
-            static_assert(
-                boost::numeric::is_safe<decltype(v1 % t2)>::value,
-                "Expression failed to return safe type"
-            );
-            
-            if(expected_result != '.'){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
+            if(expected_result =='x'){
                 std::cout
                     << "failed to detect error in modulus "
                     << std::hex << result << "(" << std::dec << result << ")"
@@ -91,6 +101,8 @@ bool test_modulus(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result != 'x'){
                 std::cout
                     << "erroneously detected error in modulus "
@@ -108,12 +120,17 @@ bool test_modulus(
     {
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
-
-        safe_t<decltype(v1 % v2)> result;
-
+        using result_type = decltype(t1 + t2);
+        std::cout << "safe<" << av1 << "> % " << "safe<" << av2 << "> -> ";
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
+        result_type result;
         try{
             result = t1 % t2;
-
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result != '.'){
                 std::cout
                     << "failed to detect error in modulus "
@@ -128,6 +145,8 @@ bool test_modulus(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result != 'x'){
                 std::cout
                     << "erroneously detected error in modulus "

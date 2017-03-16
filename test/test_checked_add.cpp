@@ -48,7 +48,7 @@ bool test_checked_add(
         return false;
     }
     else
-    if(! result.no_exception()
+    if(result.exception()
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "

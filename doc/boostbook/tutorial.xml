@@ -15,12 +15,15 @@
     sense. This is called "overflow". Since word size can differ between
     machines, code which produces mathematically correct results in one set of
     circumstances may fail when re-compiled on a machine with different
-    hardware. When this occurs, Most C++ compilers will continue to execute
-    with no indication that the results are wrong. It is the programmer's
-    responsibility to ensure such undefined behavior is avoided.</para>
+    hardware.</para>
+
+    <para>When this occurs in a C++ program, the program will usually continue
+    to execute with no indication that the results are wrong. It is the
+    programmer's responsibility to write his code so as to ensure such
+    undefined behavior is avoided.</para>
 
     <para>This program demonstrates this problem. The solution is to replace
-    instances of <code>int</code> type with <code>safe&lt;int&gt;</code>
+    instances of type <code>int</code> with <code>safe&lt;int&gt;</code>
     type.</para>
 
     <programlisting><xi:include href="../../examples/example1.cpp"
@@ -31,7 +34,7 @@
     <title>Arithmetic Operations Can Overflow Silently</title>
 
     <para>A variation of the above is when a value is incremented/decremented
-    beyond it's domain. This is a common problem with for loops.</para>
+    beyond it's domain. </para>
 
     <programlisting><xi:include href="../../examples/example2.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
@@ -150,7 +153,12 @@ detected error:converted negative value to unsigned
     does illustrate the usage of <code>safe_range&lt;T&gt;</code> for
     assigning legal range to variables. This will guarantee that under no
     circumstances will the variable contain a value outside of the specified
-    range.</para>
+    range. Creating the bounds type can also be somewhat error-prone. It would
+    be quite easy for C++ programmers who are used to half-open ranges to use
+    safe_unsigned_range&lt;0, i_array.size()&gt;. On the other hand it would
+    certainly be easy to create a simple function
+    <code>safe_array_bounds&lt;T&gt;</code> which would return guaranteed
+    correct array bounds.</para>
   </section>
 
   <section id="safe_numerics.tutorial.6">

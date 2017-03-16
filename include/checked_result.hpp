@@ -32,20 +32,8 @@ struct checked_result {
         R m_r;
         char const * m_msg;
     };
-    // constructors
-    // can't select constructor based on the current status of another
-    // checked_result object. So no copy constructor
-    /*
-    constexpr checked_result(const checked_result<R> & r) :
-        m_e(r.m_e)
-    {
-        (no_exception()) ?
-            (m_r = r.m_r), 0
-        :
-            (m_msg = r.m_msg), 0
-        ;
-    }
-    */
+    // constructors - use default copy constructor
+
     // don't permit construction without initial value;
     checked_result() = delete;
 
@@ -64,6 +52,8 @@ struct checked_result {
 
     // accesors
     constexpr operator R() const {
+        // can't invoke assert at compiler time so it's in compatible
+        // with constexpr
         //assert(no_exception());
         return m_r;
     }
@@ -97,7 +87,7 @@ struct checked_result {
     }
     template<class T>
     constexpr boost::logic::tribool  operator<=(const checked_result<T> & t) const {
-        return ! operator>(t) && ! operator<(t);
+        return ! operator>(t);
     }
     template<class T>
     constexpr boost::logic::tribool operator!=(const checked_result<T> & t) const {
@@ -130,6 +120,10 @@ template<typename R>
 constexpr bool no_exception(const checked_result<R> & cr){
     return cr.no_exception();
 }
+template<typename R>
+constexpr bool exception(const checked_result<R> & cr){
+    return ! cr.no_exception();
+}
 
 } // numeric
 } // boost
@@ -139,9 +133,9 @@ constexpr bool no_exception(const checked_result<R> & cr){
 
 namespace std {
 
-template<typename R>
-std::ostream & operator<<(
-    std::ostream & os,
+template<typename CharT, typename Traits, typename R>
+inline std::basic_ostream<CharT, Traits> & operator<<(
+    std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<R> & r
 ){
     if(r.no_exception())
@@ -151,10 +145,10 @@ std::ostream & operator<<(
     return os;
 }
 
-template<>
-std::ostream & operator<<(
-    std::ostream & os,
-    const boost::numeric::checked_result<std::int8_t> & r
+template<typename CharT, typename Traits, typename R>
+inline std::basic_ostream<CharT, Traits> & operator<<(
+    std::basic_ostream<CharT, Traits> os,
+    const boost::numeric::checked_result<signed char> & r
 ){
     if(r.no_exception())
         os << static_cast<std::int16_t>(r);
@@ -163,10 +157,10 @@ std::ostream & operator<<(
     return os;
 }
 
-template<>
-std::ostream & operator<<(
-    std::ostream & os,
-    const boost::numeric::checked_result<std::uint8_t> & r
+template<typename CharT, typename Traits, typename R>
+inline std::basic_ostream<CharT, Traits> & operator<<(
+    std::basic_ostream<CharT, Traits> os,
+    const boost::numeric::checked_result<unsigned char> & r
 ){
     if(r.no_exception())
         os << static_cast<std::uint16_t>(r);
@@ -175,29 +169,36 @@ std::ostream & operator<<(
     return os;
 }
 
-/*
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<R> & r){
+template<typename CharT, typename Traits, typename R>
+inline std::basic_istream<CharT, Traits> & operator>>(
+    std::basic_istream<CharT, Traits> & is,
+    boost::numeric::checked_result<R> & r
+){
     is >> r.m_r;
     return is;
 }
 
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<std::int8_t> & r){
+template<typename CharT, typename Traits, typename R>
+inline std::basic_istream<CharT, Traits> & operator>>(
+    std::basic_istream<CharT, Traits> & is, 
+    boost::numeric::checked_result<signed char> & r
+){
     std::int16_t i;
     is >> i;
     r.m_r = i;
     return is;
 }
 
-template<typename R>
-std::istream & operator>>(std::istream & is, const boost::numeric::checked_result<std::uint8_t> & r){
+template<typename CharT, typename Traits, typename R>
+inline std::basic_istream<CharT, Traits> & operator>>(
+    std::basic_istream<CharT, Traits> & is,
+    boost::numeric::checked_result<unsigned char> & r
+){
     std::uint16_t i;
     is >> i;
     r.m_r = i;
     return is;
 }
-*/
 
 } // std
 

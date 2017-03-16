@@ -15,9 +15,7 @@
 #include <limits>
 #include <cassert>
 #include <type_traits>
-#include <cstdlib> // quick_exit
 #include <array>
-#include <algorithm>
 #include <initializer_list>
 
 #include <boost/logic/tribool.hpp>
@@ -81,7 +79,7 @@ struct interval {
 
 template<class R>
 constexpr interval<R>::interval() :
-    l(std::numeric_limits<R>::min()),
+    l(std::numeric_limits<R>::lowest()),
     u(std::numeric_limits<R>::max())
 {}
 // account for the fact that for floats and doubles
@@ -98,7 +96,7 @@ constexpr interval<double>::interval() :
     u(std::numeric_limits<double>::max())
 {}
 
-namespace {
+namespace detail {
 
 template<typename R>
 constexpr checked_result<interval<R>> failed_result(
@@ -109,59 +107,36 @@ constexpr checked_result<interval<R>> failed_result(
 // create constexpr versions of stl algorthms which are not (yet)
 // constexpr.
 template<class InputIt, class UnaryPredicate>
-constexpr InputIt find_if_not(InputIt first, InputIt last, UnaryPredicate q)
-{
+constexpr InputIt find_if(InputIt first, InputIt last, UnaryPredicate q){
     for (; first != last; ++first) {
-        if (!q(*first)) {
+        if (q(*first)) {
             return first;
         }
     }
     return last;
 }
 
-template<class InputIt, class T>
-constexpr InputIt find(InputIt first, InputIt last, const T& value)
-{
-    for (; first != last; ++first) {
-        if (*first == value) {
-            return first;
-        }
-    }
-    return last;
-}
-
+// helper function used below to select the minimum and maximum value
+// from a list of values
 template<typename R>
-constexpr bool less_than(
-    const checked_result<R> & lhs,
-    const checked_result<R> & rhs
-){
-    return
-        (lhs.no_exception() && rhs.no_exception()) ?
-            safe_compare::less_than(lhs.m_r, rhs.m_r)
-        :
-            false
-        ;
-}
-
-template<typename R>
-constexpr checked_result<interval<R>> select(
+constexpr checked_result<interval<R>> minmax(
     const std::initializer_list<checked_result<R>> & acr
 ){
-    typename std::initializer_list<checked_result<R>>::const_iterator const e =         find_if_not(
+    typename std::initializer_list<checked_result<R>>::const_iterator const e =         find_if(
             acr.begin(),
             acr.end(),
-            no_exception<R>
+            exception<R>
         );
     return (acr.end() == e) ?
         checked_result<interval<R>>(
-            interval<R>(std::minmax(acr, less_than<R>))
+            interval<R>(std::minmax(acr, & safe_compare::less_than<R, R>))
         )
         :
         failed_result<R>// throw assert_failure([]{assert(!"input not in range");})
         ;
 }
 
-}  // namespace
+}  // detail
 
 template<typename R, typename T, typename U>
 constexpr checked_result<interval<R>> add(
@@ -171,10 +146,10 @@ constexpr checked_result<interval<R>> add(
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     checked_result<R> lower = checked::add<R>(static_cast<T>(t.l), static_cast<U>(u.l));
     if(! lower.no_exception())
-        return failed_result<R>;
+        return detail::failed_result<R>;
     checked_result<R> upper = checked::add<R>(static_cast<T>(t.u), static_cast<U>(u.u));
     if(! upper.no_exception())
-        return failed_result<R>;
+        return detail::failed_result<R>;
     return interval<R>(lower, upper);
 }
 
@@ -183,18 +158,17 @@ constexpr checked_result<interval<R>> subtract(const interval<T> & t, const inte
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     checked_result<R> lower = checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u));
     if(! lower.no_exception())
-        return failed_result<R>;
+        return detail::failed_result<R>;
     checked_result<R> upper = checked::subtract<R>(static_cast<T>(t.u), static_cast<U>(u.l));
     if(! upper.no_exception())
-        return failed_result<R>;
+        return detail::failed_result<R>;
     return interval<R>(lower, upper);
 }
 
 template<typename R, typename T, typename U>
 constexpr checked_result<interval<R>> multiply(const interval<T> & t, const interval<U> & u){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-
-    return select<R>(
+    return detail::minmax<R>(
         std::initializer_list<checked_result<R>> {
             checked::multiply<R>(t.l, u.l),
             checked::multiply<R>(t.l, u.u),
@@ -212,7 +186,7 @@ constexpr inline checked_result<interval<R>> divide_nz(
     const interval<U> & u
 ){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return select<R>( (u.u < 0 || u.l > 0) ?
+    return detail::minmax<R>( (u.u < 0 || u.l > 0) ?
         std::initializer_list<checked_result<R>> {
             checked::divide<R>(t.l, u.l),
             checked::divide<R>(t.l, u.u),
@@ -252,22 +226,26 @@ constexpr checked_result<interval<R>> modulus_nz(
     const interval<T> & t,
     const interval<U> & u
 ){
-    return select<R>( (u.u < 0 || u.l > 0) ?
+    // adapted from https://en.wikipedia.org/wiki/Modulo_operation
+    return detail::minmax<R>( (u.l < 0 && 0 < u.u) ?
+        // if divisor range includes zero then we need include +1 and -1
+        // among the possible divisors.  But since % +1 and % -1 yield
+        // the same result, which is 0, then adding 0 to the possibilities
+        // is sufficient to make sure we've got the whole possible range
         std::initializer_list<checked_result<R>> {
             checked::modulus<R>(t.l, u.l),
             checked::modulus<R>(t.l, u.u),
             checked::modulus<R>(t.u, u.l),
-            checked::modulus<R>(t.u, u.u)
+            checked::modulus<R>(t.u, u.u),
+            0 // % 1 or % -1
         }
-    :
+        :
+        // if divisor range doesn't include zero, the following should be
+        // sufficient.
         std::initializer_list<checked_result<R>> {
             checked::modulus<R>(t.l, u.l),
-            checked::modulus<R>(t.l, -1),
-            checked::modulus<R>(t.u, u.l),
-            checked::modulus<R>(t.u, 1),
-            checked::modulus<R>(t.l, 1),
             checked::modulus<R>(t.l, u.u),
-            checked::modulus<R>(t.u, 1),
+            checked::modulus<R>(t.u, u.l),
             checked::modulus<R>(t.u, u.u)
         }
     );
@@ -292,7 +270,7 @@ constexpr checked_result<interval<R>> left_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
-    return select<R>( std::initializer_list<checked_result<R>> {
+    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
         checked::left_shift<R>(t.l, u.l),
         checked::left_shift<R>(t.l, u.u),
         checked::left_shift<R>(t.u, u.l),
@@ -305,7 +283,7 @@ constexpr checked_result<interval<R>> right_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
-    return select<R>( std::initializer_list<checked_result<R>> {
+    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
         checked::right_shift<R>(t.l, u.l),
         checked::right_shift<R>(t.l, u.u),
         checked::right_shift<R>(t.u, u.l),
@@ -323,7 +301,7 @@ constexpr checked_result<interval<R>> right_shift_positive(
     const U ux = boost::numeric::log(std::numeric_limits<U>::max());
     const U uu = safe_compare::less_than(u.u, ux) ? u.u : ux;
 
-    return select<R>( std::initializer_list<checked_result<R>> {
+    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
         checked::right_shift<R>(t.l, ul),
         checked::right_shift<R>(t.l, uu),
         checked::right_shift<R>(t.u, ul),
@@ -336,10 +314,12 @@ constexpr checked_result<interval<R>> intersection(
     const interval<T> & t,
     const interval<U> & u
 ){
-    const R rl = safe_compare::greater_than(t.l, u.l) ? t.l : u.l;
-    const R ru = safe_compare::less_than(t, u) ? t.u : u.u;
+    const checked_result<R> rl =
+        checked::cast<R>(safe_compare::greater_than(t.l, u.l) ? t.l : u.l);
+    const checked_result<R> ru =
+        checked::cast<R>(safe_compare::less_than(t, u) ? t.u : u.u);
 
-    if(safe_compare::greater_than(rl, ru)){
+    if(rl > ru){
         return checked_result<interval<R>>(
             exception_type::uninitialized,
             "null intersection"
@@ -353,15 +333,11 @@ constexpr checked_result<interval<R>> union_interval(
     const interval<T> & t,
     const interval<U> & u
 ){
-    const R rl = safe_compare::less_than(t.l, u.l) ? t.l : u.l;
-    const R ru = safe_compare::greater_than(t, u) ? t.u : u.u;
+    const checked_result<R> rl =
+        checked::cast<R>(safe_compare::less_than(t.l, u.l) ? t.l : u.l);
+    const checked_result<R> ru =
+        checked::cast<R>(safe_compare::greater_than(t, u) ? t.u : u.u);
 
-    if(safe_compare::greater_than(rl, ru)){
-        return checked_result<interval<R>>(
-            exception_type::uninitialized,
-            "null intersection"
-        );
-    }
     return interval<R>(rl, ru);
 }
 
@@ -444,20 +420,30 @@ constexpr boost::logic::tribool operator>=(
 
 namespace std {
 
-template<typename T>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<T> & i){
-    os << "[" << i.l << "," << i.u << "]";
-    return os;
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(
+    std::basic_ostream<CharT, Traits> & os,
+    const boost::numeric::interval<T> & i
+){
+    return os << '[' << i.l << ',' << i.u << ']';
 }
-
-template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<unsigned char> & i){
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(
+    std::basic_ostream<CharT, Traits> & os,
+    const boost::numeric::interval<unsigned char> & i
+){
     os << "[" << (unsigned)i.l << "," << (unsigned)i.u << "]";
     return os;
 }
 
-template<>
-std::ostream & operator<<(std::ostream & os, const boost::numeric::interval<signed char> & i){
+template<typename CharT, typename Traits, typename T>
+inline std::basic_ostream<CharT, Traits> &
+operator<<(
+    std::basic_ostream<CharT, Traits> & os,
+    const boost::numeric::interval<signed char> & i
+){
     os << "[" << (int)i.l << "," << (int)i.u << "]";
     return os;
 }

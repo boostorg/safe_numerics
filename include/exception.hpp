@@ -12,8 +12,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// contains operations for doing checked aritmetic on NATIVE
-// C++ types.
+// contains error indicators for results of doing checked
+// arithmetic on native C++ types
 
 #include "concept/exception_policy.hpp"
 
