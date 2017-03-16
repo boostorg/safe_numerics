@@ -104,26 +104,32 @@ constexpr T base_value(
 }
 
 template<
+    class CharT,
+    class Traits,
     class T,
     T Min,
     T Max,
     class P, // promotion policy
     class E  // exception policy
 >
-std::ostream & operator<<(
-    std::ostream & os,
+std::basic_ostream<CharT, Traits> &
+operator<<(
+    std::basic_ostream<CharT, Traits> & os,
     const safe_base<T, Min, Max, P, E> & t
 );
 
 template<
+    class CharT,
+    class Traits,
     class T,
     T Min,
     T Max,
     class P, // promotion policy
     class E  // exception policy
 >
-std::istream & operator>>(
-    std::istream & is,
+std::basic_istream<CharT, Traits> &
+operator>>(
+    std::basic_istream<CharT, Traits> & is,
     safe_base<T, Min, Max, P, E> & t
 );
 
@@ -150,16 +156,6 @@ class safe_base {
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     Stored m_t;
-
-    friend std::ostream & operator<< <Stored, Min, Max, P, E> (
-        std::ostream & os,
-        const safe_base & t
-    );
-
-    friend std::istream & operator>> <Stored, Min, Max, P, E> (
-        std::istream & is,
-        safe_base & t
-    );
 
     template<
         class StoredX,
