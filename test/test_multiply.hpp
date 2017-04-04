@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <exception>
-#include <cxxabi.h>
+#include <boost/core/demangle.hpp>
 
 #include "../include/safe_integer.hpp"
 
@@ -21,14 +21,16 @@ bool test_multiply(
     const char *av2,
     char expected_result
 ){
-    std::cout
-        << "testing  "
-        << av1 << " * " << av2
-        << std::endl;
+    std::cout << "testing"<< std::endl;
     {
         safe_t<T1> t1 = v1;
 
         using result_type = decltype(t1 * v2);
+        std::cout << "safe<" << av1 << "> * " << av2 << " -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T1> >::value,
+            "safe_t not safe!"
+        );
         static_assert(
             boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -37,12 +39,13 @@ bool test_multiply(
 
         try{
             result = t1 * v2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 * v2;
@@ -52,12 +55,13 @@ bool test_multiply(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 * v2;
@@ -70,6 +74,11 @@ bool test_multiply(
     {
         safe_t<T2> t2 = v2;
         using result_type = decltype(v1 * t2);
+        std::cout << av1 << " * " << "safe<" << av2 << "> -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T2> >::value,
+            "safe_t not safe!"
+        );
         static_assert(
             boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -78,12 +87,13 @@ bool test_multiply(
 
         try{
             result = v1 * t2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     v1 * t2;
@@ -93,12 +103,13 @@ bool test_multiply(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     v1 * t2;
@@ -113,6 +124,7 @@ bool test_multiply(
         safe_t<T2> t2 = v2;
 
         using result_type = decltype(t1 * t2);
+        std::cout << "safe<" << av1 << "> * " << "safe<" << av2 << "> -> ";
         static_assert(
             boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -121,12 +133,13 @@ bool test_multiply(
 
         try{
             result = t1 * t2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 * t2;
@@ -136,12 +149,13 @@ bool test_multiply(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in multiplication "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 * t2;

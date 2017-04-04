@@ -14,11 +14,14 @@
 
 #include <limits>
 #include <type_traits> // is_base_of, is_same, enable_if
+#include <algorithm>   // max
+#include <cassert>
 
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
+#include <boost/integer.hpp>
 
 #include "safe_base.hpp"
 #include "safe_literal.hpp"
@@ -147,6 +150,7 @@ operator R () const {
         indeterminate(r_interval < this_interval),
         "safe type cannot be constructed with this type"
     );
+
     return boost::mpl::if_c<
         r_interval.includes(this_interval),
         typename validate_detail<R, E>::exception_not_possible,
@@ -249,10 +253,7 @@ template<class T, class U>
 struct addition_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
-        typename promotion_policy::template addition_result<
-            T,
-            U
-        >::type;
+        typename promotion_policy::template addition_result<T,U>::type;
 
     constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
@@ -265,26 +266,24 @@ struct addition_result {
     };
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the sum !
-    constexpr static const checked_result<interval<result_base_type>> r_interval =
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
         add<result_base_type>(t_interval, u_interval);
 
-    constexpr static bool exception_possible() {
-        return r_interval.exception();
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
     }
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     
     struct safe_type {
         using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
@@ -368,45 +367,39 @@ constexpr inline operator+=(T & t, const U & u){
 template<class T, class U>
 struct subtraction_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template subtraction_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template subtraction_result<T, U>::type;
 
-    constexpr static const interval<t_base_type> t_interval{
+    constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     };
 
-    constexpr static const interval<u_base_type> u_interval{
+    constexpr static const interval<typename base_type<U>::type> u_interval{
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     };
 
     // when we add the temporary intervals above, we'll get a new interval
     // with the correct range for the difference !
-    constexpr static const checked_result<interval<result_base_type>> r_interval
-        = subtract<result_base_type>(t_interval, u_interval);
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
+        subtract<result_base_type>(t_interval, u_interval);
 
-    constexpr static bool exception_possible() {
-        return ! r_interval.no_exception();
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
     }
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
+
     struct safe_type {
         using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
@@ -490,49 +483,36 @@ constexpr inline operator-=(T & t, const U & u){
 template<class T, class U>
 struct multiplication_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template multiplication_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template multiplication_result<T, U>::type;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
-        // filter out case were overflow cannot occur
-        // note: subtle trickery.  Suppose t is safe_range<MIN, ..>.  Then
-        // std::numeric_limits<T>::min() will be safe_range<MIN with a value of MIN
-        // Use base_value(T) ( which equals MIN ) to create a new interval. Same
-        // for MAX.  Now
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        // when we add the temporary intervals above, we'll get a new interval
-        // with the correct range for the sum !
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = multiply<result_base_type>(t_interval, u_interval);
+        constexpr static const interval<checked_result<result_base_type>> r_interval =
+            multiply<result_base_type>(t_interval, u_interval);
 
-        constexpr static bool exception_possible() {
-            return ! r_interval.no_exception();
+        constexpr static const bool exception_possible() {
+            return r_interval.l.exception() || r_interval.u.exception();
         }
-        constexpr static const interval<result_base_type> type_interval =
-            exception_possible() ?
-                interval<result_base_type>{}
-            :
-                static_cast<interval<result_base_type>>(r_interval)
-            ;
+
         using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
@@ -620,66 +600,55 @@ constexpr inline operator*=(T & t, const U & u){
 /////////////////////////////////////////////////////////////////
 // division
 
+// key idea here - result will never be larger than T
 template<class T, class U>
 struct division_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
-    using result_base_type =
-        typename promotion_policy::template division_result<
-            t_base_type,
-            u_base_type
-        >::type;
+    using r_base = typename promotion_policy::template division_result<T, U>::type;
+    using t_base = typename base_type<T>::type;
+    using u_base = typename base_type<U>::type;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<t_base> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<u_base> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = divide_nz<result_base_type>(t_interval, u_interval);
+        constexpr static const interval<checked_result<r_base>> r_interval
+            = divide<r_base>(t_interval, u_interval);
 
-        constexpr static bool exception_possible() {
-            // denominator better not be zero
-            static_assert(
-                (u_interval.l != 0 || u_interval.u != 0),
-                "cannot divide by zero"
-            );
+        static_assert(! r_interval.l.exception(), "unexpected negative overflow");
+        static_assert(! r_interval.u.exception(), "unexpected positive overflow");
+
+        constexpr static const bool exception_possible() {
             return
-                // if over/under flow or domain error possible
-                r_interval.exception()
-                // if the denominator can contain zero
-                || (u_interval.l <= 0 && u_interval.u >= 0 )
+                u_interval.includes(0)
+                ||
+                    (u_interval.includes(-1)
+                    && t_interval.includes(std::numeric_limits<T>::min())
+                )
             ;
         }
-
-        constexpr static const interval<result_base_type> type_interval =
-            exception_possible() ?
-                interval<result_base_type>{}
-            :
-                static_cast<interval<result_base_type>>(r_interval)
-            ;
         using type = safe_base<
-            result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_base,
+            static_cast<r_base>(r_interval.l),
+            static_cast<r_base>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
-        constexpr static const type make(const result_base_type & t){
+        constexpr static const type make(const r_base & t){
             return type(t, std::false_type());
         }
     };
     struct unsafe_type {
-        using type = result_base_type;
-        constexpr static const type make(const result_base_type & t){
+        using type = r_base;
+        constexpr static const type make(const r_base & t){
             return t;
         }
         constexpr static bool exception_possible() {
@@ -687,39 +656,52 @@ struct division_result {
         }
     };
     using type_helper = typename boost::mpl::if_c<
-        std::numeric_limits<result_base_type>::is_integer,
+        std::numeric_limits<r_base>::is_integer,
         safe_type,
         unsafe_type
     >::type;
     using type = typename type_helper::type;
 
-    constexpr static const type make(const result_base_type & t){
+    constexpr static const type make(const r_base & t){
         return type_helper::make(t);
     }
     constexpr static bool exception_possible() {
         return type_helper::exception_possible();
     }
 
+    constexpr static int bits = std::min(
+        std::numeric_limits<std::uintmax_t>::digits,
+        std::max(std::initializer_list<int>{
+            std::numeric_limits<r_base>::digits,
+            std::numeric_limits<t_base>::digits,
+            std::numeric_limits<u_base>::digits
+        }) + (std::numeric_limits<r_base>::is_signed ? 1 : 0)
+    );
+
+    using temp_base = typename boost::mpl::if_c<
+        std::numeric_limits<r_base>::is_signed,
+        typename boost::int_t<bits>::least,
+        typename boost::uint_t<bits>::least
+    >::type;
+
     // exception possible
-    constexpr static result_base_type
+    constexpr static r_base
     return_value(const T & t, const U & u, std::true_type){
-        static_assert(exception_possible(), "implement runtime check");
-        checked_result<result_base_type> r =
-        promotion_policy::template divide<result_base_type>(
+        checked_result<temp_base> r = checked::divide<temp_base>(
             base_value(t),
             base_value(u)
         );
+
         dispatch<exception_policy>(r);
-        return static_cast<result_base_type>(r);
+        return static_cast<r_base>(r);
     }
 
     // exception not possible
-    constexpr static result_base_type
+    constexpr static r_base
     return_value(const T & t, const U & u, std::false_type){
-        static_assert(! exception_possible(), "no runtime check");
         return
-            static_cast<result_base_type>(base_value(t))
-            / static_cast<result_base_type>(base_value(u))
+            static_cast<r_base>(base_value(t))
+            / static_cast<r_base>(base_value(u))
         ;
     }
 };
@@ -760,50 +742,40 @@ constexpr inline operator/=(T & t, const U & u){
 template<class T, class U>
 struct modulus_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
-    using result_base_type =
-        typename promotion_policy::template modulus_result<
-            t_base_type,
-            u_base_type
-        >::type;
-
+    using result_base_type = typename promotion_policy::template modulus_result<T, U>::type;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     struct safe_type {
-        constexpr static const interval<t_base_type> t_interval{
+        constexpr static const interval<typename base_type<T>::type> t_interval{
             base_value(std::numeric_limits<T>::min()),
             base_value(std::numeric_limits<T>::max())
         };
 
-        constexpr static const interval<u_base_type> u_interval{
+        constexpr static const interval<typename base_type<U>::type> u_interval{
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
 
-        constexpr static const checked_result<interval<result_base_type>> r_interval
-            = modulus_nz<result_base_type>(t_interval, u_interval);
+        constexpr static const interval<checked_result<result_base_type>> r_interval
+            = modulus<result_base_type>(t_interval, u_interval);
 
         constexpr static bool exception_possible() {
             return
                 // if over/under flow or domain error possible
-                r_interval.exception()
+                (r_interval.l.exception() || r_interval.u.exception())
                 // if the denominator can contain zero
-                || (u_interval.l <= 0 && u_interval.u >=0 )
+                || u_interval.includes(0)
             ;
         }
 
-        constexpr static const interval<result_base_type> type_interval =
-            exception_possible() ?
-                interval<result_base_type>{}
-            :
-                static_cast<interval<result_base_type>>(r_interval)
-            ;
-
         using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
@@ -864,7 +836,8 @@ typename std::enable_if<
     ,
     typename modulus_result<T, U>::type
 >::type
-inline operator%(const T & t, const U & u){
+constexpr operator%(const T & t, const U & u){
+    // see https://en.wikipedia.org/wiki/Modulo_operation
     using mr = modulus_result<T, U>;
     return mr::make(
         mr::return_value(
@@ -898,21 +871,22 @@ typename std::enable_if<
     bool
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
-
     // filter out case were overflow cannot occur
-    constexpr const interval<t_base_type> t_interval(
+    constexpr const interval<typename base_type<T>::type> t_interval(
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     );
 
-    constexpr const interval<u_base_type> u_interval(
+    constexpr const interval<typename base_type<U>::type> u_interval(
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     );
 
-    return safe_compare::less_than(base_value(lhs), base_value(rhs));        ;
+    const boost::tribool x = t_interval < u_interval;
+    return
+        x ? true :
+        !x ? false:
+        safe_compare::less_than(base_value(lhs), base_value(rhs));
 }
 
 template<class T, class U>
@@ -956,15 +930,12 @@ typename std::enable_if<
     bool
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
-
-    constexpr const interval<t_base_type> t_interval(
+    constexpr const interval<typename base_type<T>::type> t_interval(
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     );
 
-    constexpr const interval<u_base_type> u_interval(
+    constexpr const interval<typename base_type<T>::type> u_interval(
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     );
@@ -998,44 +969,42 @@ constexpr operator!=(const T & lhs, const U & rhs) {
 template<class T, class U>
 struct left_shift_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template left_shift_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template left_shift_result<T, U>::type;
 
-    constexpr static const interval<t_base_type> t_interval{
+    constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     };
 
-    constexpr static const interval<u_base_type> u_interval{
+    constexpr static const interval<typename base_type<U>::type> u_interval{
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     };
 
-    constexpr static const checked_result<interval<result_base_type>> r_interval {
+    static_assert(t_interval.u >= 0, "negative values can't be shifted");
+    static_assert(u_interval.u >= 0, "shift count can't be negative");
+    static_assert(u_interval.l <= std::numeric_limits<T>::digits,
+        "shift count can't exceed argument size"
+    );
+
+    constexpr static const interval<checked_result<result_base_type>> r_interval {
         left_shift<result_base_type>(t_interval, u_interval)
     };
 
-    constexpr static bool exception_possible() {
-        return ! r_interval.no_exception();
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
     }
-
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
@@ -1110,44 +1079,42 @@ constexpr inline operator<<=(T & t, const U & u){
 template<class T, class U>
 struct right_shift_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template right_shift_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template right_shift_result<T, U>::type;
 
-    constexpr static const interval<t_base_type> t_interval{
+    constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
         base_value(std::numeric_limits<T>::max())
     };
 
-    constexpr static const interval<u_base_type> u_interval{
+    constexpr static const interval<typename base_type<U>::type> u_interval{
         base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
     };
 
-    constexpr static const checked_result<interval<result_base_type>> r_interval{
+    static_assert(t_interval.u >= 0, "negative values can't be shifted");
+    static_assert(u_interval.l <= 0, "shift count can't be negative");
+    static_assert(u_interval.l <= std::numeric_limits<T>::digits,
+        "shift count can't exceed argument size"
+    );
+
+    constexpr static const interval<checked_result<result_base_type>> r_interval{
         right_shift<result_base_type>(t_interval, u_interval)
     };
 
-    constexpr static bool exception_possible(){
-        return ! r_interval.no_exception();
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
     }
-
-    constexpr static const interval<result_base_type> type_interval =
-        exception_possible() ?
-            interval<result_base_type>{}
-        :
-            static_cast<interval<result_base_type>>(r_interval)
-        ;
 
     using exception_policy = typename common_exception_policy<T, U>::type;
     using type = safe_base<
             result_base_type,
-            type_interval.l,
-            type_interval.u,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;

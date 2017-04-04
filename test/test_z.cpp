@@ -149,23 +149,6 @@ int main(){
 #include "../include/cpp.hpp"
 #include "../include/safe_common.hpp"
 
-using pic16_promotion = boost::numeric::cpp<
-    8,  // char
-    8,  // short
-    8,  // int
-    16, // long
-    32  // long long
->;
-
-using pr = pic16_promotion::rank<short>;
-
-int main(){
-    return 0;
-}
-
-#include "../include/cpp.hpp"
-#include "../include/safe_common.hpp"
-
 using namespace boost::numeric;
 
 // create custom policy which emulates native one
@@ -491,8 +474,37 @@ void f4(){
     constexpr const safe<int> l2 = j + k;
 }
 
-#endif
+#include "../include/interval.hpp"
 
 int main(){
     return 0;
 }
+
+#endif
+
+#include "../include/utility.hpp"
+#include "../include/cpp.hpp"
+#include "../include/safe_common.hpp"
+
+using pic16_promotion = boost::numeric::cpp<
+    8,  // char
+    8,  // short
+    8,  // int
+    16, // long
+    32  // long long
+>;
+
+/*
+    template<typename T, typename U>
+    using result_type = usual_arithmetic_conversions<
+        integral_promotion<typename base_type<T>::type>,
+        integral_promotion<typename base_type<U>::type>
+    >;
+*/
+
+using pr = pic16_promotion::rank<short>;
+
+int main(){
+    return 0;
+}
+

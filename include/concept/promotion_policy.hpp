@@ -12,8 +12,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include "../checked_result.hpp"
-
 namespace boost {
 namespace numeric {
 
@@ -31,14 +29,6 @@ struct PromotionPolicy {
     using baw_type = typename PP::template bitwise_and_result<T, U>;
     using bow_type = typename PP::template bitwise_or_result<T, U>;
     using bxw_type = typename PP::template bitwise_xor_result<T, U>;
-
-    checked_result<typename base_type<d_type>::type> divide(){
-        return PP::template divide<typename base_type<d_type>::type>(0, 0);
-    }
-    checked_result<typename base_type<d_type>::type> modulus(){
-        return PP::template modulus<typename base_type<d_type>::type>(0, 0);
-    }
-
 };
 
 } // numeric

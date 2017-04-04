@@ -150,7 +150,7 @@ using safe_unsigned_literal = safe_literal_impl<
 } // boost
 
 /////////////////////////////////////////////////////////////////
-// numeric limits for safe<int> etc.
+// numeric limits for safe_literal etc.
 
 #include <limits>
 
@@ -167,6 +167,9 @@ class numeric_limits<boost::numeric::safe_literal_impl<T, N, P, E> >
 {
     using SL = boost::numeric::safe_literal_impl<T, N, P, E>;
 public:
+    constexpr static SL lowest() noexcept {
+        return SL();
+    }
     constexpr static SL min() noexcept {
         return SL();
     }

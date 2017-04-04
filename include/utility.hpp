@@ -18,40 +18,6 @@
 
 namespace boost {
 namespace numeric {
-    // section 4.13 integer conversion rank
-    template<class T>
-    struct rank;
-
-    template<>
-    struct rank<char> : public std::integral_constant<unsigned char, 1>{};
-    template<>
-    struct rank<signed char> : public std::integral_constant<unsigned char, 1>{};
-    template<>
-    struct rank<unsigned char> : public std::integral_constant<unsigned char, 1>{};
-
-    template<>
-    struct rank<wchar_t> : public std::integral_constant<unsigned char, 2>{};
-
-    template<>
-    struct rank<short> : public std::integral_constant<unsigned char, 3>{};
-    template<>
-    struct rank<unsigned short> : public std::integral_constant<unsigned char, 3>{};
-
-    template<>
-    struct rank<int> : public std::integral_constant<unsigned char, 4>{};
-    template<>
-    struct rank<unsigned int> : public std::integral_constant<unsigned char, 4>{};
-
-    template<>
-    struct rank<long> : public std::integral_constant<unsigned char, 5>{};
-    template<>
-    struct rank<unsigned long> : public std::integral_constant<unsigned char, 5>{};
-
-    template<>
-    struct rank<long long> : public std::integral_constant<unsigned char, 6>{};
-    template<>
-    struct rank<unsigned long long> : public std::integral_constant<unsigned char, 6>{};
-
     // the number of bits required to render the value in x
     template<typename T>
     typename std::enable_if<
@@ -97,6 +63,14 @@ namespace numeric {
         std::max({log(Min), log(Max)})
     >::least ;
 
+    template<typename T>
+    using bits = std::integral_constant<
+        int,
+        std::numeric_limits<T>::digits
+        + std::numeric_limits<T>::is_signed ? 1 : 0
+    >;
+
+
     // used for debugging
     // usage - print_type<T>;
     // provokes error message with name of type T
@@ -107,8 +81,8 @@ namespace numeric {
     template<int N> 
     struct print_value
     {
-        enum test : unsigned char {
-            value = N + 256
+        enum test : char {
+            value = N < 0 ? N - 256 : N + 256
         };
     };
 

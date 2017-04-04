@@ -20,9 +20,12 @@
 namespace boost {
 namespace numeric {
 
+// in spite of the similarity, this list is distinct from the exceptions
+// listed in documentation for std::exception.
 enum class exception_type {
     no_exception,
-    overflow_error,
+    positive_overflow_error,
+    negative_overflow_error,
     underflow_error,
     range_error,
     domain_error,
@@ -33,7 +36,8 @@ template<class EP>
 void
 dispatch(const exception_type & e, char const * msg){
     switch(e){
-    case exception_type::overflow_error:
+    case exception_type::positive_overflow_error:
+    case exception_type::negative_overflow_error:
         EP::overflow_error(msg);
         break;
     case exception_type::underflow_error:

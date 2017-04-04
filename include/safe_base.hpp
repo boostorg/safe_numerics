@@ -155,17 +155,8 @@ class safe_base {
         std::basic_istream<CharT, Traits> & is,
         safe_base & t
     ){
-        int tx;
-        if(::std::is_same<Stored, signed char>::value
-        || ::std::is_same<Stored, unsigned char>::value
-        || ::std::is_same<Stored, wchar_t>::value
-        ){
-            is >> tx;
-            t = tx;
-        }
-        else{
-            is >> t;
-        }
+        is >> t.m_t;
+        t.validated_cast(t.m_t); // no need to store result
         if(is.fail())
             E::domain_error("error in file input");
         return is;

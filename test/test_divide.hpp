@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <exception>
-#include <cxxabi.h>
+#include <boost/core/demangle.hpp>
 
 #include "../include/safe_integer.hpp"
 
@@ -21,36 +21,30 @@ bool test_divide(
     const char *av2,
     char expected_result
 ){
-    using namespace boost::numeric;
-    // can't so this as -min / -1 invokes hardware trap
-
-    decltype(v1 / v2) unsafe_result;
-    if(expected_result == '.')
-        //unsafe_result = v1 / v2;
+    std::cout << "testing"<< std::endl;
     {
-        std::cout << "testing  safe<" << av1 << "> / " << av2 << " -> ";
-        static_assert(is_safe<safe_t<T1> >::value, "safe_t not safe!");
-
         safe_t<T1> t1 = v1;
 
         using result_type = decltype(t1 / v2);
-        result_type result;
-
+        std::cout << "safe<" << av1 << "> / " << av2 << " -> ";
         static_assert(
-            is_safe<result_type>::value,
+            boost::numeric::is_safe<safe_t<T1> >::value,
+            "safe_t not safe!"
+        );
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-
+        result_type result;
         try{
             result = t1 / v2;
             std::cout << std::hex << result << "(" << std::dec << result << ")"
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 / v2;
@@ -65,10 +59,9 @@ bool test_divide(
                 << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 / v2;
@@ -81,7 +74,10 @@ bool test_divide(
     }
     {
         std::cout << "testing  " << av1 << " / " << "safe<"<< av2 << "> -> ";
-        static_assert(is_safe<safe_t<T2> >::value, "safe_t not safe!");
+        static_assert(
+            boost::numeric::is_safe<safe_t<T2> >::value,
+            "safe_t not safe!"
+        );
 
         safe_t<T2> t2 = v2;
 
@@ -89,7 +85,7 @@ bool test_divide(
         result_type result;
 
         static_assert(
-            is_safe<result_type>::value,
+            boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
 
@@ -99,10 +95,9 @@ bool test_divide(
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     v1 / t2;
@@ -117,16 +112,15 @@ bool test_divide(
                 << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     v1 / t2;
                 }
                 catch(std::exception){}
-                assert(result == unsafe_result);
+                // assert(result == unsafe_result);
                 return false;
             }
         }
@@ -140,7 +134,7 @@ bool test_divide(
         result_type result;
 
         static_assert(
-            is_safe<result_type>::value,
+            boost::numeric::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
 
@@ -150,10 +144,9 @@ bool test_divide(
                 << std::endl;
             if(expected_result == 'x'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** failed to detect error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 / t2;
@@ -168,16 +161,15 @@ bool test_divide(
                 << std::endl;
             if(expected_result == '.'){
                 const std::type_info & ti = typeid(result);
-                int status;
                 std::cout
                     << "*** erroneously detected error in division "
-                    << abi::__cxa_demangle(ti.name(),0,0,&status) << '\n'
+                    << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
                 try{
                     t1 / t2;
                 }
                 catch(std::exception){}
-                assert(result == unsafe_result);
+                // assert(result == unsafe_result);
                 return false;
             }
         }

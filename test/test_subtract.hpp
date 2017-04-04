@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <exception>
-//#include <cxxabi.h>
 
 #include "../include/safe_integer.hpp"
 
@@ -21,17 +20,25 @@ bool test_subtract(
     const char *av2,
     char expected_result
 ){
-    std::cout
-        << "testing  "
-        << av1 << " - " << av2
-        << std::endl;
+    std::cout << "testing"<< std::endl;
     {
         safe_t<T1> t1 = v1;
         using result_type = decltype(t1 - v2);
+        std::cout << "safe<" << av1 << "> - " << av2 << " -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T1> >::value,
+            "safe_t not safe!"
+        );
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
         result_type result;
 
         try{
             result = t1 - v2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             static_assert(
                 boost::numeric::is_safe<decltype(t1 - v2)>::value,
                 "Expression failed to return safe type"
@@ -50,6 +57,8 @@ bool test_subtract(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in subtraction "
@@ -67,14 +76,21 @@ bool test_subtract(
     {
         safe_t<T2> t2 = v2;
         using result_type = decltype(v1 - t2);
+        std::cout << av1 << " - " << "safe<" << av2 << "> -> ";
+        static_assert(
+            boost::numeric::is_safe<safe_t<T2> >::value,
+            "safe_t not safe!"
+        );
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
         result_type result;
 
         try{
             result = v1 - t2;
-            static_assert(
-                boost::numeric::is_safe<decltype(v1 - t2)>::value,
-                "Expression failed to return safe type"
-            );
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in subtraction "
@@ -89,6 +105,8 @@ bool test_subtract(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in subtraction "
@@ -107,12 +125,19 @@ bool test_subtract(
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
         using result_type = decltype(t1 - t2);
+        std::cout << "safe<" << av1 << "> - " << "safe<" << av2 << "> -> ";
+        static_assert(
+            boost::numeric::is_safe<result_type>::value,
+            "Expression failed to return safe type"
+        );
         result_type result;
 
         try{
             result = t1 - t2;
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             static_assert(
-                boost::numeric::is_safe<decltype(t1 + v2)>::value,
+                boost::numeric::is_safe<decltype(t1 - v2)>::value,
                 "Expression failed to return safe type"
             );
             if(expected_result == 'x'){
@@ -129,6 +154,8 @@ bool test_subtract(
             }
         }
         catch(std::exception){
+            std::cout << std::hex << result << "(" << std::dec << result << ")"
+            << std::endl;
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in subtraction "

@@ -25,7 +25,7 @@ bool test_modulus(
     {
         safe_t<T1> t1 = v1;
         using result_type = decltype(t1 % v2);
-        std::cout << "safe<" << av1 << "> & " << av2 << " -> ";
+        std::cout << "safe<" << av1 << "> % " << av2 << " -> ";
         static_assert(
             boost::numeric::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"

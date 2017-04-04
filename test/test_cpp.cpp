@@ -5,6 +5,7 @@
 using namespace boost::numeric;
 
 // create custom policy which emulates native one
+// so we can compare the results
 using custom = cpp<
     CHAR_BIT,
     CHAR_BIT * sizeof(short),
@@ -15,7 +16,7 @@ using custom = cpp<
 
 template<typename T, typename U>
 using custom_result_type =
-    typename custom::usual_arithmetic_conversions<
+    custom::usual_arithmetic_conversions<
         custom::integral_promotion<T>,
         custom::integral_promotion<U>
     >;
@@ -35,13 +36,43 @@ void test_integral_promotion(T){          \
     );                                   \
 }
 
+static_assert(
+    custom::rank<custom::local_char_type>::value == 1,
+    "rank char != 1"
+);
+static_assert(
+    custom::rank<std::make_signed<custom::local_char_type>::type>::value == 1,
+    "rank signed char != 1"
+);
+static_assert(
+    custom::rank<std::make_unsigned<custom::local_char_type>::type>::value == 1,
+    "rank unsigned char != 1"
+);
+static_assert(
+    custom::rank<custom::local_short_type>::value == 2,
+    "rank short != 2"
+);
+static_assert(
+    custom::rank<std::make_unsigned<custom::local_short_type>::type>::value == 2,
+    "rank unsigned short != 2"
+);
+static_assert(
+    custom::rank<custom::local_int_type>::value == 3,
+    "rank int != 3"
+);
+static_assert(
+    custom::rank<std::make_unsigned<custom::local_int_type>::type>::value == 3,
+    "rank unsigned int != 3"
+);
+
 test_integral_promotion(char)
 test_integral_promotion(signed char)
 test_integral_promotion(unsigned char)
 test_integral_promotion(signed short)
 test_integral_promotion(unsigned short)
 
-
+// compare our custom promotion policy with the native
+// one.  They should be the same.
 #define test_usual_arithmetic_conversions(T1, T2) \
 void test_usual_arithmetic_conversions(T1, T2){   \
     static_assert(                       \

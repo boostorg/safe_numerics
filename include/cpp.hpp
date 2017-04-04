@@ -22,9 +22,9 @@
 #include <boost/integer.hpp> // integer type selection
 #include <boost/mpl/if.hpp>
 
-#include "utility.hpp" // rank
 #include "safe_common.hpp"
 #include "checked.hpp"
+#include "checked_result.hpp"
 
 namespace boost {
 namespace numeric {
@@ -50,6 +50,26 @@ struct cpp {
     using local_long_type = typename boost::int_t<LongBits>::exact;
     using local_long_long_type = typename boost::int_t<LongLongBits>::exact;
 
+    template<class T>
+    using rank =
+        typename boost::mpl::if_c<
+            std::is_same<local_char_type, typename std::make_signed<T>::type>::value,
+            std::integral_constant<int, 1>,
+        typename boost::mpl::if_c<
+            std::is_same<local_short_type, typename std::make_signed<T>::type>::value,
+            std::integral_constant<int, 2>,
+        typename boost::mpl::if_c<
+            std::is_same<local_int_type, typename std::make_signed<T>::type>::value,
+            std::integral_constant<int, 3>,
+        typename boost::mpl::if_c<
+            std::is_same<local_long_type, typename std::make_signed<T>::type>::value,
+            std::integral_constant<int, 4>,
+        typename boost::mpl::if_c<
+            std::is_same<local_long_long_type, typename std::make_signed<T>::type>::value,
+            std::integral_constant<int, 5>,
+            std::integral_constant<int, 6> // catch all - never promote integral
+        >::type >::type >::type >::type >::type;
+
     // section 4.5 integral promotions
     template<class T>
     using integral_promotion = typename boost::mpl::if_c<
@@ -58,7 +78,7 @@ struct cpp {
         T
     >::type;
 
-    // convert smaller of two types to the size of the larger
+   // convert smaller of two types to the size of the larger
     template<class T, class U>
     using higher_ranked_type = typename boost::mpl::if_c<
         (rank<T>::value < rank<U>::value),
@@ -82,7 +102,7 @@ struct cpp {
         T
     >::type;
 
-    // section 5 - usual arithmetic conversions
+    // section 5 clause 11 - usual arithmetic conversions
     template<typename T, typename U>
     using usual_arithmetic_conversions =
         // clause 0 - if both operands have the same type
@@ -136,6 +156,7 @@ struct cpp {
     struct division_result {
        using type = result_type<T, U>;
     };
+/*
     // forward to correct divide implementation
     template<class R, class T, class U>
     checked_result<R>
@@ -145,11 +166,12 @@ struct cpp {
     ){
         return checked::divide<R>(t, u);
     }
-
+*/
     template<typename T, typename U>
     struct modulus_result {
        using type = result_type<T, U>;
     };
+/*
     // forward to correct modulus implementation
     template<class R, class T, class U>
     checked_result<R>
@@ -159,6 +181,7 @@ struct cpp {
     ){
         return checked::modulus<R>(t, u);
     }
+*/
     template<typename T, typename U>
     struct left_shift_result {
        using type = result_type<T, U>;

@@ -19,6 +19,7 @@
 #include <initializer_list>
 
 #include <boost/logic/tribool.hpp>
+#include <boost/core/demangle.hpp>
 
 #include "utility.hpp" // log
 #include "checked_result.hpp"
@@ -98,77 +99,86 @@ constexpr interval<double>::interval() :
 
 namespace detail {
 
-template<typename R>
-constexpr checked_result<interval<R>> failed_result(
-    exception_type::domain_error,
-    "indefinite interval"
-);
-
-// create constexpr versions of stl algorthms which are not (yet)
-// constexpr.
-template<class InputIt, class UnaryPredicate>
-constexpr InputIt find_if(InputIt first, InputIt last, UnaryPredicate q){
-    for (; first != last; ++first) {
-        if (q(*first)) {
-            return first;
+template<typename T>
+constexpr interval<T>
+minmax(const std::initializer_list<T> & l){
+    using namespace boost::numeric;
+    T minimum{exception_type::positive_overflow_error, ""};
+    T maximum{exception_type::negative_overflow_error, ""};
+    // note: we can't use for_each and a lambda because neither of these are
+    // constexpr
+    for(
+        typename std::initializer_list<T>::const_iterator i = l.begin();
+        i != l.end();
+        ++i
+    ){
+        // std::cout << *i << ',';
+        // std::cout.flush();
+        if(minimum != exception_type::negative_overflow_error){
+            // if it corresponds to the lowest value
+            if(*i == exception_type::negative_overflow_error){
+                // initialize the minimum
+                minimum = *i;
+            }
+            // skip any other exceptions
+            else
+            if(! (*i).exception()){
+                if(minimum.exception()
+                || (*i).m_r < minimum.m_r){
+                    minimum = *i;
+                }
+            }
+        }
+        if(maximum != exception_type::positive_overflow_error){
+            // if it corresponds to the highest value
+            if(*i == exception_type::positive_overflow_error){
+                // initialize the maximum
+                maximum = *i;
+            }
+            // skip any other exceptions
+            else
+            if(! (*i).exception()){
+                if(maximum.exception()
+                || (*i).m_r > maximum.m_r){
+                    maximum = *i;
+                }
+            }
         }
     }
-    return last;
-}
-
-// helper function used below to select the minimum and maximum value
-// from a list of values
-template<typename R>
-constexpr checked_result<interval<R>> minmax(
-    const std::initializer_list<checked_result<R>> & acr
-){
-    typename std::initializer_list<checked_result<R>>::const_iterator const e =         find_if(
-            acr.begin(),
-            acr.end(),
-            exception<R>
-        );
-    return (acr.end() == e) ?
-        checked_result<interval<R>>(
-            interval<R>(std::minmax(acr, & safe_compare::less_than<R, R>))
-        )
-        :
-        failed_result<R>// throw assert_failure([]{assert(!"input not in range");})
-        ;
+    return interval<T>{minimum, maximum};
 }
 
 }  // detail
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> add(
+constexpr interval<checked_result<R>> add(
     const interval<T> & t,
     const interval<U> & u
 ){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    checked_result<R> lower = checked::add<R>(static_cast<T>(t.l), static_cast<U>(u.l));
-    if(! lower.no_exception())
-        return detail::failed_result<R>;
-    checked_result<R> upper = checked::add<R>(static_cast<T>(t.u), static_cast<U>(u.u));
-    if(! upper.no_exception())
-        return detail::failed_result<R>;
-    return interval<R>(lower, upper);
+    const checked_result<R> lower = checked::add<R>(t.l, u.l);
+    const checked_result<R> upper = checked::add<R>(t.u, u.u);
+    return interval<checked_result<R>>(lower, upper);
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> subtract(const interval<T> & t, const interval<U> & u){
+constexpr interval<checked_result<R>> subtract(
+    const interval<T> & t,
+    const interval<U> & u
+){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    checked_result<R> lower = checked::subtract<R>(static_cast<T>(t.l), static_cast<U>(u.u));
-    if(! lower.no_exception())
-        return detail::failed_result<R>;
-    checked_result<R> upper = checked::subtract<R>(static_cast<T>(t.u), static_cast<U>(u.l));
-    if(! upper.no_exception())
-        return detail::failed_result<R>;
-    return interval<R>(lower, upper);
+    const checked_result<R> lower = checked::subtract<R>(t.l, u.u);
+    const checked_result<R> upper = checked::subtract<R>(t.u, u.l);
+    return interval<checked_result<R>>(lower, upper);
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> multiply(const interval<T> & t, const interval<U> & u){
+constexpr interval<checked_result<R>> multiply(
+    const interval<T> & t,
+    const interval<U> & u
+){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return detail::minmax<R>(
+    return detail::minmax<checked_result<R>>(
         std::initializer_list<checked_result<R>> {
             checked::multiply<R>(t.l, u.l),
             checked::multiply<R>(t.l, u.u),
@@ -178,139 +188,113 @@ constexpr checked_result<interval<R>> multiply(const interval<T> & t, const inte
     );
 }
 
-// divide two intervals.  BUT don't consider the possibility that the
-// denominator might contain a zero.
+// divide two intervals.  This will give a new range of the quotient.  But
+// it doesn't consider the possibility that the divisor is zero.  This will
+// have to be considered separately.
 template<typename R, typename T, typename U>
-constexpr inline checked_result<interval<R>> divide_nz(
+constexpr inline interval<checked_result<R>> divide(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    return detail::minmax<R>( (u.u < 0 || u.l > 0) ?
-        std::initializer_list<checked_result<R>> {
-            checked::divide<R>(t.l, u.l),
-            checked::divide<R>(t.l, u.u),
-            checked::divide<R>(t.u, u.l),
-            checked::divide<R>(t.u, u.u)
-        }
-    :
-        std::initializer_list<checked_result<R>> {
-            checked::divide<R>(t.l, u.l),
-            checked::divide<R>(t.l, -1),
-            checked::divide<R>(t.u, u.l),
-            checked::divide<R>(t.u, -1),
-            checked::divide<R>(t.l, 1),
-            checked::divide<R>(t.l, u.u),
-            checked::divide<R>(t.u, 1),
-            checked::divide<R>(t.u, u.u)
-        }
+//    assert(u.l != 0 || u.u != 0);
+    return detail::minmax<checked_result<R>>(
+    (u.l == 0)
+    ? std::initializer_list<checked_result<R>> {
+        checked::divide<R>(t.l, +1),
+        checked::divide<R>(t.l, u.u),
+        checked::divide<R>(t.u, +1),
+        checked::divide<R>(t.u, u.u)
+    }
+    : (0 == u.u)
+    ? std::initializer_list<checked_result<R>> {
+        checked::divide<R>(t.l, u.l),
+        checked::divide<R>(t.l, -1),
+        checked::divide<R>(t.u, u.l),
+        checked::divide<R>(t.u, -1)
+    }
+    : (u.u < 0 || 0 < u.l) // divisor range excludes 0
+    ? std::initializer_list<checked_result<R>> {
+        checked::divide<R>(t.l, u.l),
+        checked::divide<R>(t.l, u.u),
+        checked::divide<R>(t.u, u.l),
+        checked::divide<R>(t.u, u.u)
+    }
+    : std::initializer_list<checked_result<R>> { // divisor includes 0
+        checked::divide<R>(t.l, u.l),
+        checked::divide<R>(t.l, -1),
+        checked::divide<R>(t.l, +1),
+        checked::divide<R>(t.l, u.u),
+
+        checked::divide<R>(t.u, u.l),
+        checked::divide<R>(t.u, -1),
+        checked::divide<R>(t.u, +1),
+        checked::divide<R>(t.u, u.u)
+    }
     );
-}
+ }
 
+// modulus of two intervals.  This will give a new range of for the modulus.  But
+// it doesn't consider the possibility that the radix is zero.  This will
+// have to be considered separately.
 template<typename R, typename T, typename U>
-constexpr inline checked_result<interval<R>> divide(
+constexpr interval<checked_result<R>> modulus(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    if(u.l <= 0 && u.u >= 0)
-        return checked_result<interval<R>>(
-            exception_type::domain_error,
-            "interval divisor includes zero"
-        );
-    return divide_nz<R>(t, u);
+    /* Turns out that getting the exact range is a suprisingly difficult
+     * problem.  But we can get a reasonable guaranteed range with the following
+     * simple formula (due to Skona Brittain):
+     *
+     *  [-m + 1, m - 1] where m is max(|c|, |d|).
+     *
+     * where the operation is [a,b] % [c,d]
+     *
+     * But a naive implementation of this algorithm doesn't work.  We have a
+     * problem with (8 bit integers for illustration) abs(-128) -> -128! So we
+     * can't get the absolute value of the minimum value !
+     *
+     * so we impement the above in a slightly different way.
+     */
+
+    // const R xa = (t.l > 0) ? t.l - 1 : t.l + 1; // a
+    // const R xb = (t.u > 0) ? t.u - 1 : t.u + 1; // b
+    const checked_result<R> xc = (u.l > 0) ? u.l - 1 : (u.l < 0) ? -(u.l + 1) : 0; // c
+    const checked_result<R> xd = (u.u > 0) ? u.u - 1 : (u.u < 0) ? -(u.u + 1) : 0; // d
+
+    // special care to void problem when inverting -128
+    const checked_result<R> mxc = checked::subtract<R>(0, xc);
+    const checked_result<R> mxd = checked::subtract<R>(0, xd);
+
+   return (xc < xd)
+        ? interval<checked_result<R>>(mxd, xd)
+        : interval<checked_result<R>>(mxc, xc);
+
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> modulus_nz(
+constexpr interval<checked_result<R>> left_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
-    // adapted from https://en.wikipedia.org/wiki/Modulo_operation
-    return detail::minmax<R>( (u.l < 0 && 0 < u.u) ?
-        // if divisor range includes zero then we need include +1 and -1
-        // among the possible divisors.  But since % +1 and % -1 yield
-        // the same result, which is 0, then adding 0 to the possibilities
-        // is sufficient to make sure we've got the whole possible range
-        std::initializer_list<checked_result<R>> {
-            checked::modulus<R>(t.l, u.l),
-            checked::modulus<R>(t.l, u.u),
-            checked::modulus<R>(t.u, u.l),
-            checked::modulus<R>(t.u, u.u),
-            0 // % 1 or % -1
-        }
-        :
-        // if divisor range doesn't include zero, the following should be
-        // sufficient.
-        std::initializer_list<checked_result<R>> {
-            checked::modulus<R>(t.l, u.l),
-            checked::modulus<R>(t.l, u.u),
-            checked::modulus<R>(t.u, u.l),
-            checked::modulus<R>(t.u, u.u)
-        }
-    );
-}
-
-template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> modulus(
-    const interval<T> & t,
-    const interval<U> & u
-){
-    // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    if(u.l <= 0 && u.u >= 0)
-        return checked_result<interval<R>>(
-            exception_type::domain_error,
-            "interval modulus includes zero"
-        );
-    return modulus_nz<R>(t, u);
-}
-
-template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> left_shift(
-    const interval<T> & t,
-    const interval<U> & u
-){
-    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
+    return interval<checked_result<R>>{
         checked::left_shift<R>(t.l, u.l),
-        checked::left_shift<R>(t.l, u.u),
-        checked::left_shift<R>(t.u, u.l),
-        checked::left_shift<R>(t.u, u.u)
-    });
+        checked::left_shift<R>(t.u, u.u),
+    };
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> right_shift(
+constexpr interval<checked_result<R>> right_shift(
     const interval<T> & t,
     const interval<U> & u
 ){
-    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
-        checked::right_shift<R>(t.l, u.l),
+    return interval<checked_result<R>>{
         checked::right_shift<R>(t.l, u.u),
-        checked::right_shift<R>(t.u, u.l),
-        checked::right_shift<R>(t.u, u.u)
-    });
+        checked::right_shift<R>(t.u, u.l)
+    };
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> right_shift_positive(
-    const interval<T> & t,
-    const interval<U> & u
-){
-    const U ul = safe_compare::greater_than(0, u.l) ? 0 : u.l;
-
-    const U ux = boost::numeric::log(std::numeric_limits<U>::max());
-    const U uu = safe_compare::less_than(u.u, ux) ? u.u : ux;
-
-    return detail::minmax<R>( std::initializer_list<checked_result<R>> {
-        checked::right_shift<R>(t.l, ul),
-        checked::right_shift<R>(t.l, uu),
-        checked::right_shift<R>(t.u, ul),
-        checked::right_shift<R>(t.u, uu)
-    });
-}
-
-template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> intersection(
+constexpr interval<checked_result<R>> intersection(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -329,7 +313,7 @@ constexpr checked_result<interval<R>> intersection(
 }
 
 template<typename R, typename T, typename U>
-constexpr checked_result<interval<R>> union_interval(
+constexpr interval<checked_result<R>> union_interval(
     const interval<T> & t,
     const interval<U> & u
 ){
@@ -428,7 +412,7 @@ operator<<(
 ){
     return os << '[' << i.l << ',' << i.u << ']';
 }
-template<typename CharT, typename Traits, typename T>
+template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> &
 operator<<(
     std::basic_ostream<CharT, Traits> & os,
@@ -438,7 +422,7 @@ operator<<(
     return os;
 }
 
-template<typename CharT, typename Traits, typename T>
+template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> &
 operator<<(
     std::basic_ostream<CharT, Traits> & os,

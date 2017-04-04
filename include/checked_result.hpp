@@ -33,7 +33,8 @@ struct checked_result {
         char const * m_msg;
     };
     // constructors - use default copy constructor
-
+    // checked_result(const checked_result<R> &) = default;
+    
     // don't permit construction without initial value;
     checked_result() = delete;
 
@@ -41,7 +42,6 @@ struct checked_result {
         m_e(exception_type::no_exception),
         m_r(r)
     {}
-
     constexpr /*explicit*/ checked_result(
         exception_type e,
         const char * msg
@@ -57,7 +57,7 @@ struct checked_result {
         //assert(no_exception());
         return m_r;
     }
-
+    
     constexpr operator const char *() const {
         assert(! no_exception());
         return m_msg;
@@ -105,6 +105,23 @@ struct checked_result {
     }
 };
 
+template<typename T>
+constexpr bool operator==(const checked_result<T> &lhs, const exception_type & rhs){
+    return (! lhs.exception()) ? false : lhs.m_e == rhs;
+}
+template<typename T>
+constexpr bool operator==(const exception_type & lhs, const checked_result<T> &rhs){
+    return (! rhs.exception()) ? false : lhs = rhs.m_e;
+}
+template<typename T>
+constexpr bool operator!=(const checked_result<T> &lhs, const exception_type & rhs){
+    return ! (lhs == rhs);
+}
+template<typename T>
+constexpr bool operator!=(const exception_type & lhs, const checked_result<T> &rhs){
+    return ! (lhs == rhs);
+}
+
 template<class EP, typename R>
 void
 dispatch(const checked_result<R> & cr){
@@ -145,9 +162,9 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     return os;
 }
 
-template<typename CharT, typename Traits, typename R>
+template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> & operator<<(
-    std::basic_ostream<CharT, Traits> os,
+    std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<signed char> & r
 ){
     if(r.no_exception())
@@ -157,9 +174,9 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     return os;
 }
 
-template<typename CharT, typename Traits, typename R>
+template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> & operator<<(
-    std::basic_ostream<CharT, Traits> os,
+    std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<unsigned char> & r
 ){
     if(r.no_exception())
