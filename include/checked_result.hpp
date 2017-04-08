@@ -52,9 +52,6 @@ struct checked_result {
 
     // accesors
     constexpr operator R() const {
-        // can't invoke assert at compiler time so it's in compatible
-        // with constexpr
-        //assert(no_exception());
         return m_r;
     }
     
