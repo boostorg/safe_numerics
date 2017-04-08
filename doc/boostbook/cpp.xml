@@ -8,17 +8,17 @@
     <title>Description</title>
 
     <para>This policy is used to promote safe types in arithmetic expressions
-    according the standard rules in the C++ standard. But rather than using
+    according to the rules in the C++ standard. But rather than using
     the native C++ standard types supported by the compiler, it uses types
     whose length in number of bits is specified by the template
     parameters.</para>
 
-    <para>This policy is useful for running test program which use C++
+    <para>This policy is useful for running test programs which use C++
     portable integer types but which are destined to run on an architecture
     which is different than the one on which the test program is being built
     and run. This can happen when developing code for embedded systems.
     Algorithms developed or borrowed from one architecture but destined for
-    another can be tested on the desk top.</para>
+    another can be tested on the desktop.</para>
   </section>
 
   <section>
@@ -108,7 +108,7 @@
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
     anything else. One debugs this code by using the "burn" and "crash" method
-    - you burn the chip (download the code) run the code, observe the results,
+    - you burn the chip (download the code), run the code, observe the results,
     make changes and try again. This is a crude method which is usually the
     one used. But it can be quite time consuming.</para>
 
@@ -121,7 +121,7 @@
     other problems), make our algorithm testing environment differ from our
     target environment. We can address this by defining INT as a safe integer
     with a range of 8 bits. By using a custom promotion policy, we can force
-    the evaluation of C++ expressions test environment to be the same as that
+    the evaluation of C++ expressions in the test environment to be the same as that
     in the target environment. Also in our target environment, we can trap any
     overflows or other errors. So we can write and test our code on our
     desktop system and download the code to the target knowing that it just
@@ -161,7 +161,7 @@ using uint16 = safe_t&lt;std::uint16_t&gt;;
 using uint32 = safe_t&lt;std::uint32_t&gt;;
 
 ////////////////////////////////////////////////////////////////
-// Mock defines, functions etc which are in he "real application
+// Mock defines, functions etc which are in the "real application"
 
 ...
 

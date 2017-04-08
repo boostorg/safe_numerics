@@ -7,7 +7,7 @@
   <section>
     <title>Description</title>
 
-    <para>This exception policy will trap at compile time any operation
+    <para>This exception policy will trap at compile time any operation that
     <emphasis><emphasis role="bold">COULD</emphasis></emphasis> result in a
     runtime exception. It can be used in an environment which can tolerate
     neither arithmetic errors nor runtime overhead. Usage of this policy will
@@ -31,8 +31,6 @@
 
   <section>
     <title>Example of use</title>
-
-    <para>The following</para>
 
     <programlisting>#include "../../include/safe_integer.hpp"
 #include "../../include/automatic.hpp"

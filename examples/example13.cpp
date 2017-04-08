@@ -4,9 +4,9 @@
 #include "../include/safe_integer.hpp"
 
 int main(int argc, const char * argv[]){
-    // problem: checking of externally produced value can be overlooked
+    // problem: cannot recover from arithmetic errors
     std::cout << "example 7: ";
-    std::cout << "cannot recover From arithmetic errors" << std::endl;
+    std::cout << "cannot recover from arithmetic errors" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
 
     try{
@@ -21,14 +21,14 @@ int main(int argc, const char * argv[]){
         std::cout << "error detected!" << std::endl;
     }
 
-    // solution: assign externally retrieved values to safe equivalents
+    // solution: replace int with safe<int>
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;
         safe<int> x = 1;
         safe<int> y = 0;
         std::cout << x / y;
-        std::cout << " error detected!" << std::endl;
+        std::cout << " error NOT detected!" << std::endl;
     }
     catch(std::exception & e){
         std::cout << e.what() << std::endl;

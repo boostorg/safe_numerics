@@ -28,8 +28,8 @@
           <row>
             <entry><code>EP</code></entry>
 
-            <entry>A type that full fills the requirements of an
-            ExceptionPollicy</entry>
+            <entry>A type that fulfills the requirements of an
+            ExceptionPolicy</entry>
           </row>
 
           <row>
@@ -145,7 +145,7 @@
 
         <para>If an exceptional condition is detected at runtime throw the
         exception. Safe types use this exception policy as the default if no
-        other one is specified.</para>
+        other policy is specified.</para>
       </listitem>
 
       <listitem id="safe_numerics.exception_policy.models.ignore_exception">

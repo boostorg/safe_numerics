@@ -9,10 +9,10 @@
   <section>
     <title>Description</title>
 
-    <para>A type is fulfills the requirements of an Integer if it has the
+    <para>A type fulfills the requirements of an Integer if it has the
     properties of a integer.</para>
 
-    <para>More specifically, a type T is Integer if there exists
+    <para>More specifically, a type T is Integer if there exists a
     specialization of <code>std::numeric_limits&lt;T&gt; for which
     std::numeric_limits&lt;T&gt;.is_integer</code> is equal to
     <code>true</code>. See the documentation for standard library class
@@ -20,7 +20,7 @@
     specializations for all built-in numeric types. Note that this concept is
     distinct from the C++ standard library type traits
     <code>is_integral</code> and <code>is_arithmetic</code>. These latter
-    fulfill the requirement of the concept Numeric. But there are types which
+    fulfill the requirements of the concept Numeric. But there are types which
     fulfill this concept for which <code>is_arithmetic&lt;T&gt;::value ==
     false</code>. For example see <code>safe&lt;int&gt;</code>.</para>
   </section>
@@ -134,7 +134,7 @@
 
               <entry>V</entry>
 
-              <entry>and of t and u padded out max # bits in t, u</entry>
+              <entry>and of t and u padded out to max # bits in t, u</entry>
             </row>
 
             <row>
@@ -142,7 +142,7 @@
 
               <entry>V</entry>
 
-              <entry>or of t and u padded out max # bits in t, u</entry>
+              <entry>or of t and u padded out to max # bits in t, u</entry>
             </row>
 
             <row>
@@ -150,7 +150,7 @@
 
               <entry>V</entry>
 
-              <entry>exclusive or of t and u padded out max # bits in t,
+              <entry>exclusive or of t and u padded out to max # bits in t,
               u</entry>
             </row>
 

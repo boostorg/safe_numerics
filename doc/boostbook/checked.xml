@@ -29,7 +29,7 @@ template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt;
 checked::multiply(const T &amp; t, const U &amp; u);
 
-// safe division on unsafe types
+// safe division on primitive types
 template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt;
 checked::divide(const T &amp; t, const U &amp; u);
@@ -38,7 +38,7 @@ template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt;
 checked::divide_automatic(const T &amp; t, const U &amp; u);
 
-// safe modulus on unsafe types
+// safe modulus on primitive types
 template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt;
 checked::modulus(const T &amp; t, const U &amp; u);
@@ -86,7 +86,7 @@ checked::bitwise_xor(const T &amp; t, const U &amp; u);
   <section>
     <title>Complexity</title>
 
-    <para>Each function performs one and only one arithmetic operation</para>
+    <para>Each function performs one and only one arithmetic operation.</para>
   </section>
 
   <section>
@@ -110,7 +110,7 @@ checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
     <title>Notes</title>
 
     <para>Some compilers have command line switches (e.g. -ftrapv) which
-    enable special behavior such erroneous integer operations are detected at
+    enable special behavior such that erroneous integer operations are detected at
     run time. The library has been implemented in such a way that these
     facilities are not used. It's possible they might be helpful in particular
     environment. These could be be exploited by re-implementing some functions

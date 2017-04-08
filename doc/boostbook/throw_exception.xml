@@ -7,7 +7,7 @@
   <section id="safenumerics.throw_exception">
     <title>Description</title>
 
-    <para>This exception policy throws a an exception derived from
+    <para>This exception policy throws an exception derived from
     <code>std::exception</code> any time some operation would result in an
     incorrect result. This is the default exception handling policy.</para>
   </section>
@@ -31,7 +31,7 @@
     <title>Example of use</title>
 
     <para>This example is somewhat contrived as throw_exception is the default
-    for safe types. Hence it usually is not necessarily to request it
+    for safe types. Hence it usually is not necessary to request it
     explicitly.</para>
 
     <programlisting>#include "../../include/safe_integer.hpp"

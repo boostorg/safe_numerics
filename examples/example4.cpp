@@ -24,7 +24,7 @@ int main(){
         std::cout << "error detected!" << std::endl;
     }
 
-    // solution: replace int with safe<int> and char with safe<char>
+    // solution: replace int with safe<int> and unsigned int with safe<unsigned int>
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::numeric;

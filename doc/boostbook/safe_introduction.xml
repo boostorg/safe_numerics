@@ -101,8 +101,8 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 </programlisting>
 
     <para><note>
-        <para>Library code in this document resides in the name space
-        <code>boost::numeric</code>. This name space has generally been
+        <para>Library code in this document resides in the namespace
+        <code>boost::numeric</code>. This namespace has generally been
         eliminated from text, code and examples in order to improve
         readability of the text.</para>
       </note>The addition expression is checked at runtime or (if possible) at
@@ -214,7 +214,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         </listitem>
 
         <listitem>
-          <para>Enforce of other program requirements using ranged integer
+          <para>Enforce other program requirements using ranged integer
           types. The library includes the types <code>safe_range&lt;Min,
           Max&gt;</code> and <code>safe_literal&lt;N</code>&gt;. These types
           can be used to improve program correctness and performance.</para>

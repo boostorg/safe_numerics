@@ -12,7 +12,7 @@ unsigned int convert(
     const unsigned int & minutes
 ) {
     // check that parameters are within required limits
-    // invokes a runtime cost EVERYTIME the function is called
+    // invokes a runtime cost EVERY TIME the function is called
     // and the overhead of supporting an interrupt.
     // note high runtime cost!
     if(minutes > 59)
@@ -23,7 +23,7 @@ unsigned int convert(
 }
 
 // Use safe numeric to enforce program contract automatically
-// define convient typenames for hours and minutes hh:mm
+// define convenient typenames for hours and minutes hh:mm
 using hours_t = boost::numeric::safe_unsigned_range<0, 23>;
 using minutes_t = boost::numeric::safe_unsigned_range<0, 59>;
 
@@ -52,9 +52,9 @@ int main(int argc, const char * argv[]){
     std::cout << "Using safe numerics" << std::endl;
 
     try {
-        // parameters are guarenteed to meet requirements
+        // parameters are guaranteed to meet requirements
         hours_t hours(10);
-        minutes_t minutes(83);  // interrupt thrown here
+        minutes_t minutes(83);  // exception thrown here
         // so the following will never throw
         safe_convert(hours, minutes);
     }
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]){
     }
 
     try {
-        // parameters are guarenteed to meet requirements when
+        // parameters are guaranteed to meet requirements when
         // implicitly constructed to safe types to match function signature
         safe_convert(10, 83);
     }
@@ -102,7 +102,7 @@ int main(int argc, const char * argv[]){
         convert(hours, minutes); // zero (depending on compiler) runtime overhead
 
         // since unsafe types can be implicitly converted to corresponding
-        // safe types we can just pass the unsafe types.  checkin will occur
+        // safe types we can just pass the unsafe types.  checking will occur
         // when the safe type is constructed.
         safe_convert(10, 17); // runtime cost in creating parameters
 
