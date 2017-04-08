@@ -79,6 +79,11 @@ struct interval {
 };
 
 template<class R>
+constexpr interval<R> make_interval(const R & r){
+    return interval<R>();
+}
+
+template<class R>
 constexpr interval<R>::interval() :
     l(std::numeric_limits<R>::lowest()),
     u(std::numeric_limits<R>::max())
@@ -291,6 +296,51 @@ constexpr interval<checked_result<R>> right_shift(
         checked::right_shift<R>(t.l, u.u),
         checked::right_shift<R>(t.u, u.l)
     };
+}
+
+template<typename R, typename T, typename U>
+constexpr interval<checked_result<R>> bitwise_or(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return detail::minmax<checked_result<R>>(
+        std::initializer_list<checked_result<R>> {
+            checked::bitwise_or<R>(t.l, u.l),
+            checked::bitwise_or<R>(t.l, u.u),
+            checked::bitwise_or<R>(t.u, u.l),
+            checked::bitwise_or<R>(t.u, u.u)
+        }
+    );
+}
+
+template<typename R, typename T, typename U>
+constexpr interval<checked_result<R>> bitwise_and(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return detail::minmax<checked_result<R>>(
+        std::initializer_list<checked_result<R>> {
+            checked::bitwise_and<R>(t.l, u.l),
+            checked::bitwise_and<R>(t.l, u.u),
+            checked::bitwise_and<R>(t.u, u.l),
+            checked::bitwise_and<R>(t.u, u.u)
+        }
+    );
+}
+
+template<typename R, typename T, typename U>
+constexpr interval<checked_result<R>> bitwise_xor(
+    const interval<T> & t,
+    const interval<U> & u
+){
+    return detail::minmax<checked_result<R>>(
+        std::initializer_list<checked_result<R>> {
+            checked::bitwise_xor<R>(t.l, u.l),
+            checked::bitwise_xor<R>(t.l, u.u),
+            checked::bitwise_xor<R>(t.u, u.l),
+            checked::bitwise_xor<R>(t.u, u.u)
+        }
+    );
 }
 
 template<typename R, typename T, typename U>

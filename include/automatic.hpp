@@ -24,6 +24,7 @@
 #include "safe_common.hpp"
 #include "checked_result.hpp"
 #include "interval.hpp"
+#include "utility.hpp"
 
 namespace boost {
 namespace numeric {
@@ -33,12 +34,12 @@ struct automatic {
     // these return the minimum size type which can hold the expected result.
     template<typename T, T Min, T Max>
     struct defer_stored_signed_lazily {
-        using type = signed_stored_type<Min, Max>;
+        using type = utility::signed_stored_type<Min, Max>;
     };
 
     template<typename T, T Min, T Max>
     struct defer_stored_unsigned_lazily {
-        using type = unsigned_stored_type<Min, Max>;
+        using type = utility::unsigned_stored_type<Min, Max>;
     };
 
     template<typename T, T Min, T Max>

@@ -380,7 +380,7 @@ struct subtraction_result {
         base_value(std::numeric_limits<U>::max())
     };
 
-    // when we add the temporary intervals above, we'll get a new interval
+    // when we subtract the temporary intervals above, we'll get a new interval
     // with the correct range for the difference !
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         subtract<result_base_type>(t_interval, u_interval);
@@ -1191,27 +1191,81 @@ constexpr inline operator>>=(T & t, const U & u){
 template<class T, class U>
 struct bitwise_or_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_or_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template bitwise_or_result<T, U>::type;
 
-    constexpr const static checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(
-        base_value(std::numeric_limits<T>::max()),
+    constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
         base_value(std::numeric_limits<U>::max())
-    );
+    };
+    // when we or the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
+        bitwise_or<result_base_type>(t_interval, u_interval);
 
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
+    }
     using exception_policy = typename common_exception_policy<T, U>::type;
-    using type = safe_base<
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
-            0,
-            r,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
+
+    // exception possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::true_type){
+        static_assert(exception_possible(), "implement runtime check");
+        checked_result<result_base_type> r = checked::bitwise_or<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        dispatch<exception_policy>(r);
+        return static_cast<result_base_type>(r);
+    }
+
+    // exception not possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::false_type){
+        static_assert(! exception_possible(), "no runtime check");
+        return
+            static_cast<result_base_type>(base_value(t))
+            | static_cast<result_base_type>(base_value(u))
+        ;
+    }
 };
 
 template<class T, class U>
@@ -1222,18 +1276,13 @@ typename std::enable_if<
     typename bitwise_or_result<T, U>::type
 >::type
 constexpr inline operator|(const T & t, const U & u){
-    using bwr = bitwise_or_result<T, U>;
-    using result_base_type = typename bwr::result_base_type;
-
-    const checked_result<result_base_type> r =
-        checked::bitwise_or<result_base_type>(
-            base_value(t),
-            base_value(u)
-        );
-    assert(r.no_exception());
-    return typename bwr::type(
-        static_cast<result_base_type>(r),
-        std::false_type() // don't need to re-validate
+    using bwor = bitwise_or_result<T, U>;
+    return bwor::make(
+        bwor::return_value(
+            t,
+            u,
+            typename std::integral_constant<bool, bwor::exception_possible()>()
+        )
     );
 }
 
@@ -1252,33 +1301,82 @@ constexpr inline operator|=(T & t, const U & u){
 // operator &
 template<class T, class U>
 struct bitwise_and_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_and_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template bitwise_and_result<T, U>::type;
 
-    constexpr static result_base_type r =
-        safe_compare::less_than(
-            base_value(std::numeric_limits<T>::max()),
-            base_value(std::numeric_limits<U>::max())
-        ) ?
-            base_value(std::numeric_limits<T>::max())
-        :
-            base_value(std::numeric_limits<U>::max())
-        ;
+    constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
 
-    using type = safe_base<
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+    // when we and the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
+        bitwise_and<result_base_type>(t_interval, u_interval);
+
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
+    }
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
-            0,
-            r,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
+
+    // exception possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::true_type){
+        static_assert(exception_possible(), "implement runtime check");
+        checked_result<result_base_type> r = checked::bitwise_and<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        dispatch<exception_policy>(r);
+        return static_cast<result_base_type>(r);
+    }
+
+    // exception not possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::false_type){
+        static_assert(! exception_possible(), "no runtime check");
+        return
+            static_cast<result_base_type>(base_value(t))
+            & static_cast<result_base_type>(base_value(u))
+        ;
+    }
 };
 
 template<class T, class U>
@@ -1289,18 +1387,13 @@ typename std::enable_if<
     typename bitwise_and_result<T, U>::type
 >::type
 constexpr inline operator&(const T & t, const U & u){
-    using bwr = bitwise_and_result<T, U>;
-    using result_base_type = typename bwr::result_base_type;
-
-    const checked_result<result_base_type> r =
-        checked::bitwise_and<result_base_type>(
-            base_value(t),
-            base_value(u)
-        );
-    assert(r.no_exception());
-    return typename bwr::type(
-        static_cast<result_base_type>(r),
-        std::false_type() // don't need to re-validate
+    using bwar = bitwise_and_result<T, U>;
+    return bwar::make(
+        bwar::return_value(
+            t,
+            u,
+            typename std::integral_constant<bool, bwar::exception_possible()>()
+        )
     );
 }
 
@@ -1319,33 +1412,82 @@ constexpr inline operator&=(T & t, const U & u){
 // operator ^
 template<class T, class U>
 struct bitwise_xor_result {
-    using exception_policy = typename common_exception_policy<T, U>::type;
     using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using t_base_type = typename base_type<T>::type;
-    using u_base_type = typename base_type<U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_xor_result<
-            t_base_type,
-            u_base_type
-        >::type;
+        typename promotion_policy::template bitwise_xor_result<T, U>::type;
 
-    constexpr static result_base_type r =
-        safe_compare::less_than(
-            base_value(std::numeric_limits<T>::max()),
-            base_value(std::numeric_limits<U>::max())
-        ) ?
-            base_value(std::numeric_limits<T>::max())
-        :
-            base_value(std::numeric_limits<U>::max())
-        ;
+    constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
 
-    using type = safe_base<
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+    // when we xor the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
+        bitwise_xor<result_base_type>(t_interval, u_interval);
+
+    constexpr static const bool exception_possible() {
+        return r_interval.l.exception() || r_interval.u.exception();
+    }
+    using exception_policy = typename common_exception_policy<T, U>::type;
+    struct safe_type {
+        using type = safe_base<
             result_base_type,
-            0,
-            r,
+            r_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_interval.u),
             promotion_policy,
             exception_policy
         >;
+        constexpr static const type make(const result_base_type & t){
+            return type(t, std::false_type());
+        }
+    };
+    struct unsafe_type {
+        using type = result_base_type;
+        constexpr static const type make(const result_base_type & t){
+            return t;
+        }
+    };
+    using type_helper = typename boost::mpl::if_c<
+        std::numeric_limits<result_base_type>::is_integer,
+        safe_type,
+        unsafe_type
+    >::type;
+    using type = typename type_helper::type;
+
+    constexpr static const type make(const result_base_type & t){
+        return type_helper::make(t);
+    }
+
+    // exception possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::true_type){
+        static_assert(exception_possible(), "implement runtime check");
+        checked_result<result_base_type> r = checked::bitwise_xor<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        dispatch<exception_policy>(r);
+        return static_cast<result_base_type>(r);
+    }
+
+    // exception not possible
+    constexpr static result_base_type
+    return_value(const T & t, const U & u, std::false_type){
+        static_assert(! exception_possible(), "no runtime check");
+        return
+            static_cast<result_base_type>(base_value(t))
+            ^ static_cast<result_base_type>(base_value(u))
+        ;
+    }
 };
 
 template<class T, class U>
@@ -1353,18 +1495,16 @@ typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
     ,
-    typename bitwise_xor_result<T, U>::type
+    typename bitwise_or_result<T, U>::type
 >::type
 constexpr inline operator^(const T & t, const U & u){
-    using bwr = bitwise_xor_result<T, U>;
-    using result_base_type = typename bwr::result_base_type;
-
-    const checked_result<result_base_type> r =
-        checked::bitwise_xor<result_base_type>(t, u);
-    assert(r.no_exception());
-    return typename bwr::type(
-        static_cast<result_base_type>(r),
-        std::false_type() // don't need to re-validate
+    using bwxor = bitwise_or_result<T, U>;
+    return bwxor::make(
+        bwxor::return_value(
+            t,
+            u,
+            typename std::integral_constant<bool, bwxor::exception_possible()>()
+        )
     );
 }
 
@@ -1379,7 +1519,6 @@ constexpr inline operator^=(T & t, const U & u){
     t = static_cast<T>(t ^ u);
     return t;
 }
-
 } // numeric
 } // boost
 

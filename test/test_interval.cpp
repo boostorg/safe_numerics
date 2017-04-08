@@ -341,6 +341,39 @@ namespace test4 {
             test9<T, U>()
         ;
     }
+
+    template<typename T, typename U>
+    bool test10(
+        const interval<T> & t_interval,
+        const interval<U> & u_interval
+    ){
+        using namespace boost::numeric;
+        std::cout << "test4::test4 bitwise or" << std::endl;
+        std::cout
+            << boost::core::demangle(typeid(t_interval).name())
+            << " t_interval = "
+            << t_interval
+            << std::endl;
+        std::cout
+            << boost::core::demangle(typeid(u_interval).name())
+            << " u_interval = "
+            << u_interval
+            << std::endl;
+        using R = decltype(T() | U());
+        const interval<checked_result<max_t>> r_interval
+            = bitwise_or<R>(t_interval, u_interval);
+        std::cout
+            << boost::core::demangle(typeid(r_interval).name())
+            << " r_interval = "
+            << r_interval
+            << std::endl;
+        return true;
+    }
+    template<typename T, typename U>
+    bool test10(){
+        return test10<T,U>(interval<T>(), interval<U>());
+    }
+
 } // test4
 
 int main(){
@@ -350,6 +383,8 @@ int main(){
         test2() &&
         test3() &&
 
+        test4::test10<std::int8_t, std::int32_t>() &&
+        test4::test10<unsigned char, unsigned char>() &&
         test4::test8<unsigned char, unsigned char>() &&
         test4::test9<unsigned char, unsigned char>() &&
         test4::test7<int, signed char>() &&

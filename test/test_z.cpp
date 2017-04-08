@@ -480,7 +480,6 @@ int main(){
     return 0;
 }
 
-#endif
 
 #include "../include/utility.hpp"
 #include "../include/cpp.hpp"
@@ -505,6 +504,40 @@ using pic16_promotion = boost::numeric::cpp<
 using pr = pic16_promotion::rank<short>;
 
 int main(){
+    return 0;
+}
+
+#endif
+
+#include <type_traits>
+#include "../include/safe_integer.hpp"
+#include "../include/range_value.hpp"
+#include <iostream>
+
+int main(){
+    using namespace boost::numeric;
+    static_assert(
+        std::is_literal_type<safe<int>>::value,
+        "safe type is a literal type"
+    );
+    static_assert(
+        std::is_literal_type<interval<int>>::value,
+        "interval type is a literal type"
+    );
+    static_assert(
+        std::is_literal_type<interval<
+            safe<int>
+        >>::value,
+        "interval of safe types is a literal type"
+    );
+    static_assert(
+        std::is_literal_type<range_value<
+            safe<int>
+        >>::value,
+        "range_value of safe types is a literal type"
+    );
+    safe<int> x = 42;
+    std::cout << make_range_value(x);
     return 0;
 }
 

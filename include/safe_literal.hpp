@@ -121,7 +121,7 @@ template<
     class E = void
 >
 using safe_signed_literal = safe_literal_impl<
-    typename boost::numeric::signed_stored_type<N, N>,
+    typename utility::signed_stored_type<N, N>,
     N,
     P,
     E
@@ -133,7 +133,7 @@ template<
     class E = void
 >
 using safe_unsigned_literal = safe_literal_impl<
-    typename boost::numeric::unsigned_stored_type<N, N>,
+    typename utility::unsigned_stored_type<N, N>,
     N,
     P,
     E

@@ -300,6 +300,9 @@ class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
 {
     using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
 public:
+    constexpr static SB lowest() noexcept {
+        return SB(Min, std::false_type());
+    }
     constexpr static SB min() noexcept {
         return SB(Min, std::false_type());
     }

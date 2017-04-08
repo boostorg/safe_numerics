@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cassert>
 #include <typeinfo>
-#include <cxxabi.h>
+#include <boost/core/demangle.hpp>
 
 #include "../include/safe_integer.hpp"
 
@@ -21,8 +21,8 @@ void print_argument_types(
     int status;
 
     std::cout
-        << abi::__cxa_demangle(ti1.name(),0,0,&status) << ','
-        << abi::__cxa_demangle(ti2.name(),0,0,&status) << ',';
+        << boost::core::demangle(ti1.name()) << ','
+        << boost::core::demangle(ti2.name());
 }
 
 template<class T1, class T2>

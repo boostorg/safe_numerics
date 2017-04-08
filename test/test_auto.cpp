@@ -3,9 +3,10 @@
 #include "../include/safe_integer.hpp"
 #include "../include/safe_range.hpp"
 #include "../include/automatic.hpp"
+#include "../include/utility.hpp"
 
 int test_log(){
-    using namespace boost::numeric;
+    using namespace boost::numeric::utility;
     assert(log(127u) == 7);
     assert(log(128u) == 8);
     assert(log(129u) == 8);
@@ -33,7 +34,7 @@ void print_argument_type(const T & t){
     const std::type_info & ti = typeid(T);
     int status;
     std::cout
-        << abi::__cxa_demangle(ti.name(),0,0,&status) << ' ' << t << std::endl;
+        << boost::core::demangle(ti.name()) << ' ' << t << std::endl;
 }
 
 int test_auto(){

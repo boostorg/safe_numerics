@@ -9,29 +9,17 @@ template<typename T>
 void display_log(T Max){
     std::cout
         << "log(" << Max << ") = "
-        << boost::numeric::log(Max) << std::endl;
+        << boost::numeric::utility::log2(Max) << std::endl;
 }
 
-bool test_log(){
+bool test_significant_bits(){
     using namespace boost::numeric;
-    assert(log(127u) == 7); // 7 bits
-    assert(log(127u) == 7); // 7 bits
-    assert(log(128u) == 8); // 8 bits
-    assert(log(129u) == 8); // 8 bits
-    assert(log(255u) == 8); // 8 bits
-    assert(log(256u) == 9); // 9 bits
-
-    assert(log(127) == 8); // 7 bits + 1 sign bit
-    assert(log(128) == 9); // 8 bits + 1 sign bit
-    assert(log(129) == 9); // 8 bits + 1 sign bit
-    assert(log(255) == 9); // 8 bits + 1 sign bit
-    assert(log(256) == 10); // 9 bits + 1 sign bit
-
-    assert(log(-127) == 8); // 7 bits + 1 sign bit
-    assert(log(-128) == 8); // 7 bits + 1 sign bit
-    assert(log(-129) == 9); // 8 bits + 1 sign bit
-    assert(log(-255) == 9); // 8 bits + 1 sign bit
-    assert(log(-256) == 9); // 8 bits + 1 sign bit
+    assert(utility::significant_bits(127u) == 7); // 7 bits
+    assert(utility::significant_bits(127u) == 7); // 7 bits
+    assert(utility::significant_bits(128u) == 8); // 8 bits
+    assert(utility::significant_bits(129u) == 8); // 8 bits
+    assert(utility::significant_bits(255u) == 8); // 8 bits
+    assert(utility::significant_bits(256u) == 9); // 9 bits
     return true;
 }
 
@@ -101,7 +89,7 @@ int main(){
     //one_hundred = 200;
 
     bool rval = 
-        test_log() &&
+        test_significant_bits() &&
         test1() &&
         test2() /* &&
         test3() &&

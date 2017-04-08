@@ -12,80 +12,147 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cstdint> // intmax_t, uintmax_t
+#include <cstdint> // intmax_t, uintmax_t, uint8_t, ...
 #include <algorithm>
+#include <type_traits>
+#include <limits>
+
+#include <boost/mpl/if.hpp> // if_c
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
 
 namespace boost {
 namespace numeric {
-    // the number of bits required to render the value in x
-    template<typename T>
-    typename std::enable_if<
-        // T being unsigned
-        ! std::is_signed<T>::value,
-        std::uintmax_t
-    >::type
-    constexpr log(T x){
-        std::uintmax_t i = 0;
-        for(; x > 0; ++i)
-            x >>= 1;
-        return i;
-    }
-    template<typename T>
-    typename std::enable_if<
-        // T being signed
-        std::is_signed<T>::value,
-        std::uintmax_t
-    >::type
-    constexpr log(T x){
-        if(x < 0)
-            x = ~x;
-        return log(
-            static_cast<typename std::make_unsigned<T>::type>(x)
-        ) + 1;
-    }
-    // return type required to store a particular range
-    template<
-        std::intmax_t Min,
-        std::intmax_t Max
-    >
-    // signed range
-    using signed_stored_type = typename boost::int_t<
-        std::max({log(Min), log(Max)})
-    >::least ;
+namespace utility {
 
-    template<
-        std::uintmax_t Min,
-        std::uintmax_t Max
-    >
-    // unsigned range
-    using unsigned_stored_type = typename boost::uint_t<
-        std::max({log(Min), log(Max)})
-    >::least ;
+// used for debugging
+// usage - print_type<T>;
+// provokes error message with name of type T
 
-    template<typename T>
-    using bits = std::integral_constant<
-        int,
-        std::numeric_limits<T>::digits
-        + std::numeric_limits<T>::is_signed ? 1 : 0
-    >;
+template<typename Tx>
+using print_type = typename Tx::error_message;
 
+template<int N> 
+struct print_value
+{
+    enum test : char {
+        value = N < 0 ? N - 256 : N + 256
+    };
+};
 
-    // used for debugging
-    // usage - print_type<T>;
-    // provokes error message with name of type T
+template<typename T>
+using bits_type = std::integral_constant<
+    int,
+    std::numeric_limits<T>::digits
+    + (std::numeric_limits<T>::is_signed ? 1 : 0)
+>;
 
-    template<typename Tx>
-    using print_type = typename Tx::error_message;
+/*
+From http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
+Find the log base 2 of an integer with a lookup table
 
-    template<int N> 
-    struct print_value
+    static const char LogTable256[256] =
     {
-        enum test : char {
-            value = N < 0 ? N - 256 : N + 256
-        };
+    #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
+        -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+        LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
+        LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
     };
 
+    unsigned int v; // 32-bit word to find the log of
+    unsigned r;     // r will be lg(v)
+    register unsigned int t, tt; // temporaries
+
+    if (tt = v >> 16)
+    {
+      r = (t = tt >> 8) ? 24 + LogTable256[t] : 16 + LogTable256[tt];
+    }
+    else 
+    {
+      r = (t = v >> 8) ? 8 + LogTable256[t] : LogTable256[v];
+    }
+
+The lookup table method takes only about 7 operations to find the log of a 32-bit value. 
+If extended for 64-bit quantities, it would take roughly 9 operations. Another operation
+can be trimmed off by using four tables, with the possible additions incorporated into each.
+Using int table elements may be faster, depending on your architecture.
+*/
+
+// I've "improved" the above and recast as C++ code which depends upon
+// the optimizer to minimize the operations.  This should result in
+// nine operations to calculate the position of the highest order
+// bit in a 64 bit number. RR
+
+constexpr unsigned int log2(const boost::uint_t<8>::exact & t){
+    constexpr const char LogTable256[256] = {
+        #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
+        -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+        LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
+        LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
+    };
+    return LogTable256[t];
+}
+constexpr unsigned int log2(const boost::uint_t<16>::exact & t){
+    const boost::uint_t<8>::exact upper_half = (t >> 8);
+    return upper_half == 0
+        ? log2(static_cast<boost::uint_t<8>::exact>(t))
+        : 8 + log2(upper_half);
+}
+constexpr unsigned int log2(const boost::uint_t<32>::exact & t){
+    const boost::uint_t<16>::exact upper_half = (t >> 16);
+    return upper_half == 0
+        ? log2(static_cast<boost::uint_t<16>::exact>(t))
+        : 16 + log2(upper_half);
+}
+constexpr unsigned int log2(const boost::uint_t<64>::exact & t){
+    const boost::uint_t<32>::exact upper_half = (t >> 32);
+    return upper_half == 0
+        ? log2(static_cast<boost::uint_t<32>::exact>(t))
+        : 32 + log2(upper_half);
+}
+
+template<typename T>
+constexpr unsigned int log(const T & t){
+    return log2(
+        static_cast<typename boost::uint_t<bits_type<T>::value>::exact>(t)
+    );
+}
+
+// the number of bits required to render the value in x
+template<typename T>
+constexpr unsigned int significant_bits(const T & t){
+    return log(t) + 1;
+}
+
+template<typename T>
+constexpr unsigned int bits_value(const T & t){
+    const unsigned int sb = significant_bits(t);
+    const unsigned int sb_max = significant_bits(std::numeric_limits<T>::max());
+    return sb < sb_max ? ((sb << 1) - 1) : std::numeric_limits<T>::max();
+}
+
+// return type required to store a particular range
+template<
+    std::intmax_t Min,
+    std::intmax_t Max
+>
+// signed range
+using signed_stored_type = typename boost::int_t<
+    std::max(
+        significant_bits(Min),
+        significant_bits(Max)
+    )
+>::least ;
+
+template<
+    std::uintmax_t Min,
+    std::uintmax_t Max
+>
+// unsigned range
+using unsigned_stored_type = typename boost::uint_t<
+    significant_bits(Max)
+>::least ;
+
+} // utility
 } // numeric
 } // boost
 

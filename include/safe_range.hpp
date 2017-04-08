@@ -36,9 +36,9 @@ template <
     class E = throw_exception
 >
 using safe_signed_range = safe_base<
-    typename boost::numeric::signed_stored_type<Min, Max>,
-    static_cast<typename boost::numeric::signed_stored_type<Min, Max> >(Min),
-    static_cast<typename boost::numeric::signed_stored_type<Min, Max> >(Max),
+    typename utility::signed_stored_type<Min, Max>,
+    static_cast<typename utility::signed_stored_type<Min, Max> >(Min),
+    static_cast<typename utility::signed_stored_type<Min, Max> >(Max),
     P,
     E
 >;
@@ -53,9 +53,9 @@ template <
     class E = throw_exception
 >
 using safe_unsigned_range = safe_base<
-    typename boost::numeric::unsigned_stored_type<Min, Max>,
-    static_cast<typename boost::numeric::unsigned_stored_type<Min, Max> >(Min),
-    static_cast<typename boost::numeric::unsigned_stored_type<Min, Max> >(Max),
+    typename utility::unsigned_stored_type<Min, Max>,
+    static_cast<typename utility::unsigned_stored_type<Min, Max> >(Min),
+    static_cast<typename utility::unsigned_stored_type<Min, Max> >(Max),
     P,
     E
 >;

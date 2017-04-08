@@ -23,6 +23,7 @@
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
+#include "utility.hpp"
 
 namespace boost {
 namespace numeric {
@@ -592,69 +593,7 @@ constexpr modulus(
 
 namespace detail {
 
-/*
-From http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
-Find the log base 2 of an integer with a lookup table
 
-    static const char LogTable256[256] =
-    {
-    #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
-        -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-        LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
-        LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
-    };
-
-    unsigned int v; // 32-bit word to find the log of
-    unsigned r;     // r will be lg(v)
-    register unsigned int t, tt; // temporaries
-
-    if (tt = v >> 16)
-    {
-      r = (t = tt >> 8) ? 24 + LogTable256[t] : 16 + LogTable256[tt];
-    }
-    else 
-    {
-      r = (t = v >> 8) ? 8 + LogTable256[t] : LogTable256[v];
-    }
-
-The lookup table method takes only about 7 operations to find the log of a 32-bit value. 
-If extended for 64-bit quantities, it would take roughly 9 operations. Another operation
-can be trimmed off by using four tables, with the possible additions incorporated into each.
-Using int table elements may be faster, depending on your architecture.
-*/
-
-// I've "improved" the above and recast as C++ code which depends upon
-// the optimizer to minimize the operations.  This should result in
-// nine operations to calculate the position of the highest order
-// bit in a 64 bit number. RR
-
-constexpr unsigned int log2(const std::uint8_t & t){
-    constexpr const char LogTable256[256] = {
-        #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
-        -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-        LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
-        LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
-    };
-    return LogTable256[t];
-}
-constexpr unsigned int log2(const std::uint16_t & t){
-    const std::uint8_t upper_half = (t >> 8);
-    return upper_half == 0
-        ? log2(static_cast<std::uint8_t>(t))
-        : 8 + log2(upper_half);
-}
-constexpr unsigned int log2(const std::uint32_t & t){
-    const std::uint16_t upper_half = (t >> 16);
-    return upper_half == 0
-        ? log2(static_cast<std::uint16_t>(t))
-        : 16 + log2(upper_half);
-}
-constexpr unsigned int log2(const std::uint64_t & t){
-    const std::uint32_t upper_half = (t >> 32);
-    return upper_half == 0
-        ? log2(static_cast<std::uint32_t>(t))
-        : 32 + log2(upper_half);
-}
 
 #if 0
 // todo - optimize for gcc to exploit builtin
@@ -678,13 +617,6 @@ constexpr unsigned int leading_zeros(const T & t){
     #endif
 }
 #endif
-
-template<typename T>
-constexpr unsigned int significant_bits(const T & t){
-    return log2(
-        static_cast<typename std::make_unsigned<T>::type>(t)
-    ) + 1;
-}
 
 // INT34-C C++
 
@@ -712,7 +644,7 @@ constexpr checked_left_shift(
     // note: there is a good argument for following exactly the standards
     // language above.  Reasonable people can disagree.
 
-    if(u > std::numeric_limits<R>::digits - significant_bits(t)){
+    if(u > std::numeric_limits<R>::digits - utility::significant_bits(t)){
         // behavior is undefined
         return checked_result<R>(
            exception_type::domain_error,
@@ -861,35 +793,16 @@ constexpr checked_result<R> right_shift(
 ///////////////////////////////////
 // bitwise operations
 
-namespace detail {
-    // INT13-C Note: We don't enforce recommendation as acually written
-    // as it would break too many programs.  Specifically, we permit signed
-    // integer operand but require that it not be negative.  This we can only
-    // enforced at runtime.
-    template<typename T>
-    typename boost::enable_if<
-        typename std::is_signed<T>,
-        bool
-    >::type
-    check_bitwise_operand(const T & t){
-        return t >= 0;
-    }
-
-    template<typename T>
-    typename boost::disable_if<
-        typename std::is_signed<T>,
-        bool
-    >::type
-    check_bitwise_operand(const T & t){
-        return true;
-    }
-} // detail
+// INT13-C Note: We don't enforce recommendation as acually written
+// as it would break too many programs.  Specifically, we permit signed
+// integer operands.
 
 template<class R, class T, class U>
 constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
 ) {
+    using namespace boost::numeric::utility;
     /*
     if(! detail::check_bitwise_operand(t))
         return checked_result<R>(
@@ -897,7 +810,16 @@ constexpr checked_result<R> bitwise_or(
            "bitwise operands cannot be negative"
         );
     */
-    
+    const unsigned int result_size
+        = std::max(significant_bits(t), significant_bits(u));
+
+    if(result_size > bits_type<R>::value){
+        return checked_result<R>{
+            exception_type::positive_overflow_error,
+            "result type too small to hold bitwise or"
+        };
+    }
+    /*
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
@@ -907,27 +829,8 @@ constexpr checked_result<R> bitwise_or(
         return ru;
 
     return static_cast<R>(ru) | static_cast<R>(rt);
-}
-
-template<class R, class T, class U>
-constexpr checked_result<R> bitwise_and(
-    const T & t,
-    const U & u
-) {
-    if(! detail::check_bitwise_operand(t))
-        return checked_result<R>(
-           exception_type::domain_error,
-           "bitwise operands cannot be negative"
-        );
-    const checked_result<R> rt = cast<R>(t);
-    if(! rt.no_exception())
-        return rt;
-
-    const checked_result<R> ru = cast<R>(u);
-    if(! ru.no_exception())
-        return ru;
-
-    return static_cast<R>(ru) & static_cast<R>(rt);
+    */
+    return t | u;
 }
 
 template<class R, class T, class U>
@@ -935,11 +838,24 @@ constexpr checked_result<R> bitwise_xor(
     const T & t,
     const U & u
 ) {
+    using namespace boost::numeric::utility;
+    /*
     if(! detail::check_bitwise_operand(t))
         return checked_result<R>(
            exception_type::domain_error,
            "bitwise operands cannot be negative"
         );
+    */
+    const unsigned int result_size
+        = std::max(significant_bits(t), significant_bits(u));
+
+    if(result_size > bits_type<R>::value){
+        return checked_result<R>{
+            exception_type::positive_overflow_error,
+            "result type too small to hold bitwise or"
+        };
+    }
+    
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
@@ -949,6 +865,42 @@ constexpr checked_result<R> bitwise_xor(
         return ru;
 
     return static_cast<R>(ru) ^ static_cast<R>(rt);
+}
+
+template<class R, class T, class U>
+constexpr checked_result<R> bitwise_and(
+    const T & t,
+    const U & u
+) {
+    using namespace boost::numeric::utility;
+    /*
+    if(! detail::check_bitwise_operand(t))
+        return checked_result<R>(
+           exception_type::domain_error,
+           "bitwise operands cannot be negative"
+        );
+    */
+    const unsigned int result_size
+        = std::min(significant_bits(t), significant_bits(u));
+
+    if(result_size > bits_type<R>::value){
+        return checked_result<R>{
+            exception_type::positive_overflow_error,
+            "result type too small to hold bitwise or"
+        };
+    }
+    /*
+    const checked_result<R> rt = cast<R>(t);
+    if(! rt.no_exception())
+        return rt;
+
+    const checked_result<R> ru = cast<R>(u);
+    if(! ru.no_exception())
+        return ru;
+
+    return static_cast<R>(ru) & static_cast<R>(rt);
+    */
+    return t & u;
 }
 
 } // checked
