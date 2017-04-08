@@ -57,6 +57,7 @@ before_build:
   - echo "before build"
   - cd C:\projects\safe_numerics
   - md build
+  - "C:\Program Files (x86)\Microsoft Visual Studio 15.0\VC\vcvarsall.bat" amd64
   - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="BOOST_ROOT% --build build
   - dir
 

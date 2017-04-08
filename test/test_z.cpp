@@ -376,12 +376,19 @@ auto val()
 #include "../include/safe_literal.hpp"
 
 
-constexpr boost::numeric::safe<unsigned int> val1()
-{
-    constexpr boost::numeric::safe<unsigned int> x = boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
-    return -x;
+void val0(){
+    const boost::numeric::safe<unsigned int> x{0};
+    std::cout << x << std::endl;
+    std::cout << -x << std::endl;
+    auto y = -x;
+    std::cout << y << std::endl;
 }
 
+constexpr boost::numeric::safe<unsigned int> val1()
+{
+    constexpr boost::numeric::safe<unsigned int> x = 0xFFFFFFFF;
+    return -x;
+}
 constexpr boost::numeric::safe<unsigned int> val2()
 {
     boost::numeric::safe<unsigned int> x = - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
@@ -393,11 +400,12 @@ constexpr boost::numeric::safe<unsigned int> val3()
     return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
 }
 
-
 int main(){
+    val0();
     std::cout << val1() << std::endl;
     std::cout << val2() << std::endl;
     std::cout << val3() << std::endl;
+    return 0;
 }
 
 #endif
