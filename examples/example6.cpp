@@ -22,7 +22,7 @@ int main(int argc, const char * argv[]){
         std::cout << "error detected!" << std::endl;
     }
 
-    // solution: asign externally retrieved values to safe equivalents
+    // solution: assign externally retrieved values to safe equivalents
     std::cout << "Using safe numerics" << std::endl;
     {
         using namespace boost::numeric;

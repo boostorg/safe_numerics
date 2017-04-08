@@ -29,14 +29,14 @@
             <entry><code>EP</code></entry>
 
             <entry>A type that fulfills the requirements of an
-            ExceptionPollicy</entry>
+            ExceptionPolicy</entry>
           </row>
 
           <row>
             <entry>message</entry>
 
-            <entry>A <code>const char *</code> which refers to a text message
-            about the cause of an exception</entry>
+            <entry>A const char * which refers to a text message about the
+            cause of an exception</entry>
           </row>
         </tbody>
       </tgroup>
@@ -49,11 +49,11 @@
     <para>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.<informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="6*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="6*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>
@@ -145,7 +145,7 @@
 
         <para>If an exceptional condition is detected at runtime throw the
         exception. Safe types use this exception policy as the default if no
-        other one is specified.</para>
+        other policy is specified.</para>
       </listitem>
 
       <listitem id="safe_numerics.exception_policy.models.ignore_exception">
@@ -156,13 +156,15 @@
       </listitem>
 
       <listitem id="safe_numerics.exception_policy.models.no_exception_support">
+        <para><code>template&lt;void (*F)(const char *), void (*G)(const char
+        *), void (*H)(const char *)&gt;</code></para>
+
         <para><code>boost::numeric::no_exception_support</code></para>
 
         <para>If you want to specify specific behavior for particular
         exception types, use this policy. The most likely situation is where
-        you don't have exception support and you want to handle runtime errors
-        by calling your own special functions. This should permit usage of the
-        library in environments where C++ exceptions are not supported.</para>
+        you don't have exception support and you want to trap "exceptions" by
+        calling your own special functions.</para>
       </listitem>
 
       <listitem id="safe_numerics.exception_policy.models.trap_exception">

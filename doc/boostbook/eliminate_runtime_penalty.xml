@@ -7,7 +7,7 @@
   <para>Up until now, we've focused on detecting when incorrect results are
   produced and handling these occurrences either by throwing an exception or
   invoking some designated function. We've achieved our goal of detecting and
-  handling arithmetically incorrect behavior - but at what cost. It is a fact
+  handling arithmetically incorrect behavior - but at what cost? It is a fact
   that many C++ programmers will find this trade-off unacceptable. So the
   question arises as to how we might minimize or eliminate this runtime
   penalty.</para>
@@ -16,12 +16,6 @@
   exceptions. The following program is similar to previous examples but uses a
   special exception policy: <link
   linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>.</para>
-
-  <note>
-    <para>In this document we use the term "trap" to mean invocation of some
-    message at compile time. We use "throw" to indicate a runtime exception.
-    </para>
-  </note>
 
   <para><programlisting><xi:include href="../../examples/example81.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
@@ -60,12 +54,12 @@
     <para>So the result of the sum of two integer types may result in another
     integer type. If the values are large, the result can exceed the size that
     the resulting integer type can hold. This is what we call "overflow". The
-    C/C++ standard characterises this as undefined behavior and leaves to
+    C/C++ standard characterizes this as undefined behavior and leaves to
     compiler implementors the decision as to how such a situation will be
     handled. Usually, this means just truncating the result to fit into the
     result type - which sometimes will make the result arithmetically
-    incorrect. However, depending on the compiler, compile time switch
-    settings, the such case may result in some sort of run time
+    incorrect. However, depending on the compiler and compile time switch
+    settings, such cases may result in some sort of run time
     exception.</para>
 
     <para>The complete signature for a safe integer type is:</para>
@@ -79,16 +73,16 @@ safe;
 </programlisting></para>
 
     <para>The promotion rules implemented in the default <code><link
-    linkend="safe_numerics.types.native">native</link></code> type promotion
-    policy are consistent with those of standard C++</para>
+    linkend="safe_numerics.promotion_policy.models.native">native</link></code>
+    type promotion policy are consistent with those of standard C++ </para>
 
     <para>Up until now, we've focused on detecting when this happens and
-    invoking an interrupt or other kind of error handler.</para>
+    invoking an exception or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
-    linkend="safe_numerics.types.automatic"><code>automatic</code></link> type
-    promotion policy, we can change the rules of C++ arithmetic for safe types
-    to something like the following:</para>
+    linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+    type promotion policy, we can change the rules of C++ arithmetic for safe
+    types to something like the following:</para>
 
     <para><itemizedlist>
         <listitem>
@@ -116,16 +110,16 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
           <para>One could do this by editing his code manually, but such a
           task would be tedious, error prone, and leave the resulting code
           hard to read and verify. Using the <link
-          linkend="safe_numerics.types.automatic"><code>automatic</code></link>
+          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
           type promotion policy will achieve the equivalent result without
           these problems.</para>
         </listitem>
 
         <listitem>
           <para>Since the result type is guaranteed to hold the result, there
-          is no need to check for errors - they can't happen !!! The usage of
+          is no need to check for errors - they can't happen!!! The usage of the
           <link
-          linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
+          linkend="safe_numerics.exception_policy.models.trap_exception"><code>trap_exception</code></link>
           exception policy enforces this guarantee.</para>
         </listitem>
 
@@ -156,7 +150,7 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     generated. Depending on the application, it should be rare to generate
     error checking code, and even more rare to actually invoke it. Any such
     instances are detected at compile time by the <link
-    linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
+    linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
     exception policy.</para>
 
     <para>This small example illustrates how to use automatic type promotion
@@ -178,19 +172,19 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     that:<itemizedlist>
         <listitem>
           <para>the <link
-          linkend="safe_numerics.types.automatic"><code>automatic</code></link>
-          type promotion policy has rendered the result of the some of two
+          linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
+          type promotion policy has rendered the result of the sum of two
           <code>integers</code> as a <code>long</code> type.</para>
         </listitem>
 
         <listitem>
           <para>our program compiles without error - even when using the <link
-          linkend="safe_numerics.types.trap_exception"><code>trap_exception</code></link>
+          linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
           exception policy</para>
         </listitem>
 
         <listitem>
-          <para>We do not need to use <code>try/catch</code> idiom to handle
+          <para>We do not need to use the <code>try/catch</code> idiom to handle
           arithmetic errors - we will have none.</para>
         </listitem>
 
@@ -268,15 +262,15 @@ z = &lt;signed char&gt;[-24,82] = 77
     <para><itemizedlist>
         <listitem>
           <para>As before, we define a type <code>safe_t</code> to reflect our
-          view of legal values for this program. This uses <link
+          view of legal values for this program. This uses the <link
           linkend="safe_numerics.promotion_policy.models.automatic"><code>automatic</code></link>
-          type promotion policy as well as <link
+          type promotion policy as well as the <link
           linkend="safe_numerics.exception_policies.trap_exception"><code>trap_exception</code></link>
           exception policy to enforce elimination of runtime penalties.</para>
         </listitem>
 
         <listitem>
-          <para>The function f accepts only arguments of type
+          <para>The function <code>f</code> accepts only arguments of type
           <code>safe_t</code> so there is no need to check the input values.
           This performs the functionality of <emphasis><emphasis
           role="bold">programming by contract</emphasis></emphasis> with no
@@ -295,7 +289,7 @@ z = &lt;signed char&gt;[-24,82] = 77
         </listitem>
 
         <listitem>
-          <para>On calling of the function f, arguments of type
+          <para>On calling of the function <code>f</code>, arguments of type
           <code>input_safe_t</code> are converted to values of type
           <code>safe_t</code> . In this particular example, it can be
           determined at compile time that construction of an instance of a

@@ -9,13 +9,13 @@
 
   <para><glosslist>
       <glossentry>
-        <glossterm>David LaBlanc</glossterm>
+        <glossterm>David LeBlanc</glossterm>
 
         <glossdef>
           <para>This library is inspired by <ulink
           url="http://safeint.codeplex.com">David LeBlanc's SafeInt
           Library</ulink> . I found this library very well done in every way
-          and useful in my embedded systems work. This motivated me to take to
+          and useful in my embedded systems work. This motivated me to take it to
           the "next level".</para>
         </glossdef>
       </glossentry>
@@ -28,11 +28,11 @@
           <para>Andrzej Commented and reviewed the library as it was
           originally posted on the <ulink
           url="http://www.blincubator.com">Boost Library Incubator</ulink>.
-          The the consequent back and forth motivated me to invest more effort
+          The consequent back and forth motivated me to invest more effort
           in developing documentation and examples to justify the utility,
           indeed the necessity, for this library. He also noted many errors in
-          code, documentation, and tests. Without his interested and effort, I
-          do not believe the library would have progressed beyond it's initial
+          code, documentation, and tests. Without his interest and effort, I
+          do not believe the library would have progressed beyond its initial
           stages.</para>
         </glossdef>
       </glossentry>

@@ -16,7 +16,7 @@ using safe_t = safe_signed_range<
     trap_exception
 >;
 
-// define variables use for input
+// define variables used for input
 using input_safe_t = safe_signed_range<
     -24,
     82,

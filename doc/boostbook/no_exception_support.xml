@@ -22,7 +22,7 @@
     <title>Template Parameters</title>
 
     <para>Function objects to be invoked are specified for each error
-    condition are specified via template parameters.</para>
+    condition via template parameters.</para>
 
     <informaltable>
       <tgroup cols="4">

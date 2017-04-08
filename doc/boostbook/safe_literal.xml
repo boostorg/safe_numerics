@@ -11,7 +11,7 @@
     <title>Description</title>
 
     <para>A safe type which holds a literal value. This is required to be able
-    to initialize other safe type in such a way that exception code is not
+    to initialize other safe types in such a way that an exception code is not
     generated. It is also useful when creating constexpr versions of safe
     types. It contains one immutable value known at compile time and hence can
     be used in any constexpr expression.</para>
@@ -115,7 +115,7 @@
     <title>Inherited Valid Expressions</title>
 
     <para>SafeLiteral types are immutable. Hence they only inherit those valid
-    expressions which don't change the value. The excludes assignment,
+    expressions which don't change the value. This excludes assignment,
     increment, and decrement operators. Other than that, they can be used
     anywhere a SafeNumeric type can be used.</para>
   </section>

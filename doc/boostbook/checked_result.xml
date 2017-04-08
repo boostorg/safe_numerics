@@ -9,7 +9,7 @@
   <section>
     <title>Description</title>
 
-    <para>checked_result is a wrapper class designed to hold result of some
+    <para>checked_result is a wrapper class designed to hold the result of some
     operation. It can hold either the result of the operation or information
     on why the operation failed to produce a valid result. Note that this type
     is an internal feature of the library and shouldn't be exposed to library
@@ -220,7 +220,7 @@
 
               <entry>void</entry>
 
-              <entry>invoke exception in accordance exception_type
+              <entry>invoke exception in accordance with exception_type
               value</entry>
             </row>
           </tbody>

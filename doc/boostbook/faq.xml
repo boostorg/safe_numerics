@@ -55,7 +55,7 @@
       </question>
 
       <answer>
-        <para>I used "safe" in large part this is what has been used by other
+        <para>I used "safe" in large part because this is what has been used by other
         similar libraries. Maybe a better word might have been "correct" but
         that would raise similar concerns. I'm not inclined to change this.
         I've tried to make it clear in the documentation what the problem that
@@ -71,7 +71,7 @@
 
       <answer>
         <para>Actually, I believe that this can/should be applied to any type
-        T which satisfies the type requirement "Numeric" type as defined in
+        T which satisfies the type requirement <code>Numeric</code> type as defined in
         the documentation. So there should be specializations
         <code>safe&lt;float&gt;</code> and related types as well as new types
         like <code>safe&lt;fixed_decimal&gt;</code> etc. But the current
@@ -83,7 +83,7 @@
     <qandaentry>
       <question>
         <para>Isn't putting a defensive check just before any potential
-        undefined behavior is often considered a bad practice?</para>
+        undefined behavior often considered a bad practice?</para>
       </question>
 
       <answer>
@@ -104,7 +104,7 @@
 
       <answer>
         <para>As far as is known as of this writing, the library does not
-        presume that the underlying hardware is two's compliment. However,
+        presume that the underlying hardware is two's complement. However,
         this has yet to be verified in a rigorous way.</para>
       </answer>
     </qandaentry>
@@ -118,7 +118,7 @@
       <answer>
         <para><code>safe&lt;T&gt;</code> behaves like a "number" just as int
         does. It has max, min, etc Any code which uses numeric limits to test
-        a type <code>T</code> should works with <code>safe&lt;T&gt;</code>.
+        a type <code>T</code> should work with <code>safe&lt;T&gt;</code>.
         <code>safe&lt;T&gt;</code> is a drop-in replacement for <code>T</code>
         so it has to implement all the operations.</para>
       </answer>
@@ -141,7 +141,7 @@
         arithmetic is not intended, such as array indexes. Finally, the
         modulus for such an integer would vary depending upon the machine
         architecture. For these reasons, in the context of this library, an
-        unsigned integer is considered to a representation of a subset of
+        unsigned integer is considered to be a representation of a subset of
         integers. Note that this decision is consistent with
         <citation>INT30-C</citation>, “Ensure that unsigned integer operations
         do not wrap” in the CERT C Secure Coding Standard
@@ -163,7 +163,7 @@
         meta-programming. But this wasn't enough. It became apparent that the
         only way to really minimize run-time penalty was to implement
         compile-time integer range arithmetic - a pretty elaborate sub
-        library. By doing range arithmetic at compiler-time, I could skip
+        library. By doing range arithmetic at compile-time, I could skip
         runtime checking on many/most integer operations. C++11 constexpr
         wasn't quite enough to do the job. C++14 constexpr can do the job. The
         library currently relies very heavily on C++14 constexpr. I think that
@@ -180,7 +180,7 @@
       </question>
 
       <answer>
-        <para>C++ has evolved way beyond the original C language. But C++ it's
+        <para>C++ has evolved way beyond the original C language. But C++ is
         still (mostly) compatible with C. So most C programs can be compiled
         with a C++ compiler. The problems of incorrect arithmetic afflict both
         C and C++. Suppose we have a legacy C program designed for some
@@ -207,7 +207,7 @@ using pic16_promotion = boost::numeric::cpp&lt;
     16, // long
     32  // long long
 &gt;;
-// define safe types used desktop version of the program.
+// define safe types used in the desktop version of the program.
 template &lt;typename T&gt; // T is char, int, etc data type
 using safe_t = boost::numeric::safe&lt;
     T,
@@ -231,7 +231,7 @@ typedef long int_least16_t;
             </listitem>
 
             <listitem>
-              <para>Run the tests and change code to address any thrown
+              <para>Run the tests and change the code to address any thrown
               exceptions.</para>
             </listitem>
           </itemizedlist></para>

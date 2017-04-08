@@ -8,7 +8,7 @@
     <title>Description</title>
 
     <para>This type contains the functions to return a safe type corresponding
-    to the C++ type resulting for a given arithmetic operation.</para>
+    to the C++ type resulting from a given arithmetic operation.</para>
 
     <para>Usage of this policy with safe types will produce the exact same
     arithmetic results that using normal unsafe integer types will. Hence this
@@ -70,12 +70,12 @@ int main(){
         safe_int8 x = 127;
         safe_int8 y = 2;
         safe_int8 z;
-        // rather than producing and invalid result an exception is thrown
+        // rather than producing an invalid result an exception is thrown
         z = x + y;
         assert(false); // never arrive here
     }
     catch(std::exception &amp; e){
-        // which can catch here
+        // which we can catch here
         std::cout &lt;&lt; e.what() &lt;&lt; std::endl;
     }
 
@@ -84,7 +84,7 @@ int main(){
     safe_int8 x = 127;
     safe_int8 y = 2;
     safe&lt;int, native&gt; z; // z can now hold the result of the addition of any two 8 bit numbers
-    z = x + y; // is guarenteed correct without any runtime overhead or interrupt.
+    z = x + y; // is guaranteed correct without any runtime overhead or exception.
 
     return 0;
 }</programlisting>
