@@ -342,7 +342,7 @@ typename std::enable_if<
     ,
     typename addition_result<T, U>::type
 >::type
-constexpr inline operator+(const T & t, const U & u){
+constexpr operator+(const T & t, const U & u){
     using ar = addition_result<T, U>;
     return ar::make(
         ar::return_value(
@@ -360,7 +360,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator+=(T & t, const U & u){
+constexpr operator+=(T & t, const U & u){
     t = static_cast<T>(t + u);
     return t;
 }
@@ -476,7 +476,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator-=(T & t, const U & u){
+constexpr operator-=(T & t, const U & u){
     t = static_cast<T>(t - u);
     return t;
 }
@@ -596,7 +596,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator*=(T & t, const U & u){
+constexpr operator*=(T & t, const U & u){
     t = static_cast<T>(t * u);
     return t;
 }
@@ -735,7 +735,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator/=(T & t, const U & u){
+constexpr operator/=(T & t, const U & u){
     t = static_cast<T>(t / u);
     return t;
 }
@@ -859,7 +859,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator%=(T & t, const U & u){
+constexpr operator%=(T & t, const U & u){
     t = static_cast<T>(t % u);
     return t;
 }
@@ -1047,7 +1047,7 @@ typename boost::lazy_enable_if_c<
     ),
     left_shift_result<T, U>
 >::type
-constexpr inline operator<<(const T & t, const U & u){
+constexpr operator<<(const T & t, const U & u){
     // INT13-CPP
     // C++ standards document N4618 & 5.8.2
     static_assert(
@@ -1074,7 +1074,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator<<=(T & t, const U & u){
+constexpr operator<<=(T & t, const U & u){
     t = static_cast<T>(t << u);
     return t;
 }
@@ -1157,7 +1157,7 @@ typename boost::lazy_enable_if_c<
     ),
     right_shift_result<T, U>
 >::type
-constexpr inline operator>>(const T & t, const U & u){
+constexpr operator>>(const T & t, const U & u){
     // INT13-CPP
     static_assert(
         std::numeric_limits<T>::is_integer, "shifted value must be an integer"
@@ -1183,7 +1183,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator>>=(T & t, const U & u){
+constexpr operator>>=(T & t, const U & u){
     t = static_cast<T>(t >> u);
     return t;
 }
@@ -1279,7 +1279,7 @@ typename std::enable_if<
     ,
     typename bitwise_or_result<T, U>::type
 >::type
-constexpr inline operator|(const T & t, const U & u){
+constexpr operator|(const T & t, const U & u){
     using bwor = bitwise_or_result<T, U>;
     return bwor::make(
         bwor::return_value(
@@ -1297,7 +1297,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator|=(T & t, const U & u){
+constexpr operator|=(T & t, const U & u){
     t = static_cast<T>(t | u);
     return t;
 }
@@ -1390,7 +1390,7 @@ typename std::enable_if<
     ,
     typename bitwise_and_result<T, U>::type
 >::type
-constexpr inline operator&(const T & t, const U & u){
+constexpr operator&(const T & t, const U & u){
     using bwar = bitwise_and_result<T, U>;
     return bwar::make(
         bwar::return_value(
@@ -1408,7 +1408,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator&=(T & t, const U & u){
+constexpr operator&=(T & t, const U & u){
     t = static_cast<T>(t & u);
     return t;
 }
@@ -1501,7 +1501,7 @@ typename std::enable_if<
     ,
     typename bitwise_or_result<T, U>::type
 >::type
-constexpr inline operator^(const T & t, const U & u){
+constexpr operator^(const T & t, const U & u){
     using bwxor = bitwise_or_result<T, U>;
     return bwxor::make(
         bwxor::return_value(
@@ -1519,7 +1519,7 @@ typename std::enable_if<
     ,
     T
 >::type
-constexpr inline operator^=(T & t, const U & u){
+constexpr operator^=(T & t, const U & u){
     t = static_cast<T>(t ^ u);
     return t;
 }

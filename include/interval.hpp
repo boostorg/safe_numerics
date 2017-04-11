@@ -197,7 +197,7 @@ constexpr interval<checked_result<R>> multiply(
 // it doesn't consider the possibility that the divisor is zero.  This will
 // have to be considered separately.
 template<typename R, typename T, typename U>
-constexpr inline interval<checked_result<R>> divide(
+constexpr interval<checked_result<R>> divide(
     const interval<T> & t,
     const interval<U> & u
 ){
