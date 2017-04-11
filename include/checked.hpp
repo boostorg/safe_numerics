@@ -47,7 +47,7 @@ namespace detail {
     template<> struct cast_impl<true, true> {
         template<class R, class T>
         constexpr static checked_result<R>
-        invoke(const T & t){
+        invoke(const T & t) noexcept {
             // INT32-C Ensure that operations on signed
             // integers do not overflow
             return
@@ -70,7 +70,7 @@ namespace detail {
     template<> struct cast_impl<true, false> {
         template<class R, class T>
         constexpr static checked_result<R>
-        invoke(const T & t){
+        invoke(const T & t) noexcept {
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
             return
@@ -87,7 +87,7 @@ namespace detail {
     template<> struct cast_impl<false, false> {
         template<class R, class T>
         constexpr static checked_result<R>
-        invoke(const T & t){
+        invoke(const T & t) noexcept {
             // INT32-C Ensure that operations on unsigned
             // integers do not overflow
             return
@@ -104,7 +104,7 @@ namespace detail {
     template<> struct cast_impl<false, true> {
         template<class R, class T>
         constexpr static checked_result<R>
-        invoke(const T & t){
+        invoke(const T & t) noexcept {
             return
             t < 0 ?
                 checked_result<R>(
@@ -128,7 +128,7 @@ template<class R, class T>
 constexpr checked_result<R>
 cast(
     const T & t
-) {
+) noexcept {
     return
     (! std::numeric_limits<R>::is_integer) ?
         // conversions to floating point types are always OK
@@ -165,7 +165,7 @@ namespace detail {
     constexpr add(
         const R t,
         const R u
-    ) {
+    ) noexcept {
         return t + u;
     }
 
@@ -179,7 +179,7 @@ namespace detail {
     constexpr add(
         const R t,
         const R u
-    ) {
+    ) noexcept {
         return
             // INT30-C. Ensure that unsigned integer operations do not wrap
             std::numeric_limits<R>::max() - u < t ?
@@ -202,7 +202,7 @@ namespace detail {
     constexpr add(
         const R t,
         const R u
-    ) {
+    ) noexcept {
         return
             // INT32-C. Ensure that operations on signed integers do not result in overflow
             ((u > 0) && (t > (std::numeric_limits<R>::max() - u))) ?
@@ -227,7 +227,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> add(
     const T & t,
     const U & u
-) {
+) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
@@ -251,7 +251,7 @@ namespace detail {
     constexpr subtract(
         const R t,
         const R u
-    ) {
+    ) noexcept {
         return t - u;
     }
 
@@ -265,7 +265,7 @@ namespace detail {
     constexpr subtract(
         const R t,
         const R u
-    ) {
+    ) noexcept {
         // INT30-C. Ensure that unsigned integer operations do not wrap
         return
             t < u ?
@@ -288,7 +288,7 @@ namespace detail {
     constexpr subtract(
         const R t,
         const R u
-    ) { // INT32-C
+    ) noexcept { // INT32-C
         return
             // INT32-C. Ensure that operations on signed integers do not result in overflow
             ((u > 0) && (t < (std::numeric_limits<R>::min() + u))) ?
@@ -313,7 +313,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> subtract(
     const T & t,
     const U & u
-) {
+) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
     if(! rt.no_exception() )
@@ -338,7 +338,7 @@ namespace detail {
     constexpr multiply(
         const R t,
         const R u
-    ){
+    ) noexcept {
         return t * u;
     }
     // result unsigned
@@ -351,7 +351,7 @@ namespace detail {
     constexpr multiply(
         const R t,
         const R u
-    ){
+    ) noexcept {
         // INT30-C
         // fast method using intermediate result guaranteed not to overflow
         // todo - replace std::uintmax_t with a size double the size of R
@@ -376,7 +376,7 @@ namespace detail {
     constexpr multiply(
         const R t,
         const R u
-    ){
+    ) noexcept {
         // INT30-C
         return
             u > 0 && t > std::numeric_limits<R>::max() / u ?
@@ -399,7 +399,7 @@ namespace detail {
     constexpr multiply(
         const R t,
         const R u
-    ){
+    ) noexcept {
         // INT30-C
         // fast method using intermediate result guaranteed not to overflow
         // todo - replace std::intmax_t with a size double the size of R
@@ -435,7 +435,7 @@ namespace detail {
     constexpr multiply(
         const R t,
         const R u
-    ){ // INT32-C
+    ) noexcept { // INT32-C
         return t > 0 ?
             u > 0 ?
                 t > std::numeric_limits<R>::max() / u ?
@@ -478,7 +478,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> multiply(
     const T & t,
     const U & u
-) {
+) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     checked_result<R> rt(cast<R>(t));
     if(! rt.no_exception() )
@@ -502,7 +502,7 @@ namespace detail {
     constexpr divide(
         const R & t,
         const R & u
-    ){
+    ) noexcept {
         return t / u;
     }
 
@@ -514,7 +514,7 @@ namespace detail {
     constexpr divide(
         const R & t,
         const R & u
-    ){
+    ) noexcept {
         return
             (u == -1 && t == std::numeric_limits<R>::min()) ?
                 checked_result<R>(
@@ -533,7 +533,7 @@ checked_result<R>
 constexpr divide(
     const T & t,
     const U & u
-){
+) noexcept {
     if(u == 0){
         return checked_result<R>(
             exception_type::domain_error,
@@ -557,7 +557,7 @@ constexpr divide(
 // built-in abs isn't constexpr - so fix this here
 template<class T>
 constexpr std::make_unsigned_t<T>
-abs(const T & t){
+abs(const T & t) noexcept {
     return (t < 0 && t != std::numeric_limits<T>::min()) ?
         -t
     :
@@ -570,7 +570,7 @@ checked_result<R>
 constexpr modulus(
     const T & t,
     const U & u
-) {
+) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     if(0 == u)
         return checked_result<R>(
@@ -592,8 +592,6 @@ constexpr modulus(
 // shift operations
 
 namespace detail {
-
-
 
 #if 0
 // todo - optimize for gcc to exploit builtin
@@ -663,7 +661,7 @@ typename std::enable_if<
 constexpr checked_left_shift(
     const T & t,
     const U & u
-) {
+) noexcept {
     if(t < 0){
         return checked_result<R>(
            exception_type::domain_error,
@@ -686,7 +684,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> left_shift(
     const T & t,
     const U & u
-){
+) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
     // C++ Standard standard paragraph 5.8.3 Doesn't excactly say this.
     // It says the operation is defined as E1 / 2^E2 which IS defined when
@@ -729,7 +727,7 @@ typename std::enable_if<
 constexpr checked_right_shift(
     const T & t,
     const U & u
-) {
+) noexcept {
     // INT13C - Use bitwise operators only on unsigned integers
     if(t < 0){
         // note that the C++ standard considers this case is "implemenation
@@ -752,7 +750,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> right_shift(
     const T & t,
     const U & u
-) {
+) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
     // C++ Standard standard paragraph 5.8.3 Doesn't excactly say this.
     // It says the operation is defined as E1 / 2^E2 which IS defined when
@@ -801,7 +799,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
-) {
+) noexcept {
     using namespace boost::numeric::utility;
     /*
     if(! detail::check_bitwise_operand(t))
@@ -837,7 +835,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> bitwise_xor(
     const T & t,
     const U & u
-) {
+) noexcept {
     using namespace boost::numeric::utility;
     /*
     if(! detail::check_bitwise_operand(t))
@@ -871,7 +869,7 @@ template<class R, class T, class U>
 constexpr checked_result<R> bitwise_and(
     const T & t,
     const U & u
-) {
+) noexcept {
     using namespace boost::numeric::utility;
     /*
     if(! detail::check_bitwise_operand(t))
