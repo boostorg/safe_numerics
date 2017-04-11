@@ -176,9 +176,9 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>construct an instance of S from a value of type T. If
-              the value t cannot be represented as an instance of type S1, it
-              is an error.</para></entry>
+              <entry><para>construct an instance of S from a value of type T.
+              If the value t cannot be represented as an instance of type S1,
+              it is an error.</para></entry>
             </row>
 
             <row>
@@ -217,8 +217,8 @@
 
     <itemizedlist>
       <listitem>
-        <para>The result of any binary operation where one or both of the operands
-        is a SafeNumeric type is also a SafeNumeric type.</para>
+        <para>The result of any binary operation where one or both of the
+        operands is a SafeNumeric type is also a SafeNumeric type.</para>
       </listitem>
 
       <listitem>
@@ -228,7 +228,18 @@
 
       <listitem>
         <para>Binary expressions which are not assignments require that
-        promotion and exception policies be identical.</para>
+        promotion and exception policies of the operands be identical.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>|</code>, <code>&amp;</code>, <code>^</code> and
+        <code>~</code> operations defined for safe signed integer types. It's
+        not clear that this is the correct decision. On one hand, usage of
+        these operators on signed types is almost certainly an error in
+        program logic. But trapping this as an error conflicts with the goal
+        of making safe types "drop-in" replacements for the corresponding
+        built-in types. In light of this, these operators are currently
+        supported as they are for normal built-in types.</para>
       </listitem>
 
       <listitem>
@@ -250,7 +261,6 @@ int main(){
   <section>
     <title>Complexity Guarantees</title>
 
-
     <para>There are no complexity guarantees explicitly enforced here.
     However, it would be very surprising if any implementation were to be more
     complex that O(0);</para>
@@ -259,12 +269,12 @@ int main(){
   <section>
     <title>Invariants</title>
 
-    <para>The fundamental requirement of a SafeNumeric type is that it implements
-    all C++ operations permitted on its base type in a way the prevents the
-    return of an incorrect arithmetic result. Various implementations of this
-    concept may handle circumstances which produce such results differently 
-    (throw exception, compile time trap, etc..) no implementation should return
-    an arithmetically incorrect result.</para>
+    <para>The fundamental requirement of a SafeNumeric type is that it
+    implements all C++ operations permitted on its base type in a way the
+    prevents the return of an incorrect arithmetic result. Various
+    implementations of this concept may handle circumstances which produce
+    such results differently (throw exception, compile time trap, etc..) no
+    implementation should return an arithmetically incorrect result.</para>
   </section>
 
   <section>

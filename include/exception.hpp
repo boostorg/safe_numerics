@@ -15,6 +15,7 @@
 // contains error indicators for results of doing checked
 // arithmetic on native C++ types
 
+#include "exception_policies.hpp"
 #include "concept/exception_policy.hpp"
 
 namespace boost {

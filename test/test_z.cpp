@@ -507,7 +507,6 @@ int main(){
     return 0;
 }
 
-#endif
 
 #include <type_traits>
 #include "../include/safe_integer.hpp"
@@ -538,6 +537,17 @@ int main(){
     );
     safe<int> x = 42;
     std::cout << make_range_value(x);
+    return 0;
+}
+
+#endif
+
+#include "../include/utility.hpp"
+
+int main(){
+    using namespace boost::numeric::utility;
+    unsigned int x = significant_bits(-32768);
+    unsigned int y = significant_bits(33022);
     return 0;
 }
 

@@ -214,9 +214,8 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         </listitem>
 
         <listitem>
-          <para>Enforce other program requirements using ranged integer
-          types. The library includes the types <code>safe_range&lt;Min,
-          Max&gt;</code> and <code>safe_literal&lt;N</code>&gt;. These types
+          <para>Enforce other program requirements using ranged integer types.
+          The library includes the types for ranges and literals. These types
           can be used to improve program correctness and performance.</para>
         </listitem>
       </itemizedlist></para>

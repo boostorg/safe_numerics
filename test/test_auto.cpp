@@ -27,56 +27,41 @@ int test_log(){
     return 0;
 }
 
-#include <cxxabi.h>
-
 template<class T>
 void print_argument_type(const T & t){
     const std::type_info & ti = typeid(T);
-    int status;
     std::cout
         << boost::core::demangle(ti.name()) << ' ' << t << std::endl;
 }
 
-int test_auto(){
+template<typename T, typename U>
+int test_auto(const T & t, const U & u){
     using namespace boost::numeric;
 
-    safe<char, automatic> s1 = 1;
-    unsigned long long t1 = 1;
     try{
-        decltype(s1 + t1) r1;
-        //auto r1 = s1 + t1;
-        print_argument_type(r1);
+        safe<T, automatic>(t) + u;
     }
     catch(std::exception e){
-        decltype(s1 + t1) tx;
+        safe<T, automatic>(t) + u;
     }
 
-    safe<std::int8_t, automatic> s2 = -128;
-    std::int8_t t2 = 1;
     try{
-        decltype(s2 + t2) r2;
-        r2 = s2 + t2;
-        print_argument_type(r2);
+        t + safe<U, automatic>(u);
     }
     catch(std::exception e){
-        decltype(s2 + t2) tx;
+        t + safe<U, automatic>(u);
     }
-
 
     /*
     automatic::addition_result<
         safe<std::int8_t, automatic>,
-        safe<std::uint64_t, automatic>,
-        automatic,
-        throw_exception
+        safe<std::uint16_t, automatic>
     >::type r1;
     print_argument_type(r1);
 
     automatic::addition_result<
         safe_signed_range<-3, 8, automatic>,
-        safe_signed_range<-4, 9, automatic>,
-        automatic,
-        throw_exception
+        safe_signed_range<-4, 9, automatic>
     >::type r1;
     print_argument_type(r1);
     */
@@ -100,5 +85,6 @@ int main(){
 
     test_log();
     */
-    test_auto();
+    test_auto<std::int8_t, std::int8_t>(1, -128);
+    return 0;
 }

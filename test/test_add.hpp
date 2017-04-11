@@ -11,6 +11,7 @@
 #include <exception>
 
 #include "../include/safe_integer.hpp"
+#include "../include/range_value.hpp"
 
 template<class T1, class T2>
 bool test_add(
@@ -36,12 +37,13 @@ bool test_add(
         result_type result;
         try{
             result = t1 + v2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            std::cout
+                << make_result_display(result)
+                << std::endl;
             if(expected_result == 'x'){
                     std::cout
                         << "failed to detect error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
+                        << make_result_display(result)
                         << " ! = "<< av1 << " + " << av2
                         << std::endl;
                 try{
@@ -57,7 +59,7 @@ bool test_add(
             if(expected_result == '.'){
                     std::cout
                         << "erroneously detected error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
+                        << make_result_display(result)
                         << " == "<< av1 << " + " << av2
                         << std::endl;
                 try{
@@ -84,12 +86,13 @@ bool test_add(
 
         try{
             result = v1 + t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            std::cout
+                << make_result_display(result)
+                << std::endl;
             if(expected_result == 'x'){
                     std::cout
                         << "failed to detect error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
+                        << make_result_display(result)
                         << " ! = "<< av1 << " + " << av2
                         << std::endl;
                 try{
@@ -105,7 +108,7 @@ bool test_add(
             if(expected_result == '.'){
                     std::cout
                         << "erroneously detected error in addition "
-                        << std::hex << result << "(" << std::dec << result << ")"
+                        << make_result_display(result)
                         << " == "<< av1 << " + " << av2
                         << std::endl;
                 try{
@@ -134,7 +137,7 @@ bool test_add(
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in addition "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << make_result_display(result)
                     << " ! = "<< av1 << " + " << av2
                     << std::endl;
                 try{
@@ -150,7 +153,7 @@ bool test_add(
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in addition "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << make_result_display(result)
                     << " == "<< av1 << " + " << av2
                     << std::endl;
                 try{

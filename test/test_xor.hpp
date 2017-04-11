@@ -11,7 +11,6 @@
 #include <exception>
 #include <iosfwd>
 
-#include "../include/interval.hpp"
 #include "../include/safe_integer.hpp"
 #include "../include/range_value.hpp"
 

@@ -269,11 +269,13 @@ struct addition_result {
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         add<result_base_type>(t_interval, u_interval);
 
+
     constexpr static const bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
     using exception_policy = typename common_exception_policy<T, U>::type;
+
     
     struct safe_type {
         using type = safe_base<
@@ -291,6 +293,8 @@ struct addition_result {
             return type(t, std::false_type());
         }
     };
+
+
     struct unsafe_type {
         using type = result_base_type;
         constexpr static const type make(const result_base_type & t){

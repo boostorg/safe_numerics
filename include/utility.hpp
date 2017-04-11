@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <limits>
+#include <cassert>
 
 #include <boost/mpl/if.hpp> // if_c
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
@@ -112,23 +113,33 @@ constexpr unsigned int log2(const boost::uint_t<64>::exact & t){
 
 template<typename T>
 constexpr unsigned int log(const T & t){
+//  log not defined for negative numbers
+    assert(t >= 0);
     return log2(
-        static_cast<typename boost::uint_t<bits_type<T>::value>::exact>(t)
+        static_cast<
+            typename boost::uint_t<
+                bits_type<T>::value
+            >::exact
+        >(t)
     );
 }
 
 // the number of bits required to render the value in x
+// excluding sign bit
 template<typename T>
 constexpr unsigned int significant_bits(const T & t){
-    return log(t) + 1;
+    return 1 + (t < 0 ? log(~t) : log(t));
 }
 
+/*
+// get bit max for values of type T
 template<typename T>
 constexpr unsigned int bits_value(const T & t){
     const unsigned int sb = significant_bits(t);
     const unsigned int sb_max = significant_bits(std::numeric_limits<T>::max());
     return sb < sb_max ? ((sb << 1) - 1) : std::numeric_limits<T>::max();
 }
+*/
 
 // return type required to store a particular range
 template<
@@ -137,10 +148,10 @@ template<
 >
 // signed range
 using signed_stored_type = typename boost::int_t<
-    std::max(
+    std::max({
         significant_bits(Min),
         significant_bits(Max)
-    )
+    }) + 1
 >::least ;
 
 template<
@@ -151,6 +162,57 @@ template<
 using unsigned_stored_type = typename boost::uint_t<
     significant_bits(Max)
 >::least ;
+
+// return type required to store a particular range
+#ifdef BOOST_MSVC
+
+// If we use std::max in here we get internal compiler errors
+// (tested VC2017) ...
+
+template <class T>
+constexpr const T & msvc_max(
+    const T & lhs,
+    const T & rhs
+){
+    return lhs > rhs ? lhs : rhs;
+}
+
+template<
+    std::intmax_t Min,
+    std::intmax_t Max
+>
+// signed range
+using signed_stored_type = typename boost::int_t<
+    std::max({
+        significant_bits(Min),
+        significant_bits(Max)
+    }) + 1
+>::least ;
+
+#else
+
+template<
+    std::intmax_t Min,
+    std::intmax_t Max
+>
+// signed range
+using signed_stored_type = typename boost::int_t<
+    std::max({
+        significant_bits(Min),
+        significant_bits(Max)
+    }) + 1
+>::least;
+
+#endif // BOOST_MSVC
+
+template<
+    std::uintmax_t Min,
+    std::uintmax_t Max
+>
+// unsigned range
+using unsigned_stored_type = typename boost::uint_t<
+    significant_bits(Max)
+>::least;
 
 } // utility
 } // numeric

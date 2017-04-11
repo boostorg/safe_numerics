@@ -263,6 +263,15 @@ public:
     // after much consideration, I've permited the resulting value of a unary
     // - to change the type.  The C++ standard does invoke integral promotions
     // so it's changing the type as well.
+
+    /*  section 5.3.1 &8 of the C++ standard
+    The operand of the unary - operator shall have arithmetic or unscoped
+    enumeration type and the result is the negation of its operand. Integral
+    promotion is performed on integral or enumeration operands. The negative
+    of an unsigned quantity is computed by subtracting its value from 2n,
+    where n is the number of bits in the promoted operand. The type of the
+    result is the type of the promoted operand.
+    */
     constexpr auto operator-() const { // unary minus
         // if this is a unsigned type and the promotion policy is native
         // the result will be unsigned. But then the operation will fail
@@ -271,8 +280,11 @@ public:
         // the result will be signed.
         return 0 - *this;
     }
-    // argument or this is the same as the argument above
-    template<class T>
+    /*   section 5.3.1 &10 of the C++ standard
+    The operand of ~ shall have integral or unscoped enumeration type; 
+    the result is the ones’ complement of its operand. Integral promotions 
+    are performed. The type of the result is the type of the promoted operand.
+    */
     constexpr auto operator~() const { // complement
         return ~Stored(0u) ^ *this;
     }

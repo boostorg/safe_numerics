@@ -142,7 +142,7 @@ namespace test4 {
     }
 
     template<typename T, typename U>
-    bool test4(){
+    bool test_multiply(){
         using namespace boost::numeric;
         std::cout << "test4::multiply" << std::endl;
         const interval<T> t_interval = {
@@ -173,8 +173,9 @@ namespace test4 {
             << std::endl;
         return true;
     }
+
     template<typename T, typename U>
-    bool test5(){
+    bool test_divide(){
         using namespace boost::numeric;
         std::cout << "test4::test4 divide" << std::endl;
         const interval<T> t_interval = {
@@ -205,23 +206,51 @@ namespace test4 {
             << std::endl;
         return true;
     }
+
     template<typename T, typename U>
-    bool test6(){
+    bool test_add(
+        const interval<T> & t_interval,
+        const interval<U> & u_interval
+    ){
         using namespace boost::numeric;
-        std::cout << "test4::test4 subtract" << std::endl;
-        const interval<T> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
+        std::cout << "test4::test4 add" << std::endl;
         std::cout
             << boost::core::demangle(typeid(t_interval).name())
             << " t_interval = "
             << t_interval
             << std::endl;
-        const interval<U> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
-        };
+        std::cout
+            << boost::core::demangle(typeid(u_interval).name())
+            << " u_interval = "
+            << u_interval
+            << std::endl;
+        using R = decltype(U() + T());
+        const interval<checked_result<max_t>> r_interval
+            = add<R>(t_interval, u_interval);
+        std::cout
+            << boost::core::demangle(typeid(r_interval).name())
+            << " r_interval = "
+            << r_interval
+            << std::endl;
+        return true;
+    }
+    template<typename T, typename U>
+    bool test_add(){
+        return test_add<T,U>(interval<T>(), interval<U>());
+    }
+
+    template<typename T, typename U>
+    bool test_subtract(
+        const interval<T> & t_interval,
+        const interval<U> & u_interval
+    ){
+        using namespace boost::numeric;
+        std::cout << "test4::test4 subtract" << std::endl;
+        std::cout
+            << boost::core::demangle(typeid(t_interval).name())
+            << " t_interval = "
+            << t_interval
+            << std::endl;
         std::cout
             << boost::core::demangle(typeid(u_interval).name())
             << " u_interval = "
@@ -238,7 +267,12 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
-    bool test7(
+    bool test_subtract(){
+        return test_subtract<T,U>(interval<T>(), interval<U>());
+    }
+
+    template<typename T, typename U>
+    bool test_left_shift(
         const interval<T> & t_interval,
         const interval<U> & u_interval
     ){
@@ -265,11 +299,11 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
-    bool test7(){
-        return test7<T,U>(interval<T>(), interval<U>());
+    bool test_left_shift(){
+        return test_left_shift<T,U>(interval<T>(), interval<U>());
     }
     template<typename T, typename U>
-    bool test8(
+    bool test_right_shift(
         const interval<T> & t_interval,
         const interval<U> & u_interval
     ){
@@ -296,11 +330,11 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
-    bool test8(){
-        return test8<T,U>(interval<T>(), interval<U>());
+    bool test_right_shift(){
+        return test_right_shift<T,U>(interval<T>(), interval<U>());
     }
     template<typename T, typename U>
-    bool test9(
+    bool test_mod(
         const interval<T> & t_interval,
         const interval<U> & u_interval
     ){
@@ -327,23 +361,24 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
-    bool test9(){
-        return test9<T,U>(interval<T>(), interval<U>());
+    bool test_mod(){
+        return test_mod<T,U>(interval<T>(), interval<U>());
     }
     template<typename T, typename U>
     bool test(){
         return
-            test4<T, U>() &&
-            test5<T, U>() &&
-            test6<T, U>() &&
-            test7<T, U>() &&
-            test8<T, U>() &&
-            test9<T, U>()
+            test_multiply<T, U>() &&
+            test_divide<T, U>() &&
+            test_add<T, U>() &&
+            test_subtract<T, U>() &&
+            test_left_shift<T, U>() &&
+            test_right_shift<T, U>() &&
+            test_mod<T, U>()
         ;
     }
 
     template<typename T, typename U>
-    bool test10(
+    bool test_bitwise_or(
         const interval<T> & t_interval,
         const interval<U> & u_interval
     ){
@@ -370,8 +405,8 @@ namespace test4 {
         return true;
     }
     template<typename T, typename U>
-    bool test10(){
-        return test10<T,U>(interval<T>(), interval<U>());
+    bool test_bitwise_or(){
+        return test_bitwise_or<T,U>(interval<T>(), interval<U>());
     }
 
 } // test4
@@ -383,18 +418,23 @@ int main(){
         test2() &&
         test3() &&
 
-        test4::test10<std::int8_t, std::int32_t>() &&
-        test4::test10<unsigned char, unsigned char>() &&
-        test4::test8<unsigned char, unsigned char>() &&
-        test4::test9<unsigned char, unsigned char>() &&
-        test4::test7<int, signed char>() &&
-        test4::test7<unsigned char, unsigned char>() &&
-        test4::test7(
+        test4::test_mod<std::int8_t, std::uint32_t>() &&
+        test4::test_add<std::int8_t, std::uint16_t>() &&
+
+        test4::test_bitwise_or<std::int8_t, std::uint16_t>() &&
+        test4::test_bitwise_or<std::int8_t, std::int32_t>() &&
+        test4::test_bitwise_or<unsigned char, unsigned char>() &&
+        test4::test_right_shift<unsigned char, unsigned char>() &&
+        test4::test_mod<unsigned char, unsigned char>() &&
+        test4::test_left_shift<int, signed char>() &&
+        test4::test_left_shift<unsigned char, unsigned char>() &&
+        test4::test_left_shift(
             interval<unsigned char>(),
             interval<unsigned char>(8, 8)
         ) &&
-        test4::test8<std::uint8_t, std::uint8_t>() &&
-        test4::test8<std::int8_t, std::int8_t>() &&
+        test4::test_right_shift<std::uint8_t, std::uint8_t>() &&
+        test4::test_right_shift<std::int8_t, std::int8_t>() &&
+
         test5<true, std::int8_t, std::int8_t>() &&
         test5<false, std::int8_t, std::int16_t>() &&
         test5<true, std::int16_t, std::int8_t>() &&

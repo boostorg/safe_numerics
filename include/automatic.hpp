@@ -50,7 +50,6 @@ struct automatic {
             defer_stored_unsigned_lazily<T, Min, Max>
         >::type;
 
-
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct addition_result {
@@ -86,6 +85,18 @@ struct automatic {
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(r_interval.u)
         >::type;
+
+//utility::print_type<
+//    utility::signed_stored_type<-32768, 33022>
+//> p1;
+
+//utility::print_value<
+//    utility::significant_bits(-32768)
+//   utility::significant_bits(33022)
+//    utility::signed_stored_type<-32768, 33022>
+//> p1;
+
+
     };
 
     ///////////////////////////////////////////////////////////////////////

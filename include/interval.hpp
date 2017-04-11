@@ -270,9 +270,15 @@ constexpr interval<checked_result<R>> modulus(
     const checked_result<R> mxc = checked::subtract<R>(0, xc);
     const checked_result<R> mxd = checked::subtract<R>(0, xd);
 
-   return (xc < xd)
-        ? interval<checked_result<R>>(mxd, xd)
-        : interval<checked_result<R>>(mxc, xc);
+    return detail::minmax<checked_result<R>>(
+        std::initializer_list<checked_result<R>> {
+            xc,
+            mxc,
+            xd,
+            mxd,
+            checked_result<R>(0)
+        }
+    );
 
 }
 

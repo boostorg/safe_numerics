@@ -25,6 +25,14 @@
 
     <programlisting><xi:include href="../../examples/example1.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+
+    <programlisting>example 1:undetected erroneous expression evaluation
+Not using safe numerics
+-2147483647 != -2147483647
+error NOT detected!
+Using safe numerics
+addition result too large
+Program ended with exit code: 0</programlisting>
   </section>
 
   <section id="safe_numerics.tutorial.2">
@@ -36,6 +44,15 @@
     <programlisting><xi:include href="../../examples/example2.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
+    <programlisting>example 2:undetected overflow in data type
+Not using safe numerics
+-2147483648 != 2147483647 + 1
+error NOT detected!
+Using safe numerics
+addition result too large
+error detected!
+Program ended with exit code: 0</programlisting>
+
     <para>When variables of unsigned integer type are decremented below zero,
     they "roll over" to the highest possible unsigned version of that integer
     type. This is a common problem which is generally never detected.</para>
@@ -44,21 +61,26 @@
   <section id="safe_numerics.tutorial.4">
     <title>Implicit Conversions Can Lead to Erroneous Results</title>
 
-    <para>At CPPCon 2016 Jon Kalb gave a very entertaining (and disturbing) <ulink
-    url="https://www.youtube.com/watch?v=wvtFGa6XJDU">lightning talk</ulink>
-    related to C++ expressions.</para>
+    <para>At CPPCon 2016 Jon Kalb gave a very entertaining (and disturbing)
+    <ulink url="https://www.youtube.com/watch?v=wvtFGa6XJDU">lightning
+    talk</ulink> related to C++ expressions.</para>
 
     <para>The talk included a very, very simple example similar to the
     following:</para>
 
     <para><programlisting><xi:include href="../../examples/example4.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 3: implicit conversions change data values
+Not using safe numerics
+b is less than a
+Using safe numerics
+a is less than b
+Program ended with exit code: 0</programlisting></para>
 
     <para>A normal person reads the above code and has to be dumbfounded by
     this. The code doesn't do what the text - according to the rules of
     algebra - says it does. But C++ doesn't follow the rules of algebra - it
-    has its own rules. There is generally no compile time error. You can get
-    a compile time warning if you set some specific compile time switches. The
+    has its own rules. There is generally no compile time error. You can get a
+    compile time warning if you set some specific compile time switches. The
     explanation lies in reviewing how C++ reconciles binary expressions
     (<code>a &lt; b</code> is an expression here) where operands are different
     types. In processing this expression, the compiler:</para>
@@ -66,8 +88,8 @@
     <para><itemizedlist>
         <listitem>
           <para>Determines the "best" common type for the two operands. In
-          this case, application of the rules in the C++ standard dictate
-          that this type will be an <code>unsigned int</code>.</para>
+          this case, application of the rules in the C++ standard dictate that
+          this type will be an <code>unsigned int</code>.</para>
         </listitem>
 
         <listitem>
@@ -88,12 +110,12 @@
     should be pretty familiar with the implicit conversion rules of the C++
     standard. These are available in a copy of the standard and also in the
     canonical reference book <citetitle><link linkend="stroustrup">The C++
-    Programming Language</link></citetitle> (both are over 1200 pages
-    long!). Even experienced programmers won't spot this issue and know to
-    take precautions to avoid it. And this is a relatively easy one to spot.
-    In the more general case this will use integers which don't correspond to
-    easily recognizable numbers and/or will be buried as a part of some more
-    complex expression.</para>
+    Programming Language</link></citetitle> (both are over 1200 pages long!).
+    Even experienced programmers won't spot this issue and know to take
+    precautions to avoid it. And this is a relatively easy one to spot. In the
+    more general case this will use integers which don't correspond to easily
+    recognizable numbers and/or will be buried as a part of some more complex
+    expression.</para>
 
     <para>This example generated a good amount of web traffic along with
     everyone's pet suggestions. See for example <ulink
@@ -123,15 +145,15 @@
 
     <para><programlisting><xi:include href="../../examples/example10.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Here
-    is the output of the above program:<screen>example 10: mixing types produces surprising results
+    is the output of the above program:<screen>example 4: mixing types produces surprising results
 Not using safe numerics
 10000
 4294957296
 Using safe numerics
 10000
 detected error:converted negative value to unsigned
-</screen>This solution is simple, just replace instances of
-    <code>int</code> with <code>safe&lt;int&gt;</code>.</para>
+Program ended with exit code: 0</screen>This solution is simple, just replace
+    instances of <code>int</code> with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
   <section id="safe_numerics.tutorial.5">
@@ -143,13 +165,18 @@ detected error:converted negative value to unsigned
     would be to use safe_unsigned_range;</para>
 
     <para><programlisting><xi:include href="../../examples/example5.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Collections
-    like standard arrays and vectors do array index checking in some function
-    calls and not in others so this may not be the best example. However it
-    does illustrate the usage of <code>safe_range&lt;T&gt;</code> for
-    assigning legal ranges to variables. This will guarantee that under no
-    circumstances will the variable contain a value outside of the specified
-    range.</para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 5: array index values can exceed array bounds
+Not using safe numerics
+error NOT detected!
+Using safe numerics
+Value out of range for this safe type
+error detected!
+Program ended with exit code: 0</programlisting>Collections like standard
+    arrays and vectors do array index checking in some function calls and not
+    in others so this may not be the best example. However it does illustrate
+    the usage of <code>safe_range&lt;T&gt;</code> for assigning legal ranges
+    to variables. This will guarantee that under no circumstances will the
+    variable contain a value outside of the specified range.</para>
   </section>
 
   <section id="safe_numerics.tutorial.6">
@@ -158,11 +185,18 @@ detected error:converted negative value to unsigned
     <para>It's way too easy to overlook the checking of parameters received
     from outside the current program.<programlisting><xi:include
           href="../../examples/example6.cpp" parse="text"
-          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Without
-    safe integer, one will have to insert new code every time an integer
-    variable is retrieved. This is a tedious and error prone procedure. Here
-    we have used program input. But in fact this problem can occur with any
-    externally produced input.</para>
+          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 6: checking of externally produced value can be overlooked
+Not using safe numerics
+2147483647 0
+error NOT detected!
+Using safe numerics
+error in file input
+error detected!
+Program ended with exit code: 0</programlisting>Without safe integer, one will
+    have to insert new code every time an integer variable is retrieved. This
+    is a tedious and error prone procedure. Here we have used program input.
+    But in fact this problem can occur with any externally produced
+    input.</para>
   </section>
 
   <section id="safe_numerics.tutorial.7">
@@ -190,20 +224,26 @@ detected error:converted negative value to unsigned
     ignore the issue which usually results in immediate program termination
     when this situation occurs.</para>
 
-    <para>This library will detect divide by zero errors before the
-    operation is invoked. Any errors of this nature are handled according to
-    the ErrorPolicy selected by the library user.</para>
+    <para>This library will detect divide by zero errors before the operation
+    is invoked. Any errors of this nature are handled according to the
+    ErrorPolicy selected by the library user.</para>
 
     <para><programlisting><xi:include href="../../examples/example13.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 7: cannot recover from arithmetic errors
+Not using safe numerics
+ error NOT detectable!
+Using safe numerics
+divide by zero
+error detected!
+Program ended with exit code: 0</programlisting></para>
   </section>
 
   <section id="safe_numerics.tutorial.8">
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has
-    been much written about it and it has been proposed as an addition to the C++
-    language <citation>Garcia</citation><citation>Crowl &amp;
+    been much written about it and it has been proposed as an addition to the
+    C++ language <citation>Garcia</citation><citation>Crowl &amp;
     Ottosen</citation>. It (mostly) depends upon runtime checking of parameter
     and object values upon entry to and exit from every function. This can
     slow the program down considerably which in turn undermines the main
@@ -215,18 +255,21 @@ detected error:converted negative value to unsigned
     runtime cost.</para>
 
     <para>The Safe Numerics Library has facilities which, in many cases, can
-    check guaranteed parameter requirements with little or no runtime overhead.
-    Consider the following example:</para>
+    check guaranteed parameter requirements with little or no runtime
+    overhead. Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../examples/example7.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 8: enforce contracts with zero runtime cost
+parameter error detected
+Program ended with exit code: 0</programlisting></para>
 
-    <para>In the example above, the function <code>convert</code> incurs significant runtime
-    cost every time the function is called. By using "safe" types, this cost
-    is moved to the moment when the parameters are constructed. Depending on how
-    the program is constructed, this may totally eliminate extraneous
-    computations for parameter requirement type checking. In this scenario,
-    there is no reason to suppress the checking for release mode and our
-    program can be guaranteed to be always arithmetically correct.</para>
+    <para>In the example above, the function <code>convert</code> incurs
+    significant runtime cost every time the function is called. By using
+    "safe" types, this cost is moved to the moment when the parameters are
+    constructed. Depending on how the program is constructed, this may totally
+    eliminate extraneous computations for parameter requirement type checking.
+    In this scenario, there is no reason to suppress the checking for release
+    mode and our program can be guaranteed to be always arithmetically
+    correct.</para>
   </section>
 </section>
