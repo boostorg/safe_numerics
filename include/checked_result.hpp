@@ -120,11 +120,9 @@ constexpr bool operator!=(const exception_type & lhs, const checked_result<T> &r
 }
 
 template<class EP, typename R>
-void
+constexpr void
 dispatch(const checked_result<R> & cr){
-    if(cr.no_exception())
-        dispatch<EP>(exception_type::no_exception, "");
-    else
+    if(cr.exception())
         dispatch<EP>(cr.m_e, cr.m_msg);
 }
 

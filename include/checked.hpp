@@ -185,7 +185,7 @@ namespace detail {
             std::numeric_limits<R>::max() - u < t ?
                 checked_result<R>(
                     exception_type::positive_overflow_error,
-                    "addition overflow"
+                    "addition result too large"
                 )
             :
                 checked_result<R>(t + u)
@@ -518,7 +518,7 @@ namespace detail {
         return
             (u == -1 && t == std::numeric_limits<R>::min()) ?
                 checked_result<R>(
-                    exception_type::domain_error,
+                    exception_type::range_error,
                     "result cannot be represented"
                 )
             :
@@ -634,18 +634,13 @@ constexpr checked_left_shift(
     // the value of the result is E1 x 2^E2, reduced modulo one more than
     // the maximum value representable in the result type.
 
-    // note: we are intentionally varying from the standards language here.
-    // a safe<unsigned> is meant to be value preserving.  That is t << u should
-    // equal an arithmetically correct value or fail in some visible manner.
-    // So we're going to fail if are shift loses higher order bits.
-
-    // note: there is a good argument for following exactly the standards
-    // language above.  Reasonable people can disagree.
-
+    // see 5.8 & 1
+    // if right operand is
+    // greater than or equal to the length in bits of the promoted left operand.
     if(u > std::numeric_limits<R>::digits - utility::significant_bits(t)){
         // behavior is undefined
         return checked_result<R>(
-           exception_type::domain_error,
+           exception_type::undefined_behavior,
            "shifting more bits than available is undefined behavior"
         );
     }
@@ -654,7 +649,7 @@ constexpr checked_left_shift(
 
 template<class R, class T, class U>
 typename std::enable_if<
-    // if E1 has a signed type
+    // otherwise if E1 has a signed type
     std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
@@ -662,19 +657,22 @@ constexpr checked_left_shift(
     const T & t,
     const U & u
 ) noexcept {
-    if(t < 0){
-        return checked_result<R>(
-           exception_type::domain_error,
-           "shifting a negative value is undefined behavior"
+    // and [E1] has a non-negative value
+    if(t >= 0){
+        // and E1 x 2^E2 is representable in the corresponding
+        // unsigned type of the result type,
+
+        // then that value, converted to the result type,
+        // is the resulting value
+        return checked_left_shift<R>(
+            static_cast<typename std::make_unsigned<T>::type>(t),
+            u
         );
     }
-
-    // and E1 x 2^E2 is representable in the corresponding
-    // unsigned type of the result type,
-
-    return checked_left_shift<R>(
-        static_cast<typename std::make_unsigned<T>::type>(t),
-        u
+    // otherwise, the behavior is undefined.
+    return checked_result<R>(
+       exception_type::undefined_behavior,
+       "shifting a negative value is undefined behavior"
     );
 }
 
@@ -686,15 +684,20 @@ constexpr checked_result<R> left_shift(
     const U & u
 ) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
-    // C++ Standard standard paragraph 5.8.3 Doesn't excactly say this.
-    // It says the operation is defined as E1 / 2^E2 which IS defined when
-    // E2 is negative.
-    // I'm going to err on the side of concervativism dis-allowing negative
-    // shift counts.
+
+    // standard paragraph 5.8 & 1
+    // if the right operand is negative
     if(u < 0){
         return checked_result<R>(
-           exception_type::domain_error,
+           exception_type::implementation_defined_behavior,
            "shifting negative amount is undefined behavior"
+        );
+    }
+    if(u > std::numeric_limits<R>::digits){
+        // behavior is undefined
+        return checked_result<R>(
+           exception_type::implementation_defined_behavior,
+           "shifting more bits than available is undefined behavior"
         );
     }
     if(t == 0)
@@ -705,6 +708,11 @@ constexpr checked_result<R> left_shift(
 // right shift
 namespace detail {
 
+// INT34-C C++
+
+// standard paragraph 5.8 / 3
+// The value of E1 << E2 is E1 left-shifted E2 bit positions;
+// vacated bits are zero-filled.
 template<class R, class T, class U>
 typename std::enable_if<
     // If E1 has an unsigned type
@@ -715,6 +723,8 @@ constexpr checked_right_shift(
     const T & t,
     const U & u
 ) noexcept {
+    // the value of the result is the integral part of the
+    // quotient of E1/2E2
     return cast<R>(t >> u);
 }
 
@@ -728,13 +738,11 @@ constexpr checked_right_shift(
     const T & t,
     const U & u
 ) noexcept {
-    // INT13C - Use bitwise operators only on unsigned integers
     if(t < 0){
         // note that the C++ standard considers this case is "implemenation
-        // defined" rather than "undefined".  We'll err on the side of
-        // caution and disallow this.
+        // defined" rather than "undefined".
         return checked_result<R>(
-           exception_type::domain_error,
+           exception_type::implementation_defined_behavior,
            "shifting a negative value is undefined behavior"
         );
     }
@@ -752,34 +760,19 @@ constexpr checked_result<R> right_shift(
     const U & u
 ) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
-    // C++ Standard standard paragraph 5.8.3 Doesn't excactly say this.
-    // It says the operation is defined as E1 / 2^E2 which IS defined when
-    // E2 is negative.
-    // I'm going to err on the side of concervativism dis-allowing negative
-    // shift counts.
+
+    // standard paragraph 5.8 & 1
+    // if the right operand is negative
     if(u < 0){
-        // note that the C++ standard considers this case is "implemenation
-        // defined" rather than "undefined".  We'll err on the side of
-        // caution and dis-allow this.
         return checked_result<R>(
-           exception_type::domain_error,
-           "shifting a negative value is undefined behavior"
+           exception_type::implementation_defined_behavior,
+           "shifting negative amount is undefined behavior"
         );
     }
-    // standard paragraph 5.8 / 3
-    // Again, C++ Standard standard paragraph 5.8.3 doesn't seem to disallow
-    // shifts count > argument width.
-
-    // Also, my Clang compiler traps this an an error when used in a constexpr
-    // at compile time.
-
-    // Given all of the above, we're going to disallow shifting which exceeds
-    // the width of the argument.
-    else
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
-           exception_type::domain_error,
+           exception_type::implementation_defined_behavior,
            "shifting more bits than available is undefined behavior"
         );
     }
@@ -801,13 +794,6 @@ constexpr checked_result<R> bitwise_or(
     const U & u
 ) noexcept {
     using namespace boost::numeric::utility;
-    /*
-    if(! detail::check_bitwise_operand(t))
-        return checked_result<R>(
-           exception_type::domain_error,
-           "bitwise operands cannot be negative"
-        );
-    */
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
@@ -817,17 +803,6 @@ constexpr checked_result<R> bitwise_or(
             "result type too small to hold bitwise or"
         };
     }
-    /*
-    const checked_result<R> rt = cast<R>(t);
-    if(! rt.no_exception())
-        return rt;
-
-    const checked_result<R> ru = cast<R>(u);
-    if(! ru.no_exception())
-        return ru;
-
-    return static_cast<R>(ru) | static_cast<R>(rt);
-    */
     return t | u;
 }
 
@@ -837,13 +812,6 @@ constexpr checked_result<R> bitwise_xor(
     const U & u
 ) noexcept {
     using namespace boost::numeric::utility;
-    /*
-    if(! detail::check_bitwise_operand(t))
-        return checked_result<R>(
-           exception_type::domain_error,
-           "bitwise operands cannot be negative"
-        );
-    */
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
@@ -871,13 +839,6 @@ constexpr checked_result<R> bitwise_and(
     const U & u
 ) noexcept {
     using namespace boost::numeric::utility;
-    /*
-    if(! detail::check_bitwise_operand(t))
-        return checked_result<R>(
-           exception_type::domain_error,
-           "bitwise operands cannot be negative"
-        );
-    */
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));
 
@@ -887,17 +848,6 @@ constexpr checked_result<R> bitwise_and(
             "result type too small to hold bitwise or"
         };
     }
-    /*
-    const checked_result<R> rt = cast<R>(t);
-    if(! rt.no_exception())
-        return rt;
-
-    const checked_result<R> ru = cast<R>(u);
-    if(! ru.no_exception())
-        return ru;
-
-    return static_cast<R>(ru) & static_cast<R>(rt);
-    */
     return t & u;
 }
 

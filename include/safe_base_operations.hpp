@@ -1523,6 +1523,58 @@ constexpr operator^=(T & t, const U & u){
     t = static_cast<T>(t ^ u);
     return t;
 }
+
+/////////////////////////////////////////////////////////////////
+// stream helpers
+
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+template<
+    class CharT,
+    class Traits
+>
+void safe_base<T, Min, Max, P, E>::output(
+    std::basic_ostream<CharT, Traits> & os
+) const {
+    os << (
+        (std::is_same<T, signed char>::value
+        || std::is_same<T, unsigned char>::value
+        || std::is_same<T, wchar_t>::value
+        ) ?
+            static_cast<int>(m_t)
+        :
+            m_t
+    );
+}
+template<
+    class T,
+    T Min,
+    T Max,
+    class P, // promotion polic
+    class E  // exception policy
+>
+template<
+    class CharT,
+    class Traits
+>
+void safe_base<T, Min, Max, P, E>::input(
+    std::basic_istream<CharT, Traits> & is
+){
+    is >> m_t;
+    validated_cast(m_t); // no need to store result
+    if(is.fail()){
+        boost::numeric::dispatch<E>(
+            boost::numeric::exception_type::domain_error,
+            "error in file input"
+        );
+    }
+}
+
 } // numeric
 } // boost
 

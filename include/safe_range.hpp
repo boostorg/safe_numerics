@@ -33,7 +33,7 @@ template <
     std::intmax_t Min,
     std::intmax_t Max,
     class P = native,
-    class E = throw_exception
+    class E = default_exception_policy
 >
 using safe_signed_range = safe_base<
     typename utility::signed_stored_type<Min, Max>,
@@ -50,7 +50,7 @@ template <
     std::uintmax_t Min,
     std::uintmax_t Max,
     class P = native,
-    class E = throw_exception
+    class E = default_exception_policy
 >
 using safe_unsigned_range = safe_base<
     typename utility::unsigned_stored_type<Min, Max>,

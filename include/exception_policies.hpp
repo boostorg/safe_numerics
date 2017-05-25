@@ -12,91 +12,76 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <stdexcept>
-#include <functional>
-#include <type_traits> // is_base_of, is_same
 #include <exception>
+#include <type_traits> // is_convertible
+
+//#include "exception.hpp"
 
 namespace boost {
 namespace numeric {
 
-// run time trap handlers
-
-// this would emulate the normal C/C++ behavior of permitting overflows
-// and the like.
-struct ignore_exception {
-    static void no_error(const char *) {}
-    static void uninitialized_error(const char *) {}
-    static void overflow_error(const char *) {}
-    static void underflow_error(const char *) {}
-    static void range_error(const char *) {}
-    static void domain_error(const char *) {}
+enum class exception_handler {
+    ignore_exception,
+    throw_exception,
+    trap_exception
 };
-
-// example - if you want to specify specific behavior for particular exception
-// types, use this policy.  The most likely situation is where you don't have
-// exception support and you want to trap "exceptions" by calling your own
-// special functions.
 template<
-    void (*FUNCTION_NO_EXCEPTION)(const char *),
-    void (*FUNCTION_UNINITIALIZED)(const char *),
-    void (*FUNCTION_OVERFLOW)(const char *),
-    void (*FUNCTION_UNDERFLOW)(const char *),
-    void (*FUNCTION_RANGE)(const char *),
-    void (*FUNCTION_DOMAIN)(const char *)
+    exception_handler UV,
+    exception_handler AE,
+    exception_handler IDB,
+    exception_handler UB
 >
-struct no_exception_support {
-    static void no_error(const char * message) {
-        (*FUNCTION_NO_EXCEPTION)(message);
+struct exception_policy {
+    static exception_handler on_uninitialized_value(){
+        return UV;
     }
-    static void uninitialized_error(const char * message) {
-        (*FUNCTION_UNINITIALIZED)(message);
+    static exception_handler on_arithmetic_error(){
+        return AE;
     }
-    static void overflow_error(const char * message) {
-        (*FUNCTION_OVERFLOW)(message);
+    static exception_handler on_implementation_defined_behavior(){
+        return IDB;
     }
-    static void underflow_error(const char * message) {
-        (FUNCTION_UNDERFLOW)(message);
-    }
-    static void range_error(const char * message) {
-        FUNCTION_RANGE(message);
-    }
-    static void domain_error(const char * message) {
-        FUNCTION_DOMAIN(message);
+    static exception_handler on_undefined_behavior(){
+        return UB;
     }
 };
 
+// normal policy - permit runtime exceptions
+using default_exception_policy = exception_policy<
+    exception_handler::ignore_exception,
+    exception_handler::throw_exception,
+    exception_handler::ignore_exception,
+    exception_handler::trap_exception
+>;
 
-// If an exceptional condition is detected at runtime throw the exception.
-// map our exception list to the ones in stdexcept
-struct throw_exception {
-    static void no_error(const char *) {
-    }
-    static void unintialized_error(const char * message) {
-        throw std::invalid_argument(message);
-    }
-    static void overflow_error(const char * message) {
-        throw std::overflow_error(message);
-    }
-    static void underflow_error(const char * message) {
-        throw std::underflow_error(message);
-    }
-    static void range_error(const char * message) {
-        throw std::range_error(message);
-    }
-    static void domain_error(const char * message) {
-        throw std::domain_error(message);
-    }
-};
+// trap non portable C++ code at compile time but permit
+// exceptions to be thrown for runtime errors
+using strict_exception_policy = exception_policy<
+    exception_handler::ignore_exception,
+    exception_handler::throw_exception,
+    exception_handler::trap_exception,
+    exception_handler::trap_exception
+>;
 
-// use this policy to trap at compile time any operation which
-// would otherwise trap at runtime.  Hence expressions such as i/j
-// will trap at compile time unless j can be guaranteed to not be zero.
+// use when any possible exceptions should be trapped at compile time
+// but we're a little loose on things like bit shifts etc.
+// this might be attractive choice for small embedded systems
+using no_exceptions_policy = exception_policy<
+    exception_handler::ignore_exception,
+    exception_handler::trap_exception,
+    exception_handler::ignore_exception,
+    exception_handler::trap_exception
+>;
 
-// meant to be trap the case where a program MIGHT throw an exception
-struct trap_exception {
-};
-
+// use when any possible exceptions should be trapped at compile time
+// but we're a little loose on things like bit shifts etc.
+// this might be attractive choice for small embedded systems
+using strict_no_exceptions_policy = exception_policy<
+    exception_handler::ignore_exception,
+    exception_handler::trap_exception,
+    exception_handler::trap_exception,
+    exception_handler::trap_exception
+>;
 } // namespace numeric
 } // namespace boost
 

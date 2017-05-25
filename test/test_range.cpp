@@ -48,7 +48,7 @@ using safe_t = boost::numeric::safe_signed_range<
     Min,
     Max,
     boost::numeric::automatic,
-    boost::numeric::throw_exception
+    boost::numeric::default_exception_policy
 >;
 
 bool test2(){

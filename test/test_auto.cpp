@@ -80,7 +80,7 @@ int main(){
         safe_signed_range<-3, 8>,
         safe_signed_range<-4, 9>,
         automatic,
-        throw_exception
+        default_exception_policy
     >::type x1;
 
     test_log();

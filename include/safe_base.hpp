@@ -122,45 +122,11 @@ template<
     class E  // exception policy
 >
 class safe_base {
-//public:
+private:
     BOOST_CONCEPT_ASSERT((Integer<Stored>));
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     Stored m_t;
-
-    template<
-        class CharT,
-        class Traits
-    >
-    friend std::basic_ostream<CharT, Traits> & operator<<(
-        std::basic_ostream<CharT, Traits> & os,
-        const safe_base & t
-    ){
-        return os << (
-            (::std::is_same<Stored, signed char>::value
-            || ::std::is_same<Stored, unsigned char>::value
-            || ::std::is_same<Stored, wchar_t>::value
-            ) ?
-                static_cast<int>(t.m_t)
-            :
-                t.m_t
-        );
-    };
-
-    template<
-        class CharT,
-        class Traits
-     >
-    friend std::basic_istream<CharT, Traits> & operator>>(
-        std::basic_istream<CharT, Traits> & is,
-        safe_base & t
-    ){
-        is >> t.m_t;
-        t.validated_cast(t.m_t); // no need to store result
-        if(is.fail())
-            E::domain_error("error in file input");
-        return is;
-    }
 
     template<
         class StoredX,
@@ -180,9 +146,45 @@ class safe_base {
     constexpr Stored validated_cast(
         const safe_literal_impl<T, N, P1, E1> & t
     ) const;
-protected:
+
+    // stream support
+
+    template<class CharT, class Traits>
+    void output(std::basic_ostream<CharT, Traits> & os) const;
+
+    // note usage of friend declaration to mark function as
+    // a global function rather than a member function.  If
+    // this is not done, the compiler will confuse this with
+    // a member operator overload on the << operator.  Weird
+    // I know.  But it's documented here
+    // http://en.cppreference.com/w/cpp/language/friend
+    // under the heading "Template friend operators"
+    template<class CharT, class Traits>
+    friend std::basic_ostream<CharT, Traits> &
+    operator<<(
+        std::basic_ostream<CharT, Traits> & os,
+        const safe_base & t
+    ){
+        t.output(os);
+        return os;
+    }
+
+    template<class CharT, class Traits>
+    void input(std::basic_istream<CharT, Traits> & is);
+
+    // see above
+    template<class CharT, class Traits>
+    friend inline std::basic_istream<CharT, Traits> &
+    operator>>(
+        std::basic_istream<CharT, Traits> & is,
+        safe_base & t
+    ){
+        t.input(is);
+        return is;
+    }
 
 public:
+
     ////////////////////////////////////////////////////////////
     // constructors
 

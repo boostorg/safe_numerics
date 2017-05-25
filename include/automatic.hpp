@@ -251,16 +251,6 @@ struct automatic {
         >::type;
     };
 
-    // forward to correct modulus implementation
-    template<class R, class T, class U>
-    checked_result<R>
-    static constexpr modulus(
-        const T & t,
-        const U & u
-    ){
-        return checked::modulus<R>(t, u);
-    }
-
     ///////////////////////////////////////////////////////////////////////
     // shift operations
     template<typename T, typename U>

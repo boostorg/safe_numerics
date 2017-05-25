@@ -24,7 +24,7 @@ namespace numeric {
 template <
     class T,
     class P = native,
-    class E = throw_exception
+    class E = default_exception_policy
 >
 using safe = safe_base<
     T,

@@ -36,13 +36,13 @@ template <typename T> // T is char, int, etc data type
 using safe_t = boost::numeric::safe<
     T,
     pic16_promotion,
-    boost::numeric::throw_exception // use for compiling and running tests
+    boost::numeric::default_exception_policy // use for compiling and running tests
 >;
 using safe_bool_t = boost::numeric::safe_unsigned_range<
     0,
     1,
     pic16_promotion,
-    boost::numeric::throw_exception // use for compiling and running tests
+    boost::numeric::default_exception_policy // use for compiling and running tests
 >;
 
 #define DESKTOP

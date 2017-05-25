@@ -13,7 +13,7 @@ using safe_t = safe_signed_range<
     -24,
     82,
     automatic,
-    trap_exception
+    no_exceptions_policy
 >;
 
 // define variables used for input
