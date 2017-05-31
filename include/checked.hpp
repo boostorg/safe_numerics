@@ -24,6 +24,7 @@
 #include "safe_common.hpp"
 #include "checked_result.hpp"
 #include "utility.hpp"
+#include "exception.hpp"
 
 namespace boost {
 namespace numeric {
@@ -53,13 +54,13 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "converted signed value too large"
                 )
             :
             t < std::numeric_limits<R>::min() ?
                 checked_result<R>(
-                    exception_type::negative_overflow_error,
+                    safe_numerics_error::negative_overflow_error,
                     "converted signed value too small"
                 )
             :
@@ -76,7 +77,7 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "converted unsigned value too large"
                 )
             :
@@ -93,7 +94,7 @@ namespace detail {
             return
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "converted unsigned value too large"
                 )
             :
@@ -108,13 +109,13 @@ namespace detail {
             return
             t < 0 ?
                 checked_result<R>(
-                    exception_type::domain_error,
+                    safe_numerics_error::domain_error,
                     "converted negative value to unsigned"
                 )
             :
             t > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "converted signed value too large"
                 )
             :
@@ -138,7 +139,7 @@ cast(
         // conversions to integer types
         // from floating point types are never OK
         checked_result<R>(
-            exception_type::domain_error,
+            safe_numerics_error::domain_error,
             "conversion of integer to float loses precision"
         )
     :
@@ -184,7 +185,7 @@ namespace detail {
             // INT30-C. Ensure that unsigned integer operations do not wrap
             std::numeric_limits<R>::max() - u < t ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "addition result too large"
                 )
             :
@@ -207,13 +208,13 @@ namespace detail {
             // INT32-C. Ensure that operations on signed integers do not result in overflow
             ((u > 0) && (t > (std::numeric_limits<R>::max() - u))) ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "addition result too large"
                 )
             :
             ((u < 0) && (t < (std::numeric_limits<R>::min() - u))) ?
                 checked_result<R>(
-                    exception_type::negative_overflow_error,
+                    safe_numerics_error::negative_overflow_error,
                     "addition result too low"
                 )
             :
@@ -270,7 +271,7 @@ namespace detail {
         return
             t < u ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    safe_numerics_error::range_error,
                     "subtraction result cannot be negative"
                 )
             :
@@ -293,13 +294,13 @@ namespace detail {
             // INT32-C. Ensure that operations on signed integers do not result in overflow
             ((u > 0) && (t < (std::numeric_limits<R>::min() + u))) ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "subtraction result overflows result type"
                 )
             :
             ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
                 checked_result<R>(
-                    exception_type::negative_overflow_error,
+                    safe_numerics_error::negative_overflow_error,
                     "subtraction result overflows result type"
                 )
             :
@@ -360,7 +361,7 @@ namespace detail {
             static_cast<i_type>(t) * static_cast<i_type>(u)
             > std::numeric_limits<R>::max() ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -381,7 +382,7 @@ namespace detail {
         return
             u > 0 && t > std::numeric_limits<R>::max() / u ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -410,7 +411,7 @@ namespace detail {
                 > static_cast<i_type>(std::numeric_limits<R>::max())
             ) ?
                 checked_result<R>(
-                    exception_type::positive_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -419,7 +420,7 @@ namespace detail {
                 < static_cast<i_type>(std::numeric_limits<R>::min())
             ) ?
                 checked_result<R>(
-                    exception_type::negative_overflow_error,
+                    safe_numerics_error::negative_overflow_error,
                     "multiplication overflow"
                 )
             :
@@ -440,7 +441,7 @@ namespace detail {
             u > 0 ?
                 t > std::numeric_limits<R>::max() / u ?
                     checked_result<R>(
-                        exception_type::positive_overflow_error,
+                        safe_numerics_error::positive_overflow_error,
                         "multiplication overflow"
                     )
                 :
@@ -448,7 +449,7 @@ namespace detail {
             : // u <= 0
                 u < std::numeric_limits<R>::min() / t ?
                     checked_result<R>(
-                        exception_type::negative_overflow_error,
+                        safe_numerics_error::negative_overflow_error,
                         "multiplication overflow"
                     )
                 :
@@ -457,7 +458,7 @@ namespace detail {
             u > 0 ?
                 t < std::numeric_limits<R>::min() / u ?
                     checked_result<R>(
-                        exception_type::negative_overflow_error,
+                        safe_numerics_error::negative_overflow_error,
                         "multiplication overflow"
                     )
                 :
@@ -465,7 +466,7 @@ namespace detail {
             : // u <= 0
                 t != 0 && u < std::numeric_limits<R>::max() / t ?
                     checked_result<R>(
-                        exception_type::positive_overflow_error,
+                        safe_numerics_error::positive_overflow_error,
                         "multiplication overflow"
                     )
                 :
@@ -518,7 +519,7 @@ namespace detail {
         return
             (u == -1 && t == std::numeric_limits<R>::min()) ?
                 checked_result<R>(
-                    exception_type::range_error,
+                    safe_numerics_error::range_error,
                     "result cannot be represented"
                 )
             :
@@ -536,7 +537,7 @@ constexpr divide(
 ) noexcept {
     if(u == 0){
         return checked_result<R>(
-            exception_type::domain_error,
+            safe_numerics_error::domain_error,
             "divide by zero"
         );
     }
@@ -545,7 +546,7 @@ constexpr divide(
     if(tx.exception()
     || ux.exception())
         return checked_result<R>(
-            exception_type::domain_error,
+            safe_numerics_error::domain_error,
             "failure converting argument types"
         );
     return detail::divide<R>(tx, ux);
@@ -574,7 +575,7 @@ constexpr modulus(
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     if(0 == u)
         return checked_result<R>(
-            exception_type::domain_error,
+            safe_numerics_error::domain_error,
             "denominator is zero"
         );
 
@@ -640,7 +641,7 @@ constexpr checked_left_shift(
     if(u > std::numeric_limits<R>::digits - utility::significant_bits(t)){
         // behavior is undefined
         return checked_result<R>(
-           exception_type::undefined_behavior,
+           safe_numerics_error::undefined_behavior,
            "shifting more bits than available is undefined behavior"
         );
     }
@@ -671,7 +672,7 @@ constexpr checked_left_shift(
     }
     // otherwise, the behavior is undefined.
     return checked_result<R>(
-       exception_type::undefined_behavior,
+       safe_numerics_error::undefined_behavior,
        "shifting a negative value is undefined behavior"
     );
 }
@@ -689,14 +690,14 @@ constexpr checked_result<R> left_shift(
     // if the right operand is negative
     if(u < 0){
         return checked_result<R>(
-           exception_type::implementation_defined_behavior,
+           safe_numerics_error::implementation_defined_behavior,
            "shifting negative amount is undefined behavior"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
-           exception_type::implementation_defined_behavior,
+           safe_numerics_error::implementation_defined_behavior,
            "shifting more bits than available is undefined behavior"
         );
     }
@@ -742,7 +743,7 @@ constexpr checked_right_shift(
         // note that the C++ standard considers this case is "implemenation
         // defined" rather than "undefined".
         return checked_result<R>(
-           exception_type::implementation_defined_behavior,
+           safe_numerics_error::implementation_defined_behavior,
            "shifting a negative value is undefined behavior"
         );
     }
@@ -765,14 +766,14 @@ constexpr checked_result<R> right_shift(
     // if the right operand is negative
     if(u < 0){
         return checked_result<R>(
-           exception_type::implementation_defined_behavior,
+           safe_numerics_error::implementation_defined_behavior,
            "shifting negative amount is undefined behavior"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
-           exception_type::implementation_defined_behavior,
+           safe_numerics_error::implementation_defined_behavior,
            "shifting more bits than available is undefined behavior"
         );
     }
@@ -799,7 +800,7 @@ constexpr checked_result<R> bitwise_or(
 
     if(result_size > bits_type<R>::value){
         return checked_result<R>{
-            exception_type::positive_overflow_error,
+            safe_numerics_error::positive_overflow_error,
             "result type too small to hold bitwise or"
         };
     }
@@ -817,11 +818,11 @@ constexpr checked_result<R> bitwise_xor(
 
     if(result_size > bits_type<R>::value){
         return checked_result<R>{
-            exception_type::positive_overflow_error,
+            safe_numerics_error::positive_overflow_error,
             "result type too small to hold bitwise or"
         };
     }
-    
+/*
     const checked_result<R> rt = cast<R>(t);
     if(! rt.no_exception())
         return rt;
@@ -829,8 +830,9 @@ constexpr checked_result<R> bitwise_xor(
     const checked_result<R> ru = cast<R>(u);
     if(! ru.no_exception())
         return ru;
-
     return static_cast<R>(ru) ^ static_cast<R>(rt);
+*/
+    return t ^ u;
 }
 
 template<class R, class T, class U>
@@ -844,7 +846,7 @@ constexpr checked_result<R> bitwise_and(
 
     if(result_size > bits_type<R>::value){
         return checked_result<R>{
-            exception_type::positive_overflow_error,
+            safe_numerics_error::positive_overflow_error,
             "result type too small to hold bitwise or"
         };
     }

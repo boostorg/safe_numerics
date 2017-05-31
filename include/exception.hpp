@@ -15,19 +15,24 @@
 // contains error indicators for results of doing checked
 // arithmetic on native C++ types
 
-#include <stdexcept>
 #include <algorithm>
+#include <system_error> // error_code, system_error
+#include <string>
 
-#include "exception_policies.hpp"
-#include "concept/exception_policy.hpp"
+// Using the system_error code facility.  This facility is more complex
+// than meets the eye.  To fully understand what out intent here is,
+// review http://blog.think-async.com/2010/04/system-error-support-in-c0x-part-5.html
+// "Giving context-specific meaning to generic error codes"
 
 namespace boost {
 namespace numeric {
 
+// errors codes for safe numerics
+
 // in spite of the similarity, this list is distinct from the exceptions
 // listed in documentation for std::exception.
-enum class exception_type {
-    no_exception,
+enum class safe_numerics_error {
+    success = 0,
     positive_overflow_error,
     negative_overflow_error,
     underflow_error,
@@ -35,98 +40,152 @@ enum class exception_type {
     domain_error,
     implementation_defined_behavior,
     undefined_behavior,
-    uninitialized
+    uninitialized_value
 };
 
-enum class exception_group {
-    no_exception,
+} // numeric
+} // boost
+
+namespace std {
+    template <>
+    struct is_error_code_enum<boost::numeric::safe_numerics_error>
+        : public true_type {};
+};
+
+namespace boost {
+namespace numeric {
+
+const class : public std::error_category {
+public:
+    virtual const char* name() const noexcept{
+        return "safe numerics error";
+    }
+    virtual std::string message(int ev) const {
+        switch(static_cast<safe_numerics_error>(ev)){
+        case safe_numerics_error::success:
+            return "success";
+        case safe_numerics_error::positive_overflow_error:
+            return "positive overflow error";
+        case safe_numerics_error::negative_overflow_error:
+            return "negative overflow error";
+        case safe_numerics_error::underflow_error:
+            return "underflow error";
+        case safe_numerics_error::range_error:
+            return "range error";
+        case safe_numerics_error::domain_error:
+            return "domain error";
+        case safe_numerics_error::implementation_defined_behavior:
+            return "implementation defined behavior";
+        case safe_numerics_error::undefined_behavior:
+            return "undefined behavior";
+        case safe_numerics_error::uninitialized_value:
+            return "uninitialized value";
+        default:
+            assert(false);
+        }
+    }
+} safe_numerics_error_category ;
+
+std::error_code make_error_code(safe_numerics_error e){
+    return std::error_code(static_cast<int>(e), safe_numerics_error_category);
+}
+
+// actions for error_codes for safe numerics.  I've leveraged on
+// error_condition in order to do this.  I'm not sure this is a good
+// idea or not.
+
+enum safe_numerics_actions {
+    no_action = 0,
     uninitialized_value,
     arithmetic_error,
     implementation_defined_behavior,
     undefined_behavior
 };
 
-// translate exception type to exception handler type
-constexpr exception_group
-group(const exception_type & et){
-    // we can't use standard algorithms since we want this to be constexpr
-    // this brute force solution is simple and pretty fast anyway
-    switch(et){
-    case exception_type::negative_overflow_error:
-    case exception_type::underflow_error:
-    case exception_type::range_error:
-    case exception_type::domain_error:
-    case exception_type::positive_overflow_error:
-        return exception_group::arithmetic_error;
-    case exception_type::undefined_behavior:
-        return exception_group::undefined_behavior;
-    case exception_type::implementation_defined_behavior:
-        return exception_group::implementation_defined_behavior;
-    case exception_type::uninitialized:
-        return exception_group::uninitialized_value;
-    case exception_type::no_exception:
-        return exception_group::no_exception;
-    }
-}
+} // numeric
+} // boost
 
-template<class EP>
-constexpr exception_handler
-handler(const exception_group & eg){
-    // we can't use standard algorithms since we want this to be constexpr
-    // this brute force solution is simple and pretty fast anyway
-    switch(eg){
-    case exception_group::no_exception:
-        return exception_handler::ignore_exception;
-    case exception_group::uninitialized_value:
-        return EP::on_uninitialized_value();
-    case exception_group::arithmetic_error:
-        return EP::on_arithmetic_error();
-    case exception_group::implementation_defined_behavior:
-        return EP::on_implementation_defined_behavior();
-    case exception_group::undefined_behavior:
-        return EP::on_undefined_behavior();
-    default:
-        assert(false);
-    }
-}
-
-constexpr void
-throw_exception(const exception_type & e, char const * const & msg){
-    switch(e){
-    case exception_type::positive_overflow_error:
-    case exception_type::negative_overflow_error:
-        throw std::overflow_error(msg);
-    case exception_type::underflow_error:
-        throw std::underflow_error(msg);
-    case exception_type::range_error:
-        throw std::range_error(msg);
-    case exception_type::domain_error:
-        throw std::domain_error(msg);
-    case exception_type::implementation_defined_behavior:
-    case exception_type::undefined_behavior:
-    case exception_type::uninitialized:
-    case exception_type::no_exception:
-    default:
-        assert(false);
-    }
+namespace std {
+    template <>
+    struct is_error_condition_enum<boost::numeric::safe_numerics_actions>
+        : public true_type {};
 };
 
-template<class EP>
-constexpr void
-dispatch(const exception_type & e, char const * const & msg){
-    const exception_group eg = group(e);
-    const exception_handler eh = handler<EP>(eg);
-    switch(eh){
-    case exception_handler::ignore_exception:
-        return;
-    case exception_handler::throw_exception:
-        throw_exception(e, msg);
-    case exception_handler::trap_exception:
-        assert(false);
-    default:
-        assert(false);
-    }
+namespace boost {
+namespace numeric {
 
+const class : public std::error_category {
+public:
+    virtual const char* name() const noexcept {
+        return "safe numerics error group";
+    }
+    virtual std::string message(int ev) const {
+        return "safe numerics error group";
+    }
+    // return true if a given error code corresponds to a
+    // given safe numeric action
+    virtual bool equivalent(
+        const std::error_code & code,
+        int condition
+    ) const noexcept {
+        if(code.category() != safe_numerics_error_category)
+            return false;
+        switch (condition){
+        case safe_numerics_actions::no_action:
+            return code == safe_numerics_error::success;
+        case safe_numerics_actions::uninitialized_value:
+            return code == safe_numerics_error::uninitialized_value;
+        case safe_numerics_actions::arithmetic_error:
+            return code == safe_numerics_error::positive_overflow_error
+                || code == safe_numerics_error::negative_overflow_error
+                || code == safe_numerics_error::underflow_error
+                || code == safe_numerics_error::range_error
+                || code == safe_numerics_error::domain_error;
+        case safe_numerics_actions::implementation_defined_behavior:
+            return code == safe_numerics_error::implementation_defined_behavior;
+        case safe_numerics_actions::undefined_behavior:
+            return code == safe_numerics_error::undefined_behavior;
+        default:
+            assert(false);
+        }
+    }
+} safe_numerics_actions_category ;
+
+std::error_condition
+make_error_condition(safe_numerics_actions e){
+    return std::error_condition(
+        static_cast<int>(e),
+        safe_numerics_actions_category
+    );
+}
+
+// given an error code - return the action code which it corresponds to.
+constexpr safe_numerics_actions
+make_safe_numerics_action(const safe_numerics_error & e){
+    // we can't use standard algorithms since we want this to be constexpr
+    // this brute force solution is simple and pretty fast anyway
+    switch(e){
+    case safe_numerics_error::negative_overflow_error:
+    case safe_numerics_error::underflow_error:
+    case safe_numerics_error::range_error:
+    case safe_numerics_error::domain_error:
+    case safe_numerics_error::positive_overflow_error:
+        return safe_numerics_actions::arithmetic_error;
+    case safe_numerics_error::undefined_behavior:
+        return safe_numerics_actions::undefined_behavior;
+    case safe_numerics_error::implementation_defined_behavior:
+        return safe_numerics_actions::implementation_defined_behavior;
+    case safe_numerics_error::uninitialized_value:
+        return safe_numerics_actions::uninitialized_value;
+    case safe_numerics_error::success:
+        return safe_numerics_actions::no_action;
+    }
+}
+
+// given an error code - return the action code which it corresponds to.
+std::error_condition
+make_error_condition(safe_numerics_error e){
+    return std::error_condition(make_safe_numerics_action(e));
 }
 
 } // numeric

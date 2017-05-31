@@ -108,8 +108,8 @@ template<typename T>
 constexpr interval<T>
 minmax(const std::initializer_list<T> & l){
     using namespace boost::numeric;
-    T minimum{exception_type::positive_overflow_error, ""};
-    T maximum{exception_type::negative_overflow_error, ""};
+    T minimum{safe_numerics_error::positive_overflow_error, ""};
+    T maximum{safe_numerics_error::negative_overflow_error, ""};
     // note: we can't use for_each and a lambda because neither of these are
     // constexpr
     for(
@@ -119,9 +119,9 @@ minmax(const std::initializer_list<T> & l){
     ){
         // std::cout << *i << ',';
         // std::cout.flush();
-        if(minimum != exception_type::negative_overflow_error){
+        if(minimum != safe_numerics_error::negative_overflow_error){
             // if it corresponds to the lowest value
-            if(*i == exception_type::negative_overflow_error){
+            if(*i == safe_numerics_error::negative_overflow_error){
                 // initialize the minimum
                 minimum = *i;
             }
@@ -134,9 +134,9 @@ minmax(const std::initializer_list<T> & l){
                 }
             }
         }
-        if(maximum != exception_type::positive_overflow_error){
+        if(maximum != safe_numerics_error::positive_overflow_error){
             // if it corresponds to the highest value
-            if(*i == exception_type::positive_overflow_error){
+            if(*i == safe_numerics_error::positive_overflow_error){
                 // initialize the maximum
                 maximum = *i;
             }
@@ -361,7 +361,7 @@ constexpr interval<checked_result<R>> intersection(
 
     if(rl > ru){
         return checked_result<interval<R>>(
-            exception_type::uninitialized,
+            safe_numerics_error::uninitialized_value,
             "null intersection"
         );
     }

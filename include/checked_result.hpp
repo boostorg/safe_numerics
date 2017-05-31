@@ -27,7 +27,7 @@ namespace numeric {
 
 template<typename R>
 struct checked_result {
-    exception_type m_e;
+    safe_numerics_error m_e;
     union {
         R m_r;
         char const * m_msg;
@@ -39,19 +39,30 @@ struct checked_result {
     checked_result() = delete;
 
     constexpr /*explicit*/ checked_result(const R & r) :
-        m_e(exception_type::no_exception),
+        m_e(safe_numerics_error::success),
         m_r(r)
     {}
     constexpr /*explicit*/ checked_result(
-        exception_type e,
+        safe_numerics_error e,
         const char * msg
     ) :
         m_e(e),
         m_msg(msg)
     {}
+    template<typename T>
+    constexpr /*explicit*/ checked_result<T>(const checked_result<T> & t) :
+        m_e(t.m_e),
+        m_r(t.m_r)
+    {
+        if(t.no_exception())
+            m_r = t.m_r;
+        else
+            m_msg = t.m_msg;
+    }
 
     // accesors
     constexpr operator R() const {
+        assert(no_exception());
         return m_r;
     }
     
@@ -95,37 +106,41 @@ struct checked_result {
         return ! operator!=(t);
     }
     constexpr bool no_exception() const {
-        return m_e == exception_type::no_exception;
+        return m_e == safe_numerics_error::success;
     }
     constexpr bool exception() const {
-        return m_e != exception_type::no_exception;
+        return m_e != safe_numerics_error::success;
     }
 };
 
 template<typename T>
-constexpr bool operator==(const checked_result<T> &lhs, const exception_type & rhs){
+constexpr bool operator==(const checked_result<T> &lhs, const safe_numerics_error & rhs){
     return (! lhs.exception()) ? false : lhs.m_e == rhs;
 }
 template<typename T>
-constexpr bool operator==(const exception_type & lhs, const checked_result<T> &rhs){
+constexpr bool operator==(const safe_numerics_error & lhs, const checked_result<T> &rhs){
     return (! rhs.exception()) ? false : lhs = rhs.m_e;
 }
 template<typename T>
-constexpr bool operator!=(const checked_result<T> &lhs, const exception_type & rhs){
+constexpr bool operator!=(const checked_result<T> &lhs, const safe_numerics_error & rhs){
     return ! (lhs == rhs);
 }
 template<typename T>
-constexpr bool operator!=(const exception_type & lhs, const checked_result<T> &rhs){
+constexpr bool operator!=(const safe_numerics_error & lhs, const checked_result<T> &rhs){
     return ! (lhs == rhs);
 }
 
+// invoke error handling
 template<class EP, typename R>
 constexpr void
 dispatch(const checked_result<R> & cr){
+    // if the result contains an error condition
     if(cr.exception())
+        // dispatch to the appropriate function
         dispatch<EP>(cr.m_e, cr.m_msg);
+    // otherwise just do a simple return
 }
-
+/*
 // C++ does not (yet) permit constexpr lambdas.  So create some
 // constexpr predicates to be used by constexpr algorthms.
 template<typename R>
@@ -136,6 +151,7 @@ template<typename R>
 constexpr bool exception(const checked_result<R> & cr){
     return ! cr.no_exception();
 }
+*/
 
 } // numeric
 } // boost

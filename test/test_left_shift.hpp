@@ -38,7 +38,7 @@ bool test_left_shift(
             
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in left shift "
+                    << "failed to detect arithmetic error in left shift "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " << " << av2
                     << std::endl;
@@ -52,7 +52,7 @@ bool test_left_shift(
         catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in left shift "
+                    << "erroneously detected arithmetic error in left shift "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " << " << av2
                     << ' ' << e.what()

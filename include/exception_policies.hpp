@@ -12,76 +12,142 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <exception>
 #include <type_traits> // is_convertible
 
-//#include "exception.hpp"
+#include "exception.hpp"
 
 namespace boost {
 namespace numeric {
 
-enum class exception_handler {
-    ignore_exception,
-    throw_exception,
-    trap_exception
-};
 template<
-    exception_handler UV,
-    exception_handler AE,
-    exception_handler IDB,
-    exception_handler UB
+    typename AE,
+    typename IDB,
+    typename UB,
+    typename UV
 >
 struct exception_policy {
-    static exception_handler on_uninitialized_value(){
-        return UV;
+    static constexpr void on_arithmetic_error(
+        const safe_numerics_error & e,
+        const char * msg
+    ){
+        AE(e, msg);
     }
-    static exception_handler on_arithmetic_error(){
-        return AE;
+    static constexpr void on_implementation_defined_behavior(
+        const safe_numerics_error & e,
+        const char * msg
+    ){
+        IDB(e, msg);
     }
-    static exception_handler on_implementation_defined_behavior(){
-        return IDB;
+    static constexpr void on_undefined_behavior(
+        const safe_numerics_error & e,
+        const char * msg
+    ){
+        UB(e, msg);
     }
-    static exception_handler on_undefined_behavior(){
-        return UB;
+    static constexpr void on_uninitialized_value(
+        const safe_numerics_error & e,
+        const char * msg
+    ){
+        UV(e, msg);
     }
 };
 
-// normal policy - permit runtime exceptions
-using default_exception_policy = exception_policy<
-    exception_handler::ignore_exception,
-    exception_handler::throw_exception,
-    exception_handler::ignore_exception,
-    exception_handler::trap_exception
+////////////////////////////////////////////////////////////////////////////////
+// pre-made error action handers
+
+// ignore any error and just return.
+struct ignore_exception {
+    constexpr ignore_exception(const safe_numerics_error & e, const char * msg){}
+};
+
+// If an exceptional condition is detected at runtime throw the exception.
+struct throw_exception {
+    throw_exception(const safe_numerics_error & e, const char * message){
+        throw std::system_error(std::error_code(e), message);
+    }
+};
+
+// emit compile time error if this is invoked.
+struct trap_exception {};
+
+////////////////////////////////////////////////////////////////////////////////
+// pre-made error policy classes
+
+// loose policy
+// - throw on arithmetic errors
+// - ignore other errors.
+// Some applications ignore these issues and still work and we don't
+// want to update them.
+using loose_exception_policy = exception_policy<
+    throw_exception,    // arithmetic error
+    ignore_exception,   // implementation defined behavior
+    ignore_exception,   // undefined behavior
+    ignore_exception    // uninitialized value
 >;
 
-// trap non portable C++ code at compile time but permit
-// exceptions to be thrown for runtime errors
+// loose trap
+// same as above in that it doesn't check for various undefined behaviors
+// but traps at compile time for hard arithmetic errors.  This policy
+// would be suitable for older embedded systems which depend on
+// bit manipulation operations to work.
+using loose_trap_policy = exception_policy<
+    trap_exception,    // arithmetic error
+    ignore_exception,   // implementation defined behavior
+    ignore_exception,   // undefined behavior
+    ignore_exception    // uninitialized value
+>;
+
+// strict exception policy
+// - permit just about anything
+// - throw at runtime on any kind of error
+// recommended for new code.  Check everything at compile time
+// if possible and runtime if necessary.  Trap or Throw as
+// appropriate.  Should guarentee code to be portable accross
+// archtectures.
 using strict_exception_policy = exception_policy<
-    exception_handler::ignore_exception,
-    exception_handler::throw_exception,
-    exception_handler::trap_exception,
-    exception_handler::trap_exception
+    throw_exception,
+    throw_exception,
+    throw_exception,
+    throw_exception
 >;
 
-// use when any possible exceptions should be trapped at compile time
-// but we're a little loose on things like bit shifts etc.
-// this might be attractive choice for small embedded systems
-using no_exceptions_policy = exception_policy<
-    exception_handler::ignore_exception,
-    exception_handler::trap_exception,
-    exception_handler::ignore_exception,
-    exception_handler::trap_exception
+// strict trap
+// same as above but requires code to be written in such a way as
+// to make exceptions impossible
+using strict_trap_policy = exception_policy<
+    trap_exception,
+    trap_exception,
+    trap_exception,
+    trap_exception
 >;
 
-// use when any possible exceptions should be trapped at compile time
-// but we're a little loose on things like bit shifts etc.
-// this might be attractive choice for small embedded systems
-using strict_no_exceptions_policy = exception_policy<
-    exception_handler::ignore_exception,
-    exception_handler::trap_exception,
-    exception_handler::trap_exception,
-    exception_handler::trap_exception
->;
+// default policy
+// One would use this first. After experimentation, one might
+// replace some actions with ignore_exception
+using default_exception_policy = strict_exception_policy;
+
+template<class EP>
+constexpr void
+dispatch(const safe_numerics_error & e, char const * const & msg){
+    const safe_numerics_actions a = make_safe_numerics_action(e);
+    switch(a){
+    case safe_numerics_actions::uninitialized_value:
+        EP::on_uninitialized_value(e, msg);
+        break;
+    case safe_numerics_actions::arithmetic_error:
+        EP::on_arithmetic_error(e, msg);
+        break;
+    case safe_numerics_actions::implementation_defined_behavior:
+        EP::on_implementation_defined_behavior(e, msg);
+        break;
+    case safe_numerics_actions::undefined_behavior:
+        EP::on_undefined_behavior(e, msg);
+        break;
+    default:
+        assert(false);
+    }
+}
+
 } // namespace numeric
 } // namespace boost
 

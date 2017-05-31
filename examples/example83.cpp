@@ -16,7 +16,7 @@ using safe_t = safe_signed_range<
     -24,
     82,
     native,         // C++ type promotion rules work OK for this example
-    no_exceptions_policy  // catch problems at compile time
+    loose_trap_policy  // catch problems at compile time
 >;
 
 int main(int argc, const char * argv[]){
@@ -25,8 +25,8 @@ int main(int argc, const char * argv[]){
     // since the sum of x and y wouldn't be in the legal
     // range for z.
     // const safe_signed_literal<20> x;
-    const safe_signed_literal<10, native, no_exceptions_policy> x;  // no problem
-    const safe_signed_literal<67, native, no_exceptions_policy> y;
+    const safe_signed_literal<10, native, loose_trap_policy> x;  // no problem
+    const safe_signed_literal<67, native, loose_trap_policy> y;
 
     const safe_t z = x + y;
     std::cout << "x = " << safe_format(x) << std::endl;

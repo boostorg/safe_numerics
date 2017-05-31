@@ -8,7 +8,7 @@
 using safe_t = boost::numeric::safe<
     int,
     boost::numeric::automatic, // note use of "automatic" policy!!!
-    boost::numeric::no_exceptions_policy
+    boost::numeric::loose_trap_policy
 >;
 
 int main(int argc, const char * argv[]){
