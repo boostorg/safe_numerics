@@ -21,40 +21,40 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale and FAQ</h2></div></div></div>
 <div class="qandaset">
-<a name="idm392843608448"></a><dl>
-<dt>1. <a href="rationale.html#idm392843607952">Is this really necessary? If I'm writing the program with the
+<a name="idm378945733536"></a><dl>
+<dt>1. <a href="rationale.html#idm378945733040">Is this really necessary? If I'm writing the program with the
         requisite care and competence, problems noted in the introduction will
         never arise. Should they arise, they should be fixed "at the source"
         and not with a "band aid" to cover up bad practice.</a>
 </dt>
-<dt>2. <a href="rationale.html#idm392843604592">Can safe types be used as drop-in replacements for built-in
+<dt>2. <a href="rationale.html#idm378945729680">Can safe types be used as drop-in replacements for built-in
         types?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm392843602256">Why is Boost.Convert not used?</a>
+<dt>3. <a href="rationale.html#idm378945727344">Why is Boost.Convert not used?</a>
 </dt>
-<dt>4. <a href="rationale.html#idm392843600256">Why is the library named "safe ..." rather than something like
+<dt>4. <a href="rationale.html#idm378945725344">Why is the library named "safe ..." rather than something like
         "checked ..." ?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm392843597888">Given that the library is called "numerics" why is floating
+<dt>5. <a href="rationale.html#idm378945722976">Given that the library is called "numerics" why is floating
         point arithmetic not addressed?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm392843593136">Isn't putting a defensive check just before any potential
+<dt>6. <a href="rationale.html#idm378945718224">Isn't putting a defensive check just before any potential
         undefined behavior often considered a bad practice?</a>
 </dt>
-<dt>7. <a href="rationale.html#idm392843590560">It looks like the implementation presumes two's complement
+<dt>7. <a href="rationale.html#idm378945715648">It looks like the implementation presumes two's complement
         arithmetic at the hardware level. So this library is not portable -
         correct? What about other hardware architectures?</a>
 </dt>
-<dt>8. <a href="rationale.html#idm392843588240">Why do you specialize numeric_limits for "safe"
+<dt>8. <a href="rationale.html#idm378945713328">Why do you specialize numeric_limits for "safe"
         types? Do you need it?</a>
 </dt>
-<dt>9. <a href="rationale.html#idm392843581696">According to C/C++ standards, unsigned integers cannot overflow
+<dt>9. <a href="rationale.html#idm378945706784">According to C/C++ standards, unsigned integers cannot overflow
         - they are modular integers which "wrap around". Yet the safe numerics
         library detects and traps this behavior as errors. Why is that?</a>
 </dt>
-<dt>10. <a href="rationale.html#idm392843577712">Why does the library require C++14?</a>
+<dt>10. <a href="rationale.html#idm378945702800">Why does the library require C++14?</a>
 </dt>
-<dt>11. <a href="rationale.html#idm392843574928">This is a C++ library - yet you refer to C/C++. Which is
+<dt>11. <a href="rationale.html#idm378945700016">This is a C++ library - yet you refer to C/C++. Which is
         it?</a>
 </dt>
 </dl>
@@ -66,7 +66,7 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843607952"></a><a name="idm392843607696"></a><p><b>1.</b></p>
+<a name="idm378945733040"></a><a name="idm378945732784"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Is this really necessary? If I'm writing the program with the
         requisite care and competence, problems noted in the introduction will
@@ -82,7 +82,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843604592"></a><a name="idm392843604336"></a><p><b>2.</b></p>
+<a name="idm378945729680"></a><a name="idm378945729424"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top"><p>Can safe types be used as drop-in replacements for built-in
         types?</p></td>
@@ -97,7 +97,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843602256"></a><a name="idm392843602000"></a><p><b>3.</b></p>
+<a name="idm378945727344"></a><a name="idm378945727088"></a><p><b>3.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is Boost.Convert not used?</p></td>
 </tr>
@@ -108,7 +108,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843600256"></a><a name="idm392843600000"></a><p><b>4.</b></p>
+<a name="idm378945725344"></a><a name="idm378945725088"></a><p><b>4.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
         "checked ..." ?</p></td>
@@ -123,7 +123,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843597888"></a><a name="idm392843597632"></a><p><b>5.</b></p>
+<a name="idm378945722976"></a><a name="idm378945722720"></a><p><b>5.</b></p>
 </td>
 <td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
         point arithmetic not addressed?</p></td>
@@ -140,7 +140,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843593136"></a><a name="idm392843592880"></a><p><b>6.</b></p>
+<a name="idm378945718224"></a><a name="idm378945717968"></a><p><b>6.</b></p>
 </td>
 <td align="left" valign="top"><p>Isn't putting a defensive check just before any potential
         undefined behavior often considered a bad practice?</p></td>
@@ -155,7 +155,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843590560"></a><a name="idm392843590304"></a><p><b>7.</b></p>
+<a name="idm378945715648"></a><a name="idm378945715392"></a><p><b>7.</b></p>
 </td>
 <td align="left" valign="top"><p>It looks like the implementation presumes two's complement
         arithmetic at the hardware level. So this library is not portable -
@@ -169,7 +169,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843588240"></a><a name="idm392843587984"></a><p><b>8.</b></p>
+<a name="idm378945713328"></a><a name="idm378945713072"></a><p><b>8.</b></p>
 </td>
 <td align="left" valign="top"><p>Why do you specialize <code class="computeroutput">numeric_limits</code> for "safe"
         types? Do you need it?</p></td>
@@ -184,7 +184,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843581696"></a><a name="idm392843581440"></a><p><b>9.</b></p>
+<a name="idm378945706784"></a><a name="idm378945706528"></a><p><b>9.</b></p>
 </td>
 <td align="left" valign="top"><p>According to C/C++ standards, unsigned integers cannot overflow
         - they are modular integers which "wrap around". Yet the safe numerics
@@ -209,7 +209,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843577712"></a><a name="idm392843577456"></a><p><b>10.</b></p>
+<a name="idm378945702800"></a><a name="idm378945702544"></a><p><b>10.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does the library require C++14?</p></td>
 </tr>
@@ -233,7 +233,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm392843574928"></a><a name="idm392843574672"></a><p><b>11.</b></p>
+<a name="idm378945700016"></a><a name="idm378945699760"></a><p><b>11.</b></p>
 </td>
 <td align="left" valign="top"><p>This is a C++ library - yet you refer to C/C++. Which is
         it?</p></td>
