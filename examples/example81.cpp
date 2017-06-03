@@ -1,12 +1,12 @@
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
-#include "../include/exception.hpp" // include exception policies
+#include "../include/exception_policies.hpp" // include exception policies
 
 using safe_t = boost::numeric::safe<
     int,
     boost::numeric::native,
-    boost::numeric::trap_exception  // note use of "trap_exception" policy!
+    boost::numeric::loose_trap_policy  // note use of "loose_trap_exception" policy!
 >;
 
 int main(int argc, const char * argv[]){

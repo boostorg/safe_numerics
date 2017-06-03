@@ -110,7 +110,7 @@
             linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
 
             <entry><para>Default value is <link
-            linkend="safe_numerics.promotion_policy.models.native">boost::numeric::native</link></para></entry>
+            linkend="safe_numerics.promotion_policies.native"><code>boost::numeric::native</code></link></para></entry>
           </row>
 
           <row>
@@ -121,7 +121,7 @@
             Policy&lt;EP&gt;</link></link></entry>
 
             <entry><para>Default value is <link
-            linkend="safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</link></para></entry>
+            linkend="safe_numerics.exception_policies.default_exception_policy"><code>boost::numeric::default_exception_policy</code></link></para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -147,13 +147,6 @@
     requirements. Thus, the result type of such an expression will be another
     safe type. The actual type of the result of such an expression will depend
     upon the specific promotion policy template parameter.</para>
-  </section>
-
-  <section>
-    <title>Header</title>
-
-    <para><filename><ulink url="../../include/safe_integer.hpp">#include
-    &lt;boost/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
   </section>
 
   <section>
@@ -226,10 +219,12 @@ int main(){
     <section>
       <title>Guarantee correct behavior at compile time.</title>
 
-      <para>In some instances, catching an error at run time is not sufficient.
-      We want to be sure that the program can never fail. To achieve this, use
-      the <code>trap_exception</code> exception policy rather than the default
-      <code>throw_exception</code> policy.</para>
+      <para>In some instances, catching an error at run time is not
+      sufficient. We want to be sure that the program can never fail. To
+      achieve this, use the <link
+      linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
+      rather than the <link
+      linkend="safe_numerics.exception_policies.default_exception_policy"><code>default_exception_policy</code></link>.</para>
 
       <para>The following program will emit a compile error at any statement
       which might possibly result in incorrect behavior.</para>
@@ -261,16 +256,20 @@ void f(){
       arithmetic wouldn't exist if the result types were larger. So we can
       avoid these problems by replacing the C++ type promotion rules for
       expressions with our own rules. This can be done by specifying a
-      non-default type promotion policy <code>automatic</code>. The policy stores the
-      result of an expression in the smallest size that can accommodate the
-      largest value that an expression can yield. All the work is done at
-      compile time - no checking for exceptions is necessary (input is of course an
-      exception). The following example illustrates this.</para>
+      non-default type promotion policy <code>automatic</code>. The policy
+      stores the result of an expression in the smallest size that can
+      accommodate the largest value that an expression can yield. All the work
+      is done at compile time - no checking for exceptions is necessary (input
+      is of course an exception). The following example illustrates
+      this.</para>
 
       <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
 #include &lt;iostream&gt;
 void f(){
-    using safe_int = safe&lt;int, boost::numeric::automatic, boost::numeric::throw_exception&gt;; 
+    using safe_int = safe&lt;
+        int, boost::numeric::automatic, 
+        boost::numeric::default_exception_policy
+    &gt;; 
     safe_int i;
     std::cin &gt;&gt; i; // might throw exception
     auto j = i * i; // won't ever trap - result type can hold the maximum value of i * i
@@ -281,5 +280,12 @@ void f(){
     ); // always true
 }</programlisting></para>
     </section>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><filename><ulink url="../../include/safe_integer.hpp">#include
+    &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
   </section>
 </section>

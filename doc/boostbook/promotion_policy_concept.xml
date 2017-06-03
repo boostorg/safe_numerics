@@ -57,9 +57,9 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
   <section>
     <title>Valid Expressions</title>
 
-    <para> Any operations which result in integers which cannot be represented
+    <para>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.These expressions return a
-    type which can be used as the basis create a SafeNumeric type. </para>
+    type which can be used as the basis create a SafeNumeric type.</para>
 
     <para><informaltable>
         <tgroup cols="2">
@@ -135,15 +135,6 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><ulink
-    url="../../include/concept/promotion_policy.hpp"><code>#include
-    &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
-    </code></ulink></para>
-  </section>
-
-  <section>
     <title>Models</title>
 
     <para>The library contains a number of pre-made promotion policies:</para>
@@ -206,5 +197,14 @@ auto c = a + b; // c will be a safe type with a range [3,8] and cannot overflow
         Policies - automatic</link></para>
       </listitem>
     </itemizedlist>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink
+    url="../../include/concept/promotion_policy.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
+    </code></ulink></para>
   </section>
 </section>

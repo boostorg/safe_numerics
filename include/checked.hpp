@@ -642,7 +642,7 @@ constexpr checked_left_shift(
         // behavior is undefined
         return checked_result<R>(
            safe_numerics_error::undefined_behavior,
-           "shifting more bits than available is undefined behavior"
+           "shifting left more bits than available is undefined behavior"
         );
     }
     return t << u;
@@ -691,14 +691,14 @@ constexpr checked_result<R> left_shift(
     if(u < 0){
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
-           "shifting negative amount is undefined behavior"
+           "shifting negative amount is implementation defined behavior"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
-           "shifting more bits than available is undefined behavior"
+           "shifting more bits than available is implementation defined behavior"
         );
     }
     if(t == 0)
@@ -744,7 +744,7 @@ constexpr checked_right_shift(
         // defined" rather than "undefined".
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
-           "shifting a negative value is undefined behavior"
+           "shifting a negative value is implementation defined behavior"
         );
     }
 
@@ -767,14 +767,14 @@ constexpr checked_result<R> right_shift(
     if(u < 0){
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
-           "shifting negative amount is undefined behavior"
+           "shifting negative amount is implementation defined behavior"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
-           "shifting more bits than available is undefined behavior"
+           "shifting more bits than available is implementation defined behavior"
         );
     }
     if(t == 0)

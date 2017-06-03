@@ -9,11 +9,11 @@
   <section>
     <title>Description</title>
 
-    <para>checked_result is a wrapper class designed to hold the result of some
-    operation. It can hold either the result of the operation or information
-    on why the operation failed to produce a valid result. Note that this type
-    is an internal feature of the library and shouldn't be exposed to library
-    users because it has some unsafe behavior.</para>
+    <para>checked_result is a wrapper class designed to hold the result of
+    some operation. It can hold either the result of the operation or
+    information on why the operation failed to produce a valid result. Note
+    that this type is an internal feature of the library and shouldn't be
+    exposed to library users because it has some unsafe behavior.</para>
   </section>
 
   <section>
@@ -106,7 +106,7 @@
             <entry><code>e</code></entry>
 
             <entry>An instance of type <link
-            linkend="safe_numerics.exception_type">exception_type</link></entry>
+            linkend="safe_numerics.safe_numerics_error">safe_numerics_error</link></entry>
           </row>
 
           <row>
@@ -229,15 +229,9 @@
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><code>#include "checked_result.hpp" </code></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
-    <programlisting>#include "checked_result.hpp"
+    <programlisting>#include &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
 
 template&lt;class R&gt;
 checked_result&lt;R&gt;
@@ -260,5 +254,13 @@ constexpr modulus(
 
     <para><link
     linkend="safe_numerics.exception_policy">ExceptionPolicy</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../include/checked_result.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
+    </code></ulink></para>
   </section>
 </section>

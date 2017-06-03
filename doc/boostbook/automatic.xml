@@ -88,13 +88,6 @@
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><code><ulink url="../../include/automatic.hpp"><code>#include
-    &lt;boost/safe_numerics/automatic.hpp&gt; </code></ulink></code></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
     <para>The following example illustrates the <code>automatic</code> type
@@ -106,15 +99,24 @@
  
 int main(){
     using namespace boost::numeric;
-    // use automatic promotion policy where C++ standard arithmetic might lead to incorrect results
+    // use automatic promotion policy where C++ standard arithmetic 
+    // might lead to incorrect results
     using safe_t = safe&lt;std::int8_t, automatic&gt;;
 
     // In such cases, there is no runtime overhead from using safe types.
     safe_t x = 127;
     safe_t y = 2;
-    auto z = x + y; // z is guaranteed correct without any runtime overhead or exception.
-
+    // z is guaranteed correct without any runtime overhead or exception.
+    auto z = x + y; 
     return 0;
 }</programlisting>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code><ulink url="../../include/automatic.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/automatic.hpp&gt;
+    </code></ulink></code></para>
   </section>
 </section>

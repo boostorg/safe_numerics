@@ -86,6 +86,7 @@ public:
     }
 } safe_numerics_error_category ;
 
+// constexpr - damn, can't use constexpr due to std::error_code
 std::error_code make_error_code(safe_numerics_error e){
     return std::error_code(static_cast<int>(e), safe_numerics_error_category);
 }
@@ -94,7 +95,7 @@ std::error_code make_error_code(safe_numerics_error e){
 // error_condition in order to do this.  I'm not sure this is a good
 // idea or not.
 
-enum safe_numerics_actions {
+enum class safe_numerics_actions {
     no_action = 0,
     uninitialized_value,
     arithmetic_error,
@@ -130,7 +131,7 @@ public:
     ) const noexcept {
         if(code.category() != safe_numerics_error_category)
             return false;
-        switch (condition){
+        switch (static_cast<safe_numerics_actions>(condition)){
         case safe_numerics_actions::no_action:
             return code == safe_numerics_error::success;
         case safe_numerics_actions::uninitialized_value:
@@ -160,7 +161,7 @@ make_error_condition(safe_numerics_actions e){
 }
 
 // given an error code - return the action code which it corresponds to.
-constexpr safe_numerics_actions
+constexpr enum  safe_numerics_actions
 make_safe_numerics_action(const safe_numerics_error & e){
     // we can't use standard algorithms since we want this to be constexpr
     // this brute force solution is simple and pretty fast anyway
@@ -182,7 +183,7 @@ make_safe_numerics_action(const safe_numerics_error & e){
     }
 }
 
-// given an error code - return the action code which it corresponds to.
+// given an error code - return the error_condition which it corresponds to.
 std::error_condition
 make_error_condition(safe_numerics_error e){
     return std::error_condition(make_safe_numerics_action(e));

@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
-#include "../include/exception.hpp"
+#include "../include/exception_policies.hpp"
 #include "../include/automatic.hpp"
 #include "safe_format.hpp" // prints out range and value of any type
 

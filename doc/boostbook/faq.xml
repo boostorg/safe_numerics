@@ -55,11 +55,11 @@
       </question>
 
       <answer>
-        <para>I used "safe" in large part because this is what has been used by other
-        similar libraries. Maybe a better word might have been "correct" but
-        that would raise similar concerns. I'm not inclined to change this.
-        I've tried to make it clear in the documentation what the problem that
-        the library addressed is.</para>
+        <para>I used "safe" in large part because this is what has been used
+        by other similar libraries. Maybe a better word might have been
+        "correct" but that would raise similar concerns. I'm not inclined to
+        change this. I've tried to make it clear in the documentation what the
+        problem that the library addressed is.</para>
       </answer>
     </qandaentry>
 
@@ -71,8 +71,8 @@
 
       <answer>
         <para>Actually, I believe that this can/should be applied to any type
-        T which satisfies the type requirement <code>Numeric</code> type as defined in
-        the documentation. So there should be specializations
+        T which satisfies the type requirement <code>Numeric</code> type as
+        defined in the documentation. So there should be specializations
         <code>safe&lt;float&gt;</code> and related types as well as new types
         like <code>safe&lt;fixed_decimal&gt;</code> etc. But the current
         version of the library only addresses integer types. Hopefully the
@@ -198,7 +198,7 @@
               <programlisting>#ifdef TEST
 // using C++ on test platform
 #include  &lt;cstdint&gt;
-#include &lt;safe_integer.hpp&gt;
+#include &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;
 #include &lt;cpp.hpp&gt;
 using pic16_promotion = boost::numeric::cpp&lt;
     8,  // char
@@ -212,7 +212,7 @@ template &lt;typename T&gt; // T is char, int, etc data type
 using safe_t = boost::numeric::safe&lt;
     T,
     pic16_promotion,
-    boost::numeric::throw_exception // use for compiling and running tests
+    boost::numeric::default_exception_policy // use for compiling and running tests
 &gt;;
 typedef safe_t&lt;std::int_least16_t&gt; int16_t;
 typedef safe_t&lt;std::int_least32_t&gt; int32_t;

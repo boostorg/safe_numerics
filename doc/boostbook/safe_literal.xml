@@ -121,18 +121,18 @@
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><ulink url="../../include/safe_range.hpp">#include
-    &lt;safe/numeric/safe_literal.hpp&gt;</ulink></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;safe/numeric/safe_literal.hpp&gt;
+    <programlisting>#include &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;
 
 constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
 </programlisting>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../../include/safe_literal.hpp">#include
+    &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;</ulink></para>
   </section>
 </section>

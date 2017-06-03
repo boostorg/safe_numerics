@@ -278,14 +278,6 @@ int main(){
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><ulink
-    url="../../include/concept/exception_policy.hpp"><code>#include
-    &lt;safe_numerics/include/concepts/safe_numeric.hpp&gt;</code></ulink></para>
-  </section>
-
-  <section>
     <title>Models</title>
 
     <para>safe&lt;T&gt;</para>
@@ -295,5 +287,12 @@ int main(){
     <para>safe_unsigned_range&lt;0, 11&gt;</para>
 
     <para>safe_literal&lt;4&gt;</para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../../include/concept/safe_numeric.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
   </section>
 </section>

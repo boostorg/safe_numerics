@@ -90,19 +90,11 @@ checked::bitwise_xor(const T &amp; t, const U &amp; u);
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><code>#include "checked.hpp" </code></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
-    <para>[A code fragment that illustrates how to use the function.]</para>
+    <programlisting>#include &lt;boost/numeric/safe_numerics/checked.hpp&gt;
 
-    <programlisting>#include "checked.hpp"
-
-checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
+checked_result&lt;int&gt; r = checked::multiply&lt;int&gt;(24, 42);
 </programlisting>
   </section>
 
@@ -110,11 +102,11 @@ checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
     <title>Notes</title>
 
     <para>Some compilers have command line switches (e.g. -ftrapv) which
-    enable special behavior such that erroneous integer operations are detected at
-    run time. The library has been implemented in such a way that these
-    facilities are not used. It's possible they might be helpful in particular
-    environment. These could be be exploited by re-implementing some functions
-    in this library.</para>
+    enable special behavior such that erroneous integer operations are
+    detected at run time. The library has been implemented in such a way that
+    these facilities are not used. It's possible they might be helpful in
+    particular environment. These could be be exploited by re-implementing
+    some functions in this library.</para>
   </section>
 
   <section>
@@ -123,5 +115,12 @@ checked_result&lt;result_base_type&gt; r = checked::multiply&lt;int&gt;(24, 42);
     <para><link
     linkend="safenumerics.checked_result">checked_result&lt;typename
     R&gt;</link></para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><ulink url="../../include/checked.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
   </section>
 </section>

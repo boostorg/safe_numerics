@@ -25,7 +25,7 @@
 
     <librarypurpose>Safe integer operations</librarypurpose>
 
-    <librarycategory>Numerics</librarycategory>
+    <librarycategory name="Numerics">Numerics</librarycategory>
   </libraryinfo>
 
   <xi:include href="safe_introduction.xml" xpointer="element(/1)"
@@ -71,6 +71,12 @@
     <xi:include href="safe_literal.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
+    <xi:include href="exception.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="exception_policy.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
     <section id="safe_numerics.promotion_policies">
       <title>Promotion Policies</title>
 
@@ -81,22 +87,6 @@
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
       <xi:include href="cpp.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-    </section>
-
-    <section id="safe_numerics.exception_policies">
-      <title>Exception Policies</title>
-
-      <xi:include href="throw_exception.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-      <xi:include href="trap_exception.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-      <xi:include href="ignore_exception.xml" xpointer="element(/1)"
-                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-      <xi:include href="no_exception_support.xml" xpointer="element(/1)"
                   xmlns:xi="http://www.w3.org/2001/XInclude"/>
     </section>
   </section>
@@ -143,8 +133,8 @@
             <listitem>
               <para>Given the ranges of the operands, determine the range of
               the result of the operation using interval arithmetic. This is
-              implemented in the "interval.hpp" header file using the <code>constexpr</code>
-              facility of C++14.</para>
+              implemented in the "interval.hpp" header file using the
+              <code>constexpr</code> facility of C++14.</para>
             </listitem>
 
             <listitem>
@@ -179,9 +169,6 @@
     <xi:include href="interval.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="exception_type.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
     <xi:include href="checked_result.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
@@ -192,12 +179,12 @@
   <section id="safe_numerics.performance_tests">
     <title>Performance Tests</title>
 
-    <para>Our goal is to create facilities which make it possible to write programs
-    known to be correct. But we also want programmers to actually use the
-    facilities we provide here. This won't happen if using these facilities
-    impacts performance to a significant degree. Although we've taken
-    precautions to avoid doing this, the only real way to know is to create
-    and run some tests.</para>
+    <para>Our goal is to create facilities which make it possible to write
+    programs known to be correct. But we also want programmers to actually use
+    the facilities we provide here. This won't happen if using these
+    facilities impacts performance to a significant degree. Although we've
+    taken precautions to avoid doing this, the only real way to know is to
+    create and run some tests.</para>
 
     <para>To Do</para>
   </section>

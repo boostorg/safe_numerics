@@ -102,8 +102,8 @@ using loose_trap_policy = exception_policy<
 // - throw at runtime on any kind of error
 // recommended for new code.  Check everything at compile time
 // if possible and runtime if necessary.  Trap or Throw as
-// appropriate.  Should guarentee code to be portable accross
-// archtectures.
+// appropriate.  Should guarantee code to be portable across
+// architectures.
 using strict_exception_policy = exception_policy<
     throw_exception,
     throw_exception,
@@ -112,8 +112,10 @@ using strict_exception_policy = exception_policy<
 >;
 
 // strict trap
-// same as above but requires code to be written in such a way as
-// to make exceptions impossible
+// Same as above but requires code to be written in such a way as to
+// make it impossible for errors to occur.  This naturally will require
+// extra coding effort but might be justified for embedded and/or
+// safety critical systems.
 using strict_trap_policy = exception_policy<
     trap_exception,
     trap_exception,

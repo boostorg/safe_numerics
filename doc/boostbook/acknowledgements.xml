@@ -15,8 +15,8 @@
           <para>This library is inspired by <ulink
           url="http://safeint.codeplex.com">David LeBlanc's SafeInt
           Library</ulink> . I found this library very well done in every way
-          and useful in my embedded systems work. This motivated me to take it to
-          the "next level".</para>
+          and useful in my embedded systems work. This motivated me to take it
+          to the "next level".</para>
         </glossdef>
       </glossentry>
 
@@ -28,11 +28,11 @@
           <para>Andrzej Commented and reviewed the library as it was
           originally posted on the <ulink
           url="http://www.blincubator.com">Boost Library Incubator</ulink>.
-          The consequent back and forth motivated me to invest more effort
-          in developing documentation and examples to justify the utility,
-          indeed the necessity, for this library. He also noted many errors in
-          code, documentation, and tests. Without his interest and effort, I
-          do not believe the library would have progressed beyond its initial
+          The consequent back and forth motivated me to invest more effort in
+          developing documentation and examples to justify the utility, indeed
+          the necessity, for this library. He also noted many errors in code,
+          documentation, and tests. Without his interest and effort, I do not
+          believe the library would have progressed beyond its initial
           stages.</para>
         </glossdef>
       </glossentry>
@@ -43,7 +43,43 @@
         <glossdef>
           <para>As always, the Boost Developer's mailing list has been the
           source of many useful observations from potential users and
-          constructive criticism from very knowledgeable developers.</para>
+          constructive criticism from very knowledgeable developers. During
+          the Boost formal review, reviews and comments were posted by the
+          following persons: </para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Paul A. Bristow</para>
+            </listitem>
+
+            <listitem>
+              <para>Steven Watanabe</para>
+            </listitem>
+
+            <listitem>
+              <para>John Maddock</para>
+            </listitem>
+
+            <listitem>
+              <para>Antony Polukhin</para>
+            </listitem>
+
+            <listitem>
+              <para>Barrett Adair</para>
+            </listitem>
+
+            <listitem>
+              <para>Vicente J. Botet Escriba</para>
+            </listitem>
+
+            <listitem>
+              <para> John McFarlane</para>
+            </listitem>
+
+            <listitem>
+              <para>Peter Dimov</para>
+            </listitem>
+          </itemizedlist>
         </glossdef>
       </glossentry>
     </glosslist></para>

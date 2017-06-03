@@ -307,18 +307,12 @@
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><code>#include "interval.hpp"</code></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
     <programlisting>#include &lt;iostream&gt;
 #include &lt;cstdint&gt;
 #include &lt;cassert&gt;
-#include &lt;boost/numeric/interval.hpp&gt;
+#include &lt;boost/numeric/safe_numerics/interval.hpp&gt;
 
 int main(){
     std::cout &lt;&lt; "test1" &lt;&lt; std::endl;
@@ -331,5 +325,12 @@ int main(){
     std::cout &lt;&lt; "x - x = " &lt;&lt; subtract&lt;std::int16_t&gt;(x, x) &lt;&lt; std::endl;
     return 0;
 }</programlisting>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code>#include
+    &lt;boost/numeric/safe_numerics/interval.hpp&gt;</code></para>
   </section>
 </section>

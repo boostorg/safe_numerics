@@ -8,10 +8,9 @@
     <title>Description</title>
 
     <para>This policy is used to promote safe types in arithmetic expressions
-    according to the rules in the C++ standard. But rather than using
-    the native C++ standard types supported by the compiler, it uses types
-    whose length in number of bits is specified by the template
-    parameters.</para>
+    according to the rules in the C++ standard. But rather than using the
+    native C++ standard types supported by the compiler, it uses types whose
+    length in number of bits is specified by the template parameters.</para>
 
     <para>This policy is useful for running test programs which use C++
     portable integer types but which are destined to run on an architecture
@@ -95,22 +94,15 @@
   </section>
 
   <section>
-    <title>Header</title>
-
-    <para><code><ulink url="../../examples/example9.cpp"><code>#include
-    &lt;boost/safe_numerics/cpp.hpp&gt; </code></ulink></code></para>
-  </section>
-
-  <section>
     <title>Example of Use</title>
 
     <para>Consider the following problem. One is developing software which
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
     anything else. One debugs this code by using the "burn" and "crash" method
-    - you burn the chip (download the code), run the code, observe the results,
-    make changes and try again. This is a crude method which is usually the
-    one used. But it can be quite time consuming.</para>
+    - you burn the chip (download the code), run the code, observe the
+    results, make changes and try again. This is a crude method which is
+    usually the one used. But it can be quite time consuming.</para>
 
     <para>Consider an alternative. Build and compile your code in testable
     modules. For each module write a test which exercises all the code and
@@ -121,11 +113,11 @@
     other problems), make our algorithm testing environment differ from our
     target environment. We can address this by defining INT as a safe integer
     with a range of 8 bits. By using a custom promotion policy, we can force
-    the evaluation of C++ expressions in the test environment to be the same as that
-    in the target environment. Also in our target environment, we can trap any
-    overflows or other errors. So we can write and test our code on our
-    desktop system and download the code to the target knowing that it just
-    has to work. This is a huge time saver and confidence builder. The
+    the evaluation of C++ expressions in the test environment to be the same
+    as that in the target environment. Also in our target environment, we can
+    trap any overflows or other errors. So we can write and test our code on
+    our desktop system and download the code to the target knowing that it
+    just has to work. This is a huge time saver and confidence builder. The
     following code is taken from a real project which has used this
     method.</para>
 
@@ -150,7 +142,7 @@ template &lt;typename T&gt; // T is char, int, etc data type
 using safe_t = boost::numeric::safe&lt;
     T,
     pic16_promotion,
-    boost::numeric::trap_exception // use for compiling and running tests
+    boost::numeric::loose_trap_policy // use for compiling and running tests
 &gt;;
 
 using int8 = safe_t&lt;std::int8_t&gt;;
@@ -185,5 +177,12 @@ uint16 get_stopping_distance(LEMPARAMETER velocity){
     compile time any possible error conditions. As I write this, this is still
     being refined. Hopefully this will be available by the time you read
     this.</para>
+  </section>
+
+  <section>
+    <title>Header</title>
+
+    <para><code><ulink url="../../include/cpp.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/cpp.hpp&gt; </code></ulink></code></para>
   </section>
 </section>
