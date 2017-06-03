@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
+<section id="safe_numeric.exception_policies">
   <title>exception_policy&lt;AE, IDB, UB, UV&gt;</title>
+
+  <?dbhtml stop-chunking?>
 
   <section>
     <title>Description</title>

@@ -26,25 +26,25 @@
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>data type - int, float, etc</p></li>
 <li class="listitem"><p>setting of compile time command line switches</p></li>
-<li class="listitem"><p>invocation some configuration functions which convert these
+<li class="listitem"><p>invocation of some configuration functions which convert these
           hardware events into C++ exceptions</p></li>
 </ul></div>
 <p>It's not all that clear how one would detect and recover
     from a divide by zero error in a simple portable way. Usually, users just
     ignore the issue which usually results in immediate program termination
     when this situation occurs.</p>
-<p>This library will detect for divide by zero errors before the
-    operation is invoked. Any errors of this nature are handled according to
-    the ErrorPolicy selected by the library user.</p>
+<p>This library will detect divide by zero errors before the operation
+    is invoked. Any errors of this nature are handled according to the
+    ErrorPolicy selected by the library user.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
-    <span class="comment">// problem: checking of externally produced value can be overlooked</span>
+    <span class="comment">// problem: cannot recover from arithmetic errors</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 7: "</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"cannot recover From arithmetic errors"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"cannot recover from arithmetic errors"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
 
     <span class="keyword">try</span><span class="special">{</span>
@@ -59,14 +59,14 @@
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
 
-    <span class="comment">// solution: assign externally retrieved values to safe equivalents</span>
+    <span class="comment">// solution: replace int with safe&lt;int&gt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
         <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">1</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">/</span> <span class="identifier">y</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">" error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">" error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
@@ -75,6 +75,13 @@
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
+<pre class="programlisting"><span class="identifier">example</span> <span class="number">7</span><span class="special">:</span> <span class="identifier">cannot</span> <span class="identifier">recover</span> <span class="identifier">from</span> <span class="identifier">arithmetic</span> <span class="identifier">errors</span>
+<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+ <span class="identifier">error</span> <span class="identifier">NOT</span> <span class="identifier">detectable</span><span class="special">!</span>
+<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+<span class="identifier">divide</span> <span class="identifier">by</span> <span class="identifier">zero</span>
+<span class="identifier">error</span> <span class="identifier">detected</span><span class="special">!</span>
+<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

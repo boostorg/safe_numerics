@@ -39,15 +39,15 @@
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
     <span class="identifier">automatic</span><span class="special">,</span>
-    <span class="identifier">trap_exception</span>
+    <span class="identifier">no_exceptions_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
-<span class="comment">// define variables use for input</span>
+<span class="comment">// define variables used for input</span>
 <span class="keyword">using</span> <span class="identifier">input_safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
     <span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// we don't need automatic in this case</span>
-    <span class="identifier">throw_exception</span> <span class="comment">// these variables need to</span>
+    <span class="identifier">throw_exception</span> <span class="comment">// assignment of out of range value should throw</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// function arguments can never be outside of limits</span>
@@ -78,10 +78,10 @@
 </pre>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>As before, we define a type <code class="computeroutput">safe_t</code> to reflect our
-          view of legal values for this program. This uses <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic"><code class="computeroutput">automatic</code></a>
-          type promotion policy as well as <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+          view of legal values for this program. This uses the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
+          type promotion policy as well as the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
           exception policy to enforce elimination of runtime penalties.</p></li>
-<li class="listitem"><p>The function f accepts only arguments of type
+<li class="listitem"><p>The function <code class="computeroutput">f</code> accepts only arguments of type
           <code class="computeroutput">safe_t</code> so there is no need to check the input values.
           This performs the functionality of <span class="emphasis"><em><span class="bold"><strong>programming by contract</strong></span></em></span> with no
           runtime cost.</p></li>
@@ -93,14 +93,15 @@
           guaranteed to contain legal values and will throw an exception when
           this guarantee is violated. In other words, we automatically get
           checking of input variables with no additional programming.</p></li>
-<li class="listitem"><p>On calling of the function f, arguments of type
+<li class="listitem"><p>On calling of the function <code class="computeroutput">f</code>, arguments of type
           <code class="computeroutput">input_safe_t</code> are converted to values of type
           <code class="computeroutput">safe_t</code> . In this particular example, it can be
           determined at compile time that construction of an instance of a
           <code class="computeroutput">safe_t</code> from an <code class="computeroutput">input_safe_t</code> can never
           fail. Hence, no <code class="computeroutput">try/catch</code> block is necessary. The usage
-          of the <code class="computeroutput">trap_exception</code> policy for <code class="computeroutput">safe_t</code>
-          types would cause a compile time error.</p></li>
+          of the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
+          policy for <code class="computeroutput">safe_t</code> types guarantees this to be true at
+          compile time.</p></li>
 </ul></div>
 <p>Here is the output from the program when values 12 and 32
     are input from the console:</p>

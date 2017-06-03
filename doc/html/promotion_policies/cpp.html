@@ -7,7 +7,7 @@
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../promotion_policies.html" title="Promotion Policies">
 <link rel="prev" href="automatic.html" title="automatic">
-<link rel="next" href="../exception_policies.html" title="Exception Policies">
+<link rel="next" href="../exception_safety.html" title="Exception Safety">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,29 +15,28 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="automatic.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../promotion_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_policies.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="automatic.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../promotion_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_safety.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
 <a name="safe_numerics.promotion_policies.cpp"></a>cpp&lt;int C, int S, int I, int L, int LL&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50878652496"></a>Description</h5></div></div></div>
+<a name="idm392844285072"></a>Description</h5></div></div></div>
 <p>This policy is used to promote safe types in arithmetic expressions
-    according the standard rules in the C++ standard. But rather than using
-    the native C++ standard types supported by the compiler, it uses types
-    whose length in number of bits is specified by the template
-    parameters.</p>
-<p>This policy is useful for running test program which use C++
+    according to the rules in the C++ standard. But rather than using the
+    native C++ standard types supported by the compiler, it uses types whose
+    length in number of bits is specified by the template parameters.</p>
+<p>This policy is useful for running test programs which use C++
     portable integer types but which are destined to run on an architecture
     which is different than the one on which the test program is being built
     and run. This can happen when developing code for embedded systems.
     Algorithms developed or borrowed from one architecture but destined for
-    another can be tested on the desk top.</p>
+    another can be tested on the desktop.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50878650240"></a>Template Parameters</h5></div></div></div>
+<a name="idm392844282816"></a>Template Parameters</h5></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -80,25 +79,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50878633280"></a>Model of</h5></div></div></div>
+<a name="idm392844265856"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50878631568"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../examples/example9.cpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/safe_numerics/cpp.hpp&gt; </code></a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm50878629040"></a>Example of Use</h5></div></div></div>
+<a name="idm392844264144"></a>Example of Use</h5></div></div></div>
 <p>Consider the following problem. One is developing software which
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
     anything else. One debugs this code by using the "burn" and "crash" method
-    - you burn the chip (download the code) run the code, observe the results,
-    make changes and try again. This is a crude method which is usually the
-    one used. But it can be quite time consuming.</p>
+    - you burn the chip (download the code), run the code, observe the
+    results, make changes and try again. This is a crude method which is
+    usually the one used. But it can be quite time consuming.</p>
 <p>Consider an alternative. Build and compile your code in testable
     modules. For each module write a test which exercises all the code and
     makes it work. Finally download your code into the chip and - voil&#224; -
@@ -108,11 +101,11 @@
     other problems), make our algorithm testing environment differ from our
     target environment. We can address this by defining INT as a safe integer
     with a range of 8 bits. By using a custom promotion policy, we can force
-    the evaluation of C++ expressions test environment to be the same as that
-    in the target environment. Also in our target environment, we can trap any
-    overflows or other errors. So we can write and test our code on our
-    desktop system and download the code to the target knowing that it just
-    has to work. This is a huge time saver and confidence builder. The
+    the evaluation of C++ expressions in the test environment to be the same
+    as that in the target environment. Also in our target environment, we can
+    trap any overflows or other errors. So we can write and test our code on
+    our desktop system and download the code to the target knowing that it
+    just has to work. This is a huge time saver and confidence builder. The
     following code is taken from a real project which has used this
     method.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
@@ -136,7 +129,7 @@
 <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">T</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span> <span class="comment">// use for compiling and running tests</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">loose_trap_policy</span> <span class="comment">// use for compiling and running tests</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="keyword">using</span> <span class="identifier">int8</span> <span class="special">=</span> <span class="identifier">safe_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span><span class="special">;</span>
@@ -147,7 +140,7 @@
 <span class="keyword">using</span> <span class="identifier">uint32</span> <span class="special">=</span> <span class="identifier">safe_t</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">uint32_t</span><span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">////////////////////////////////////////////////////////////////</span>
-<span class="comment">// Mock defines, functions etc which are in he "real application</span>
+<span class="comment">// Mock defines, functions etc which are in the "real application"</span>
 
 <span class="special">...</span>
 
@@ -171,6 +164,12 @@ Use the formula:
     being refined. Hopefully this will be available by the time you read
     this.</p>
 </div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm392844152848"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/cpp.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/numeric/safe_numerics/cpp.hpp&gt; </code></a></code></p>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -180,7 +179,7 @@ Use the formula:
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="automatic.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../promotion_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_policies.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="automatic.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../promotion_policies.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../exception_safety.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

@@ -21,15 +21,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="promotion_policy.html#idm50879362016">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm50879351424">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm50879342544">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm50879323440">Header</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm50879321184">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm392845195360">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm392845184768">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm392845175616">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm392845156032">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm392845091136">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879362016"></a>Description</h4></div></div></div>
+<a name="idm392845195360"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
@@ -44,7 +44,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879351424"></a>Notation</h4></div></div></div>
+<a name="idm392845184768"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -57,21 +57,23 @@
             PromotionPollicy</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">T, U, V</code></td>
+<td align="left"><code class="computeroutput">T, U</code></td>
 <td align="left">A type that is a model of the Numeric concept</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">t, u, v</code></td>
-<td align="left">An object of type modeling Numeric</td>
+<td align="left"><code class="computeroutput">R</code></td>
+<td align="left">An object of type modeling Numeric which can be used to
+            construct a SafeNumeric type.</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879342544"></a>Valid Expressions</h4></div></div></div>
+<a name="idm392845175616"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.</p>
+    as some Numeric type will throw an exception.These expressions return a
+    type which can be used as the basis create a SafeNumeric type.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -107,15 +109,17 @@
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::left_shift_result&lt;T&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::left_shift_result&lt;T,
+              U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::right_shift_result&lt;T&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::right_shift_result&lt;T,
+              u&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">PP::bitwise_result&lt;T&gt;::type</code></td>
+<td align="left"><code class="computeroutput">PP::bitwise_result&lt;T, U&gt;::type</code></td>
 <td align="left">unspecified Numeric type</td>
 </tr>
 </tbody>
@@ -123,14 +127,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879323440"></a>Header</h4></div></div></div>
-<p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;safe_numerics/include/concepts/promotion_policy.hpp&gt;
-    </code></a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879321184"></a>Models</h4></div></div></div>
+<a name="idm392845156032"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -140,10 +137,13 @@
 <pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
 <span class="keyword">char</span> <span class="identifier">y</span><span class="special">;</span>
 <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// could result in overflow</span>
-<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
-<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// includes code which traps overflows at runtime</span></pre>
-<p>The type of sz will be safe&lt; type of z &gt;.</p>
-<p>This policy is documented in <a class="link" href="promotion_policies/native.html" title="native">Promotion Policies -
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">native</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// standard C++ code which detects errors</span></pre>
+<p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
+        based on <code class="computeroutput">int</code>. If the result exceeds the maximum value
+        that can be stored in an <code class="computeroutput">int</code>, an error is
+        detected.</p>
+<p>The <code class="computeroutput">native</code> policy is documented in <a class="link" href="promotion_policies/native.html" title="native">Promotion Policies -
         native</a>.</p>
 </li>
 <li class="listitem">
@@ -158,13 +158,14 @@
 <pre class="programlisting"><span class="keyword">int</span> <span class="identifier">x</span><span class="special">;</span>
 <span class="keyword">char</span> <span class="identifier">y</span><span class="special">;</span>
 <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// could result in overflow</span>
-<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
-<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// promotes expression type to a safe&lt;long int&gt; which requires no result checking</span>
-<span class="identifier">is</span> <span class="identifier">guaranteed</span> <span class="identifier">not</span> <span class="identifier">to</span> <span class="identifier">overflow</span><span class="special">.</span>
-
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">automatic</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
+<span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> 
+    <span class="comment">// sz is a safe type based on long</span>
+    <span class="comment">// hence sz is guaranteed not to overflow.</span>
 <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">1</span><span class="special">,</span> <span class="number">4</span><span class="special">&gt;</span> <span class="identifier">a</span><span class="special">;</span>
 <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">,</span> <span class="number">4</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">;</span>
-<span class="keyword">auto</span> <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">a</span> <span class="special">+</span> <span class="identifier">b</span><span class="special">;</span> <span class="comment">// c will be of type safe_unsigned_range&lt;3, 8&gt; and cannot overflow</span></pre>
+<span class="keyword">auto</span> <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">a</span> <span class="special">+</span> <span class="identifier">b</span><span class="special">;</span> <span class="comment">// c will be a safe type with a range [3,8] and cannot overflow</span>
+</pre>
 <p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
         which is guaranteed to hold he result of x + y. In this case that will
         be a long int (or perhaps a long long) depending upon the compiler and
@@ -172,10 +173,17 @@
         special checking on the result and there can be no overflow.</p>
 <p>Type of c will be a signed character as that type can be
         guaranteed to hold the sum so no overflow checking is done.</p>
-<p>This policy is documented in <a class="link" href="promotion_policies/automatic.html" title="automatic">Promotion Policies -
-        automatic</a></p>
+<p>This policy is documented in <a class="link" href="promotion_policies/automatic.html" title="automatic">Promotion
+        Policies - automatic</a></p>
 </li>
 </ul></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm392845091136"></a>Header</h4></div></div></div>
+<p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
+    </code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

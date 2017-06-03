@@ -6,7 +6,6 @@ fi
 xsltproc --nonet --xinclude bb2db.xsl safe_numerics.xml | xsltproc --nonet db2html.xsl -
 cp pre-boost.jpg ../html
 cp pre-boost.jpg ../html/eliminate_runtime_penalty
-cp pre-boost.jpg ../html/exception_policies
 cp pre-boost.jpg ../html/promotion_policies
 cp pre-boost.jpg ../html/tutorial
 cp $BOOST_ROOT/doc/src/boostbook.css ../html

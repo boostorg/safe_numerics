@@ -64,13 +64,19 @@
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<p>Collections
-    like standard arrays, vectors do array index checking in some function
-    calls and not in others so this may not be the best example. However it
-    does illustrate the usage of <code class="computeroutput">safe_range&lt;T&gt;</code> for
-    assigning legal range to variables. This will guarantee that under no
-    circumstances will the variable contain a value outside of the specified
-    range.</p>
+<pre class="programlisting"><span class="identifier">example</span> <span class="number">5</span><span class="special">:</span> <span class="identifier">array</span> <span class="identifier">index</span> <span class="identifier">values</span> <span class="identifier">can</span> <span class="identifier">exceed</span> <span class="identifier">array</span> <span class="identifier">bounds</span>
+<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+<span class="identifier">error</span> <span class="identifier">NOT</span> <span class="identifier">detected</span><span class="special">!</span>
+<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+<span class="identifier">Value</span> <span class="identifier">out</span> <span class="identifier">of</span> <span class="identifier">range</span> <span class="keyword">for</span> <span class="keyword">this</span> <span class="identifier">safe</span> <span class="identifier">type</span>
+<span class="identifier">error</span> <span class="identifier">detected</span><span class="special">!</span>
+<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
+<p>Collections like standard
+    arrays and vectors do array index checking in some function calls and not
+    in others so this may not be the best example. However it does illustrate
+    the usage of <code class="computeroutput">safe_range&lt;T&gt;</code> for assigning legal ranges
+    to variables. This will guarantee that under no circumstances will the
+    variable contain a value outside of the specified range.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

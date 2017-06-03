@@ -21,25 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe.html#idm50879211680">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879209712">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879202368">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879195328">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879177584">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879174992">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879172704">Header</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm50879170592">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392845015632">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392845013632">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392845006288">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392844999248">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392844980544">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392844977888">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392844975600">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm392844791056">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879211680"></a>Description</h4></div></div></div>
+<a name="idm392845015632"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
-    an arithmetically correct value or trap in some way.</p>
+    an arithmetically correct value or to trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879209712"></a>Notation</h4></div></div></div>
+<a name="idm392845013632"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -58,7 +58,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879202368"></a>Associated Types</h4></div></div></div>
+<a name="idm392845006288"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -80,7 +80,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879195328"></a>Template Parameters</h4></div></div></div>
+<a name="idm392844999248"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -96,19 +96,19 @@
 <tr>
 <td><code class="computeroutput">T</code></td>
 <td align="left"><a href="http://en.cppreference.com/w/cpp/types/is_integral" target="_top">Integer&lt;T&gt;</a></td>
-<td align="left"><p>The underlying type. Currently only integer types
+<td align="left"><p>The underlying type. Currently only integer types are
             supported</p></td>
 </tr>
 <tr>
 <td><code class="computeroutput">PP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">PromotionPolicy&lt;PP&gt;</a></td>
-<td align="left"><p>Default value is <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">boost::numeric::native</a></p></td>
+<td align="left"><p>Default value is <a class="link" href="promotion_policies/native.html" title="native"><code class="computeroutput">boost::numeric::native</code></a></p></td>
 </tr>
 <tr>
 <td><code class="computeroutput">EP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Exception
             Policy&lt;EP&gt;</a></td>
-<td align="left"><p>Default value is <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.thow_exception">boost::numeric::throw_exception</a></p></td>
+<td align="left"><p>Default value is <a class="link" href="exception_policies.html#safe_numerics.exception_policies.default_exception_policy"><code class="computeroutput">boost::numeric::default_exception_policy</code></a></p></td>
 </tr>
 </tbody>
 </table></div>
@@ -116,28 +116,22 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879177584"></a>Model of</h4></div></div></div>
+<a name="idm392844980544"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879174992"></a>Valid Expressions</h4></div></div></div>
+<a name="idm392844977888"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
-    requirements. This, the result type of such an expression will be another
+    requirements. Thus, the result type of such an expression will be another
     safe type. The actual type of the result of such an expression will depend
     upon the specific promotion policy template parameter.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879172704"></a>Header</h4></div></div></div>
-<p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
-    &lt;boost/safe_numerics/safe_integer.hpp&gt;</a></code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879170592"></a>Examples of use</h4></div></div></div>
+<a name="idm392844975600"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -148,7 +142,7 @@
 <p>There are two aspects of the operation of this type which can be
     customized with a policy. The first is the result type of an arithmetic
     operation. C++ defines the rules which define this result type in terms of
-    the constituent types of the operation. Here we refer to these rules a
+    the constituent types of the operation. Here we refer to these rules as
     "type promotion" rules. These rules will sometimes result in a type which
     cannot hold the actual arithmetic result of the operation. This is the
     main motivation for making this library in the first place. One way to
@@ -157,7 +151,7 @@
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
 <a name="safe_numerics.drop_in_replacement"></a>As a Drop-in replacement for standard integer types.</h5></div></div></div>
-<p>The following program will throw an exception and emit a error
+<p>The following program will throw an exception and emit an error
       message at runtime if any of several events result in an incorrect
       arithmetic type. Behavior of this program could vary according to the
       machine architecture in question.</p>
@@ -196,18 +190,18 @@
       creates the possibility of subtle bugs. It conflicts with the purpose of
       the library in a fundamental way. The library specifies that these
       conversions are errors that are to be invoked at compile time. If one
-      wants to switch between save and built-in types via an alias, this type
+      wants to switch between safe and built-in types via an alias, this type
       of code will have to be fixed so that implicit conversions to built-in
       types do not occur. In our view, this will be a net improvement to the
       code in any case.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50879093888"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
-<p>In some instance catching an error at run time is not sufficient.
-      We want to be sure that the program can never fail. To achieve this, use
-      the trap_exception exception policy rather than the default throw
-      exception policy.</p>
+<a name="idm392844898752"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
+<p>In some instances, catching an error at run time is not
+      sufficient. We want to be sure that the program can never fail. To
+      achieve this, use the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
+      rather than the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.default_exception_policy"><code class="computeroutput">default_exception_policy</code></a>.</p>
 <p>The following program will emit a compile error at any statement
       which might possibly result in incorrect behavior.</p>
 <p>This is because there is no way to guarantee that the expression i
@@ -227,23 +221,26 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm50879057008"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm392844859344"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
-      types to larger sizes before doing the arithmetic. This can be justified
-      by the observe</p>
+      types to larger sizes before doing the arithmetic.</p>
 <p>Stepping back, we can see that many of the cases of invalid
-      arithmetic are wouldn't exist if results types were larger. So we can
+      arithmetic wouldn't exist if the result types were larger. So we can
       avoid these problems by replacing the C++ type promotion rules for
       expressions with our own rules. This can be done by specifying a
-      non-default type promotion policy automatic. The policy stores the
-      result of an expression in the smallest size that can accommodate the
-      largest value that an expression can yield. All the work is done at
-      compile time - checking for exceptions necessary (input is of course an
-      exception). The following example illustrates this.</p>
+      non-default type promotion policy <code class="computeroutput">automatic</code>. The policy
+      stores the result of an expression in the smallest size that can
+      accommodate the largest value that an expression can yield. All the work
+      is done at compile time - no checking for exceptions is necessary (input
+      is of course an exception). The following example illustrates
+      this.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">safe_int</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">throw_exception</span><span class="special">&gt;</span><span class="special">;</span> 
+    <span class="keyword">using</span> <span class="identifier">safe_int</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span>
+        <span class="keyword">int</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> 
+        <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">default_exception_policy</span>
+    <span class="special">&gt;</span><span class="special">;</span> 
     <span class="identifier">safe_int</span> <span class="identifier">i</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// might throw exception</span>
     <span class="keyword">auto</span> <span class="identifier">j</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// won't ever trap - result type can hold the maximum value of i * i</span>
@@ -254,6 +251,12 @@
     <span class="special">)</span><span class="special">;</span> <span class="comment">// always true</span>
 <span class="special">}</span></pre>
 </div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm392844791056"></a>Header</h4></div></div></div>
+<p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
+    &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

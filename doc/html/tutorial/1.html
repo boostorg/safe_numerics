@@ -32,7 +32,7 @@
     with no indication that the results are wrong. It is the programmer's
     responsibility to ensure such undefined behavior is avoided.</p>
 <p>This program demonstrates this problem. The solution is to replace
-    instances of <code class="computeroutput">char</code> type with <code class="computeroutput">safe&lt;char&gt;</code>
+    instances of <code class="computeroutput">int</code> type with <code class="computeroutput">safe&lt;int&gt;</code>
     type.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
@@ -51,10 +51,7 @@
         <span class="keyword">int</span> <span class="identifier">z</span><span class="special">;</span>
         <span class="comment">// this produces an invalid result !</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
-        <span class="comment">// but assert fails to detect it since C++ implicitly</span>
-        <span class="comment">// converts variables to int before evaluating he expression!</span>
-        <span class="comment">// assert(z == x + y);</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="keyword">static_cast</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">z</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
@@ -64,22 +61,26 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
         <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
-        <span class="comment">// rather than producing and invalid result an exception is thrown</span>
+        <span class="comment">// rather than producing an invalid result an exception is thrown</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="comment">// which can catch here</span>
+        <span class="comment">// which we can catch here</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<p>Note that I've used <code class="computeroutput">char</code> types in this example to make
-    the problem and solution easier to see. The exact same example could have
-    been done with <code class="computeroutput">int</code> types albeit with different values.</p>
+<pre class="programlisting"><span class="identifier">example</span> <span class="number">1</span><span class="special">:</span><span class="identifier">undetected</span> <span class="identifier">erroneous</span> <span class="identifier">expression</span> <span class="identifier">evaluation</span>
+<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+<span class="special">-</span><span class="number">2147483647</span> <span class="special">!=</span> <span class="special">-</span><span class="number">2147483647</span>
+<span class="identifier">error</span> <span class="identifier">NOT</span> <span class="identifier">detected</span><span class="special">!</span>
+<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
+<span class="identifier">addition</span> <span class="identifier">result</span> <span class="identifier">too</span> <span class="identifier">large</span>
+<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

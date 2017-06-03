@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
 <link rel="prev" href="interval.html" title="interval&lt;typename R&gt;">
-<link rel="next" href="exception_type.html" title="exception_type">
+<link rel="next" href="checked_integer_arithmetic.html" title="Checked Integer Arithmetic">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,32 +15,32 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_type.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safenumerics.checked_result"></a>checked_result&lt;typename R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_result.html#idm50878183488">Description</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878181968">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878171392">Notation</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878156912">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878129168">Header</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878127504">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm50878097312">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843951376">Description</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843949856">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843939280">Notation</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843922400">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843894656">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843859408">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm392843857696">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878183488"></a>Description</h4></div></div></div>
-<p>checked_result is a wrapper class designed to hold result of some
-    operation. It can hold either the result of the operation or information
-    on why the operation failed to produce a valid result. Note that this type
-    is an internal feature of the library and shouldn't be exposed to library
-    users because it has some unsafe behavior.</p>
+<a name="idm392843951376"></a>Description</h4></div></div></div>
+<p>checked_result is a wrapper class designed to hold the result of
+    some operation. It can hold either the result of the operation or
+    information on why the operation failed to produce a valid result. Note
+    that this type is an internal feature of the library and shouldn't be
+    exposed to library users because it has some unsafe behavior.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878181968"></a>Template Parameters</h4></div></div></div>
+<a name="idm392843949856"></a>Template Parameters</h4></div></div></div>
 <p>The sole template parameter is the return type of some
     operation.</p>
 <div class="informaltable"><table class="table">
@@ -66,7 +66,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878171392"></a>Notation</h4></div></div></div>
+<a name="idm392843939280"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -92,7 +92,12 @@
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">r</code></td>
-<td align="left">An object of type R</td>
+<td align="left">An instance of type R</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">e</code></td>
+<td align="left">An instance of type <a class="link" href="exception.html#safe_numerics.safe_numerics_error" title="enum class safe_numerics_error">safe_numerics_error</a>
+</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
@@ -103,7 +108,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878156912"></a>Valid Expressions</h4></div></div></div>
+<a name="idm392843922400"></a>Valid Expressions</h4></div></div></div>
 <p>All expressions are constexpr.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -134,8 +139,8 @@
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">static_cast&lt;const char *&gt;(c)</code></td>
-<td align="left">R</td>
-<td align="left">extract wrapped value - asserts if not possible</td>
+<td align="left">const char *</td>
+<td align="left">returns pointer to error message</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput"><table border="0" summary="Simple list" class="simplelist">
@@ -148,7 +153,7 @@
 </table></code></td>
 <td align="left">boost::logic::tribool</td>
 <td align="left">compare the wrapped values of two checked_result
-              instances. If either one contains an invalid value, return
+              instances. If either one contains an error_type value, return
               boost::logic::tribool::indeterminant.</td>
 </tr>
 <tr>
@@ -165,7 +170,7 @@
 <tr>
 <td align="left"><code class="computeroutput">dispatch&lt;EP&gt;(c)</code></td>
 <td align="left">void</td>
-<td align="left">invoke exception in accordance exception_type
+<td align="left">invoke exception in accordance with exception_type
               value</td>
 </tr>
 </tbody>
@@ -173,13 +178,8 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878129168"></a>Header</h4></div></div></div>
-<p><code class="computeroutput">#include "checked_result.hpp" </code></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878127504"></a>Example of use</h4></div></div></div>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="string">"checked_result.hpp"</span>
+<a name="idm392843894656"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">checked_result</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">&gt;</span>
 <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
@@ -198,8 +198,15 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50878097312"></a>See Also</h4></div></div></div>
+<a name="idm392843859408"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm392843857696"></a>Header</h4></div></div></div>
+<p><a href="../include/checked_result.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
+    </code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
@@ -210,7 +217,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_type.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

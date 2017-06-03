@@ -46,7 +46,7 @@
 <span class="special">}</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 10: "</span><span class="special">;</span>
+    <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 4: "</span><span class="special">;</span>
     <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"mixing types produces surprising results"</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span> <span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
@@ -64,7 +64,7 @@
         <span class="identifier">safe_f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="number">100</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// works as expected</span>
         <span class="identifier">safe_f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="special">-</span><span class="number">100</span><span class="special">)</span><span class="special">;</span> <span class="comment">// throw error</span>
     <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"detected error:"</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
@@ -73,16 +73,16 @@
 </pre>
 <p>Here
     is the output of the above program:</p>
-<pre class="screen">example 10: mixing types produces surprising results
+<pre class="screen">example 4: mixing types produces surprising results
 Not using safe numerics
 10000
 4294957296
 Using safe numerics
 10000
 detected error:converted negative value to unsigned
-</pre>
-<p>This solution is simple, Just replace instances of the
-    <code class="computeroutput">int</code> with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
+Program ended with exit code: 0</pre>
+<p>This solution is simple, just replace
+    instances of <code class="computeroutput">int</code> with <code class="computeroutput">safe&lt;int&gt;</code>.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

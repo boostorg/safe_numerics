@@ -20,10 +20,9 @@
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.notes"></a>Background</h2></div></div></div>
-<p>This library is a re-implementation of the facilities provided by
-  <a href="http://safeint.codeplex.com" target="_top">David LeBlanc's SafeInt
-  Library</a> using C++14 and the <a href="http://www.boost.org" target="_top">Boost
-  Libraries</a>. I found this library very well done in every way. My main
+<p>This library started out as a re-implementation of the facilities
+  provided by <a href="http://safeint.codeplex.com" target="_top">David LeBlanc's SafeInt
+  Library</a>. I found this library to be well done in every way. My main
   usage was to run unit tests for my embedded systems projects on my PC.
   Still, I had a few issues.</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
@@ -37,12 +36,9 @@
 <li class="listitem"><p>It had a very long license associated with it.</p></li>
 <li class="listitem"><p>I could find no test suite for the library.</p></li>
 </ul></div>
-<p>This version addresses these issues. It exploits <a href="http://www.boost.org" target="_top">Boost</a> facilities such as template
-  metaprogramming to reduce the number of lines of source code to
-  approximately 4700. It exploits the Boost Preprocessor Library to generate
-  exhaustive tests.</p>
-<p>All concepts, types and functions documented are declared in the name
-  space <code class="computeroutput">boost::numeric</code>.</p>
+<p>This version addresses these issues. It exploits many facilities of
+  C++14 and the <a href="http://www.boost.org" target="_top">Boost libraries</a> to
+  reduce the number of lines of source code to approximately 4700.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

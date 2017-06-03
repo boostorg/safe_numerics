@@ -27,7 +27,7 @@
     fall in the range [-24,82]. So we "know" the program will always result in
     a correct result. But since we trust no one, and since the program could
     change and the expressions be replaced with other ones, we'll still use
-    the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+    the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
     exception policy to verify at compile time that what we "know" to be true
     is in fact true.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
@@ -43,12 +43,12 @@
 <span class="comment">// create a type for holding small integers.  We "know" that C++</span>
 <span class="comment">// type promotion rules will work such that addition will never</span>
 <span class="comment">// overflow. If we change the program to break this, the usage</span>
-<span class="comment">// of the trap_exception promotion policy will prevent compilation.</span>
+<span class="comment">// of the no_exceptions_policy will prevent compilation.</span>
 <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
     <span class="identifier">native</span><span class="special">,</span>         <span class="comment">// C++ type promotion rules work OK for this example</span>
-    <span class="identifier">trap_exception</span>  <span class="comment">// catch problems at compile time</span>
+    <span class="identifier">loose_trap_policy</span>  <span class="comment">// catch problems at compile time</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
@@ -57,8 +57,8 @@
     <span class="comment">// since the sum of x and y wouldn't be in the legal</span>
     <span class="comment">// range for z.</span>
     <span class="comment">// const safe_signed_literal&lt;20&gt; x;</span>
-    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">10</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>    <span class="comment">// no problem</span>
-    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">67</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">10</span><span class="special">,</span> <span class="identifier">native</span><span class="special">,</span> <span class="identifier">loose_trap_policy</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>  <span class="comment">// no problem</span>
+    <span class="keyword">const</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">67</span><span class="special">,</span> <span class="identifier">native</span><span class="special">,</span> <span class="identifier">loose_trap_policy</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
 
     <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
@@ -72,13 +72,13 @@
           which is limited to the indicated range. Out of range assignments
           will be detected at compile time if possible (as in this case) or at
           run time if necessary.</p></li>
-<li class="listitem"><p><code class="computeroutput">safe_literal</code> defines a constant with a specific
-          value. Defining constants in this way enables the library to
-          correctly anticipate the range of the results of arithmetic
+<li class="listitem"><p><code class="computeroutput">safe_signed_literal</code> defines a constant with a
+          specific value. Defining constants in this way enables the library
+          to correctly anticipate the range of the results of arithmetic
           expressions.</p></li>
-<li class="listitem"><p>The usage of "trap exception" will mean that any assignment to
-          z which could be outside the legal range will result in a compile
-          time error.</p></li>
+<li class="listitem"><p>The usage of <code class="computeroutput"><a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a></code>
+          will mean that any assignment to z which could be outside the legal
+          range will result in a compile time error.</p></li>
 <li class="listitem"><p>So if this program compiles, it's guaranteed to return a valid
           result.</p></li>
 </ul></div>

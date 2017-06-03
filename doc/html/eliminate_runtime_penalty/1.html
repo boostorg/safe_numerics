@@ -33,26 +33,25 @@
 <p>So the result of the sum of two integer types may result in another
     integer type. If the values are large, the result can exceed the size that
     the resulting integer type can hold. This is what we call "overflow". The
-    C/C++ standard characterises this as undefined behavior and leaves to
+    C/C++ standard characterizes this as undefined behavior and leaves to
     compiler implementors the decision as to how such a situation will be
     handled. Usually, this means just truncating the result to fit into the
     result type - which sometimes will make the result arithmetically
-    incorrect. However, depending on the compiler, compile time switch
-    settings, the such case may result in some sort of run time
-    exception.</p>
+    incorrect. However, depending on the compiler and compile time switch
+    settings, such cases may result in some sort of run time exception.</p>
 <p>The complete signature for a safe integer type is:</p>
 <pre class="programlisting"><span class="keyword">template</span> <span class="special">&lt;</span>
     <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span>                  <span class="comment">// underlying integer type</span>
     <span class="keyword">class</span> <span class="identifier">P</span> <span class="special">=</span> <span class="identifier">native</span><span class="special">,</span>         <span class="comment">// type promotion policy class</span>
-    <span class="keyword">class</span> <span class="identifier">E</span> <span class="special">=</span> <span class="identifier">throw_exception</span> <span class="comment">// error handling policy class</span>
+    <span class="keyword">class</span> <span class="identifier">E</span> <span class="special">=</span> <span class="identifier">default_exception_policy</span> <span class="comment">// error handling policy class</span>
 <span class="special">&gt;</span>
 <span class="identifier">safe</span><span class="special">;</span>
 </pre>
-<p>The standard C++ type promotion rules are consistent with the
-    default <code class="computeroutput"><a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.native">native</a></code>
-    type promotion policy. Up until now, we've focused on detecting when this
-    happens and invoking an interrupt or other kind of error handler.</p>
-<p>But now we look at another option. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic"><code class="computeroutput">automatic</code></a>
+<p>The promotion rules implemented in the default <code class="computeroutput"><a class="link" href="promotion_policies/native.html" title="native">native</a></code>
+    type promotion policy are consistent with those of standard C++</p>
+<p>Up until now, we've focused on detecting when this happens and
+    invoking an exception or other kind of error handler.</p>
+<p>But now we look at another option. Using the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
     type promotion policy, we can change the rules of C++ arithmetic for safe
     types to something like the following:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
@@ -72,14 +71,14 @@
 <span class="keyword">long</span> <span class="identifier">z</span> <span class="special">=</span> <span class="special">(</span><span class="keyword">long</span><span class="special">)</span><span class="identifier">x</span> <span class="special">+</span> <span class="special">(</span><span class="keyword">long</span><span class="special">)</span><span class="identifier">y</span><span class="special">;</span> <span class="comment">// can never overflow</span></pre>
 <p>One could do this by editing his code manually, but such a
           task would be tedious, error prone, and leave the resulting code
-          hard to read and verify. Using the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic"><code class="computeroutput">automatic</code></a>
+          hard to read and verify. Using the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
           type promotion policy will achieve the equivalent result without
-          these problems</p>
+          these problems.</p>
 </li>
 <li class="listitem"><p>Since the result type is guaranteed to hold the result, there
-          is no need to check for errors - they can't happen !!! The usage of
-          <a class="link" href="exception_policy.html#safe_numerics.exception_policy.models.trap_exception"><code class="computeroutput">trap_exception</code></a>
-          exception policy enforces this guarantee</p></li>
+          is no need to check for errors - they can't happen!!! The usage of
+          the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
+          exception policy enforces this guarantee.</p></li>
 <li class="listitem"><p>Since there can be no errors, there is no need for
           <code class="computeroutput">try/catch</code> blocks.</p></li>
 <li class="listitem"><p>The only runtime error checking we need to do is when safe
@@ -92,28 +91,28 @@
 <p>In short, given a binary operation, we silently promote the types of
     the operands to a wider result type so the result cannot overflow. This is
     a fundamental departure from the C++ Standard behavior.</p>
-<p>If the interval of the result cannot be contained in the largest
-    type that the machine can handle (usually 64 bits these days), the largest
-    available integer type with the correct result sign is used. So even with
-    our "automatic" type promotion scheme, it's still possible to overflow. In
-    this case, and only this case, is runtime error checking code generated.
-    Depending on the application, it should be rare to generate error checking
-    code, and even more rare to actually invoke it. Any such instances are
-    detected by the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+<p>If the interval of the result cannot be guaranteed to fit in the
+    largest type that the machine can handle (usually 64 bits these days), the
+    largest available integer type with the correct result sign is used. So
+    even with our "automatic" type promotion scheme, it's still possible to
+    overflow. In this case, and only this case, is runtime error checking code
+    generated. Depending on the application, it should be rare to generate
+    error checking code, and even more rare to actually invoke it. Any such
+    instances are detected at compile time by the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
     exception policy.</p>
 <p>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/exception_policies.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"safe_format.hpp"</span> <span class="comment">// prints out range and value of any type</span>
 
 <span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="keyword">int</span><span class="special">,</span>
     <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// note use of "automatic" policy!!!</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">loose_trap_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
@@ -137,13 +136,13 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     display the underlying type and its range as well as current value. Note
     that:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>the <a class="link" href="promotion_policy.html#safe_numerics.promotion_policy.models.automatic"><code class="computeroutput">automatic</code></a>
-          type promotion policy has rendered the result of the some of two
+<li class="listitem"><p>the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
+          type promotion policy has rendered the result of the sum of two
           <code class="computeroutput">integers</code> as a <code class="computeroutput">long</code> type.</p></li>
-<li class="listitem"><p>our program compiles without error - even when using the <a class="link" href="exception_policies/trap_exception.html" title="trap_exception"><code class="computeroutput">trap_exception</code></a>
+<li class="listitem"><p>our program compiles without error - even when using the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
           exception policy</p></li>
-<li class="listitem"><p>We do not need to use <code class="computeroutput">try/catch</code> idiom to handle
-          arithmetic errors - we will have none.</p></li>
+<li class="listitem"><p>We do not need to use the <code class="computeroutput">try/catch</code> idiom to
+          handle arithmetic errors - we will have none.</p></li>
 <li class="listitem"><p>We only needed to change two lines of code to achieve our
           goal</p></li>
 </ul></div>

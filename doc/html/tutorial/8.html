@@ -21,8 +21,8 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.tutorial.8"></a>Programming by Contract is Too Slow</h3></div></div></div>
 <p>Programming by Contract is a highly regarded technique. There has
-    been much written about it has been proposed as an addition to the C++
-    language [<a class="citation" href="bibliography.html#garcia"><span class="citation">Garcia</span></a>][<span class="citation">Crowl &amp;
+    been much written about it and it has been proposed as an addition to the
+    C++ language [<a class="citation" href="bibliography.html#garcia"><span class="citation">Garcia</span></a>][<span class="citation">Crowl &amp;
     Ottosen</span>]. It (mostly) depends upon runtime checking of parameter
     and object values upon entry to and exit from every function. This can
     slow the program down considerably which in turn undermines the main
@@ -33,8 +33,8 @@
     programmers as long as it is associated with significant additional
     runtime cost.</p>
 <p>The Safe Numerics Library has facilities which, in many cases, can
-    check guarantee parameter requirements with little or no runtime overhead.
-    Consider the following example:</p>
+    check guaranteed parameter requirements with little or no runtime
+    overhead. Consider the following example:</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">sstream</span><span class="special">&gt;</span>
@@ -44,7 +44,7 @@
 
 <span class="comment">// NOT using safe numerics - enforce program contract explicitly</span>
 <span class="comment">// return total number of minutes</span>
-<span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">convert</span><span class="special">(</span>
+<span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">contract_convert</span><span class="special">(</span>
     <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="special">&amp;</span> <span class="identifier">hours</span><span class="special">,</span>
     <span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="special">&amp;</span> <span class="identifier">minutes</span>
 <span class="special">)</span> <span class="special">{</span>
@@ -60,104 +60,74 @@
 <span class="special">}</span>
 
 <span class="comment">// Use safe numeric to enforce program contract automatically</span>
-<span class="comment">// define convient typenames for hours and minutes hh:mm</span>
+<span class="comment">// define convenient typenames for hours and minutes hh:mm</span>
 <span class="keyword">using</span> <span class="identifier">hours_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">0</span><span class="special">,</span> <span class="number">23</span><span class="special">&gt;</span><span class="special">;</span>
 <span class="keyword">using</span> <span class="identifier">minutes_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">0</span><span class="special">,</span> <span class="number">59</span><span class="special">&gt;</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="identifier">minutes_total_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">0</span><span class="special">,</span> <span class="number">59</span><span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// return total number of minutes</span>
 <span class="comment">// type returned is safe_unsigned_range&lt;0, 24*60 - 1&gt;</span>
-<span class="keyword">auto</span> <span class="identifier">safe_convert</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">hours_t</span> <span class="special">&amp;</span> <span class="identifier">hours</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">minutes_t</span> <span class="special">&amp;</span> <span class="identifier">minutes</span><span class="special">)</span> <span class="special">{</span>
-    <span class="comment">// no need for checking as parameters are guaranteed to be within limits</span>
-    <span class="comment">// expression below cannot throw ! zero runtime overhead</span>
+<span class="keyword">auto</span> <span class="identifier">convert</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">hours_t</span> <span class="special">&amp;</span> <span class="identifier">hours</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">minutes_t</span> <span class="special">&amp;</span> <span class="identifier">minutes</span><span class="special">)</span> <span class="special">{</span>
+    <span class="comment">// no need to test pre-conditions</span>
+    <span class="comment">// input parameters are guaranteed to hold legitimate values</span>
+    <span class="comment">// no need to test post-conditions</span>
+    <span class="comment">// return value guaranteed to hold result</span>
     <span class="keyword">return</span> <span class="identifier">hours</span> <span class="special">*</span> <span class="number">60</span> <span class="special">+</span> <span class="identifier">minutes</span><span class="special">;</span>
 <span class="special">}</span>
 
-<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 7: "</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"enforce contracts with zero runtime cost"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-
+<span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">test</span><span class="special">(</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">hours</span><span class="special">,</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">minutes</span>
+<span class="special">)</span><span class="special">{</span>
     <span class="comment">// problem: checking of externally produced value can be expensive</span>
-    <span class="keyword">try</span> <span class="special">{</span>
-        <span class="identifier">convert</span><span class="special">(</span><span class="number">10</span><span class="special">,</span> <span class="number">83</span><span class="special">)</span><span class="special">;</span> <span class="comment">// invalid parameters - detected - but at a heavy cost</span>
-    <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"exception thrown for parameter error"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="special">}</span>
+    <span class="comment">// invalid parameters - detected - but at a heavy cost</span>
+    <span class="keyword">return</span> <span class="identifier">contract_convert</span><span class="special">(</span><span class="identifier">hours</span><span class="special">,</span> <span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span>
 
-    <span class="comment">// solution: use safe range to restrict parameters</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="comment">// solution: use safe numerics</span>
+    <span class="comment">// safe types can be implicitly constructed base types</span>
+    <span class="comment">// construction guarentees corectness</span>
+    <span class="comment">// return value is known to fit in unsigned int</span>
+    <span class="keyword">return</span> <span class="identifier">convert</span><span class="special">(</span><span class="identifier">hours</span><span class="special">,</span> <span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span>
 
-    <span class="keyword">try</span> <span class="special">{</span>
-        <span class="comment">// parameters are guarenteed to meet requirements</span>
-        <span class="identifier">hours_t</span> <span class="identifier">hours</span><span class="special">(</span><span class="number">10</span><span class="special">)</span><span class="special">;</span>
-        <span class="identifier">minutes_t</span> <span class="identifier">minutes</span><span class="special">(</span><span class="number">83</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// interrupt thrown here</span>
-        <span class="comment">// so the following will never throw</span>
-        <span class="identifier">safe_convert</span><span class="special">(</span><span class="identifier">hours</span><span class="special">,</span> <span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span>
-    <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span>
-            <span class="special">&lt;&lt;</span> <span class="string">"exception thrown when invalid arguments are constructed"</span>
-            <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="special">}</span>
+    <span class="comment">// actually we don't even need the convert function any more</span>
+    <span class="keyword">return</span> <span class="identifier">hours_t</span><span class="special">(</span><span class="identifier">hours</span><span class="special">)</span> <span class="special">*</span> <span class="number">60</span> <span class="special">+</span> <span class="identifier">minutes_t</span><span class="special">(</span><span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 8: "</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"enforce contracts with zero runtime cost"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">total_minutes</span><span class="special">;</span>
 
     <span class="keyword">try</span> <span class="special">{</span>
-        <span class="comment">// parameters are guarenteed to meet requirements when</span>
-        <span class="comment">// constructed on the stack</span>
-        <span class="identifier">safe_convert</span><span class="special">(</span><span class="identifier">hours_t</span><span class="special">(</span><span class="number">10</span><span class="special">)</span><span class="special">,</span> <span class="identifier">minutes_t</span><span class="special">(</span><span class="number">83</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+        <span class="identifier">total_minutes</span> <span class="special">=</span> <span class="identifier">test</span><span class="special">(</span><span class="number">17</span><span class="special">,</span> <span class="number">83</span><span class="special">)</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span>
-            <span class="special">&lt;&lt;</span> <span class="string">"exception thrown when invalid arguments are constructed on the stack"</span>
-            <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"parameter error detected"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
 
     <span class="keyword">try</span> <span class="special">{</span>
-        <span class="comment">// parameters are guarenteed to meet requirements when</span>
-        <span class="comment">// implicitly constructed to safe types to match function signature</span>
-        <span class="identifier">safe_convert</span><span class="special">(</span><span class="number">10</span><span class="special">,</span> <span class="number">83</span><span class="special">)</span><span class="special">;</span>
+        <span class="identifier">total_minutes</span> <span class="special">=</span> <span class="identifier">test</span><span class="special">(</span><span class="number">17</span><span class="special">,</span> <span class="number">10</span><span class="special">)</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span>
-            <span class="special">&lt;&lt;</span> <span class="string">"exception thrown when invalid arguments are implicitly constructed"</span>
-            <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="comment">// should never arrive here</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"parameter error erroneously detected"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="number">1</span><span class="special">;</span>
     <span class="special">}</span>
-
-    <span class="keyword">try</span> <span class="special">{</span>
-        <span class="comment">// the following will never throw as the values meet requirements.</span>
-        <span class="keyword">const</span> <span class="identifier">hours_t</span> <span class="identifier">hours</span><span class="special">(</span><span class="number">10</span><span class="special">)</span><span class="special">;</span>
-        <span class="keyword">const</span> <span class="identifier">minutes_t</span> <span class="identifier">minutes</span><span class="special">(</span><span class="number">17</span><span class="special">)</span><span class="special">;</span>
-
-        <span class="comment">// note zero runtime overhead once values are constructed</span>
-
-        <span class="comment">// the following will never throw because it cannot be called with</span>
-        <span class="comment">// invalid parameters</span>
-        <span class="identifier">safe_convert</span><span class="special">(</span><span class="identifier">hours</span><span class="special">,</span> <span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span> <span class="comment">// zero runtime overhead</span>
-
-        <span class="comment">// since safe types can be converted to their underlying unsafe types</span>
-        <span class="comment">// we can still call an unsafe function with safe types</span>
-        <span class="identifier">convert</span><span class="special">(</span><span class="identifier">hours</span><span class="special">,</span> <span class="identifier">minutes</span><span class="special">)</span><span class="special">;</span> <span class="comment">// zero (depending on compiler) runtime overhead</span>
-
-        <span class="comment">// since unsafe types can be implicitly converted to corresponding</span>
-        <span class="comment">// safe types we can just pass the unsafe types.  checkin will occur</span>
-        <span class="comment">// when the safe type is constructed.</span>
-        <span class="identifier">safe_convert</span><span class="special">(</span><span class="number">10</span><span class="special">,</span> <span class="number">17</span><span class="special">)</span><span class="special">;</span> <span class="comment">// runtime cost in creating parameters</span>
-
-    <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="special">}</span>
-
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<p>In the example above the function convert incurs significant runtime
-    cost every time the function is called. By using "safe" types, this cost
-    is moved to moment when the parameters are constructed. Depending on how
-    the program is constructed, this may totally eliminate extraneous
-    computations for parameter requirement type checking. In this scenario,
-    there is no reason to suppress the checking for release mode and our
-    program can be guaranteed to be always arithmetically correct.</p>
+<pre class="programlisting"><span class="identifier">example</span> <span class="number">8</span><span class="special">:</span> <span class="identifier">enforce</span> <span class="identifier">contracts</span> <span class="identifier">with</span> <span class="identifier">zero</span> <span class="identifier">runtime</span> <span class="identifier">cost</span>
+<span class="identifier">parameter</span> <span class="identifier">error</span> <span class="identifier">detected</span>
+<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
+<p>In the example above, the function <code class="computeroutput">convert</code> incurs
+    significant runtime cost every time the function is called. By using
+    "safe" types, this cost is moved to the moment when the parameters are
+    constructed. Depending on how the program is constructed, this may totally
+    eliminate extraneous computations for parameter requirement type checking.
+    In this scenario, there is no reason to suppress the checking for release
+    mode and our program can be guaranteed to be always arithmetically
+    correct.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

@@ -21,23 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception_policy"></a>ExceptionPolicy&lt;EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception_policy.html#idm50879256944">Description</a></span></dt>
-<dt><span class="section"><a href="exception_policy.html#idm50879255520">Notation</a></span></dt>
-<dt><span class="section"><a href="exception_policy.html#idm50879248832">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="exception_policy.html#idm50879229584">Header</a></span></dt>
-<dt><span class="section"><a href="exception_policy.html#idm50879227328">Models</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845087328">Description</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845085920">Notation</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845078048">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845062272">dispatch&lt;EP&gt;(const safe_numerics_error &amp; e, const char *
+    msg)</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845033600">Models</a></span></dt>
+<dt><span class="section"><a href="exception_policy.html#idm392845020528">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879256944"></a>Description</h4></div></div></div>
+<a name="idm392845087328"></a>Description</h4></div></div></div>
 <p>The exception policy specifies what is to occur when a safe
-    operation cannot return a valid arithmetic result. A type is an
-    ExceptionPolicy if it has functions for handling exceptional events that
-    occur in the course of safe numeric operations.</p>
+    operation cannot return a valid result. A type is an ExceptionPolicy if it
+    has functions for handling exceptional events that occur in the course of
+    safe numeric operations.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879255520"></a>Notation</h4></div></div></div>
+<a name="idm392845085920"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -46,8 +48,12 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
-<td align="left">A type that full fills the requirements of an
-            ExceptionPollicy</td>
+<td align="left">A type that fulfills the requirements of an
+            ExceptionPolicy</td>
+</tr>
+<tr>
+<td align="left">e</td>
+<td align="left">A code from safe_numerics_error</td>
 </tr>
 <tr>
 <td align="left">message</td>
@@ -59,9 +65,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879248832"></a>Valid Expressions</h4></div></div></div>
-<p>Any operations which result in integers which cannot be represented
-    as some Numeric type will throw an exception.</p>
+<a name="idm392845078048"></a>Valid Expressions</h4></div></div></div>
+<p>Whenever an operation yield an invalid result, one of the following
+    functions will be invoked.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -75,83 +81,105 @@
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><code class="computeroutput">EP::no_error(const char * message)</code></td>
+<td align="left"><code class="computeroutput">EP::on_arithmetic_error(e, message)</code></td>
 <td align="left">void</td>
-<td align="left">Unused.</td>
+<td align="left">when operation produces arithmetically incorrect
+              result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">EP::uninitialized_error(const char *
+<td align="left"><code class="computeroutput">EP::on_implementation_defined_behavior(e,
               message)</code></td>
 <td align="left">void</td>
-<td align="left">Argument uninitialized.</td>
+<td align="left">when result is defined by the particular C++
+              implementation</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">EP::overflow_error(const char *
+<td align="left"><code class="computeroutput">EP::on_undefined_behavior(e,
               message)</code></td>
 <td align="left">void</td>
-<td align="left">&#160;</td>
+<td align="left">when result is undefined</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">EP::underflow_error(const char *
+<td align="left"><code class="computeroutput">EP::on_uninitialized_value(e,
               message)</code></td>
 <td align="left">void</td>
-<td align="left">&#160;</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">EP::range_error(const char *
-              message)</code></td>
-<td align="left">void</td>
-<td align="left">Divide by zero.</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">EP::domain_error(const char *
-              message)</code></td>
-<td align="left">void</td>
-<td align="left">Argument outside permitted range.</td>
+<td align="left">when an uninitialized variable is used - currently not
+              implemented</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879229584"></a>Header</h4></div></div></div>
-<p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
-    &lt;safe_numerics/include/concepts/exception_policy.hpp&gt;
-    </code></a></p>
+<a name="idm392845062272"></a>dispatch&lt;EP&gt;(const safe_numerics_error &amp; e, const char *
+    msg)</h4></div></div></div>
+<p>This function is used to invoke the exception handling policy for a
+    particular exception code.</p>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm392845060992"></a>Synopsis</h5></div></div></div>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">EP</span><span class="special">&gt;</span>
+<span class="keyword">constexpr</span> <span class="keyword">void</span>
+<span class="identifier">dispatch</span><span class="special">&lt;</span><span class="identifier">EP</span><span class="special">&gt;</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_numerics_error</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">,</span> <span class="keyword">char</span> <span class="keyword">const</span> <span class="special">*</span> <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">msg</span><span class="special">)</span><span class="special">;</span></pre>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h5 class="title">
+<a name="idm392845043280"></a>Example of use</h5></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">exception_policies</span><span class="special">.</span><span class="identifier">hpp</span><span class="string">"
+
+dispatch&lt;boost::numeric::loose_exception_policy&gt;(
+    boost::numeric::safe_numerics_error::positive_overflow_error, 
+    "</span><span class="identifier">operation</span> <span class="identifier">resulted</span> <span class="identifier">in</span> <span class="identifier">overflow</span><span class="string">"
+);</span></pre>
+</div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm50879227328"></a>Models</h4></div></div></div>
-<p>The library header <a href="../../include/exception_policies.hpp" target="_top"><code class="computeroutput">&lt;safe_numerics/include/exception_policies.hpp&gt;
+<a name="idm392845033600"></a>Models</h4></div></div></div>
+<p>The library header <a href="../../include/exception_policies.hpp" target="_top"><code class="computeroutput">&lt;boost/numerics/safe_numerics/exception_policies.hpp&gt;
     </code></a>contains a number of pre-made exception policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
-<p><a name="safe_numerics.exception_policy.models.thow_exception"></a><code class="computeroutput">boost::numeric::throw_exception</code></p>
-<p>If an exceptional condition is detected at runtime throw the
-        exception. Safe types use this exception policy as the default if no
-        other one is specified.</p>
+<p><code class="computeroutput">boost::numeric::loose_exception_policy</code></p>
+<p>Throw on arithmetic errors, ignore other errors. Some
+        applications ignore these issues and still work and we don't want to
+        update them.</p>
 </li>
 <li class="listitem">
-<p><a name="safe_numerics.exception_policy.models.ignore_exception"></a><code class="computeroutput">boost::numeric::ignore_exception</code></p>
-<p>Emulate the normal C/C++ behavior of permitting overflows,
-        underflows etc.</p>
+<p><code class="computeroutput">boost::numeric::loose_trap_policy</code></p>
+<p>Same as above in that it doesn't check for various undefined
+        behaviors but traps at compile time for hard arithmetic errors. This
+        policy would be suitable for older embedded systems which depend on
+        bit manipulation operations to work.</p>
 </li>
 <li class="listitem">
-<p><a name="safe_numerics.exception_policy.models.no_exception_support"></a><code class="computeroutput">template&lt;void (*F)(const char *), void (*G)(const char
-        *), void (*H)(const char *)&gt;</code></p>
-<p><code class="computeroutput">boost::numeric::no_exception_support</code></p>
-<p>If you want to specify specific behavior for particular
-        exception types, use this policy. The most likely situation is where
-        you don't have exception support and you want to trap "exceptions" by
-        calling your own special functions.</p>
+<p><code class="computeroutput">boost::numeric::strict_exception_policy</code></p>
+<p>Permit just about anything, throw at runtime on any kind of
+        error. Recommended for new code. Check everything at compile time if
+        possible and runtime if necessary. Trap or Throw as appropriate.
+        Should guarantee code to be portable across architectures.</p>
 </li>
 <li class="listitem">
-<p><a name="safe_numerics.exception_policy.models.trap_exception"></a><code class="computeroutput">boost::numeric::trap_exception</code></p>
-<p>Use this policy to trap at compile time any operation which
-        would otherwise trap at runtime. Hence expressions such as i/j will
-        trap at compile time unless j can be guaranteed to not be zero.</p>
+<p><code class="computeroutput">boost::numeric::strict_trap_policy</code></p>
+<p>Same as above but requires code to be written in such a way as
+        to make it impossible for errors to occur. This naturally will require
+        extra coding effort but might be justified for embedded and/or safety
+        critical systems.</p>
+</li>
+<li class="listitem">
+<p><code class="computeroutput">boost::numeric::default_exception_policy</code></p>
+<p>Alias for <code class="computeroutput">strict_exception_policy</code>, One would use
+        this first. After experimentation, one might switch to one of the
+        above policies or perhaps use a custom policy.</p>
 </li>
 </ul></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm392845020528"></a>Header</h4></div></div></div>
+<p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/numeric/safe_numerics/concepts/exception_policy.hpp&gt;
+    </code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
