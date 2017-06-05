@@ -688,6 +688,9 @@ constexpr checked_result<R> left_shift(
 
     // standard paragraph 5.8 & 1
     // if the right operand is negative
+    if(u == 0){
+        return t;
+    }
     if(u < 0){
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
@@ -764,6 +767,9 @@ constexpr checked_result<R> right_shift(
 
     // standard paragraph 5.8 & 1
     // if the right operand is negative
+    if(u == 0){
+        return t;
+    }
     if(u < 0){
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,

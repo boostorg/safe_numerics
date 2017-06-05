@@ -137,7 +137,7 @@ bool test_modulus(
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
                 try{
-                    result = t1 % t2;
+                    t1 % t2;
                 }
                 catch(std::exception){}
                 return false;

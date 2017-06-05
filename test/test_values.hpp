@@ -10,7 +10,7 @@
 
 #include <cstdint>
 
-#define VALUES (32, (                 \
+#define VALUES (33, (                 \
     (std::int8_t)0x01,                \
     (std::int8_t)0x7f,                \
     (std::int8_t)0x80,                \
@@ -42,7 +42,8 @@
     (std::uint64_t)0x0000000000000001,\
     (std::uint64_t)0x7fffffffffffffff,\
     (std::uint64_t)0x8000000000000000,\
-    (std::uint64_t)0xffffffffffffffff \
+    (std::uint64_t)0xffffffffffffffff,\
+    (std::int8_t)0x0                  \
 ))
 
 #endif

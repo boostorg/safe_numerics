@@ -27,46 +27,47 @@ using safe_t = boost::numeric::safe<
 
 const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
-//      01234567012345670123456701234567
-//      01234567890123456789012345678901
-/* 0*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 1*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 4*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 5*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+//      012345670123456701234567012345670
+//      012345678901234567890123456789012
+/* 0*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/* 1*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/* 4*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/* 5*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
 
-/* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/* 9*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*13*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/* 9*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*13*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
 
 //      0       0       0       0
-//      01234567012345670123456701234567
-//      01234567890123456789012345678901
-/*16*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*17*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*18*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*19*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*20*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*21*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*22*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*23*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
+//      012345670123456701234567012345670
+//      012345678901234567890123456789012
+/*16*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*17*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*18*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*19*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*20*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*21*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*22*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*23*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
 
-/*24*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*25*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*26*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*27*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx",
-/*30*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+/*24*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*25*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*26*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*27*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
+/*30*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*31*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*32*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx."
 };
 
 #include <boost/preprocessor/stringize.hpp>
