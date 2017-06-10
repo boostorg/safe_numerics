@@ -13,7 +13,7 @@ using safe_t = safe_signed_range<
     -24,
     82,
     automatic,
-    no_exceptions_policy
+    loose_trap_policy
 >;
 
 // define variables used for input
@@ -21,7 +21,7 @@ using input_safe_t = safe_signed_range<
     -24,
     82,
     automatic, // we don't need automatic in this case
-    throw_exception // assignment of out of range value should throw
+    loose_exception_policy // assignment of out of range value should throw
 >;
 
 // function arguments can never be outside of limits

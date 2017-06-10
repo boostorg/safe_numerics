@@ -156,32 +156,17 @@ struct cpp {
     struct division_result {
        using type = result_type<T, U>;
     };
-/*
-    // forward to correct divide implementation
-    template<class R, class T, class U>
-    checked_result<R>
-    static constexpr divide(
-        const T & t,
-        const U & u
-    ){
-        return checked::divide<R>(t, u);
-    }
-*/
     template<typename T, typename U>
     struct modulus_result {
        using type = result_type<T, U>;
     };
-/*
-    // forward to correct modulus implementation
-    template<class R, class T, class U>
-    checked_result<R>
-    static constexpr modulus(
-        const T & t,
-        const U & u
-    ){
-        return checked::modulus<R>(t, u);
-    }
-*/
+    // note: comparison_result (<, >, ...) is special.
+    // The return value is always a bool.  The type returned here is
+    // the intermediate type applied to make the values comparable.
+    template<typename T, typename U>
+    struct comparison_result {
+        using type = result_type<T, U>;
+    };
     template<typename T, typename U>
     struct left_shift_result {
        using type = result_type<T, U>;

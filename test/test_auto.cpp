@@ -7,23 +7,17 @@
 
 int test_log(){
     using namespace boost::numeric::utility;
-    assert(log(127u) == 7);
-    assert(log(128u) == 8);
-    assert(log(129u) == 8);
-    assert(log(255u) == 8);
-    assert(log(256u) == 9);
+    assert(log(127u) == 6);
+    assert(log(128u) == 7);
+    assert(log(129u) == 7);
+    assert(log(255u) == 7);
+    assert(log(256u) == 8);
 
-    assert(log(127) == 8);
-    assert(log(128) == 9);
-    assert(log(129) == 9);
-    assert(log(255) == 9);
-    assert(log(256) == 10);
-
-    assert(log(-127) == 8);
-    assert(log(-128) == 8);
-    assert(log(-129) == 9);
-    assert(log(-255) == 9);
-    assert(log(-256) == 9);
+    assert(log(127) == 6);
+    assert(log(128) == 7);
+    assert(log(129) == 7);
+    assert(log(255) == 7);
+    assert(log(256) == 8);
     return 0;
 }
 
@@ -52,7 +46,12 @@ int test_auto(const T & t, const U & u){
         t + safe<U, automatic>(u);
     }
 
-    /*
+
+    return 0;
+}
+
+int test_addition_result(){
+    using namespace boost::numeric;
     automatic::addition_result<
         safe<std::int8_t, automatic>,
         safe<std::uint16_t, automatic>
@@ -62,10 +61,25 @@ int test_auto(const T & t, const U & u){
     automatic::addition_result<
         safe_signed_range<-3, 8, automatic>,
         safe_signed_range<-4, 9, automatic>
+    >::type r2;
+    print_argument_type(r2);
+    return 0;
+}
+
+int test_compare_result(){
+    using namespace boost::numeric;
+
+    automatic::comparison_result<
+        safe<std::int8_t, automatic>,
+        safe<std::uint64_t, automatic>
     >::type r1;
     print_argument_type(r1);
-    */
-    
+
+    safe<std::int8_t, automatic> x(0x01);
+    safe<std::uint64_t, automatic> y(0x7fffffffffffffff);
+    auto z = x < y;
+
+    print_argument_type(z);
     return 0;
 }
 
@@ -82,9 +96,11 @@ int main(){
         automatic,
         default_exception_policy
     >::type x1;
+    */
 
     test_log();
-    */
     test_auto<std::int8_t, std::int8_t>(1, -128);
+    test_addition_result();
+    test_compare_result();
     return 0;
 }

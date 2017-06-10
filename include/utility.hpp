@@ -26,6 +26,7 @@ namespace numeric {
 namespace utility {
 
 // used for debugging
+
 // usage - print_type<T>;
 // provokes error message with name of type T
 
@@ -39,6 +40,13 @@ struct print_value
         value = N < 0 ? N - 256 : N + 256
     };
 };
+
+// can be called by constexpr to produce a compile time
+// trap of paramter passed is false.
+// usage constexpr_assert(bool)
+constexpr int constexpr_assert(const bool tf){
+    return 1 / tf;
+}
 
 template<typename T>
 using bits_type = std::integral_constant<
@@ -131,7 +139,6 @@ constexpr unsigned int significant_bits(const T & t){
     return 1 + (t < 0 ? log(~t) : log(t));
 }
 
-/*
 // get bit max for values of type T
 template<typename T>
 constexpr unsigned int bits_value(const T & t){
@@ -139,7 +146,6 @@ constexpr unsigned int bits_value(const T & t){
     const unsigned int sb_max = significant_bits(std::numeric_limits<T>::max());
     return sb < sb_max ? ((sb << 1) - 1) : std::numeric_limits<T>::max();
 }
-*/
 
 // return type required to store a particular range
 template<
@@ -183,7 +189,7 @@ template<
 >
 // signed range
 using signed_stored_type = typename boost::int_t<
-    std::max({
+    std::msvc_max({
         significant_bits(Min),
         significant_bits(Max)
     }) + 1

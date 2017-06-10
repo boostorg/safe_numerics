@@ -21,12 +21,15 @@
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
   any expression which <emphasis><emphasis
   role="bold">might</emphasis></emphasis> fail at runtime is flagged with a
-  compile time error. There is no longer any need for <code>try/catch
-  blocks</code>. Since this program does not compile, the <emphasis
+  compile time error. There is no longer any need for <code>try/catch</code>
+  blocks. Since this program does not compile, the <emphasis
   role="bold">library absolutely <emphasis role="bold">guarantees that no
-  arithmetic expression</emphasis> will yield incorrect results</emphasis> .
-  This is our original goal. Now all we need to do is make the program work.
-  There are a couple of ways to do this.</para>
+  arithmetic expression</emphasis> will yield incorrect results</emphasis>.
+  Furthermore, it is <emphasis role="bold">absolutely guaranteed that no
+  exception will ever be thrown</emphasis>. This is our original goal. </para>
+
+  <para>Now all we need to do is make the program work. There are a couple of
+  ways to achieve this.</para>
 
   <section id="safe_numerics.eliminate_runtime_penalty.1">
     <title>Using Automatic Type Promotion</title>
@@ -42,24 +45,33 @@
       </listitem>
 
       <listitem>
-        <para>if the signed operand is larger than the signed one, the result
-        will be signed, otherwise the result will be unsigned.</para>
+        <para>if the size of the signed operand is larger than the size of the
+        signed operand, the type of the result will be signed. Otherwise, the
+        type of the result will be unsigned.</para>
       </listitem>
 
       <listitem>
-        <para>expand the smaller operand to the size of the larger one</para>
+        <para>Convert the type each operand to the type of the result,
+        expanding the size as necessary.</para>
+      </listitem>
+
+      <listitem>
+        <para>Perform the operation the two resultant operands.</para>
       </listitem>
     </itemizedlist>
 
-    <para>So the result of the sum of two integer types may result in another
-    integer type. If the values are large, the result can exceed the size that
-    the resulting integer type can hold. This is what we call "overflow". The
+    <para>So the type of the result of some binary operation may be different
+    than the types of either or both of the original operands.</para>
+
+    <para>If the values are large, the result can exceed the size that the
+    resulting integer type can hold. This is what we call "overflow". The
     C/C++ standard characterizes this as undefined behavior and leaves to
     compiler implementors the decision as to how such a situation will be
     handled. Usually, this means just truncating the result to fit into the
     result type - which sometimes will make the result arithmetically
     incorrect. However, depending on the compiler and compile time switch
-    settings, such cases may result in some sort of run time exception.</para>
+    settings, such cases may result in some sort of run time exception or
+    silently producing some arbitrary result.</para>
 
     <para>The complete signature for a safe integer type is:</para>
 
@@ -75,8 +87,8 @@ safe;
     linkend="safe_numerics.promotion_policies.native">native</link></code>
     type promotion policy are consistent with those of standard C++</para>
 
-    <para>Up until now, we've focused on detecting when this happens and
-    invoking an exception or other kind of error handler.</para>
+    <para>Up until now, we've focused on detecting when an arithmetic error
+    occurs and invoking an exception or other kind of error handler.</para>
 
     <para>But now we look at another option. Using the <link
     linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
@@ -85,9 +97,10 @@ safe;
 
     <para><itemizedlist>
         <listitem>
-          <para>for any C++ numeric type, we know from
-          <code>std::numeric_limits</code> what the maximum and minimum values
-          that a variable can be - this defines a closed interval.</para>
+          <para>for any C++ numeric type, we know from <ulink
+          url="http://en.cppreference.com/w/cpp/types/numeric_limits"><code>std::numeric_limits</code></ulink>
+          what the maximum and minimum values that a variable can be - this
+          defines a closed interval.</para>
         </listitem>
 
         <listitem>
@@ -102,61 +115,70 @@ safe;
 
           <programlisting>int x, y;
 int z = x + y               // could overflow
-
+// so replace with the following:
 int x, y;
 long z = (long)x + (long)y; // can never overflow</programlisting>
 
-          <para>One could do this by editing his code manually, but such a
-          task would be tedious, error prone, and leave the resulting code
-          hard to read and verify. Using the <link
+          <para>One could do this by editing his code manually as above, but
+          such a task would be tedious, error prone, non-portable and leave
+          the resulting code hard to read and verify. Using the <link
           linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
           type promotion policy will achieve the equivalent result without
           these problems.</para>
         </listitem>
-
-        <listitem>
-          <para>Since the result type is guaranteed to hold the result, there
-          is no need to check for errors - they can't happen!!! The usage of
-          the <link
-          linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
-          exception policy enforces this guarantee.</para>
-        </listitem>
-
-        <listitem>
-          <para>Since there can be no errors, there is no need for
-          <code>try/catch</code> blocks.</para>
-        </listitem>
-
-        <listitem>
-          <para>The only runtime error checking we need to do is when safe
-          values are initialized or assigned from values which are "too
-          large". These are infrequent occurrences which generally have little
-          or no impact on program running time. And many times, one can make
-          small adjustments in selecting the types in order to eliminate all
-          runtime penalties.</para>
-        </listitem>
       </itemizedlist></para>
 
-    <para>In short, given a binary operation, we silently promote the types of
-    the operands to a wider result type so the result cannot overflow. This is
-    a fundamental departure from the C++ Standard behavior.</para>
+    <para>Using the <link
+    linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
+    type promotion policy, given a binary operation, we silently promote the
+    types of the operands to a wider result type so the result cannot
+    overflow. This is a fundamental departure from the C++ Standard
+    behavior.</para>
 
     <para>If the interval of the result cannot be guaranteed to fit in the
     largest type that the machine can handle (usually 64 bits these days), the
     largest available integer type with the correct result sign is used. So
     even with our "automatic" type promotion scheme, it's still possible to
-    overflow. In this case, and only this case, is runtime error checking code
-    generated. Depending on the application, it should be rare to generate
-    error checking code, and even more rare to actually invoke it. Any such
-    instances are detected at compile time by the <link
+    overflow. So while our <link
+    linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
+    type promotion policy might eliminate exceptions in our example above, it
+    wouldn't be guaranteed to eliminate them for all programs.</para>
+
+    <para>Using the <link
     linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
-    exception policy.</para>
+    exception policy will produce a compile time error anytime it's possible
+    for an error to occur. </para>
 
     <para>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</para>
 
     <para><programlisting><xi:include href="../../examples/example82.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>the <link
+        linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
+        type promotion policy has rendered the result of the sum of two
+        <code>integers</code> as a <code>safe&lt;long</code>&gt; type.</para>
+      </listitem>
+
+      <listitem>
+        <para>our program compiles without error - even when using the <link
+        linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
+        exception policy</para>
+      </listitem>
+
+      <listitem>
+        <para>We do not need to use the <code>try/catch</code> idiom to handle
+        arithmetic errors - we will have no exceptions.</para>
+      </listitem>
+
+      <listitem>
+        <para>We only needed to change two lines of code to achieve our goal
+        of guaranteed program correctness with no runtime penalty.</para>
+      </listitem>
+    </itemizedlist>
 
     <para>The above program produces the following output:</para>
 
@@ -168,30 +190,15 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 
     <para>The output uses a custom output manipulator for safe types to
     display the underlying type and its range as well as current value. Note
-    that:<itemizedlist>
-        <listitem>
-          <para>the <link
-          linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
-          type promotion policy has rendered the result of the sum of two
-          <code>integers</code> as a <code>long</code> type.</para>
-        </listitem>
-
-        <listitem>
-          <para>our program compiles without error - even when using the <link
-          linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
-          exception policy</para>
-        </listitem>
-
-        <listitem>
-          <para>We do not need to use the <code>try/catch</code> idiom to
-          handle arithmetic errors - we will have none.</para>
-        </listitem>
-
-        <listitem>
-          <para>We only needed to change two lines of code to achieve our
-          goal</para>
-        </listitem>
-      </itemizedlist></para>
+    that if any time in the future we were to change safe&lt;int&gt; to
+    safe&lt;long long&gt; the program would now overflow. But since we're
+    using <link
+    linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
+    the modified program would fail to compile. At this point we'd have to
+    alter our yet program again to eliminate run time penalty or set aside our
+    goal of zero run time overhead and change the exception policy to <link
+    linkend="safe_numerics.exception_policies.default_exception_policy"><code>default_exception_policy</code></link>
+    .</para>
   </section>
 
   <section id="safe_numerics.eliminate_runtime_penalty.2">

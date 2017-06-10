@@ -589,6 +589,20 @@ constexpr modulus(
     return t % abs(u);
 }
 
+////////////////////////////////
+// safe comparison on unsafe types
+template<class R, class T, class U>
+constexpr checked_result<bool>
+less_than(const T & t, const U & u){
+    checked_result<R> tx = checked::cast<R>(t);
+    if(tx.exception())
+        return tx;
+    checked_result<R> ux = checked::cast<R>(u);
+    if(ux.exception())
+        return ux;
+    return static_cast<R>(tx) < static_cast<R>(ux);
+}
+
 ///////////////////////////////////
 // shift operations
 

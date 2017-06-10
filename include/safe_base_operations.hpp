@@ -22,6 +22,7 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/utility/enable_if.hpp> // lazy_enable_if
 #include <boost/integer.hpp>
+#include <boost/logic/tribool.hpp>
 
 #include "safe_base.hpp"
 #include "safe_literal.hpp"
@@ -29,6 +30,8 @@
 #include "checked_result.hpp"
 #include "interval.hpp"
 #include "checked.hpp"
+
+#include "utility.hpp"
 
 namespace boost {
 namespace numeric {
@@ -903,6 +906,116 @@ constexpr operator%=(T & t, const U & u){
 
 /////////////////////////////////////////////////////////////////
 // comparison
+#if 0
+template<class T, class U>
+struct comparison_result {
+private:
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
+    using result_base_type =
+        typename promotion_policy::template subtraction_result<T, U>::type;
+
+    constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    // when we subtract the temporary intervals above, we'll get a new interval
+    // with the correct range for the difference !
+    constexpr static const interval<checked_result<result_base_type>> r_interval =
+        subtract<result_base_type>(t_interval, u_interval);
+
+    const boost::tribool tb = t_interval < u_interval;
+
+    using exception_policy = typename common_exception_policy<T, U>::type;
+
+    struct indeterminent_type {};
+
+    constexpr static bool
+    return_value(const T & t, const U & u, std::true_type){
+        return true;
+    }
+    constexpr static bool
+    return_value(const T & t, const U & u, std::false_type){
+        return false;
+    }
+    constexpr static bool
+    return_value(const T & t, const U & u, indeterminent_type){
+        checked_result<bool> r = checked::less_than<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        if(!r.exception())
+            return r;
+
+        dispatch<exception_policy>(r);
+        return base_value(t) < base_value(u);
+    }
+public:
+    using result_type =
+        typename boost::mpl::if_c<
+            (! r_interval.l.exception() && r_interval.l > 0),
+            std::false_type,
+        typename boost::mpl::if_c<
+            (! r_interval.u.exception() && r_interval.u < 0),
+            std::true_type,
+        indeterminent_type
+        >::type
+        >::type;
+
+    constexpr static bool return_value(const T & t, const U & u){
+        return return_value(
+            t,
+            u,
+            result_type()
+        );
+    }
+};
+#endif
+
+template<class T, class U>
+struct comparison_result {
+private:
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
+
+    using result_base_type =
+        typename promotion_policy::template comparison_result<T, U>::type;
+
+//    utility::print_type<result_base_type> p1;
+
+   constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const boost::tribool tb = t_interval < u_interval;
+
+    using exception_policy = typename common_exception_policy<T, U>::type;
+
+public:
+
+    constexpr static bool return_value(const T & t, const U & u){
+        if(tb) return true;
+        if(!tb) return false;
+        const checked_result<bool> r = checked::less_than<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        if(!r.exception())
+            return r;
+        dispatch<exception_policy>(r);
+        return base_value(t) < base_value(u);
+    }
+};
 
 template<class T, class U>
 typename std::enable_if<
@@ -911,23 +1024,8 @@ typename std::enable_if<
     ,
     bool
 >::type
-constexpr operator<(const T & lhs, const U & rhs) {
-    // filter out case were overflow cannot occur
-    constexpr const interval<typename base_type<T>::type> t_interval(
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    );
-
-    constexpr const interval<typename base_type<U>::type> u_interval(
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    );
-
-    const boost::tribool x = t_interval < u_interval;
-    return
-        x ? true :
-        !x ? false:
-        safe_compare::less_than(base_value(lhs), base_value(rhs));
+constexpr operator<(const T & t, const U & u) {
+    return comparison_result<T, U>::return_value(t, u);
 }
 
 template<class T, class U>

@@ -6,7 +6,6 @@
 #include <limits>
 
 #include <boost/core/demangle.hpp>
-#include <boost/logic/tribool_io.hpp>
 
 #include "../include/checked_result.hpp"
 #include "../include/interval.hpp"
@@ -57,10 +56,9 @@ bool test6(){
     std::cout << "test6" << std::endl;
     interval<std::uint8_t> x;
     std::cout << "x = " << x << std::endl;
-    interval<std::int8_t> y(8, 8);
+    interval<std::int16_t> y(0, 510);
     std::cout << "y = " << y << std::endl;
     
-    assert(static_cast<interval<std::int16_t>>(add<std::int16_t>(x,x)) == y);
     if(add<std::int16_t>(x,x) != y)
         return false;
     std::cout << "x + x =" << add<std::int16_t>(x, x) << std::endl;
@@ -84,6 +82,18 @@ bool test5(){
     if(!t.includes(u) && ! u.includes(t))
         std::cout << "neither interval includes the other\n";
     return ExpectedResult == t.includes(u);
+}
+
+// test simple interval union
+bool test7(){
+    using namespace boost::numeric;
+    std::cout << "test6" << std::endl;
+    interval<std::int8_t> x(-23, 47);
+    std::cout << "x = " << x << std::endl;
+    interval<std::uint16_t> y(0, 510);
+    std::cout << "y = " << y << std::endl;
+    std::cout << "x U y =" << union_interval<std::int16_t>(x, y) << std::endl;
+    return true;
 }
 
 namespace test4 {
@@ -417,6 +427,8 @@ int main(){
         test1() &&
         test2() &&
         test3() &&
+        test6() &&
+        test7() &&
 
         test4::test_mod<std::int8_t, std::uint32_t>() &&
         test4::test_add<std::int8_t, std::uint16_t>() &&

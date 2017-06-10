@@ -62,7 +62,7 @@ struct checked_result {
 
     // accesors
     constexpr operator R() const {
-        assert(no_exception());
+//        assert(no_exception());
         return m_r;
     }
     

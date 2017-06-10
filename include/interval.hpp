@@ -357,15 +357,15 @@ constexpr interval<checked_result<R>> intersection(
     const checked_result<R> rl =
         checked::cast<R>(safe_compare::greater_than(t.l, u.l) ? t.l : u.l);
     const checked_result<R> ru =
-        checked::cast<R>(safe_compare::less_than(t, u) ? t.u : u.u);
+        checked::cast<R>(safe_compare::less_than(t.u, u.u) ? t.u : u.u);
 
     if(rl > ru){
-        return checked_result<interval<R>>(
+        return interval<checked_result<R>>(
             safe_numerics_error::uninitialized_value,
             "null intersection"
         );
     }
-    return interval<R>(rl, ru);
+    return interval<checked_result<R>>(rl, ru);
 }
 
 template<typename R, typename T, typename U>
@@ -373,12 +373,15 @@ constexpr interval<checked_result<R>> union_interval(
     const interval<T> & t,
     const interval<U> & u
 ){
-    const checked_result<R> rl =
-        checked::cast<R>(safe_compare::less_than(t.l, u.l) ? t.l : u.l);
-    const checked_result<R> ru =
-        checked::cast<R>(safe_compare::greater_than(t, u) ? t.u : u.u);
-
-    return interval<R>(rl, ru);
+    const checked_result<R>
+        //rl = checked::cast<R>(safe_compare::less_than(t.l, u.l) ? t.l : u.l);
+        rl = safe_compare::less_than(t.l, u.l) ? t.l : u.l;
+        utility::constexpr_assert(! rl.exception());
+    const checked_result<R>
+        //ru = checked::cast<R>(safe_compare::greater_than(t, u) ? t.u : u.u);
+        ru = safe_compare::greater_than(t.u, u.u) ? t.u : u.u;
+        utility::constexpr_assert(! ru.exception());
+    return interval<checked_result<R>>(rl, ru);
 }
 
 template<typename T, typename U>

@@ -73,7 +73,8 @@ Program ended with exit code: 0</programlisting>
 Not using safe numerics
 b is less than a
 Using safe numerics
-a is less than b
+converted negative value to unsigned: domain error
+error detected!
 Program ended with exit code: 0</programlisting></para>
 
     <para>A normal person reads the above code and has to be dumbfounded by

@@ -17,7 +17,6 @@
 
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
-#include <type_traits> // true_type, false_type, is_same
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/min_max.hpp>
 
@@ -30,6 +29,7 @@ namespace boost {
 namespace numeric {
 
 struct automatic {
+private:
     // the following returns the "true" type.  After calculating the new max and min
     // these return the minimum size type which can hold the expected result.
     template<typename T, T Min, T Max>
@@ -49,7 +49,7 @@ struct automatic {
             defer_stored_signed_lazily<T, Min, Max>,
             defer_stored_unsigned_lazily<T, Min, Max>
         >::type;
-
+public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct addition_result {
@@ -85,18 +85,6 @@ struct automatic {
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(r_interval.u)
         >::type;
-
-//utility::print_type<
-//    utility::signed_stored_type<-32768, 33022>
-//> p1;
-
-//utility::print_value<
-//    utility::significant_bits(-32768)
-//   utility::significant_bits(33022)
-//    utility::signed_stored_type<-32768, 33022>
-//> p1;
-
-
     };
 
     ///////////////////////////////////////////////////////////////////////
@@ -248,6 +236,50 @@ struct automatic {
             r_interval.u.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(r_interval.u)
+        >::type;
+    };
+
+    ///////////////////////////////////////////////////////////////////////
+    template<typename T, typename U>
+    struct comparison_result {
+        using temp_base_type = typename boost::mpl::if_c<
+            // if both arguments are unsigned
+            ! std::numeric_limits<T>::is_signed
+            && ! std::numeric_limits<U>::is_signed,
+            // result is unsigned
+            std::uintmax_t,
+            // otherwise result is signed
+            std::intmax_t
+        >::type;
+
+        constexpr static typename base_type<T>::type min_t
+            = base_value(std::numeric_limits<T>::min());
+        constexpr static typename base_type<U>::type min_u
+            = base_value(std::numeric_limits<U>::min());
+
+        constexpr static checked_result<temp_base_type> minx =
+            safe_compare::less_than(min_t, min_u)
+            ? checked::cast<temp_base_type>(min_t)
+            : checked::cast<temp_base_type>(min_u);
+
+        constexpr static typename base_type<T>::type max_t
+            = base_value(std::numeric_limits<T>::max());
+        constexpr static typename base_type<U>::type max_u
+            = base_value(std::numeric_limits<U>::max());
+
+        constexpr static checked_result<temp_base_type> maxx =
+            safe_compare::less_than(max_t, max_u)
+            ? checked::cast<temp_base_type>(max_u)
+            : checked::cast<temp_base_type>(max_t);
+
+        using type = typename result_type<
+            temp_base_type,
+            minx.exception()
+                ? std::numeric_limits<temp_base_type>::min()
+                : static_cast<temp_base_type>(minx),
+            maxx.exception()
+                ? std::numeric_limits<temp_base_type>::max()
+                : static_cast<temp_base_type>(maxx)
         >::type;
     };
 

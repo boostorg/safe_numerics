@@ -161,7 +161,6 @@ constexpr bool not_equal(const T & lhs, const U & rhs) {
     >::template invoke(lhs, rhs);
 }
 
-
 } // safe_compare
 } // numeric
 } // boost

@@ -24,20 +24,15 @@ namespace boost {
 namespace numeric {
 
 struct native {
+private:
     template<typename T, typename U>
-    using additive_operator_type =
+    using usual_arithmetic_conversions =
         decltype(
             typename base_type<T>::type()
             + typename base_type<U>::type()
         );
-    template<typename T, typename U>
-    using multiplicative_operator_type =
-        decltype(
-            typename base_type<T>::type()
-            * typename base_type<U>::type()
-        );
     // note: right/left shift require integer arguments
-    template<typename T, typename U>
+   template<typename T, typename U>
     using bitwise_shift_operator_type =
         decltype(
             typename base_type<T>::type()
@@ -49,27 +44,37 @@ struct native {
             typename base_type<T>::type()
             & typename base_type<U>::type()
         );
-
+ public:
+    // arithmetic operators
     template<typename T, typename U>
     struct addition_result {
-        using type = additive_operator_type<T, U>;
+        using type = usual_arithmetic_conversions<T, U>;
     };
     template<typename T, typename U>
     struct subtraction_result {
-        using type = additive_operator_type<T, U>;
+        using type = usual_arithmetic_conversions<T, U>;
     };
     template<typename T, typename U>
     struct multiplication_result {
-        using type = multiplicative_operator_type<T, U>;
+        using type = usual_arithmetic_conversions<T, U>;
     };
     template<typename T, typename U>
     struct division_result {
-        using type = multiplicative_operator_type<T, U>;
+        using type = usual_arithmetic_conversions<T, U>;
     };
     template<typename T, typename U>
     struct modulus_result {
-        using type = multiplicative_operator_type<T, U>;
+        using type = usual_arithmetic_conversions<T, U>;
     };
+    // note: comparison_result (<, >, ...) is special.
+    // The return value is always a bool.  The type returned here is
+    // the intermediate type applied to make the values comparable.
+    template<typename T, typename U>
+    struct comparison_result {
+        using type = usual_arithmetic_conversions<T, U>;
+    };
+
+    // shift operators
     template<typename T, typename U>
     struct left_shift_result {
         using type = bitwise_shift_operator_type<T, U>;
@@ -78,7 +83,7 @@ struct native {
     struct right_shift_result {
         using type = bitwise_shift_operator_type<T, U>;
     };
-
+    // bitwise operators
     template<typename T, typename U>
     struct bitwise_or_result {
         using type = bitwise_logic_operator_type<T, U>;
