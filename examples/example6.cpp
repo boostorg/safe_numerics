@@ -34,8 +34,7 @@ int main(int argc, const char * argv[]){
             std::cout << "error NOT detected!" << std::endl;
         }
         catch(std::exception & e){
-            std::cout << e.what() << std::endl;
-            std::cout << "error detected!" << std::endl;
+            std::cout << "error detected:"  << e.what() << std::endl;
         }
     }
     return 0;

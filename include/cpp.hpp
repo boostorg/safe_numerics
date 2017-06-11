@@ -44,6 +44,7 @@ template<
     int LongLongBits
 >
 struct cpp {
+public:
     using local_char_type = typename boost::int_t<CharBits>::exact;
     using local_short_type = typename boost::int_t<ShortBits>::exact;
     using local_int_type = typename boost::int_t<IntBits>::exact;
@@ -139,7 +140,7 @@ struct cpp {
         integral_promotion<typename base_type<T>::type>,
         integral_promotion<typename base_type<U>::type>
     >;
-
+public:
     template<typename T, typename U>
     struct addition_result {
        using type = result_type<T, U>;

@@ -191,7 +191,7 @@ template <typename T> // T is char, int, etc data type
 using safe_t = safe<
     T,
     native,
-    no_exceptions_policy // use for compiling and running tests
+    loose_trap_policy // use for compiling and running tests
 >;
 
 template<typename T, typename U>
@@ -299,12 +299,12 @@ using namespace boost::numeric; // for safe_literal
 // create a type for holding small integers.  We "know" that C++ type
 // promotion rules will work such that operations on this type
 // will never overflow. If change the program to break this, the
-// usage of the no_exceptions_policy will prevent compilation.
+// usage of the loose_trap_policy will prevent compilation.
 using safe_t = safe_signed_range<
     -24,
     82,
     native,         // C++ type promotion rules work OK for this example
-    no_exceptions_policy  // catch problems at compile time
+    loose_trap_policy  // catch problems at compile time
 >;
 
 int main(int argc, const char * argv[]){
@@ -461,14 +461,14 @@ void f2(){
 
 void f3(){
     using namespace boost::numeric;
-    constexpr auto j = safe_signed_literal<0, native, no_exceptions_policy>();
+    constexpr auto j = safe_signed_literal<0, native, loose_trap_policy>();
     constexpr auto k = safe_signed_literal<3>();
     constexpr const safe<int> l = j + k;
 }
 
 void f4(){
     using namespace boost::numeric;
-    safe_signed_literal<0, native, no_exceptions_policy> j;
+    safe_signed_literal<0, native, loose_trap_policy> j;
     safe_signed_literal<3> k;
     constexpr auto l = safe_signed_literal<3>();
     constexpr const safe<int> l2 = j + k;

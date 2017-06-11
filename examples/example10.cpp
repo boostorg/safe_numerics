@@ -24,19 +24,21 @@ int main(){
         // problem: arithmetic operations can yield incorrect results.
         f(100, 100);  // works as expected
         f(100, -100); // wrong result - unnoticed
+        cout << "error NOT detected!" << endl;;
     }
-    catch(std::exception){
+    catch(const std::exception & e){
         // never arrive here
-        std::cout << "error detected!" << std::endl;
+        cout << "error detected:" << e.what() << endl;;
     }
     try {
         // solution: use safe types
         std::cout << "Using safe numerics" << std::endl;
         safe_f(100, 100);  // works as expected
         safe_f(100, -100); // throw error
+        cout << "error NOT detected!" << endl;;
     }
     catch(const std::exception & e){
-        cout << "detected error:" << e.what() << endl;;
+        cout << "error detected:" << e.what() << endl;;
     }
     return 0;
 }

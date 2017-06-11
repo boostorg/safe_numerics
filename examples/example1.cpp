@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]){
     }
     catch(std::exception & e){
         // which we can catch here
-        std::cout << e.what() << std::endl;
+        std::cout << "error detected:" << e.what() << std::endl;
     }
     return 0;
 }

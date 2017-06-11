@@ -32,7 +32,7 @@ bool test_checked_divide(
     checked_result<result_type> result
         = checked::divide<result_type>(v1, v2);
 
-    if(result.no_exception()
+    if(! result.exception()
     && expected_result != '.'){
         std::cout
             << "failed to detect error in division "
@@ -43,7 +43,7 @@ bool test_checked_divide(
         return false;
     }
     else
-    if(! result.no_exception()
+    if(result.exception()
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "

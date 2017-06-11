@@ -317,10 +317,10 @@ constexpr checked_result<R> subtract(
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
-    if(! rt.no_exception() )
+    if(rt.exception() )
         return rt;
     const checked_result<R> ru(cast<R>(u));
-    if(! ru.no_exception() )
+    if(ru.exception() )
         return ru;
     return detail::subtract<R>(t, u);
 }
@@ -482,10 +482,10 @@ constexpr checked_result<R> multiply(
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
     checked_result<R> rt(cast<R>(t));
-    if(! rt.no_exception() )
+    if(rt.exception() )
         return rt;
     checked_result<R> ru(cast<R>(u));
-    if(! ru.no_exception() )
+    if(ru.exception() )
         return ru;
     return detail::multiply<R>(t, u);
 }
@@ -842,16 +842,6 @@ constexpr checked_result<R> bitwise_xor(
             "result type too small to hold bitwise or"
         };
     }
-/*
-    const checked_result<R> rt = cast<R>(t);
-    if(! rt.no_exception())
-        return rt;
-
-    const checked_result<R> ru = cast<R>(u);
-    if(! ru.no_exception())
-        return ru;
-    return static_cast<R>(ru) ^ static_cast<R>(rt);
-*/
     return t ^ u;
 }
 

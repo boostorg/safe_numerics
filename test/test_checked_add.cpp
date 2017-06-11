@@ -34,7 +34,7 @@ bool test_checked_add(
             v2
         );
 
-    if(result.no_exception()
+    if(! result.exception()
     && expected_result != '.'){
         std::cout
             << "failed to detect error in addition "

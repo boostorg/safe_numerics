@@ -54,7 +54,7 @@ struct checked_result {
         m_e(t.m_e),
         m_r(t.m_r)
     {
-        if(t.no_exception())
+        if(! t.exception())
             m_r = t.m_r;
         else
             m_msg = t.m_msg;
@@ -67,14 +67,14 @@ struct checked_result {
     }
     
     constexpr operator const char *() const {
-        assert(! no_exception());
+        assert(exception());
         return m_msg;
     }
 
     template<class T>
     constexpr boost::logic::tribool operator<(const checked_result<T> & t) const {
         return
-            (this->no_exception() && t.no_exception()) ?
+            (! this->exception() && ! t.exception()) ?
                 safe_compare::less_than(m_r, t.m_r)
             :
                 boost::logic::tribool::indeterminate_value
@@ -87,7 +87,7 @@ struct checked_result {
     template<class T>
     constexpr boost::logic::tribool operator>(const checked_result<T> & t) const {
         return
-            (this->no_exception() && t.no_exception()) ?
+            (! this->exception() && ! t.exception()) ?
                 safe_compare::greater_than(m_r, t.m_r)
             :
                 boost::logic::tribool::indeterminate_value
@@ -104,9 +104,6 @@ struct checked_result {
     template<class T>
     constexpr boost::logic::tribool operator==(const checked_result<T> & t) const {
         return ! operator!=(t);
-    }
-    constexpr bool no_exception() const {
-        return m_e == safe_numerics_error::success;
     }
     constexpr bool exception() const {
         return m_e != safe_numerics_error::success;
@@ -140,18 +137,6 @@ dispatch(const checked_result<R> & cr){
         dispatch<EP>(cr.m_e, cr.m_msg);
     // otherwise just do a simple return
 }
-/*
-// C++ does not (yet) permit constexpr lambdas.  So create some
-// constexpr predicates to be used by constexpr algorthms.
-template<typename R>
-constexpr bool no_exception(const checked_result<R> & cr){
-    return cr.no_exception();
-}
-template<typename R>
-constexpr bool exception(const checked_result<R> & cr){
-    return ! cr.no_exception();
-}
-*/
 
 } // numeric
 } // boost
@@ -166,7 +151,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<R> & r
 ){
-    if(r.no_exception())
+    if(!r.exception())
         os << static_cast<R>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);
@@ -178,7 +163,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<signed char> & r
 ){
-    if(r.no_exception())
+    if(! r.exception())
         os << static_cast<std::int16_t>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);
@@ -190,7 +175,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
     const boost::numeric::checked_result<unsigned char> & r
 ){
-    if(r.no_exception())
+    if(! r.exception())
         os << static_cast<std::uint16_t>(r);
     else
         os << r.m_msg; //static_cast<const char *>(r);

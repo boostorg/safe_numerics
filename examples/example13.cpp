@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]){
         // can't do this as it will crash the program with no
         // opportunity for recovery - comment out for example
         //std::cout << x / y;
-        std::cout << " error NOT detectable!" << std::endl;
+        std::cout << "error NOT detectable!" << std::endl;
     }
     catch(std::exception){
         std::cout << "error detected!" << std::endl;
@@ -31,8 +31,7 @@ int main(int argc, const char * argv[]){
         std::cout << " error NOT detected!" << std::endl;
     }
     catch(std::exception & e){
-        std::cout << e.what() << std::endl;
-        std::cout << "error detected!" << std::endl;
+        std::cout << "error detected:" << e.what() << std::endl;
     }
     return 0;
 }

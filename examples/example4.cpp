@@ -12,12 +12,14 @@ int main(){
     try{
         signed int   a{-1};
         unsigned int b{1};
+        std::cout << "a is " << a << " b is " << b << '\n';
         if(a < b){
             std::cout << "a is less than b\n";
         }
         else{
             std::cout << "b is less than a\n";
         }
+        std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){
         // never arrive here - just produce the wrong answer!
@@ -30,12 +32,14 @@ int main(){
         using namespace boost::numeric;
         safe<signed int>   a{-1};
         safe<unsigned int> b{1};
+        std::cout << "a is " << a << " b is " << b << '\n';
         if(a < b){
             std::cout << "a is less than b\n";
         }
         else{
             std::cout << "b is less than a\n";
         }
+        std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception & e){
         // never arrive here - just produce the correct answer!

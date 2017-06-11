@@ -31,7 +31,7 @@ bool test_checked_subtract(
     checked_result<result_type> result
         = checked::subtract<result_type>(v1, v2);
 
-    if(result.no_exception()
+    if(! result.exception()
     && expected_result != '.'){
         std::cout
             << "failed to detect error in subtraction "

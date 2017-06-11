@@ -31,8 +31,8 @@ Not using safe numerics
 -2147483647 != -2147483647
 error NOT detected!
 Using safe numerics
-addition result too large
-Program ended with exit code: 0</programlisting>
+error detected:addition result too large: positive overflow error
+</programlisting>
   </section>
 
   <section id="safe_numerics.tutorial.2">
@@ -50,8 +50,7 @@ Not using safe numerics
 error NOT detected!
 Using safe numerics
 addition result too large
-error detected!
-Program ended with exit code: 0</programlisting>
+error detected!</programlisting>
 
     <para>When variables of unsigned integer type are decremented below zero,
     they "roll over" to the highest possible unsigned version of that integer
@@ -71,11 +70,14 @@ Program ended with exit code: 0</programlisting>
     <para><programlisting><xi:include href="../../examples/example4.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 3: implicit conversions change data values
 Not using safe numerics
+a is -1 b is 1
 b is less than a
+error NOT detected!
 Using safe numerics
+a is -1 b is 1
 converted negative value to unsigned: domain error
 error detected!
-Program ended with exit code: 0</programlisting></para>
+</programlisting></para>
 
     <para>A normal person reads the above code and has to be dumbfounded by
     this. The code doesn't do what the text - according to the rules of
@@ -150,11 +152,12 @@ Program ended with exit code: 0</programlisting></para>
 Not using safe numerics
 10000
 4294957296
+error NOT detected!
 Using safe numerics
 10000
-detected error:converted negative value to unsigned
-Program ended with exit code: 0</screen>This solution is simple, just replace
-    instances of <code>int</code> with <code>safe&lt;int&gt;</code>.</para>
+error detected!converted negative value to unsigned: domain error
+</screen>This solution is simple, just replace instances of <code>int</code>
+    with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
   <section id="safe_numerics.tutorial.5">
@@ -170,14 +173,13 @@ Program ended with exit code: 0</screen>This solution is simple, just replace
 Not using safe numerics
 error NOT detected!
 Using safe numerics
-Value out of range for this safe type
-error detected!
-Program ended with exit code: 0</programlisting>Collections like standard
-    arrays and vectors do array index checking in some function calls and not
-    in others so this may not be the best example. However it does illustrate
-    the usage of <code>safe_range&lt;T&gt;</code> for assigning legal ranges
-    to variables. This will guarantee that under no circumstances will the
-    variable contain a value outside of the specified range.</para>
+error detected:Value out of range for this safe type: domain error
+</programlisting>Collections like standard arrays and vectors do array index
+    checking in some function calls and not in others so this may not be the
+    best example. However it does illustrate the usage of
+    <code>safe_range&lt;T&gt;</code> for assigning legal ranges to variables.
+    This will guarantee that under no circumstances will the variable contain
+    a value outside of the specified range.</para>
   </section>
 
   <section id="safe_numerics.tutorial.6">
@@ -191,13 +193,11 @@ Not using safe numerics
 2147483647 0
 error NOT detected!
 Using safe numerics
-error in file input
-error detected!
-Program ended with exit code: 0</programlisting>Without safe integer, one will
-    have to insert new code every time an integer variable is retrieved. This
-    is a tedious and error prone procedure. Here we have used program input.
-    But in fact this problem can occur with any externally produced
-    input.</para>
+error detected:error in file input: domain error
+</programlisting>Without safe integer, one will have to insert new code every
+    time an integer variable is retrieved. This is a tedious and error prone
+    procedure. Here we have used program input. But in fact this problem can
+    occur with any externally produced input.</para>
   </section>
 
   <section id="safe_numerics.tutorial.7">
@@ -232,11 +232,10 @@ Program ended with exit code: 0</programlisting>Without safe integer, one will
     <para><programlisting><xi:include href="../../examples/example13.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 7: cannot recover from arithmetic errors
 Not using safe numerics
- error NOT detectable!
+error NOT detectable!
 Using safe numerics
-divide by zero
-error detected!
-Program ended with exit code: 0</programlisting></para>
+error detected:divide by zero: domain error
+</programlisting></para>
   </section>
 
   <section id="safe_numerics.tutorial.8">
@@ -261,8 +260,7 @@ Program ended with exit code: 0</programlisting></para>
 
     <para><programlisting><xi:include href="../../examples/example7.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 8: enforce contracts with zero runtime cost
-parameter error detected
-Program ended with exit code: 0</programlisting></para>
+parameter error detected</programlisting></para>
 
     <para>In the example above, the function <code>convert</code> incurs
     significant runtime cost every time the function is called. By using

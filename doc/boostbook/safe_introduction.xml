@@ -60,8 +60,8 @@
 </programlisting>
 
     <para>This will indeed trap the error. However, it would be tedious and
-    laborious for a programmer to alter his code to do so. Altering code in
-    this way for all arithmetic operations would likely render the code
+    laborious for a programmer to alter his code in this manner. Altering code
+    in this way for all arithmetic operations would likely render the code
     unreadable and add another source of potential programming errors. This
     approach is clearly not functional when the expression is even a little
     more complex as is shown in the following example.</para>
@@ -127,7 +127,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
       </itemizedlist></para>
 
     <para>In other words, the <emphasis role="bold">library absolutely
-    guarantees that no arithmetic expression will yield incorrect
+    guarantees that no integer arithmetic expression will yield incorrect
     results</emphasis>.</para>
   </section>
 
@@ -172,17 +172,18 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
           <para>Select or define an exception policy class to specify handling
           of exceptions.<itemizedlist>
               <listitem>
-                <para>throw exception on runtime, trap at compile time.</para>
+                <para>Throw exception on runtime, trap at compile time if
+                possible.</para>
               </listitem>
 
               <listitem>
-                <para>trap at compiler time all operations which might fail at
-                runtime.</para>
+                <para>Trap at compiler time all operations which could
+                possibly fail at runtime.</para>
               </listitem>
 
               <listitem>
-                <para>specify custom functions which should be called at
-                runtime</para>
+                <para>Specify custom functions which should be called in case
+                errors are detected at runtime.</para>
               </listitem>
             </itemizedlist></para>
         </listitem>
@@ -191,20 +192,25 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
           <para>Select or define a promotion policy class to alter the C/C++
           type promotion rules. This can be used to <itemizedlist>
               <listitem>
-                <para>use C/C++ native type promotion rules so that, except
+                <para>Use C/C++ native type promotion rules so that, except
                 for throwing/trapping of exceptions on operations resulting in
                 incorrect arithmetic behavior, programs will operate
-                identically when using/not using safe types.</para>
+                identically when using/not using safe types. This might be
+                used if safe types are only enabled during debug and
+                testing.</para>
               </listitem>
 
               <listitem>
-                <para>replace C/C++ native promotion rules with ones which are
+                <para>Replace C/C++ native promotion rules with ones which are
                 arithmetically equivalent but minimize the need for runtime
-                checking of arithmetic results.</para>
+                checking of arithmetic results. Such a policy will effectively
+                change the semantics of a C++ program. It's not really C++ any
+                more. The program cannot be expected to function the same as
+                when normal integer types are used.</para>
               </listitem>
 
               <listitem>
-                <para>replace C/C++ native promotion rules with ones which
+                <para>Replace C/C++ native promotion rules with ones which
                 emulate other machine architectures. This is designed to
                 permit the testing of C/C++ code destined to be run on another
                 machine on one's development platform. Such a situation often
@@ -214,9 +220,12 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         </listitem>
 
         <listitem>
-          <para>Enforce other program requirements using ranged integer types.
-          The library includes the types for ranges and literals. These types
-          can be used to improve program correctness and performance.</para>
+          <para>Enforce other program requirements using bounded integer
+          types. The library includes the types for ranges and literals.
+          Operations which result in operations which violate these
+          requirements will trapped at either compile or runtime and not
+          silently return invalid values. These types can be used to improve
+          program correctness and performance.</para>
         </listitem>
       </itemizedlist></para>
   </section>
@@ -253,6 +262,14 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
         <listitem>
           <para>Enable_if</para>
+        </listitem>
+
+        <listitem>
+          <para>Integer</para>
+        </listitem>
+
+        <listitem>
+          <para>Core</para>
         </listitem>
       </itemizedlist>The Safe Numerics library is delivered with an exhaustive
     suite of test programs. Users who choose to run this test suite will also

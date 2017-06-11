@@ -111,6 +111,13 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
             </row>
 
             <row>
+              <entry><code>PP::comparison_result&lt;T,
+              U&gt;::type</code></entry>
+
+              <entry>bool</entry>
+            </row>
+
+            <row>
               <entry><code>PP::left_shift_result&lt;T,
               U&gt;::type</code></entry>
 
@@ -125,7 +132,22 @@ auto z = x + y</programlisting>the type of <code>z</code> will be an
             </row>
 
             <row>
-              <entry><code>PP::bitwise_result&lt;T, U&gt;::type</code></entry>
+              <entry><code>PP::bitwise_or_result&lt;T,
+              U&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::bitwise_and_result&lt;T,
+              U&gt;::type</code></entry>
+
+              <entry>unspecified Numeric type</entry>
+            </row>
+
+            <row>
+              <entry><code>PP::bitwise_xor_result&lt;T,
+              U&gt;::type</code></entry>
 
               <entry>unspecified Numeric type</entry>
             </row>
