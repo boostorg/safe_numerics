@@ -361,8 +361,14 @@ constexpr interval<checked_result<R>> intersection(
 
     if(rl > ru){
         return interval<checked_result<R>>(
-            safe_numerics_error::uninitialized_value,
-            "null intersection"
+            checked_result<R>(
+                safe_numerics_error::uninitialized_value,
+                "null intersection"
+            ),
+            checked_result<R>(
+                safe_numerics_error::uninitialized_value,
+                "null intersection"
+            )
         );
     }
     return interval<checked_result<R>>(rl, ru);

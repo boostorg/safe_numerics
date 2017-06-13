@@ -43,6 +43,16 @@ template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt;
 checked::modulus(const T &amp; t, const U &amp; u);
 
+// safe less than predicate on primitive types
+template&lt;class R, class T, class U&gt;
+constexpr bool
+checked::less_than(const T &amp; t, const U &amp; u);
+
+// safe equal predicate on primitive types
+template&lt;class R, class T, class U&gt;
+constexpr bool
+checked::equal(const T &amp; t, const U &amp; u);
+
 // left shift
 template&lt;class R, class T, class U&gt;
 constexpr checked_result&lt;R&gt; 

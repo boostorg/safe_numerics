@@ -78,12 +78,6 @@
 
         <tbody>
           <row>
-            <entry><code>C</code></entry>
-
-            <entry>checked_result&lt;R&gt;</entry>
-          </row>
-
-          <row>
             <entry><code>c</code></entry>
 
             <entry>an instance of checked_result&lt;R&gt;</entry>
@@ -161,6 +155,15 @@
             </row>
 
             <row>
+              <entry><code>checked_result(t)</code></entry>
+
+              <entry><code>checked_result&lt;R&gt;</code></entry>
+
+              <entry>constructor with checked_result&lt;T&gt; where T is not
+              R. T must be convertible to R.</entry>
+            </row>
+
+            <row>
               <entry><code>static_cast&lt;R&gt;(c)</code></entry>
 
               <entry>R</entry>
@@ -196,14 +199,6 @@
               <entry>compare the wrapped values of two checked_result
               instances. If either one contains an error_type value, return
               boost::logic::tribool::indeterminant.</entry>
-            </row>
-
-            <row>
-              <entry><code>c.no_exception()</code></entry>
-
-              <entry>bool</entry>
-
-              <entry>true if checked_result contains a valid result</entry>
             </row>
 
             <row>

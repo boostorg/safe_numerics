@@ -49,6 +49,7 @@ struct checked_result {
         m_e(e),
         m_msg(msg)
     {}
+    // permit construct from convertible type
     template<typename T>
     constexpr /*explicit*/ checked_result<T>(const checked_result<T> & t) :
         m_e(t.m_e),
@@ -60,9 +61,13 @@ struct checked_result {
             m_msg = t.m_msg;
     }
 
+    constexpr bool exception() const {
+        return m_e != safe_numerics_error::success;
+    }
+
     // accesors
     constexpr operator R() const {
-//        assert(no_exception());
+        assert(! exception());
         return m_r;
     }
     
@@ -71,6 +76,12 @@ struct checked_result {
         return m_msg;
     }
 
+    // disallow assignment
+    // damn! turns out I use this in a sort of pathological case
+    // fix this later
+    // checked_result & operator=(const checked_result &) = delete;
+
+    // comparison operators
     template<class T>
     constexpr boost::logic::tribool operator<(const checked_result<T> & t) const {
         return
@@ -104,9 +115,6 @@ struct checked_result {
     template<class T>
     constexpr boost::logic::tribool operator==(const checked_result<T> & t) const {
         return ! operator!=(t);
-    }
-    constexpr bool exception() const {
-        return m_e != safe_numerics_error::success;
     }
 };
 

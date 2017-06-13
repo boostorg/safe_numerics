@@ -794,8 +794,7 @@ private:
             base_value(std::numeric_limits<U>::max())
         };
 
-        constexpr static const interval<checked_result<result_base_type>> r_interval
-            = modulus<result_base_type>(t_interval, u_interval);
+        constexpr static const interval<checked_result<result_base_type>> r_interval = modulus<result_base_type>(t_interval, u_interval);
 
         constexpr static bool exception_possible() {
             return
@@ -906,86 +905,14 @@ constexpr operator%=(T & t, const U & u){
 
 /////////////////////////////////////////////////////////////////
 // comparison
-#if 0
-template<class T, class U>
-struct comparison_result {
-private:
-    using promotion_policy = typename common_promotion_policy<T, U>::type;
-    using result_base_type =
-        typename promotion_policy::template subtraction_result<T, U>::type;
-
-    constexpr static const interval<typename base_type<T>::type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    };
-
-    constexpr static const interval<typename base_type<U>::type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    };
-
-    // when we subtract the temporary intervals above, we'll get a new interval
-    // with the correct range for the difference !
-    constexpr static const interval<checked_result<result_base_type>> r_interval =
-        subtract<result_base_type>(t_interval, u_interval);
-
-    const boost::tribool tb = t_interval < u_interval;
-
-    using exception_policy = typename common_exception_policy<T, U>::type;
-
-    struct indeterminent_type {};
-
-    constexpr static bool
-    return_value(const T & t, const U & u, std::true_type){
-        return true;
-    }
-    constexpr static bool
-    return_value(const T & t, const U & u, std::false_type){
-        return false;
-    }
-    constexpr static bool
-    return_value(const T & t, const U & u, indeterminent_type){
-        checked_result<bool> r = checked::less_than<result_base_type>(
-            base_value(t),
-            base_value(u)
-        );
-        if(!r.exception())
-            return r;
-
-        dispatch<exception_policy>(r);
-        return base_value(t) < base_value(u);
-    }
-public:
-    using result_type =
-        typename boost::mpl::if_c<
-            (! r_interval.l.exception() && r_interval.l > 0),
-            std::false_type,
-        typename boost::mpl::if_c<
-            (! r_interval.u.exception() && r_interval.u < 0),
-            std::true_type,
-        indeterminent_type
-        >::type
-        >::type;
-
-    constexpr static bool return_value(const T & t, const U & u){
-        return return_value(
-            t,
-            u,
-            result_type()
-        );
-    }
-};
-#endif
 
 template<class T, class U>
-struct comparison_result {
+struct less_than_result {
 private:
     using promotion_policy = typename common_promotion_policy<T, U>::type;
 
     using result_base_type =
         typename promotion_policy::template comparison_result<T, U>::type;
-
-//    utility::print_type<result_base_type> p1;
 
    constexpr static const interval<typename base_type<T>::type> t_interval{
         base_value(std::numeric_limits<T>::min()),
@@ -1024,8 +951,8 @@ typename std::enable_if<
     ,
     bool
 >::type
-constexpr operator<(const T & t, const U & u) {
-    return comparison_result<T, U>::return_value(t, u);
+constexpr operator<(const T & lhs, const U & rhs) {
+    return less_than_result<T, U>::return_value(lhs, rhs);
 }
 
 template<class T, class U>
@@ -1062,6 +989,47 @@ constexpr operator<=(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
+struct equal_result {
+private:
+    using promotion_policy = typename common_promotion_policy<T, U>::type;
+
+    using result_base_type =
+        typename promotion_policy::template comparison_result<T, U>::type;
+
+   constexpr static const interval<typename base_type<T>::type> t_interval{
+        base_value(std::numeric_limits<T>::min()),
+        base_value(std::numeric_limits<T>::max())
+    };
+
+    constexpr static const interval<typename base_type<U>::type> u_interval{
+        base_value(std::numeric_limits<U>::min()),
+        base_value(std::numeric_limits<U>::max())
+    };
+
+    constexpr static const interval<checked_result<result_base_type>>
+        r_interval = intersection<result_base_type>(t_interval, u_interval);
+
+    using exception_policy = typename common_exception_policy<T, U>::type;
+
+public:
+
+    constexpr static bool return_value(const T & t, const U & u){
+        if(r_interval.l.exception()
+        || r_interval.u.exception()
+        )
+            return false;
+        const checked_result<bool> r = checked::equal<result_base_type>(
+            base_value(t),
+            base_value(u)
+        );
+        if(!r.exception())
+            return r;
+        dispatch<exception_policy>(r);
+        return base_value(t) == base_value(u);
+    }
+};
+
+template<class T, class U>
 typename std::enable_if<
     boost::numeric::is_safe<T>::value
     || boost::numeric::is_safe<U>::value
@@ -1069,25 +1037,7 @@ typename std::enable_if<
     bool
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
-    constexpr const interval<typename base_type<T>::type> t_interval(
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    );
-
-    constexpr const interval<typename base_type<T>::type> u_interval(
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
-    );
-
-    return
-        // if the ranges don't overlap
-        ( t_interval < u_interval || t_interval > u_interval) ?
-            // values in those ranges can't be equal
-            false
-        :
-            // otherwise we have to check
-            safe_compare::equal(base_value(lhs), base_value(rhs));
-        ;
+    return equal_result<T, U>::return_value(lhs, rhs);
 }
 
 template<class T, class U>

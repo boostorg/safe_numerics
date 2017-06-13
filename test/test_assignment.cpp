@@ -73,7 +73,7 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
     boost::numeric::safe<T1> s1;
     try{
         s1 = s1x;
-        if(! (s1 == s1x)){
+        if(! boost::numeric::safe_compare::equal(s1, s1x)){
             std::cout
                 << "assignment altered value "
                 << "safe<" << t1_name << "> = safe<" << t1_name << ">"
@@ -132,7 +132,7 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
     T1 t1;
     try{
         t1 = s1;
-        if(! (t1 == s1)){
+        if(! boost::numeric::safe_compare::equal(t1, s1)){
             std::cout
                 << "failed to detect error in assignment "
                 << t1_name << "=" << "safe<" << t1_name << ">"
@@ -142,7 +142,7 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     catch(std::exception){
-        if(t1 == s1){
+        if(boost::numeric::safe_compare::equal(t1, s1)){
             std::cout
                 << "erroneously detected error in assignment "
                 << t1_name << "<-" << "safe<" << t1_name << ">"
@@ -161,7 +161,7 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
     T2 t2;
     try{
         t2 = s1;
-        if(! (t2 == s1)){
+        if(! boost::numeric::safe_compare::equal(t2, s1)){
             std::cout
                 << "failed to detect error in assignment "
                 << t2_name << "=" << "safe<" << t1_name << ">"
@@ -174,7 +174,7 @@ bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     catch(std::exception){
-        if(t2 == s1){
+        if(boost::numeric::safe_compare::equal(t2, s1)){
             std::cout
                 << "erroneously detected error in assignment "
                 << t2_name << "=" << "safe<" << t1_name << ">"

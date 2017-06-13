@@ -8,7 +8,10 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
+#include "safe_compare.hpp"
 #include "safe_integer.hpp"
+
+using namespace boost::numeric;
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
@@ -17,30 +20,31 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
 {
+
     /* test conversion constructor to safe<T2> from v1 */
-    boost::numeric::safe<T2> s2;
+    safe<T2> s2;
     try{
-        s2 = static_cast<boost::numeric::safe<T2> >(v1);
-        if(! (s2 == v1)){
+        s2 = static_cast<safe<T2> >(v1);
+        if(! safe_compare::equal(s2, v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
                 << std::endl;
             try{
-                s2 = static_cast<boost::numeric::safe<T2> >(v1);
+                s2 = static_cast<safe<T2> >(v1);
             }
             catch(std::exception){}
             return false;
         }
     }
     catch(std::exception){
-        if( s2 == v1 ){
+        if( safe_compare::equal(s2, v1)){
             std::cout
                 << "erroneously emitted error "
                 << t1_name << "<-" << t2_name
                 << std::endl;
             try{
-                s2 = static_cast<boost::numeric::safe<T2> >(v1);
+                s2 = static_cast<safe<T2> >(v1);
             }
             catch(std::exception){}
             return false;
@@ -49,11 +53,11 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
 }
 {
     /* test conversion to T1 from safe<T2>(v2) */
-    boost::numeric::safe<T1> s1(v1);
+    safe<T1> s1(v1);
     T2 t2;
     try{
         t2 = static_cast<T2>(s1);
-        if(! (t2 == v1)){
+        if(! safe_compare::equal(t2, v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
@@ -66,7 +70,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     catch(std::exception){
-        if(t2 == v1){
+        if(safe_compare::equal(t2, v1)){
             std::cout
                 << "erroneously emitted error "
                 << t1_name << "<-" << t2_name

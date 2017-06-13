@@ -16,7 +16,7 @@
   <section>
     <title>Template Parameters</title>
 
-    <para>R must model the type requirements of<link
+    <para>R must model the type requirements of <link
     linkend="safe_numerics.numeric">Numeric</link></para>
   </section>
 
@@ -47,11 +47,11 @@
           <row>
             <entry><code>i, j</code></entry>
 
-            <entry>An interval</entry>
+            <entry>An instance of interval type</entry>
           </row>
 
           <row>
-            <entry><code>R, T</code></entry>
+            <entry><code>R</code></entry>
 
             <entry>Numeric types which can be used to make an interval</entry>
           </row>
@@ -59,13 +59,7 @@
           <row>
             <entry><code>l, u</code></entry>
 
-            <entry>Lower and upper Numeric limits of an interval</entry>
-          </row>
-
-          <row>
-            <entry><code>C</code></entry>
-
-            <entry>checked_result&lt;interval&lt;R&gt;&gt;</entry>
+            <entry>Lowermost and uppermost values in an interval</entry>
           </row>
 
           <row>
@@ -149,6 +143,22 @@
             </row>
 
             <row>
+              <entry><code>i.l</code></entry>
+
+              <entry><code>R</code></entry>
+
+              <entry>lowermost value in the interval i</entry>
+            </row>
+
+            <row>
+              <entry><code>i.u</code></entry>
+
+              <entry><code>R</code></entry>
+
+              <entry>uppermost value in the interval i</entry>
+            </row>
+
+            <row>
               <entry><code>i.includes(j)</code></entry>
 
               <entry><code>bool</code></entry>
@@ -167,7 +177,7 @@
             <row>
               <entry><code>add&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>add two intervals and return the result</entry>
             </row>
@@ -175,7 +185,7 @@
             <row>
               <entry><code>subtract&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>subtract two intervals and return the result</entry>
             </row>
@@ -183,42 +193,24 @@
             <row>
               <entry><code>multiply&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>multiply two intervals and return the result</entry>
             </row>
 
             <row>
-              <entry><code>divide_nz&lt;R&gt;(i, j)</code></entry>
-
-              <entry><code>C</code></entry>
-
-              <entry>divide one interval by another excluding the value zero
-              and return the result</entry>
-            </row>
-
-            <row>
               <entry><code>divide&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>divide one interval by another and return the
               result</entry>
             </row>
 
             <row>
-              <entry><code>modulus_nz&lt;R&gt;(i, j)</code></entry>
-
-              <entry><code>C</code></entry>
-
-              <entry>calculate modulus of one interval by another excluding
-              the value zero and return the result</entry>
-            </row>
-
-            <row>
               <entry><code>modulus&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>calculate modulus of one interval by another and return
               the result</entry>
@@ -227,7 +219,7 @@
             <row>
               <entry><code>left_shift&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>calculate the range that would result from shifting one
               interval by another</entry>
@@ -236,10 +228,37 @@
             <row>
               <entry><code>right_shift&lt;R&gt;(i, j)</code></entry>
 
-              <entry><code>C</code></entry>
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
 
               <entry>calculate the range that would result from shifting one
               interval by another</entry>
+            </row>
+
+            <row>
+              <entry><code>bitwise_or&lt;R&gt;(i, j)</code></entry>
+
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+
+              <entry>range of values which can result from applying | to any
+              pair of operands from I and j</entry>
+            </row>
+
+            <row>
+              <entry><code>bitwise_and&lt;R&gt;(i, j)</code></entry>
+
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+
+              <entry>range of values which can result from applying &amp; to
+              any pair of operands from I and j</entry>
+            </row>
+
+            <row>
+              <entry><code>bitwise_xor&lt;R&gt;(i, j)</code></entry>
+
+              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+
+              <entry>range of values which can result from applying ^ to any
+              pair of operands from I and j</entry>
             </row>
 
             <row>
