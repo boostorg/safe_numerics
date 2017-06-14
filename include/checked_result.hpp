@@ -51,7 +51,7 @@ struct checked_result {
     {}
     // permit construct from convertible type
     template<typename T>
-    constexpr /*explicit*/ checked_result<T>(const checked_result<T> & t) :
+    constexpr /*explicit*/ checked_result(const checked_result<T> & t) :
         m_e(t.m_e),
         m_r(t.m_r)
     {

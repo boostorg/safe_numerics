@@ -25,6 +25,7 @@
 #include "checked_result.hpp"
 #include "utility.hpp"
 #include "exception.hpp"
+#include "safe_compare.hpp"
 
 namespace boost {
 namespace numeric {
@@ -52,13 +53,19 @@ namespace detail {
             // INT32-C Ensure that operations on signed
             // integers do not overflow
             return
-            t > std::numeric_limits<R>::max() ?
+            boost::numeric::safe_compare::greater_than(
+                t,
+                std::numeric_limits<R>::max()
+            ) ?
                 checked_result<R>(
                     safe_numerics_error::positive_overflow_error,
                     "converted signed value too large"
                 )
             :
-            t < std::numeric_limits<R>::min() ?
+            boost::numeric::safe_compare::less_than(
+                t,
+                std::numeric_limits<R>::min()
+            ) ?
                 checked_result<R>(
                     safe_numerics_error::negative_overflow_error,
                     "converted signed value too small"
@@ -75,7 +82,10 @@ namespace detail {
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
             return
-            t > std::numeric_limits<R>::max() ?
+            boost::numeric::safe_compare::greater_than(
+                t,
+                std::numeric_limits<R>::max()
+            ) ?
                 checked_result<R>(
                     safe_numerics_error::positive_overflow_error,
                     "converted unsigned value too large"
@@ -92,7 +102,10 @@ namespace detail {
             // INT32-C Ensure that operations on unsigned
             // integers do not overflow
             return
-            t > std::numeric_limits<R>::max() ?
+            boost::numeric::safe_compare::greater_than(
+                t,
+                std::numeric_limits<R>::max()
+            ) ?
                 checked_result<R>(
                     safe_numerics_error::positive_overflow_error,
                     "converted unsigned value too large"
@@ -107,13 +120,16 @@ namespace detail {
         constexpr static checked_result<R>
         invoke(const T & t) noexcept {
             return
-            t < 0 ?
+            boost::numeric::safe_compare::less_than(t, 0) ?
                 checked_result<R>(
                     safe_numerics_error::domain_error,
                     "converted negative value to unsigned"
                 )
             :
-            t > std::numeric_limits<R>::max() ?
+            boost::numeric::safe_compare::greater_than(
+                t,
+                std::numeric_limits<R>::max()
+            ) ?
                 checked_result<R>(
                     safe_numerics_error::positive_overflow_error,
                     "converted signed value too large"

@@ -8,8 +8,8 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "safe_compare.hpp"
-#include "safe_integer.hpp"
+#include "../include/safe_compare.hpp"
+#include "../include/safe_integer.hpp"
 
 using namespace boost::numeric;
 

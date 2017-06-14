@@ -180,6 +180,8 @@ make_safe_numerics_action(const safe_numerics_error & e){
         return safe_numerics_actions::uninitialized_value;
     case safe_numerics_error::success:
         return safe_numerics_actions::no_action;
+    default:
+        assert(false);
     }
 }
 

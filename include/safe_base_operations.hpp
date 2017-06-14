@@ -928,11 +928,16 @@ private:
 
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-public:
-
-    constexpr static bool return_value(const T & t, const U & u){
-        if(tb) return true;
-        if(!tb) return false;
+    constexpr static bool
+    return_value(const T & t, const U & u, std::false_type){
+        return false;
+    }
+    constexpr static bool
+    return_value(const T & t, const U & u, std::true_type){
+        return true;
+    }
+    constexpr static bool
+    return_value(const T & t, const U & u, logic::detail::indeterminate_t){
         const checked_result<bool> r = checked::less_than<result_base_type>(
             base_value(t),
             base_value(u)
@@ -940,8 +945,27 @@ public:
         if(!r.exception())
             return r;
         dispatch<exception_policy>(r);
-        return base_value(t) < base_value(u);
+        return safe_compare::less_than(base_value(t), base_value(u));
     }
+
+public:
+    constexpr static bool
+    return_value(const T & t, const U & u){
+        return return_value(
+            t,
+            u,
+            typename boost::mpl::if_c<
+                static_cast<const bool>(!tb),
+                std::false_type,
+                typename boost::mpl::if_c<
+                    static_cast<const bool>(tb),
+                    std::true_type,
+                    logic::detail::indeterminate_t
+                >::type
+            >::type()
+        );
+    }
+
 };
 
 template<class T, class U>
@@ -1009,15 +1033,21 @@ private:
     constexpr static const interval<checked_result<result_base_type>>
         r_interval = intersection<result_base_type>(t_interval, u_interval);
 
+    constexpr static bool exception_possible() {
+        // if intersection is not null, equality will have to evaluated
+        // at runtime
+        return  ! r_interval.l.exception() && ! r_interval.u.exception();
+    }
+
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-public:
-
-    constexpr static bool return_value(const T & t, const U & u){
-        if(r_interval.l.exception()
-        || r_interval.u.exception()
-        )
-            return false;
+    // exception not possible
+    constexpr static bool
+    return_value(const T & t, const U & u, std::false_type){
+        return false;
+    }
+    // exception possible
+    constexpr static bool return_value(const T & t, const U & u, std::true_type){
         const checked_result<bool> r = checked::equal<result_base_type>(
             base_value(t),
             base_value(u)
@@ -1025,7 +1055,16 @@ public:
         if(!r.exception())
             return r;
         dispatch<exception_policy>(r);
-        return base_value(t) == base_value(u);
+        return boost::numeric::safe_compare::equal(base_value(t), base_value(u));
+    }
+
+public:
+    constexpr static bool return_value(const T & t, const U & u){
+        return return_value(
+            t,
+            u,
+            typename std::integral_constant<bool, exception_possible()>()
+        );
     }
 };
 

@@ -15,7 +15,7 @@ branches:
 skip_commits:
   files:
     - doc/*
-#    - '**/*.html'
+    - doc/html/*'
 
 # Maximum number of concurrent jobs for the project
 max_jobs: 1
@@ -24,65 +24,22 @@ max_jobs: 1
 #    environment configuration    #
 #---------------------------------#
 
-# Build worker image (VM template)
-image: Visual Studio 2015
+install:
+  - cd ..
+  - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost-root
+  - cd boost-root
+  - git submodule init libs/config
+  - git submodule init libs/concept_check
+  - git submodule init libs/mpl
+  - git submodule init libs/preprocessor
+  - git submodule init libs/tribool
+  - git submodule init tools/enable_if
+  - git submodule update
+  - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\core
+  - bootstrap
+  - b2 headers
 
-# scripts that are called at very beginning, before repo cloning
-init:
-  - cmake --version
-  - git config --global core.autocrlf input
+build: off
 
-# clone directory
-clone_folder: c:\projects\safe_numerics
-
-# fetch repository as zip archive
-shallow_clone: true                 # default is "false"
-
-# environment variables
-environment:
-  MSVC_DEFAULT_OPTIONS: ON
-  BOOST_ROOT: C:\Libraries\boost_1_59_0
-
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
-
-# to add several configurations to build matrix:
-configuration:
-  - Debug
-  # - Release
-
-# scripts to run before build
-before_build:
-  - echo "before build"
-  - cd C:\projects\safe_numerics
-  - md build
-  - "C:\Program Files (x86)\Microsoft Visual Studio 15.0\VC\vcvarsall.bat" amd64
-  - cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%configuration% -DBOOST_ROOT="BOOST_ROOT% --build build
-  - dir
-
-# scripts to run after build
-after_build:
-
-# to run your custom scripts instead of automatic MSBuild
-build_script:
-  - echo "build script"
-  - cd C:\projects\safe_numerics\build
-  - nmake /f makefile
-
-# to disable automatic builds
-# build: off
-
-#---------------------------------#
-#       tests configuration       #
-#---------------------------------#
-
-# to run your custom scripts instead of automatic tests
 test_script:
-  - echo "test script"
-  - cd C:\projects\safe_numerics\build
-  - nmake /f makefile test
-
-# to disable automatic tests
-# test: off
-
+  - b2 libs/safe_numerics/test toolset=msvc-14.0

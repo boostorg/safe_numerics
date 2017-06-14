@@ -77,7 +77,7 @@ int test_compare_result(){
 
     safe<std::int8_t, automatic> x(0x01);
     safe<std::uint64_t, automatic> y(0x7fffffffffffffff);
-    auto z = x < y;
+    auto z = boost::numeric::safe_compare::less_than(x, y);
 
     print_argument_type(z);
     return 0;
