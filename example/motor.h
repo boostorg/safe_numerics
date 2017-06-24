@@ -21,8 +21,8 @@
 #else
     #include "18F252_desktop.h"
 
-    extern std::uint8_t base[0xfff];
-    extern bit<std::uint8_t, 0> TMR1ON;
+    extern uint8 base[0xfff];
+    extern bit<uint8, 0> TMR1ON;
 
     #define TRISC   base[0xf94]
     #define T3CON   base[0xfb1]

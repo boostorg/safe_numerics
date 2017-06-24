@@ -72,8 +72,8 @@ bool test2(){
             << z2 << std::endl;
 
             short int yi, zi;
-            yi = y;
-            zi = x + yi;
+            yi = static_cast<short int>(y);
+            zi = static_cast<short int>(x + yi);
     }
     catch(std::exception e){
         // none of the above should trap. Mark failure if they do

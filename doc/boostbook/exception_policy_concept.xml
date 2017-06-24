@@ -35,7 +35,8 @@
           <row>
             <entry>e</entry>
 
-            <entry>A code from safe_numerics_error</entry>
+            <entry>A code from <link
+            linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
           </row>
 
           <row>
@@ -57,11 +58,11 @@
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="6*"/>
+          <colspec align="left" colwidth="8*"/>
 
           <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="6*"/>
+          <colspec align="left" colwidth="12*"/>
 
           <thead>
             <row>
@@ -69,7 +70,7 @@
 
               <entry>Return Value</entry>
 
-              <entry>Comment</entry>
+              <entry>Invoked when:</entry>
             </row>
           </thead>
 
@@ -79,18 +80,8 @@
 
               <entry>void</entry>
 
-              <entry>when operation produces arithmetically incorrect
-              result</entry>
-            </row>
-
-            <row>
-              <entry><code>EP::on_implementation_defined_behavior(e,
-              message)</code></entry>
-
-              <entry>void</entry>
-
-              <entry>when result is defined by the particular C++
-              implementation</entry>
+              <entry>The operation cannot produce valid arithmetic result such
+              as overflows, divide by zero, etc.</entry>
             </row>
 
             <row>
@@ -99,7 +90,17 @@
 
               <entry>void</entry>
 
-              <entry>when result is undefined</entry>
+              <entry>The result is undefined by the C++ standard</entry>
+            </row>
+
+            <row>
+              <entry><code>EP::on_implementation_defined_behavior(e,
+              message)</code></entry>
+
+              <entry>void</entry>
+
+              <entry>The result depends upon implementation defined behavior
+              according to the C++ standard</entry>
             </row>
 
             <row>
@@ -108,8 +109,7 @@
 
               <entry>void</entry>
 
-              <entry>when an uninitialized variable is used - currently not
-              implemented</entry>
+              <entry>A variable is not initialized</entry>
             </row>
           </tbody>
         </tgroup>

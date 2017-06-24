@@ -83,6 +83,9 @@ public:
         default:
             assert(false);
         }
+        // should never arrive here
+        //include to suppress bogus warning
+        return "";
     }
 } safe_numerics_error_category ;
 
@@ -149,6 +152,9 @@ public:
         default:
             assert(false);
         }
+        // should never arrive here
+        //include to suppress bogus warning
+        return false; 
     }
 } safe_numerics_actions_category ;
 
@@ -183,6 +189,9 @@ make_safe_numerics_action(const safe_numerics_error & e){
     default:
         assert(false);
     }
+    // should never arrive here
+    //include to suppress bogus warning
+    return safe_numerics_actions::no_action;
 }
 
 // given an error code - return the error_condition which it corresponds to.

@@ -1,4 +1,4 @@
-//  Copyright (c) 2012 Robert Ramey
+//  Copyright (c) 2017 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -9,221 +9,91 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_compare.hpp"
 #include "../include/safe_integer.hpp"
 
-template<class T2, class T1>
-bool test_assignment(T1 v1, const char *t2_name, const char *t1_name){
-    std::cout
-        << "testing assignments to " << t2_name << " from " << t1_name
-        << std::endl;
-{
-    /* (1) test assignment to safe<T1> from T1 type */
-    boost::numeric::safe<T1> s1;
-    try{
-        s1 = v1;
-        // should always arrive here!
-    }
-    catch(std::exception){
-        // should never, ever arrive here
-        std::cout
-            << "erroneously detected error in assignment "
-            << "safe<" << t1_name << "> = " << t1_name
-            << std::endl;
-        try{
-            s1 = v1; // try again for debugging
-        }
-        catch(std::exception){}
-        return false;
-    }
-}
-{
-    /* (2) test assignment to safe<T2> from T1 type */
-    boost::numeric::safe<T2> s2;
-    try{
-        s2 = v1;
-        T2 v2 = s2;
-        if(! (boost::numeric::safe_compare::equal(v1, v2))){
-            std::cout
-                << "failed to detect error in assignment "
-                << "safe<" << t2_name << "> = " << t1_name
-                << std::endl;
-            s2 = v1;
-            return false;
-        }
-    }
-    catch(std::exception){
-        T2 v2 = v1;
-        if(boost::numeric::safe_compare::equal(v1, v2)){
-            std::cout
-                << "erroneously detected error in assignment "
-                << "safe<" << t2_name << "> = " << t1_name
-                << std::endl;
-            try{
-                s2 = v1; // try again for debugging
-            }
-            catch(std::exception){}
-            return false;
-        }
-    }
-}
-{
-    /* (3) test assignment to safe<T1> from safe<T1> type */
-    boost::numeric::safe<T1> s1x(v1);
-    boost::numeric::safe<T1> s1;
-    try{
-        s1 = s1x;
-        if(! boost::numeric::safe_compare::equal(s1, s1x)){
-            std::cout
-                << "assignment altered value "
-                << "safe<" << t1_name << "> = safe<" << t1_name << ">"
-                << std::endl;
-            s1 = s1x;
-            return false;
-        }
-    }
-    catch(std::exception){
-        // should never arrive here
-        std::cout
-            << "erroneously detected error in assignment "
-            << "safe<" << t1_name << "> = safe<" << t1_name << ">"
-            << std::endl;
-        try{
-            s1 = s1x;
-        }
-        catch(std::exception){}
-        return false;
-    }
-}
-{
-    /* (4) test assignment to safe<T2> from safe<T1> type */
-    boost::numeric::safe<T1> s1(v1);
-    boost::numeric::safe<T2> s2;
-    T2 v2;
-    try{
-        s2 = s1;
-        v2 = s2;
-        if(! (boost::numeric::safe_compare::equal(v1, v2))){
-            std::cout
-                << "failed to detect error in assignment "
-                << "safe<" << t2_name << "> = safe<" << t1_name << ">"
-                << std::endl;
-            s2 = s1;
-            return false;
-        }
-    }
-    catch(std::exception){
-        if(boost::numeric::safe_compare::equal(v1, v2)){
-            std::cout
-                << "erroneously detected error in assignment "
-                << "safe<" << t2_name << "> = safe<" << t1_name << ">"
-                << std::endl;
-            try{
-                s2 = s1;
-            }
-            catch(std::exception){}
-            return false;
-        }
-    }
-}
-{
-    /* (5) test assignment to integer type T1 from safe<T1> type */
-    boost::numeric::safe<T1> s1(v1);
-    T1 t1;
-    try{
-        t1 = s1;
-        if(! boost::numeric::safe_compare::equal(t1, s1)){
-            std::cout
-                << "failed to detect error in assignment "
-                << t1_name << "=" << "safe<" << t1_name << ">"
-                << std::endl;
-            t1 = s1;
-            return false;
-        }
-    }
-    catch(std::exception){
-        if(boost::numeric::safe_compare::equal(t1, s1)){
-            std::cout
-                << "erroneously detected error in assignment "
-                << t1_name << "<-" << "safe<" << t1_name << ">"
-                << std::endl;
-            try{
-                t1 = s1; // try again for debugging
-            }
-            catch(std::exception){}
-            return false;
-        }
-    }
-}
-{
-    /* (6) test assignment to integer type T2 from safe<T1> type */
-    boost::numeric::safe<T1> s1(v1);
-    T2 t2;
-    try{
-        t2 = s1;
-        if(! boost::numeric::safe_compare::equal(t2, s1)){
-            std::cout
-                << "failed to detect error in assignment "
-                << t2_name << "=" << "safe<" << t1_name << ">"
-                << std::endl;
-            try{
-                t2 = s1;
-            }
-            catch(std::exception){}
-            return false;
-        }
-    }
-    catch(std::exception){
-        if(boost::numeric::safe_compare::equal(t2, s1)){
-            std::cout
-                << "erroneously detected error in assignment "
-                << t2_name << "=" << "safe<" << t1_name << ">"
-                << std::endl;
-            try{
-                t2 = s1;
-            }
-            catch(std::exception){}
-            return false;
-        }
-    }
-}
-    return true; // passed test
-}
+template <class T>
+using safe_t = boost::numeric::safe<
+    T,
+    boost::numeric::native
+>;
 
+#include "test_assignment.hpp"
 #include "test.hpp"
-#include "test_types.hpp"
 #include "test_values.hpp"
 
-#define TEST_ASSIGNMENT(T1, v)          \
-    rval = rval && test_assignment<T1>( \
-        v,                              \
-        BOOST_PP_STRINGIZE(T1),         \
-        BOOST_PP_STRINGIZE(v)           \
+// note: same test matrix as used in test_checked.  Here we test all combinations
+// safe and unsafe integers.  in test_checked we test all combinations of
+// integer primitives
+
+const char *test_addition_result[VALUE_ARRAY_SIZE] = {
+//      0       0       0       0
+//      012345670123456701234567012345670
+//      012345678901234567890123456789012
+/* 0*/ ".....xx..xx..xx...xx.xxx.xxx.xxx.",
+/* 1*/ ".....xx..xx..xx...xx.xxx.xxx.xxx.",
+/* 2*/ ".....xx..xx..xx...xx.xxx.xxx.xxx.",
+/* 3*/ ".....xx..xx..xx...xx.xxx.xxx.xxx.",
+/* 4*/ ".........xx..xx.......xx.xxx.xxx.",
+/* 5*/ ".........xx..xx.......xx.xxx.xxx.",
+/* 6*/ ".........xx..xx.......xx.xxx.xxx.",
+/* 7*/ ".........xx..xx.......xx.xxx.xxx.",
+
+/* 8*/ ".............xx...........xx.xxx.",
+/* 9*/ ".............xx...........xx.xxx.",
+/*10*/ ".............xx...........xx.xxx.",
+/*11*/ ".............xx...........xx.xxx.",
+/*12*/ "..............................xx.",
+/*13*/ "..............................xx.",
+/*14*/ "..............................xx.",
+/*15*/ "..............................xx.",
+
+//      0       0       0       0
+//      012345670123456701234567012345670
+//      012345678901234567890123456789012
+/*16*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx.",
+/*17*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx.",
+/*18*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx.",
+/*19*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx.",
+/*20*/ "..xx..xx.xxx.xxx.........xxx.xxx.",
+/*21*/ "..xx..xx.xxx.xxx.........xxx.xxx.",
+/*22*/ "..xx..xx.xxx.xxx.........xxx.xxx.",
+/*23*/ "..xx..xx.xxx.xxx.........xxx.xxx.",
+
+/*24*/ "..xx..xx..xx.xxx.............xxx.",
+/*25*/ "..xx..xx..xx.xxx.............xxx.",
+/*26*/ "..xx..xx..xx.xxx.............xxx.",
+/*27*/ "..xx..xx..xx.xxx.............xxx.",
+/*28*/ "..xx..xx..xx..xx.................",
+/*29*/ "..xx..xx..xx..xx.................",
+/*30*/ "..xx..xx..xx..xx.................",
+/*31*/ "..xx..xx..xx..xx.................",
+//      012345678901234567890123456789012
+/*32*/ ".....xx..xx..xx...xx.xxx.xxx.xxx."
+};
+
+#include <boost/preprocessor/stringize.hpp>
+
+#define TEST_IMPL(v1, v2, result)   \
+    rval &= test_assignment(        \
+        v1,                         \
+        v2,                         \
+        BOOST_PP_STRINGIZE(v1),     \
+        BOOST_PP_STRINGIZE(v2),     \
+        result                      \
     );
 /**/
 
-#define EACH_VALUE(z, value_index, type_index)     \
-    TEST_ASSIGNMENT(                               \
-        BOOST_PP_ARRAY_ELEM(type_index, TYPES),    \
-        BOOST_PP_ARRAY_ELEM(value_index, VALUES)   \
-    )                                              \
-/**/
-
-#define EACH_TYPE1(z, type_index, nothing)         \
-    BOOST_PP_REPEAT(                               \
-        BOOST_PP_ARRAY_SIZE(VALUES),               \
-        EACH_VALUE,                                \
-        type_index                                 \
-    )                                              \
-/**/
-int main(int argc, char *argv[]){
-    bool rval = true;
-    BOOST_PP_REPEAT(
-        BOOST_PP_ARRAY_SIZE(TYPES),
-        EACH_TYPE1,
-        nothing
+#define TESTX(value_index1, value_index2)          \
+    (std::cout << value_index1 << ',' << value_index2 << ','); \
+    TEST_IMPL(                                     \
+        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
+        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
+        test_addition_result[value_index1][value_index2] \
     )
+/**/
+int main(int argc, char * argv[]){
+    bool rval = true;
+    TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
+    return ! rval ;
 }
-

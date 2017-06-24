@@ -29,6 +29,8 @@ test_example(example92)
 # test_example(example93)
 test_example(example10)
 test_example(example13)
+test_example(example94)
+test_example(example95)
 
 # end examples targets
 ####################

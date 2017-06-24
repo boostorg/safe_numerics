@@ -22,7 +22,7 @@ run example13.cpp ;
 compile-fail example81.cpp ;
 run example82.cpp ;
 run example83.cpp ;
-run example84.cpp ;
+# run example84.cpp ; # needs console input
 run example91.cpp ;
 run example92.cpp ;
 compile-fail example93.cpp ;

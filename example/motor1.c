@@ -27,14 +27,15 @@
 #include "motor.h"
 
 #if !defined(DESKTOP)
+    // include byte definitions in pic compiler syntax
     #include "picsfr.h"
 #else
-    // define a memory map to emulate the on in the pic.  This permits all
-    // same pic code to work on the desktop with no alteration
-    std::uint8_t base[0xfff];
+    // define a memory map to emulate the register space in the pic.
+    // This permits all same pic code to work on the desktop with no alteration
+    uint8 base[0xfff];
     // now we can render
     //#bit  TMR1ON  = T1CON.0 as
-    bit<std::uint8_t, 0> TMR1ON(T1CON);
+    bit<uint8, 0> TMR1ON(T1CON);
     // and use expressions such as TMR1ON = 0
 #endif
 
@@ -44,18 +45,9 @@
 
 // Types: int8,int16,int32=8,16,32bit integers, unsigned by default
 
-#if 0
 // ramp state-machine states
-#define ramp_idle 0
-#define ramp_up   1
-#define ramp_max  2
-#define ramp_down 3
-#define ramp_last 4
-int8  ramp_sts=ramp_idle;
-#endif
-
 enum {
-  ramp_idle,
+  ramp_idle = 0,
   ramp_up,
   ramp_max,
   ramp_down,
@@ -143,7 +135,7 @@ void isr_motor_step()
     CCPR2L = CCPR1L = (ccpr & 0xff);
     if (ramp_sts!=ramp_last) // else repeat last action: no step
 	    phase_ix = (phase_ix + phase_inc) & 3;
-    phase = ccpPhase[phase_ix];
+    phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
     CCP1CON = phase & 0xff; // set CCP action on next match
     CCP2CON = phase >> 8;
   } // if (ramp_sts != ramp_idle)
@@ -177,7 +169,7 @@ void motor_run(short pos_new)
   CCPR2H = CCPR1H = (ccpr >> 8);
   CCPR2L = CCPR1L = (ccpr & 0xff);
   phase_ix = (phase_ix + phase_inc) & 3;
-  phase = ccpPhase[phase_ix];
+  phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
   CCP1CON = phase & 0xff; // sets action on match
   CCP2CON = phase >> 8;
   current_on(); // current in motor windings

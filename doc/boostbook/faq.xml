@@ -31,9 +31,38 @@
       <answer>
         <para>Almost. Replacing all built-in types with their safe
         counterparts should result in a program that will compile and run as
-        expected. In some cases compile time errors will occur and adjustments
+        expected. Occasionally compile time errors will occur and adjustments
         to the source code will be required. Typically these will result in
         code which is more correct.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry id="safe_numerics.rationale.static_cast">
+      <question>
+        <para>Then why do I sometimes have to use static_cast. Doesn't this
+        conflict with the design goal of drop-in replace-ability and hamper
+        readability of the code? Why is conversion from a safe type to a
+        built-in marked as <code>explicit</code>?</para>
+
+        <programlisting>int x = 4;
+safe&lt;int&gt; y = x; // no problem
+
+x = y; // generates syntax error
+x = static_cast&lt;int&gt;(y);  // OK - no syntax error
+</programlisting>
+      </question>
+
+      <answer>
+        <para>Requiring <code>static_cast</code> to make these conversions
+        DOES conflict with the design goal of drop-in replace-ability hamper
+        readability of the code? But It also prevents silent conversions to
+        unsafe types. That is, we avoid silently losing the "safeness" we seek
+        to enforce. Confronted with a syntax error, users might decide to use
+        <code>static_cast</code> as in the above example, or make the target
+        type a safe type thus "infecting" other parts of the program with
+        "safeness". As can be seen from the examples included with the
+        library, in practice this problem doesn't occur very often so it
+        doesn't significantly impact the utility of the library.</para>
       </answer>
     </qandaentry>
 
@@ -111,24 +140,26 @@
 
     <qandaentry>
       <question>
-        <para>Why do you specialize <code>numeric_limits</code> for "safe"
-        types? Do you need it?</para>
+        <para>Why is it necessary to specialize <code>numeric_limits</code>
+        for "safe" types?</para>
       </question>
 
       <answer>
-        <para><code>safe&lt;T&gt;</code> behaves like a "number" just as int
-        does. It has max, min, etc Any code which uses numeric limits to test
-        a type <code>T</code> should work with <code>safe&lt;T&gt;</code>.
-        <code>safe&lt;T&gt;</code> is a drop-in replacement for <code>T</code>
-        so it has to implement all the operations.</para>
+        <para><code>safe&lt;T&gt;</code> behaves like a "number" just as
+        <code>int</code> does. It has max, min, etc Any code which uses
+        numeric limits to test a type <code>T</code> should work with
+        <code>safe&lt;T&gt;</code>. <code>safe&lt;T&gt;</code> is a drop-in
+        replacement for <code>T</code> so it has to implement all the
+        operations.</para>
       </answer>
     </qandaentry>
 
     <qandaentry>
       <question>
-        <para>According to C/C++ standards, unsigned integers cannot overflow
-        - they are modular integers which "wrap around". Yet the safe numerics
-        library detects and traps this behavior as errors. Why is that?</para>
+        <para>According to C/C++ standards, <code>unsigned integers</code>
+        cannot overflow - they are modular integers which "wrap around". Yet
+        the safe numerics library detects and traps this behavior as errors.
+        Why is that?</para>
       </question>
 
       <answer>
@@ -137,12 +168,12 @@
         user may understand and keep present in his mind that an unsigned
         integer is really a modular type, the plain reading of an arithmetic
         expression conveys the idea that all operands are integers. Also in
-        many cases, unsigned integers are used in cases where modular
-        arithmetic is not intended, such as array indexes. Finally, the
-        modulus for such an integer would vary depending upon the machine
+        many cases, <code>unsigned integers</code> are used in cases where
+        modular arithmetic is not intended, such as array indices. Finally,
+        the modulus for such an integer would vary depending upon the machine
         architecture. For these reasons, in the context of this library, an
-        unsigned integer is considered to be a representation of a subset of
-        integers. Note that this decision is consistent with
+        <code>unsigned integer</code> is considered to be a representation of
+        a subset of integers. Note that this decision is consistent with
         <citation>INT30-C</citation>, “Ensure that unsigned integer operations
         do not wrap” in the CERT C Secure Coding Standard
         <citation>Seacord</citation>.</para>
@@ -164,12 +195,13 @@
         only way to really minimize run-time penalty was to implement
         compile-time integer range arithmetic - a pretty elaborate sub
         library. By doing range arithmetic at compile-time, I could skip
-        runtime checking on many/most integer operations. C++11 constexpr
-        wasn't quite enough to do the job. C++14 constexpr can do the job. The
-        library currently relies very heavily on C++14 constexpr. I think that
-        those who delve into the library will be very surprised at the extent
-        that minor changes in user code can produce guaranteed correct integer
-        code with zero run-time penalty.</para>
+        runtime checking on many/most integer operations. While C++11
+        <code>constexpr</code> wasn't quite powerful enough to do the job,
+        C++14 <code>constexpr</code> is. The library currently relies very
+        heavily on C++14 <code>constexpr</code>. I think that those who delve
+        into the library will be very surprised at the extent that minor
+        changes in user code can produce guaranteed correct integer code with
+        zero run-time penalty.</para>
       </answer>
     </qandaentry>
 
@@ -233,6 +265,11 @@ typedef long int_least16_t;
             <listitem>
               <para>Run the tests and change the code to address any thrown
               exceptions.</para>
+            </listitem>
+
+            <listitem>
+              <para>Compile for the target C platform with the macro TEST
+              undefined.</para>
             </listitem>
           </itemizedlist></para>
 

@@ -49,27 +49,31 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
 #include <chrono>
 #include <thread>
 
+void sleep(int16){
+    std::this_thread::sleep_for(std::chrono::microseconds(
+        static_cast<unsigned int>(ccpr))
+    );
+}
 int main(){
     std::cout << "start test\n";
     try{
         initialize();
         motor_run(100);
         do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
             isr_motor_step();
         }while (run_flg);
 
         // move motor to position 1000
         motor_run(1000);
         do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
+            sleep(ccpr);
             isr_motor_step();
         }while (run_flg);
 
         // move back to position 0
         motor_run(0);
         do{
-            std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
+            sleep(ccpr);
             isr_motor_step();
         }while (run_flg);
     }

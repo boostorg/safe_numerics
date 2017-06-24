@@ -19,11 +19,11 @@
 
     <informaltable>
       <tgroup cols="3">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="4*"/>
+        <colspec align="left" colwidth="6*"/>
 
-        <colspec align="left" colwidth="4*"/>
+        <colspec align="left" colwidth="9*"/>
 
         <thead>
           <row>
@@ -31,7 +31,7 @@
 
             <entry align="left">Type Requirements</entry>
 
-            <entry>Description</entry>
+            <entry>Invoked when:</entry>
           </row>
         </thead>
 
@@ -39,41 +39,39 @@
           <row>
             <entry><code>AE</code></entry>
 
-            <entry>Must be a function object callable with the expression
-            AE(e, message)</entry>
+            <entry>Function object callable with the expression AE(e,
+            message)</entry>
 
-            <entry><para>invoked when operation produces an invalid arithmetic
-            result.</para></entry>
-          </row>
-
-          <row>
-            <entry><code>IDB</code></entry>
-
-            <entry>Must be a function object callable with the expression
-            IDB(e, message)</entry>
-
-            <entry><para>invoked when operation produces an invalid arithmetic
-            result.</para></entry>
+            <entry><para>The operation cannot produce valid arithmetic result
+            such as overflows, divide by zero, etc.</para></entry>
           </row>
 
           <row>
             <entry><code>UB</code></entry>
 
-            <entry>Must be a function object callable with the expression
-            UB(e, message)</entry>
+            <entry>Function object callable with the expression UB(e,
+            message)</entry>
 
-            <entry><para>invoked when operation produces an invalid arithmetic
-            result.</para></entry>
+            <entry><para>The result is undefined by the C++
+            standard</para></entry>
+          </row>
+
+          <row>
+            <entry><code>IDB</code></entry>
+
+            <entry>Function object callable with the expression IDB(e,</entry>
+
+            <entry><para>The result depends upon implementation defined
+            behavior according to the C++ standard</para></entry>
           </row>
 
           <row>
             <entry><code>UV</code></entry>
 
-            <entry>Must be a function object callable with the expression
-            UV(e, message)</entry>
+            <entry>Function object callable with the expression UV(e,
+            message)</entry>
 
-            <entry><para>invoked when operation produces an invalid arithmetic
-            result.</para></entry>
+            <entry><para>A variable is not initialized</para></entry>
           </row>
         </tbody>
       </tgroup>

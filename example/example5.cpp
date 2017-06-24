@@ -27,7 +27,7 @@ int main(int argc, const char * argv[]){
         using i_index_t = safe_unsigned_range<0, i_array.size() - 1>;
         i_index_t i_index;
         i_index = 36; // this works fine
-        i_array[i_index] = 84;
+        i_array[static_cast<unsigned int>(i_index)] = 84;
         i_index = 43; // throw exception here!
         std::cout << "error NOT detected!" << std::endl; // so we never arrive here
     }

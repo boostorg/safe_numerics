@@ -17,7 +17,7 @@
   special exception policy: <link
   linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>.</para>
 
-  <para><programlisting><xi:include href="../../examples/example81.cpp"
+  <para><programlisting><xi:include href="../../example/example81.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Now,
   any expression which <emphasis><emphasis
   role="bold">might</emphasis></emphasis> fail at runtime is flagged with a
@@ -26,7 +26,7 @@
   role="bold">library absolutely <emphasis role="bold">guarantees that no
   arithmetic expression</emphasis> will yield incorrect results</emphasis>.
   Furthermore, it is <emphasis role="bold">absolutely guaranteed that no
-  exception will ever be thrown</emphasis>. This is our original goal. </para>
+  exception will ever be thrown</emphasis>. This is our original goal.</para>
 
   <para>Now all we need to do is make the program work. There are a couple of
   ways to achieve this.</para>
@@ -147,12 +147,12 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     <para>Using the <link
     linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
     exception policy will produce a compile time error anytime it's possible
-    for an error to occur. </para>
+    for an error to occur.</para>
 
     <para>This small example illustrates how to use automatic type promotion
     to eliminate all runtime penalty.</para>
 
-    <para><programlisting><xi:include href="../../examples/example82.cpp"
+    <para><programlisting><xi:include href="../../example/example82.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting></para>
 
     <itemizedlist>
@@ -216,7 +216,7 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     exception policy to verify at compile time that what we "know" to be true
     is in fact true.</para>
 
-    <programlisting><xi:include href="../../examples/example83.cpp"
+    <programlisting><xi:include href="../../example/example83.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
     <para><itemizedlist>
@@ -263,7 +263,7 @@ z = &lt;signed char&gt;[-24,82] = 77
     realistic program would likely include all techniques mentioned above.
     Consider the following:</para>
 
-    <programlisting><xi:include href="../../examples/example84.cpp"
+    <programlisting><xi:include href="../../example/example84.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
     <para><itemizedlist>

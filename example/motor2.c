@@ -49,10 +49,10 @@
 #else
     // define a memory map to emulate the on in the pic.  This permits all
     // same pic code to work on the desktop with no alteration
-    std::uint8_t base[0xfff];
+    uint8 base[0xfff];
     // now we can render
     //#bit  TMR1ON  = T1CON.0 as
-    bit<std::uint8_t, 0> TMR1ON(T1CON);
+    bit<uint8, 0> TMR1ON(T1CON);
     // and use expressions such as TMR1ON = 0
     enum ramp_state_t {
       ramp_idle,
@@ -104,7 +104,7 @@ void phase_bump()
             phase_ix = 3;
         else
             --phase_ix;
-    phase = ccpPhase[phase_ix];
+    phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
     CCP1CON = phase & 0xff; // set CCP action on next match
     CCP2CON = phase >> 8;
 }
@@ -136,7 +136,7 @@ void isr_motor_step()
     denom+=4;
     c32 -= (c32 * 2) / denom; // ramp algorithm
     // beware confict with foreground code if long div not reentrant
-    c = (c32 + 128) / 256; // round 24.8format->int16
+    c = static_cast<mod16>((c32 + 128) / 256); // round 24.8format->int16
     if (c <= C_MIN)
     { // go to constant speed
       ramp_sts = ramp_max;

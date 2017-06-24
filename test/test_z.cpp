@@ -540,14 +540,180 @@ int main(){
     return 0;
 }
 
-#endif
+#include <iostream>
+#include <iomanip>
+#include <functional>
+#include <string>
+#include <unordered_set>
 
-#include "../include/utility.hpp"
-
-int main(){
-    using namespace boost::numeric::utility;
-    unsigned int x = significant_bits(-32768);
-    unsigned int y = significant_bits(33022);
-    return 0;
+struct S {
+    std::string first_name;
+    std::string last_name;
+};
+bool operator==(const S& lhs, const S& rhs) {
+    return lhs.first_name == rhs.first_name && lhs.last_name == rhs.last_name;
+}
+ 
+// custom hash can be a standalone function object:
+struct MyHash
+{
+    std::size_t operator()(S const& s) const 
+    {
+        std::size_t h1 = std::hash<std::string>{}(s.first_name);
+        std::size_t h2 = std::hash<std::string>{}(s.last_name);
+        return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+    }
+};
+ 
+// custom specialization of std::hash can be injected in namespace std
+namespace std
+{
+    template<> struct hash<S>
+    {
+        typedef S argument_type;
+        typedef std::size_t result_type;
+        result_type operator()(argument_type const& s) const
+        {
+            result_type const h1 ( std::hash<std::string>{}(s.first_name) );
+            result_type const h2 ( std::hash<std::string>{}(s.last_name) );
+            return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+        }
+    };
+}
+ 
+int main()
+{
+ 
+    std::string str = "Meet the new boss...";
+    std::size_t str_hash = std::hash<std::string>{}(str);
+    std::cout << "hash(" << std::quoted(str) << ") = " << str_hash << '\n';
+ 
+    S obj = { "Hubert", "Farnsworth"};
+    // using the standalone function object
+    std::cout << "hash(" << std::quoted(obj.first_name) << ',' 
+               << std::quoted(obj.last_name) << ") = "
+               << MyHash{}(obj) << " (using MyHash)\n                           or "
+               << std::hash<S>{}(obj) << " (using std::hash) " << '\n';
+ 
+    // custom hash makes it possible to use custom types in unordered containers
+    // The example will use the injected std::hash specialization,
+    // to use MyHash instead, pass it as a second template argument
+    std::unordered_set<S> names = {obj, {"Bender", "Rodriguez"}, {"Leela", "Turanga"} };
+    for(auto& s: names)
+        std::cout << std::quoted(s.first_name) << ' ' << std::quoted(s.last_name) << '\n';
 }
 
+#include <iostream>
+#include <functional> // std::hash
+#include <string>
+#include <unordered_map>
+#include "../include/safe_integer.hpp"
+
+#include <boost/concept/usage.hpp>
+
+template<class F>
+struct FunctionObject {
+    static_assert(
+        std::is_object<F>::value,
+        "is a function object"
+    );
+    using argument_type = typename F::argument_type;
+
+    BOOST_CONCEPT_USAGE(FunctionObject){
+        const F f;
+        argument_type x;
+        f(x);
+    }
+};
+
+template<class H>
+struct Hash {
+    using argument_type = typename H::argument_type;
+    static_assert(
+        std::is_copy_constructible<argument_type>::value,
+        "Hash argument is copy constructible"
+    );
+
+    BOOST_CONCEPT_ASSERT((FunctionObject<H>));
+    /*
+    // these don't seem to work in my clang compiler
+    static_assert(
+        std::is_destructible<H>::value,
+        "Is destructible"
+    );
+    static_assert(
+        std::is_copy_constructible<H>::value,
+        "Hash is copy constructible"
+    );
+    */
+    using key = typename H::argument_type;
+    BOOST_CONCEPT_USAGE(Hash){
+        const key k{};
+        const H h;
+        const size_t x = h(k);
+    }
+};
+
+
+namespace std
+{
+#if 1
+    template<typename T>
+    struct hash<boost::numeric::safe<T>>
+    {
+        typedef boost::numeric::safe<T> argument_type;
+        typedef std::size_t result_type;
+        result_type operator()(argument_type const & st) const {
+            return std::hash<T>{}(st);
+        }
+        BOOST_CONCEPT_ASSERT((Hash<hash>));
+    };
+#else
+    template<>
+    struct hash<boost::numeric::safe<int>>
+    {
+        typedef boost::numeric::safe<int> argument_type;
+        static_assert(
+            std::is_copy_constructible<argument_type>::value,
+            "safe<int> is copy constructible"
+        );
+        typedef std::size_t result_type;
+        result_type operator()(argument_type const & st) const noexcept {
+            return std::hash<int>{}(st);
+        }
+        BOOST_CONCEPT_ASSERT((Hash<hash>));
+    };
+#endif
+} // std
+
+int main(){
+    // using key_type = int;
+    using key_type = boost::numeric::safe<int>;
+    using data_type = std::string;
+    using map_type = std::unordered_map<key_type, data_type>;
+    // using map_type = std::unordered_map<int, std::string>;
+    map_type om{
+        {1, "one"},
+        {2, "two"},
+        {3, "three"}
+    };
+    // test that key type meets CopyInsertable requirements
+    std::allocator_traits<
+        typename map_type::allocator_type::construct()
+    >
+    
+    boost::numeric::safe<int> x = 1;
+    //std::string s = om.at(x);
+    std::string s = om[x];
+    om.insert({x, "one"});
+    std::cout << om.at(x) << std::endl;
+
+    om.empty();
+    //om[4] = "four";
+}
+
+#endif
+
+int main(){
+    return 0;
+}

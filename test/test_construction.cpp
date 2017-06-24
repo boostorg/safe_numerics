@@ -13,14 +13,15 @@
 #include "../include/safe_integer.hpp"
 
 template<class T2, class T1>
-bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
+bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
+    using namespace boost::numeric;
     std::cout
         << "testing constructions to " << t2_name << " from " << t1_name
         << std::endl;
 {
     /* (1) test construction of safe<T1> from T1 type */
     try{
-        boost::numeric::safe<T1> s1(v1);
+        safe<T1> s1(t1);
         // should always arrive here!
     }
     catch(std::exception){
@@ -30,7 +31,7 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
             << "safe<" << t1_name << "> (" << t1_name << ")"
             << std::endl;
         try{
-            boost::numeric::safe<T1> s1(v1); // try again for debugging
+            safe<T1> s1(t1); // try again for debugging
         }
         catch(std::exception){}
         return false;
@@ -39,26 +40,26 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
 {
     /* (2) test construction of safe<T2> from T1 type */
     try{
-        boost::numeric::safe<T2> s2(v1);
-        T2 v2 = v1;
-        if(! boost::numeric::safe_compare::equal(v1, v2)){
+        safe<T2> s2(t1);
+        T2 t2 = t1;
+        if(! safe_compare::equal(t1, t2)){
             std::cout
                 << "failed to detect error in construction "
                 << "safe<" << t2_name << "> (" << t1_name << ")"
                 << std::endl;
-            boost::numeric::safe<T2> s2(v1);
+            safe<T2> s2(t1);
             return false;
         }
     }
     catch(std::exception){
-        T2 v2 = v1;
-        if(boost::numeric::safe_compare::equal(v1, v2)){
+        T2 t2 = t1;
+        if(safe_compare::equal(t1, t2)){
             std::cout
                 << "erroneously detected error in construction "
                 << "safe<" << t2_name << "> (" << t1_name << ")"
                 << std::endl;
             try{
-                boost::numeric::safe<T2> s2(v1); // try again for debugging
+                safe<T2> s2(t1); // try again for debugging
             }
             catch(std::exception){}
             return false;
@@ -67,15 +68,15 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
 }
 {
     /* (3) test construction of safe<T1> from safe<T1> type */
-    boost::numeric::safe<T1> s1x(v1);
+    safe<T1> s1x(t1);
     try{
-        boost::numeric::safe<T1> s1(s1x);
+        safe<T1> s1(s1x);
         if(! (s1 == s1x)){
             std::cout
                 << "copy constructor altered value "
-                << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << v1 << "))"
+                << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << t1 << "))"
                 << std::endl;
-            //boost::numeric::safe<T1> s1(s1x);
+            //safe<T1> s1(s1x);
             return false;
         }
     }
@@ -83,10 +84,10 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
         // should never arrive here
         std::cout
             << "erroneously detected error in construction "
-            << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << v1 << "))"
+            << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << t1 << "))"
             << std::endl;
         try{
-            //boost::numeric::safe<T1> s1(s1x);
+            //safe<T1> s1(s1x);
         }
         catch(std::exception){}
         return false;
@@ -94,28 +95,28 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
 }
 {
     /* (4) test construction of safe<T2> from safe<T1> type */
-    T2 v2;
+    T2 t2;
     try{
-        boost::numeric::safe<T1> s1(v1);
-        boost::numeric::safe<T2> s2 = s1;
-        v2 = s2;
-        if(! (boost::numeric::safe_compare::equal(v1, v2))){
+        safe<T1> s1(t1);
+        safe<T2> s2(s1);
+        t2 = static_cast<T2>(s2);
+        if(! (safe_compare::equal(t1, t2))){
             std::cout
                 << "failed to detect error in construction "
-                << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << v1 << "))"
+                << "safe<" << t1_name << "> (safe<" << t2_name << ">(" << t1 << "))"
                 << std::endl;
-            boost::numeric::safe<T2> s1(v1);
+            safe<T2> s1(t1);
             return false;
         }
     }
     catch(std::exception){
-        if(boost::numeric::safe_compare::equal(v1, v2)){
+        if(safe_compare::equal(t1, t2)){
             std::cout
                 << "erroneously detected error in construction "
-                << "safe<" << t2_name << "> (safe<" << t1_name << ">(" << v1 << "))"
+                << "safe<" << t2_name << "> (safe<" << t1_name << ">(" << t1 << "))"
                 << std::endl;
             try{
-                boost::numeric::safe<T2> s1(v1);
+                safe<T2> s1(t1);
             }
             catch(std::exception){}
             return false;
@@ -135,7 +136,7 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
 #include <boost/preprocessor/stringize.hpp>
 
 #define TEST_CONSTRUCTION(T1, v)      \
-    test_construction<T1>(            \
+    rval &= test_construction<T1>(    \
         v,                            \
         BOOST_PP_STRINGIZE(T1),       \
         BOOST_PP_STRINGIZE(v)         \
@@ -157,11 +158,13 @@ bool test_construction(T1 v1, const char *t2_name, const char *t1_name){
     )                                              \
 /**/
 int main(int argc, char *argv[]){
+    bool rval = true;
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),
         EACH_TYPE1,
         nothing
     )
-    return 0;
+    std::cout << (rval ? "success!" : "failure") << std::endl;
+    return ! rval ;
 }
 

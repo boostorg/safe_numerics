@@ -26,6 +26,7 @@ struct PromotionPolicy {
     using mod_type = typename PP::template modulus_result<T, U>;
     using ls_type = typename PP::template left_shift_result<T, U>;
     using rs_type = typename PP::template right_shift_result<T, U>;
+    using cc_type = typename PP::template comparison_result<T, U>;
     using baw_type = typename PP::template bitwise_and_result<T, U>;
     using bow_type = typename PP::template bitwise_or_result<T, U>;
     using bxw_type = typename PP::template bitwise_xor_result<T, U>;

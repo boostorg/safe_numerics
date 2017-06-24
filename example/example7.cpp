@@ -38,39 +38,40 @@ auto convert(const hours_t & hours, const minutes_t & minutes) {
     return hours * 60 + minutes;
 }
 
-unsigned int test(
-    unsigned int hours,
-    unsigned int minutes
-){
+unsigned int test1(unsigned int hours, unsigned int minutes){
     // problem: checking of externally produced value can be expensive
     // invalid parameters - detected - but at a heavy cost
     return contract_convert(hours, minutes);
+}
 
+auto test2(unsigned int hours, unsigned int minutes){
     // solution: use safe numerics
     // safe types can be implicitly constructed base types
     // construction guarentees corectness
     // return value is known to fit in unsigned int
     return convert(hours, minutes);
+}
 
+auto test3(unsigned int hours, unsigned int minutes){
     // actually we don't even need the convert function any more
     return hours_t(hours) * 60 + minutes_t(minutes);
 }
 
 int main(int argc, const char * argv[]){
-    std::cout << "example 8: ";
+    std::cout << "example 7: ";
     std::cout << "enforce contracts with zero runtime cost" << std::endl;
 
     unsigned int total_minutes;
 
     try {
-        total_minutes = test(17, 83);
+        total_minutes = static_cast<unsigned int>(test3(17, 83));
     }
     catch(std::exception e){
         std::cout << "parameter error detected" << std::endl;
     }
 
     try {
-        total_minutes = test(17, 10);
+        total_minutes = static_cast<unsigned int>(test3(17, 10));
     }
     catch(std::exception e){
         // should never arrive here

@@ -226,20 +226,17 @@ public:
             int
         >::type = 0
     >
-    constexpr operator R () const;
-    constexpr operator Stored () const;
+    constexpr explicit operator R () const;
+    constexpr explicit operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
     template<class T>
-    constexpr safe_base & operator=(const T & rhs){
+    constexpr safe_base &
+    operator=(const T & rhs){
         m_t = validated_cast(rhs);
         return *this;
     }
-    
-    template<class T, T MinT, T MaxT, class PT, class ET>
-    constexpr safe_base &
-    operator=(const safe_base<T, MinT, MaxT, PT, ET> & rhs);
 
     // mutating unary operators
     safe_base & operator++(){      // pre increment

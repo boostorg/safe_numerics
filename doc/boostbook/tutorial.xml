@@ -23,8 +23,8 @@
     instances of <code>int</code> type with <code>safe&lt;int&gt;</code>
     type.</para>
 
-    <programlisting><xi:include href="../../examples/example1.cpp"
-        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+    <programlisting><xi:include href="../../example/example1.cpp" parse="text"
+        xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
     <programlisting>example 1:undetected erroneous expression evaluation
 Not using safe numerics
@@ -41,8 +41,8 @@ error detected:addition result too large: positive overflow error
     <para>A variation of the above is when a value is incremented/decremented
     beyond its domain. This is a common problem with for loops.</para>
 
-    <programlisting><xi:include href="../../examples/example2.cpp"
-        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+    <programlisting><xi:include href="../../example/example2.cpp" parse="text"
+        xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
     <programlisting>example 2:undetected overflow in data type
 Not using safe numerics
@@ -67,7 +67,7 @@ error detected!</programlisting>
     <para>The talk included a very, very simple example similar to the
     following:</para>
 
-    <para><programlisting><xi:include href="../../examples/example4.cpp"
+    <para><programlisting><xi:include href="../../example/example4.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 3: implicit conversions change data values
 Not using safe numerics
 a is -1 b is 1
@@ -146,7 +146,7 @@ error detected!
     "rules" to existing code without creating even more bugs. Here is a
     typical example of this problem:</para>
 
-    <para><programlisting><xi:include href="../../examples/example10.cpp"
+    <para><programlisting><xi:include href="../../example/example10.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>Here
     is the output of the above program:<screen>example 4: mixing types produces surprising results
 Not using safe numerics
@@ -168,15 +168,34 @@ error detected!converted negative value to unsigned: domain error
     to find. There are several ways to address this, but one of the simplest
     would be to use safe_unsigned_range;</para>
 
-    <para><programlisting><xi:include href="../../examples/example5.cpp"
+    <para><programlisting><xi:include href="../../example/example5.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 5: array index values can exceed array bounds
 Not using safe numerics
 error NOT detected!
 Using safe numerics
 error detected:Value out of range for this safe type: domain error
-</programlisting>Collections like standard arrays and vectors do array index
-    checking in some function calls and not in others so this may not be the
-    best example. However it does illustrate the usage of
+</programlisting></para>
+
+    <para>Note the usage of <code>static_cast</code> in order to convert an
+    instance of a safe type, i_index, to a built-in integer type in order to
+    index into an array with the expression <code>i_array[]</code>. This is
+    necessary because conversion from a safe type to it's underlying built-in
+    type is marked with <code>explicit</code>. This is intentional. Although
+    it hampers readability and subverts the design goal of making safe types
+    "drop-in" replacements for their underlying built-in types, It has been
+    deemed that permitted implicit (and therefore silent) conversions to
+    unsafe times will inhibit the inadvertent loss of "safeness". If one uses
+    a safe type where a built-in type is expected, a syntax error will result
+    - thus requiring the programmer to actively decide how he might want to
+    handle this. He can always use an explicit <code>safe_cast</code> to
+    convert the safe type to the underlying type. But in some cases he might
+    want to change the target type to a safe type there by propagating the
+    "safeness" to other types in the program. For more on this topic see <link
+    linkend="safe_numerics.rationale.static_cast">Rational</link>e.</para>
+
+    <para>Collections like standard arrays and vectors do array index checking
+    in some function calls and not in others so this may not be the best
+    example. However it does illustrate the usage of
     <code>safe_range&lt;T&gt;</code> for assigning legal ranges to variables.
     This will guarantee that under no circumstances will the variable contain
     a value outside of the specified range.</para>
@@ -187,7 +206,7 @@ error detected:Value out of range for this safe type: domain error
 
     <para>It's way too easy to overlook the checking of parameters received
     from outside the current program.<programlisting><xi:include
-          href="../../examples/example6.cpp" parse="text"
+          href="../../example/example6.cpp" parse="text"
           xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 6: checking of externally produced value can be overlooked
 Not using safe numerics
 2147483647 0
@@ -229,7 +248,7 @@ error detected:error in file input: domain error
     is invoked. Any errors of this nature are handled according to the
     ErrorPolicy selected by the library user.</para>
 
-    <para><programlisting><xi:include href="../../examples/example13.cpp"
+    <para><programlisting><xi:include href="../../example/example13.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 7: cannot recover from arithmetic errors
 Not using safe numerics
 error NOT detectable!
@@ -258,7 +277,7 @@ error detected:divide by zero: domain error
     check guaranteed parameter requirements with little or no runtime
     overhead. Consider the following example:</para>
 
-    <para><programlisting><xi:include href="../../examples/example7.cpp"
+    <para><programlisting><xi:include href="../../example/example7.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 8: enforce contracts with zero runtime cost
 parameter error detected</programlisting></para>
 

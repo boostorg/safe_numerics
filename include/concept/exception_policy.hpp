@@ -20,12 +20,10 @@ struct ExceptionPolicy {
     const char * message;
     /*
     BOOST_CONCEPT_USAGE(ExceptionPolicy){
-        EP::no_error(message);
-        EP::uninitialize_error(message);
-        EP::overflow_error(message);
-        EP::underflow_error(message);
-        EP::range_error(message);
-        EP::domain_error(message);
+        EP::on_arithmetic_error(e, message);
+        EP::on_undefined_behavior(e, message)
+        EP::on_implementation_defined_behavior(e, message)
+        EP::on_uninitialized_value(e, message)
     }
     */
 };
