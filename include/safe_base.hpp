@@ -188,7 +188,9 @@ public:
     ////////////////////////////////////////////////////////////
     // constructors
 
-    constexpr explicit safe_base(const Stored & rhs, std::false_type);
+    constexpr explicit safe_base(const Stored & rhs, std::false_type) :
+        m_t(rhs)
+    {}
 
     // default constructor
     /*
@@ -207,7 +209,12 @@ public:
     constexpr safe_base() = default;
 
     template<class T>
-    constexpr /*explicit*/ safe_base(const T & t);
+    constexpr /*explicit*/ safe_base(
+        const T & t,
+        typename std::enable_if<std::numeric_limits<T>::is_integer, bool>::type = true
+    ) :
+        m_t(validated_cast(t))
+    {}
 
     // note: Rule of Five.  Don't specify
     // custom constructor, custom destructor, custom assignment
@@ -226,8 +233,8 @@ public:
             int
         >::type = 0
     >
-    constexpr explicit operator R () const;
-    constexpr explicit operator Stored () const;
+    constexpr /*explicit*/ operator R () const;
+    constexpr /*explicit*/ operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators

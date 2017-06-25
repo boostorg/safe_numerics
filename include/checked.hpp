@@ -246,6 +246,7 @@ constexpr checked_result<R> add(
     const U & u
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
@@ -332,6 +333,7 @@ constexpr checked_result<R> subtract(
     const U & u
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     const checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
@@ -497,6 +499,7 @@ constexpr checked_result<R> multiply(
     const U & u
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
@@ -551,6 +554,8 @@ constexpr divide(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     if(u == 0){
         return checked_result<R>(
             safe_numerics_error::domain_error,
@@ -589,6 +594,7 @@ constexpr modulus(
     const U & u
 ) noexcept {
     static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     if(0 == u)
         return checked_result<R>(
             safe_numerics_error::domain_error,
@@ -610,6 +616,8 @@ constexpr modulus(
 template<class R, class T, class U>
 constexpr checked_result<bool>
 less_than(const T & t, const U & u){
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     const checked_result<R> tx = checked::cast<R>(t);
     if(tx.exception())
         return tx;
@@ -622,6 +630,8 @@ less_than(const T & t, const U & u){
 template<class R, class T, class U>
 constexpr checked_result<bool>
 equal(const T & t, const U & u){
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     checked_result<R> tx = checked::cast<R>(t);
     if(tx.exception())
         return tx;
@@ -726,6 +736,8 @@ constexpr checked_result<R> left_shift(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
@@ -805,6 +817,8 @@ constexpr checked_result<R> right_shift(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
@@ -842,6 +856,8 @@ constexpr checked_result<R> bitwise_or(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -860,6 +876,8 @@ constexpr checked_result<R> bitwise_xor(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -878,6 +896,8 @@ constexpr checked_result<R> bitwise_and(
     const T & t,
     const U & u
 ) noexcept {
+    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
+    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));

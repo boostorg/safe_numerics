@@ -19,7 +19,8 @@
 
 #include <boost/config.hpp>
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/identity.hpp>
+#include <boost/mpl/eval_if.hpp>
+
 #include <boost/core/enable_if.hpp> // lazy_enable_if
 #include <boost/integer.hpp>
 #include <boost/logic/tribool.hpp>
@@ -110,6 +111,7 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 /////////////////////////////////////////////////////////////////
 // construction and assignment operators
 
+/*
 template<class Stored, Stored Min, Stored Max, class P, class E>
 constexpr safe_base<Stored, Min, Max, P, E>::
 safe_base(const Stored & rhs, std::false_type) :
@@ -120,9 +122,13 @@ safe_base(const Stored & rhs, std::false_type) :
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
 constexpr safe_base<Stored, Min, Max, P, E>::
-safe_base(const T & rhs) :
+safe_base(
+    const T & rhs,
+    std::enable_if<std::numeric_limits<T>::is_integer, bool> = true
+) :
     m_t(validated_cast(rhs))
 {}
+*/
 
 /////////////////////////////////////////////////////////////////
 // casting operators
@@ -236,6 +242,68 @@ struct common_promotion_policy {
 
 };
 
+/////////////////////////////////////////////////////////////////
+// utility
+namespace utility {
+
+#if 0
+    // filter out cases where either of the arguments is not integer like
+    // and neither argument is a safe type
+    template<typename T, typename U>
+    using binary_selector =
+    std::integral_constant<
+        bool,
+        std::is_array<T>::value || std::is_array<U>::value
+        && std::numeric_limits<T>::is_integer
+           // note - fails here is U is an array
+        && std::numeric_limits<U>::is_integer
+        && (is_safe<T>::value || is_safe<U>::value)
+    >;
+#elif 0
+    // hmmm - try short ciruiting out array types
+    template<typename T, typename U>
+    using binary_selector =
+    std::integral_constant<
+        bool,
+        !(std::is_array<T>::value || std::is_array<U>::value)
+        && std::numeric_limits<T>::is_integer
+           // note - fails here is U is an array
+        && std::numeric_limits<U>::is_integer
+        && (is_safe<T>::value || is_safe<U>::value)
+    >;
+#elif 0
+    // I tried to fix this by adding in a layer of indirection
+    // but couldn't make it work.  No matter what I do it
+    // always instanciates
+    template<typename T, typename U>
+    using binary_selector1 =
+    std::integral_constant<
+        bool,
+           std::numeric_limits<T>::is_integer
+           // note - stillfails here is U is an array
+        && std::numeric_limits<U>::is_integer
+        && (is_safe<T>::value || is_safe<U>::value)
+    >;
+    template<typename T, typename U>
+    using binary_selector = boost::mpl::eval_if_c<
+        (std::is_array<T>::value || std::is_array<U>::value),
+        std::false_type,
+        binary_selector1<T, U>
+    >;
+#else
+    // use this temporarily until above problem is resolved
+    template<typename T, typename U>
+    using binary_selector =
+    std::integral_constant<
+        bool,
+        (is_safe<T>::value || is_safe<U>::value)
+//        && std::numeric_limits<T>::is_integer
+//        && std::numeric_limits<U>::is_integer
+    >;
+#endif
+
+} // utility
+
 // Note: the following global operators will be found via
 // argument dependent lookup.
 
@@ -345,9 +413,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     addition_result<T, U>
 >::type
 constexpr operator+(const T & t, const U & u){
@@ -356,9 +422,7 @@ constexpr operator+(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator+=(T & t, const U & u){
@@ -467,9 +531,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     subtraction_result<T, U>
 >::type
 constexpr operator-(const T & t, const U & u){
@@ -478,9 +540,7 @@ constexpr operator-(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator-=(T & t, const U & u){
@@ -594,9 +654,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     multiplication_result<T, U>
 >::type
 constexpr operator*(const T & t, const U & u){
@@ -606,9 +664,7 @@ constexpr operator*(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator*=(T & t, const U & u){
@@ -742,9 +798,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     division_result<T, U>
 >::type
 constexpr operator/(const T & t, const U & u){
@@ -753,9 +807,7 @@ constexpr operator/(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator/=(T & t, const U & u){
@@ -871,9 +923,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     modulus_result<T, U>
 >::type
 constexpr operator%(const T & t, const U & u){
@@ -883,9 +933,7 @@ constexpr operator%(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator%=(T & t, const U & u){
@@ -960,9 +1008,7 @@ public:
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
@@ -971,9 +1017,7 @@ constexpr operator<(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator>(const T & lhs, const U & rhs) {
@@ -982,9 +1026,7 @@ constexpr operator>(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator>=(const T & lhs, const U & rhs) {
@@ -993,9 +1035,7 @@ constexpr operator>=(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator<=(const T & lhs, const U & rhs) {
@@ -1060,9 +1100,7 @@ public:
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
@@ -1071,9 +1109,7 @@ constexpr operator==(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bool
 >::type
 constexpr operator!=(const T & lhs, const U & rhs) {
@@ -1167,15 +1203,13 @@ public:
     }
 };
 
+
 template<class T, class U>
 typename boost::lazy_enable_if_c<
     // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
     // exclude std::ostream << ...
     (! std::is_base_of<std::ios_base, T>::value)
-    && (
-        is_safe<T>::value
-        || is_safe<U>::value
-    ),
+    && utility::binary_selector<T, U>::value,
     left_shift_result<T, U>
 >::type
 constexpr operator<<(const T & t, const U & u){
@@ -1192,9 +1226,7 @@ constexpr operator<<(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator<<=(T & t, const U & u){
@@ -1285,15 +1317,11 @@ public:
     }
 };
 
+
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
-    // exclude std::istream << ...
     (! std::is_base_of<std::ios_base, T>::value)
-    && (
-        is_safe<T>::value
-        ||is_safe<U>::value
-    ),
+    && utility::binary_selector<T, U>::value,
     right_shift_result<T, U>
 >::type
 constexpr operator>>(const T & t, const U & u){
@@ -1309,9 +1337,7 @@ constexpr operator>>(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator>>=(T & t, const U & u){
@@ -1419,9 +1445,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bitwise_or_result<T, U>
 >::type
 constexpr operator|(const T & t, const U & u){
@@ -1430,9 +1454,7 @@ constexpr operator|(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator|=(T & t, const U & u){
@@ -1532,9 +1554,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bitwise_and_result<T, U>
 >::type
 constexpr operator&(const T & t, const U & u){
@@ -1543,9 +1563,7 @@ constexpr operator&(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    boost::numeric::is_safe<T>::value
-    || boost::numeric::is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator&=(T & t, const U & u){
@@ -1649,9 +1667,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    is_safe<T>::value
-    || is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     bitwise_xor_result<T, U>
 >::type
 constexpr operator^(const T & t, const U & u){
@@ -1660,9 +1676,7 @@ constexpr operator^(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    boost::numeric::is_safe<T>::value
-    || boost::numeric::is_safe<U>::value
-    ,
+    utility::binary_selector<T, U>::value,
     T
 >::type
 constexpr operator^=(T & t, const U & u){

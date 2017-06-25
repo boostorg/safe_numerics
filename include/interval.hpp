@@ -267,8 +267,8 @@ constexpr interval<checked_result<R>> modulus(
     const checked_result<R> xd = (u.u > 0) ? u.u - 1 : (u.u < 0) ? -(u.u + 1) : 0; // d
 
     // special care to void problem when inverting -128
-    const checked_result<R> mxc = checked::subtract<R>(0, xc);
-    const checked_result<R> mxd = checked::subtract<R>(0, xd);
+    const checked_result<R> mxc = checked::subtract<R>(0, static_cast<R>(xc));
+    const checked_result<R> mxd = checked::subtract<R>(0, static_cast<R>(xd));
 
     return detail::minmax<checked_result<R>>(
         std::initializer_list<checked_result<R>> {

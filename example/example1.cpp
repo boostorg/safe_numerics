@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]){
         int z;
         // this produces an invalid result !
         z = x + y;
-        std::cout << z << " != " << x + y << std::endl;
+        std::cout << z << " != " << x << " + " << y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){

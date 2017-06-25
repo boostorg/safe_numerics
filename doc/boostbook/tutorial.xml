@@ -28,7 +28,7 @@
 
     <programlisting>example 1:undetected erroneous expression evaluation
 Not using safe numerics
--2147483647 != -2147483647
+-2147483647 != 2147483647 + 2
 error NOT detected!
 Using safe numerics
 error detected:addition result too large: positive overflow error
