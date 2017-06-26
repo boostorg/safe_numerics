@@ -36,7 +36,7 @@ install:
   - git submodule init libs/preprocessor
   - git submodule init libs/logic
   - git submodule update
-  - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\safe_numerics
+  - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\safe_numerics\
   - bootstrap
   - b2 headers
 

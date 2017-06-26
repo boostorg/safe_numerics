@@ -246,61 +246,24 @@ struct common_promotion_policy {
 // utility
 namespace utility {
 
-#if 0
-    // filter out cases where either of the arguments is not integer like
-    // and neither argument is a safe type
     template<typename T, typename U>
-    using binary_selector =
-    std::integral_constant<
-        bool,
-        std::is_array<T>::value || std::is_array<U>::value
-        && std::numeric_limits<T>::is_integer
-           // note - fails here is U is an array
-        && std::numeric_limits<U>::is_integer
-        && (is_safe<T>::value || is_safe<U>::value)
-    >;
-#elif 0
-    // hmmm - try short ciruiting out array types
+    struct binary_selector1 {
+        using type = std::integral_constant<
+            bool,
+               std::numeric_limits<T>::is_integer
+            && std::numeric_limits<U>::is_integer
+        >;
+        static const bool value = type::value;
+    };
     template<typename T, typename U>
-    using binary_selector =
-    std::integral_constant<
-        bool,
-        !(std::is_array<T>::value || std::is_array<U>::value)
-        && std::numeric_limits<T>::is_integer
-           // note - fails here is U is an array
-        && std::numeric_limits<U>::is_integer
-        && (is_safe<T>::value || is_safe<U>::value)
-    >;
-#elif 0
-    // I tried to fix this by adding in a layer of indirection
-    // but couldn't make it work.  No matter what I do it
-    // always instanciates
-    template<typename T, typename U>
-    using binary_selector1 =
-    std::integral_constant<
-        bool,
-           std::numeric_limits<T>::is_integer
-           // note - stillfails here is U is an array
-        && std::numeric_limits<U>::is_integer
-        && (is_safe<T>::value || is_safe<U>::value)
-    >;
-    template<typename T, typename U>
-    using binary_selector = boost::mpl::eval_if_c<
-        (std::is_array<T>::value || std::is_array<U>::value),
-        std::false_type,
-        binary_selector1<T, U>
-    >;
-#else
-    // use this temporarily until above problem is resolved
-    template<typename T, typename U>
-    using binary_selector =
-    std::integral_constant<
-        bool,
-        (is_safe<T>::value || is_safe<U>::value)
-//        && std::numeric_limits<T>::is_integer
-//        && std::numeric_limits<U>::is_integer
-    >;
-#endif
+    struct binary_selector {
+        using type = typename boost::mpl::eval_if_c<
+            (is_safe<T>::value || is_safe<U>::value),
+            binary_selector1<T, U>,
+            std::false_type
+        >::type;
+        static const bool value = type::value;
+    };
 
 } // utility
 

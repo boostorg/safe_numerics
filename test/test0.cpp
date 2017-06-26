@@ -15,6 +15,13 @@ bool test1(){
     x = 1;
     y = 2;
     z = 3;
+    static_assert(
+        boost::numeric::utility::binary_selector<
+            boost::numeric::safe_signed_range<-64, 63>,
+            boost::numeric::safe_signed_range<-64, 63>
+        >::value,
+        "binary_selector = true"
+    );
     z = x + y;
     z = x - y;
 
