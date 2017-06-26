@@ -50,10 +50,9 @@ using safe_bool_t = boost::numeric::safe_unsigned_range<
 #include <thread>
 
 void sleep(int16){
-    std::this_thread::sleep_for(std::chrono::microseconds(
-        static_cast<unsigned int>(ccpr))
-    );
+    std::this_thread::sleep_for(std::chrono::microseconds(ccpr));
 }
+
 int main(){
     std::cout << "start test\n";
     try{

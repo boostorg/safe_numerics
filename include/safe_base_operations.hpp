@@ -109,28 +109,6 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 }
 
 /////////////////////////////////////////////////////////////////
-// construction and assignment operators
-
-/*
-template<class Stored, Stored Min, Stored Max, class P, class E>
-constexpr safe_base<Stored, Min, Max, P, E>::
-safe_base(const Stored & rhs, std::false_type) :
-    m_t(rhs)
-{}
-
-// construction from some arbitrary type T
-template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T>
-constexpr safe_base<Stored, Min, Max, P, E>::
-safe_base(
-    const T & rhs,
-    std::enable_if<std::numeric_limits<T>::is_integer, bool> = true
-) :
-    m_t(validated_cast(rhs))
-{}
-*/
-
-/////////////////////////////////////////////////////////////////
 // casting operators
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<

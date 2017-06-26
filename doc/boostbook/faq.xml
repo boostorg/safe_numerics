@@ -37,35 +37,6 @@
       </answer>
     </qandaentry>
 
-    <qandaentry id="safe_numerics.rationale.static_cast">
-      <question>
-        <para>Then why do I sometimes have to use static_cast. Doesn't this
-        conflict with the design goal of drop-in replace-ability and hamper
-        readability of the code? Why is conversion from a safe type to a
-        built-in marked as <code>explicit</code>?</para>
-
-        <programlisting>int x = 4;
-safe&lt;int&gt; y = x; // no problem
-
-x = y; // generates syntax error
-x = static_cast&lt;int&gt;(y);  // OK - no syntax error
-</programlisting>
-      </question>
-
-      <answer>
-        <para>Requiring <code>static_cast</code> to make these conversions
-        DOES conflict with the design goal of drop-in replace-ability hamper
-        readability of the code? But It also prevents silent conversions to
-        unsafe types. That is, we avoid silently losing the "safeness" we seek
-        to enforce. Confronted with a syntax error, users might decide to use
-        <code>static_cast</code> as in the above example, or make the target
-        type a safe type thus "infecting" other parts of the program with
-        "safeness". As can be seen from the examples included with the
-        library, in practice this problem doesn't occur very often so it
-        doesn't significantly impact the utility of the library.</para>
-      </answer>
-    </qandaentry>
-
     <qandaentry>
       <question>
         <para>Why is Boost.Convert not used?</para>
@@ -146,10 +117,10 @@ x = static_cast&lt;int&gt;(y);  // OK - no syntax error
 
       <answer>
         <para><code>safe&lt;T&gt;</code> behaves like a "number" just as
-        <code>int</code> does. It has max, min, etc Any code which uses
-        numeric limits to test a type <code>T</code> should work with
-        <code>safe&lt;T&gt;</code>. <code>safe&lt;T&gt;</code> is a drop-in
-        replacement for <code>T</code> so it has to implement all the
+        <code><code>int</code></code> does. It has max, min, etc Any code
+        which uses numeric limits to test a type <code>T</code> should work
+        with <code>safe&lt;T&gt;</code>. <code>safe&lt;T&gt;</code> is a
+        drop-in replacement for <code>T</code> so it has to implement all the
         operations.</para>
       </answer>
     </qandaentry>

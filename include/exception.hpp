@@ -83,9 +83,6 @@ public:
         default:
             assert(false);
         }
-        // should never arrive here
-        //include to suppress bogus warning
-        return "";
     }
 } safe_numerics_error_category ;
 

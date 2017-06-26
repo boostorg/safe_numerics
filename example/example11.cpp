@@ -16,7 +16,7 @@ int main(int argc, const char * argv[]){
         std::int8_t z;
         // this produces an invalid result !
         z = x + y;
-        std::cout << static_cast<int>(z) << " != " << x + y << std::endl;
+        std::cout << z << " != " << x + y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
     catch(std::exception){

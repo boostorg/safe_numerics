@@ -64,14 +64,14 @@ int main(int argc, const char * argv[]){
     unsigned int total_minutes;
 
     try {
-        total_minutes = static_cast<unsigned int>(test3(17, 83));
+        total_minutes = test3(17, 83);
     }
     catch(std::exception e){
         std::cout << "parameter error detected" << std::endl;
     }
 
     try {
-        total_minutes = static_cast<unsigned int>(test3(17, 10));
+        total_minutes = test3(17, 10);
     }
     catch(std::exception e){
         // should never arrive here

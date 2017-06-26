@@ -104,7 +104,7 @@ void phase_bump()
             phase_ix = 3;
         else
             --phase_ix;
-    phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
+    phase = ccpPhase[phase_ix];
     CCP1CON = phase & 0xff; // set CCP action on next match
     CCP2CON = phase >> 8;
 }
@@ -136,7 +136,7 @@ void isr_motor_step()
     denom+=4;
     c32 -= (c32 * 2) / denom; // ramp algorithm
     // beware confict with foreground code if long div not reentrant
-    c = static_cast<mod16>((c32 + 128) / 256); // round 24.8format->int16
+    c = (c32 + 128) / 256; // round 24.8format->int16
     if (c <= C_MIN)
     { // go to constant speed
       ramp_sts = ramp_max;

@@ -135,7 +135,7 @@ void isr_motor_step()
     CCPR2L = CCPR1L = (ccpr & 0xff);
     if (ramp_sts!=ramp_last) // else repeat last action: no step
 	    phase_ix = (phase_ix + phase_inc) & 3;
-    phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
+    phase = ccpPhase[phase_ix];
     CCP1CON = phase & 0xff; // set CCP action on next match
     CCP2CON = phase >> 8;
   } // if (ramp_sts != ramp_idle)
@@ -169,7 +169,7 @@ void motor_run(short pos_new)
   CCPR2H = CCPR1H = (ccpr >> 8);
   CCPR2L = CCPR1L = (ccpr & 0xff);
   phase_ix = (phase_ix + phase_inc) & 3;
-  phase = ccpPhase[static_cast<unsigned int>(phase_ix)];
+  phase = ccpPhase[phase_ix];
   CCP1CON = phase & 0xff; // sets action on match
   CCP2CON = phase >> 8;
   current_on(); // current in motor windings
