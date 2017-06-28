@@ -34,8 +34,18 @@
   <xi:include href="tutorial.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
-              xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <section>
+    <title>Use Cases</title>
+
+    <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="constants.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="rational.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  </section>
 
   <xi:include href="notes.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>

@@ -1655,6 +1655,7 @@ void safe_base<T, Min, Max, P, E>::output(
             m_t
     );
 }
+
 template<
     class T,
     T Min,
@@ -1669,8 +1670,18 @@ template<
 void safe_base<T, Min, Max, P, E>::input(
     std::basic_istream<CharT, Traits> & is
 ){
-    is >> m_t;
-    validated_cast(m_t); // no need to store result
+    if(std::is_same<T, signed char>::value
+    || std::is_same<T, unsigned char>::value
+    || std::is_same<T, wchar_t>::value
+    ){
+        int x;
+        is >> x;
+        m_t = validated_cast(x);
+    }
+    else{
+        is >> m_t;
+        validated_cast(m_t);
+    }
     if(is.fail()){
         boost::numeric::dispatch<E>(
             boost::numeric::safe_numerics_error::domain_error,

@@ -17,8 +17,8 @@
 
 #include <limits>
 #include <type_traits> // is_fundamental, make_unsigned
-#include <algorithm> // std::max
-
+#include <algorithm>   // std::max
+#include <type_traits> // std::is_integer
 #include <boost/utility/enable_if.hpp>
 
 #include "safe_common.hpp"
@@ -38,7 +38,7 @@ namespace checked {
 ////////////////////////////////////////////////////
 // safe casting on primitive types
 
-namespace detail {
+namespace checked_integer_detail {
 
     template<bool RSIGNED, bool TSIGNED>
     struct cast_impl {
@@ -139,7 +139,7 @@ namespace detail {
             ;
         }
     };
-}
+} // checked_integer_detail
 
 template<class R, class T>
 constexpr checked_result<R>
@@ -161,7 +161,7 @@ cast(
     :
         // for integer to integer conversions
         // it depends ...
-        detail::cast_impl<
+        checked_integer_detail::cast_impl<
             std::numeric_limits<R>::is_signed,
             std::numeric_limits<T>::is_signed
         >::template invoke<R>(t)
@@ -171,7 +171,7 @@ cast(
 ////////////////////////////////////////////////////
 // safe addition on primitive types
 
-namespace detail {
+namespace checked_integer_detail {
 
     // result not an integer (float, double, etc)
     template<class R>
@@ -238,27 +238,28 @@ namespace detail {
         ;
     }
 
-} // namespace detail
+} // namespace checked_integer_detail
 
 template<class R, class T, class U>
-constexpr checked_result<R> add(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr add(const T & t, const U & u) noexcept {
     const checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
     const checked_result<R> ru(cast<R>(u));
     if(ru.exception() )
         return ru;
-    return detail::add<R>(t, u);
+    return checked_integer_detail::add<R>(t, u);
 }
 
 ////////////////////////////////////////////////////
 // safe subtraction on primitive types
-namespace detail {
+namespace checked_integer_detail {
 
     // result not an integer (float, double, etc)
     template<class R>
@@ -325,28 +326,29 @@ namespace detail {
         ;
     }
 
-} // namespace detail
+} // namespace checked_integer_detail
 
 template<class R, class T, class U>
-constexpr checked_result<R> subtract(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr subtract(const T & t, const U & u) noexcept {
     const checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
     const checked_result<R> ru(cast<R>(u));
     if(ru.exception() )
         return ru;
-    return detail::subtract<R>(t, u);
+    return checked_integer_detail::subtract<R>(t, u);
 }
 
 ////////////////////////////////////////////////////
 // safe multiplication on primitive types
 
-namespace detail {
+namespace checked_integer_detail {
 
     // result is not an integer (ie float, double)
     template<class R>
@@ -491,28 +493,29 @@ namespace detail {
                     checked_result<R>(t * u)
         ;
     }
-} // namespace detail
+} // namespace checked_integer_detail
 
 template<class R, class T, class U>
-constexpr checked_result<R> multiply(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr multiply(const T & t, const U & u) noexcept {
     checked_result<R> rt(cast<R>(t));
     if(rt.exception() )
         return rt;
     checked_result<R> ru(cast<R>(u));
     if(ru.exception() )
         return ru;
-    return detail::multiply<R>(t, u);
+    return checked_integer_detail::multiply<R>(t, u);
 }
 
 ////////////////////////////////
 // safe division on unsafe types
 
-namespace detail {
+namespace checked_integer_detail {
 
     template<class R>
     typename boost::enable_if_c<
@@ -545,17 +548,17 @@ namespace detail {
                 checked_result<R>(t / u)
         ;
     }
-} // detail
+} // checked_integer_detail
 
 // note that we presume that the size of R >= size of T
 template<class R, class T, class U>
-checked_result<R>
-constexpr divide(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr divide(const T & t, const U & u) noexcept {
     if(u == 0){
         return checked_result<R>(
             safe_numerics_error::domain_error,
@@ -570,7 +573,7 @@ constexpr divide(
             safe_numerics_error::domain_error,
             "failure converting argument types"
         );
-    return detail::divide<R>(tx, ux);
+    return checked_integer_detail::divide<R>(tx, ux);
 }
 
 ////////////////////////////////
@@ -588,13 +591,13 @@ abs(const T & t) noexcept {
 }
 
 template<class R, class T, class U>
-checked_result<R>
-constexpr modulus(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr modulus(const T & t, const U & u) noexcept {
     if(0 == u)
         return checked_result<R>(
             safe_numerics_error::domain_error,
@@ -614,10 +617,13 @@ constexpr modulus(
 ////////////////////////////////
 // safe comparison on unsafe types
 template<class R, class T, class U>
-constexpr checked_result<bool>
-less_than(const T & t, const U & u){
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<bool>
+>::type
+constexpr less_than(const T & t, const U & u){
     const checked_result<R> tx = checked::cast<R>(t);
     if(tx.exception())
         return tx;
@@ -628,10 +634,13 @@ less_than(const T & t, const U & u){
 }
 
 template<class R, class T, class U>
-constexpr checked_result<bool>
-equal(const T & t, const U & u){
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<bool>
+>::type
+constexpr equal(const T & t, const U & u){
     checked_result<R> tx = checked::cast<R>(t);
     if(tx.exception())
         return tx;
@@ -644,7 +653,7 @@ equal(const T & t, const U & u){
 ///////////////////////////////////
 // shift operations
 
-namespace detail {
+namespace checked_integer_detail {
 
 #if 0
 // todo - optimize for gcc to exploit builtin
@@ -680,10 +689,7 @@ typename std::enable_if<
     ! std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr checked_left_shift(
-    const T & t,
-    const U & u
-) noexcept {
+constexpr checked_left_shift(const T & t, const U & u) noexcept {
     // the value of the result is E1 x 2^E2, reduced modulo one more than
     // the maximum value representable in the result type.
 
@@ -706,10 +712,7 @@ typename std::enable_if<
     std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr checked_left_shift(
-    const T & t,
-    const U & u
-) noexcept {
+constexpr checked_left_shift(const T & t, const U & u) noexcept {
     // and [E1] has a non-negative value
     if(t >= 0){
         // and E1 x 2^E2 is representable in the corresponding
@@ -729,15 +732,16 @@ constexpr checked_left_shift(
     );
 }
 
-} // detail
+} // checked_integer_detail
 
 template<class R, class T, class U>
-constexpr checked_result<R> left_shift(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr left_shift(const T & t, const U & u) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
@@ -760,11 +764,11 @@ constexpr checked_result<R> left_shift(
     }
     if(t == 0)
         return cast<R>(t);
-    return detail::checked_left_shift<R>(t, u);
+    return checked_integer_detail::checked_left_shift<R>(t, u);
 }
 
 // right shift
-namespace detail {
+namespace checked_integer_detail {
 
 // INT34-C C++
 
@@ -777,10 +781,7 @@ typename std::enable_if<
     ! std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr checked_right_shift(
-    const T & t,
-    const U & u
-) noexcept {
+constexpr checked_right_shift(const T & t, const U & u) noexcept {
     // the value of the result is the integral part of the
     // quotient of E1/2E2
     return cast<R>(t >> u);
@@ -792,10 +793,7 @@ typename std::enable_if<
     std::numeric_limits<T>::is_signed,
     checked_result<R>
 >::type
-constexpr checked_right_shift(
-    const T & t,
-    const U & u
-) noexcept {
+constexpr checked_right_shift(const T & t, const U & u) noexcept {
     if(t < 0){
         // note that the C++ standard considers this case is "implemenation
         // defined" rather than "undefined".
@@ -809,16 +807,17 @@ constexpr checked_right_shift(
     return cast<R>(t >> u);
 }
 
-} // detail
+} // checked_integer_detail
 
 // right shift
 template<class R, class T, class U>
-constexpr checked_result<R> right_shift(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr right_shift(const T & t, const U & u) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
@@ -841,7 +840,7 @@ constexpr checked_result<R> right_shift(
     }
     if(t == 0)
         return cast<R>(0);
-    return detail::checked_right_shift<R>(t, u);
+    return checked_integer_detail::checked_right_shift<R>(t, u);
 }
 
 ///////////////////////////////////
@@ -852,12 +851,13 @@ constexpr checked_result<R> right_shift(
 // integer operands.
 
 template<class R, class T, class U>
-constexpr checked_result<R> bitwise_or(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr bitwise_or(const T & t, const U & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -872,12 +872,13 @@ constexpr checked_result<R> bitwise_or(
 }
 
 template<class R, class T, class U>
-constexpr checked_result<R> bitwise_xor(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr bitwise_xor(const T & t, const U & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -892,12 +893,13 @@ constexpr checked_result<R> bitwise_xor(
 }
 
 template<class R, class T, class U>
-constexpr checked_result<R> bitwise_and(
-    const T & t,
-    const U & u
-) noexcept {
-    static_assert(std::is_fundamental<T>::value, "only intrinsic types permitted");
-    static_assert(std::is_fundamental<U>::value, "only intrinsic types permitted");
+typename std::enable_if<
+    std::is_integral<R>::value
+    && std::is_integral<T>::value
+    && std::is_integral<U>::value,
+    checked_result<R>
+>::type
+constexpr bitwise_and(const T & t, const U & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));

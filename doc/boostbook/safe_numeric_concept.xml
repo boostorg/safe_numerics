@@ -55,7 +55,7 @@
           </row>
 
           <row>
-            <entry>S, S1, S2</entry>
+            <entry>S</entry>
 
             <entry>A type fulfilling SafeNumeric type requirements</entry>
           </row>
@@ -121,7 +121,7 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator op and return another
+              <entry><para>invoke C++ operator op and return another
               SafeNumeric type.</para></entry>
             </row>
 
@@ -130,7 +130,7 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator op and return another
+              <entry><para>invoke C++ operator op and return another
               SafeNumeric type.</para></entry>
             </row>
 
@@ -139,7 +139,7 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator op and return another
+              <entry><para>invoke C++ operator op and return another
               SafeNumeric type.</para></entry>
             </row>
 
@@ -148,7 +148,7 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator <code>prefix_op</code> and
+              <entry><para>invoke C++ operator <code>prefix_op</code> and
               return another SafeNumeric type.</para></entry>
             </row>
 
@@ -157,8 +157,8 @@
 
               <entry>unspecified S</entry>
 
-              <entry><para>invoke safe C++ operator <code>postfix_op</code>
-              and return another SafeNumeric type.</para></entry>
+              <entry><para>invoke C++ operator <code>postfix_op</code> and
+              return another SafeNumeric type.</para></entry>
             </row>
 
             <row>
@@ -166,9 +166,9 @@
 
               <entry>S1</entry>
 
-              <entry><para>convert t to type S1 and assign it to s1. If the
-              value t cannot be represented as an instance of type S1, it is
-              an error.</para></entry>
+              <entry><para>convert t to type S and assign it to s. If the
+              value t cannot be represented as an instance of type S, it is an
+              error.</para></entry>
             </row>
 
             <row>
@@ -177,7 +177,7 @@
               <entry>unspecified S</entry>
 
               <entry><para>construct an instance of S from a value of type T.
-              If the value t cannot be represented as an instance of type S1,
+              If the value t cannot be represented as an instance of type S,
               it is an error.</para></entry>
             </row>
 
@@ -196,7 +196,7 @@
               <entry><code>std::true_type</code> or
               <code>std::false_type</code></entry>
 
-              <entry><para>type trait to query whether any type T fulfills the
+              <entry><para>type trait to query whether any type S fulfills the
               requirements for a SafeNumeric type.</para></entry>
             </row>
 
@@ -207,9 +207,7 @@
 
               <entry><para>convert the value of s to type T. If the value of s
               cannot be correctly represented as a type T, it is an error.
-              Note that implicit casting from a safe type to a built-in
-              integer type is expressly prohibited and should invoke a compile
-              time error.</para></entry>
+              </para></entry>
             </row>
           </tbody>
         </tgroup>
@@ -243,8 +241,8 @@
       </listitem>
 
       <listitem>
-        <para>Safe Numeric operators will NOT perform standard numeric
-        conversions in order to convert to built-in types.<programlisting>void f(int);
+        <para>Safe Numeric types will be implicitly converted to built-in
+        types when appropriate.<programlisting>void f(int);
 
 int main(){
     long x;
@@ -252,8 +250,9 @@ int main(){
     safe&lt;long&gt; y;
     f(y);         // compile time error
     return 0;
-}</programlisting>This behavior prevents a <code>safe&lt;T&gt;</code> from
-        being a "drop-in" replacement for a <code>T</code>.</para>
+}</programlisting>This behavior supports the concept of
+        <code>safe&lt;T&gt;</code> as being a "drop-in" replacement for a
+        <code>T</code>.</para>
       </listitem>
     </itemizedlist>
   </section>

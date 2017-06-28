@@ -26,13 +26,13 @@
     <programlisting><xi:include href="../../example/example1.cpp" parse="text"
         xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
-    <programlisting>example 1:undetected erroneous expression evaluation
+    <screen>example 1:undetected erroneous expression evaluation
 Not using safe numerics
 -2147483647 != 2147483647 + 2
 error NOT detected!
 Using safe numerics
 error detected:addition result too large: positive overflow error
-</programlisting>
+</screen>
   </section>
 
   <section id="safe_numerics.tutorial.2">
@@ -44,13 +44,13 @@ error detected:addition result too large: positive overflow error
     <programlisting><xi:include href="../../example/example2.cpp" parse="text"
         xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
-    <programlisting>example 2:undetected overflow in data type
+    <screen>example 2:undetected overflow in data type
 Not using safe numerics
 -2147483648 != 2147483647 + 1
 error NOT detected!
 Using safe numerics
 addition result too large
-error detected!</programlisting>
+error detected!</screen>
 
     <para>When variables of unsigned integer type are decremented below zero,
     they "roll over" to the highest possible unsigned version of that integer
@@ -68,7 +68,7 @@ error detected!</programlisting>
     following:</para>
 
     <para><programlisting><xi:include href="../../example/example4.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 3: implicit conversions change data values
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 3: implicit conversions change data values
 Not using safe numerics
 a is -1 b is 1
 b is less than a
@@ -77,7 +77,7 @@ Using safe numerics
 a is -1 b is 1
 converted negative value to unsigned: domain error
 error detected!
-</programlisting></para>
+</screen></para>
 
     <para>A normal person reads the above code and has to be dumbfounded by
     this. The code doesn't do what the text - according to the rules of
@@ -169,12 +169,12 @@ error detected!converted negative value to unsigned: domain error
     would be to use safe_unsigned_range;</para>
 
     <para><programlisting><xi:include href="../../example/example5.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 5: array index values can exceed array bounds
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 5: array index values can exceed array bounds
 Not using safe numerics
 error NOT detected!
 Using safe numerics
 error detected:Value out of range for this safe type: domain error
-</programlisting></para>
+</screen></para>
 
     <para>Note the usage of <code>static_cast</code> in order to convert an
     instance of a safe type, i_index, to a built-in integer type in order to
@@ -207,14 +207,14 @@ error detected:Value out of range for this safe type: domain error
     <para>It's way too easy to overlook the checking of parameters received
     from outside the current program.<programlisting><xi:include
           href="../../example/example6.cpp" parse="text"
-          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 6: checking of externally produced value can be overlooked
+          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 6: checking of externally produced value can be overlooked
 Not using safe numerics
 2147483647 0
 error NOT detected!
 Using safe numerics
 error detected:error in file input: domain error
-</programlisting>Without safe integer, one will have to insert new code every
-    time an integer variable is retrieved. This is a tedious and error prone
+</screen>Without safe integer, one will have to insert new code every time an
+    integer variable is retrieved. This is a tedious and error prone
     procedure. Here we have used program input. But in fact this problem can
     occur with any externally produced input.</para>
   </section>
@@ -249,12 +249,12 @@ error detected:error in file input: domain error
     ErrorPolicy selected by the library user.</para>
 
     <para><programlisting><xi:include href="../../example/example13.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 7: cannot recover from arithmetic errors
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 7: cannot recover from arithmetic errors
 Not using safe numerics
 error NOT detectable!
 Using safe numerics
 error detected:divide by zero: domain error
-</programlisting></para>
+</screen></para>
   </section>
 
   <section id="safe_numerics.tutorial.8">
@@ -278,8 +278,9 @@ error detected:divide by zero: domain error
     overhead. Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../example/example7.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><programlisting>example 8: enforce contracts with zero runtime cost
-parameter error detected</programlisting></para>
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 8: 
+enforce contracts with zero runtime cost
+parameter error detected</screen></para>
 
     <para>In the example above, the function <code>convert</code> incurs
     significant runtime cost every time the function is called. By using

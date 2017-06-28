@@ -37,6 +37,7 @@ int main(int argc, const char * argv[]){
     std::cout << "example 84:\n";
     input_safe_t x, y;
     try{
+        std::cout << "type in values in format x y:" << std::flush;
         std::cin >> x >> y; // read varibles, maybe throw exception
     }
     catch(const std::exception & e){

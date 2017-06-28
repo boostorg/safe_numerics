@@ -30,6 +30,7 @@ install:
   - cd ..
   - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost-root
   - cd boost-root
+  - git submodule init tools/build
   - git submodule init libs/config
   - git submodule init libs/concept_check
   - git submodule init libs/mpl

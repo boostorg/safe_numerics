@@ -31,6 +31,110 @@
   <para>Now all we need to do is make the program work. There are a couple of
   ways to achieve this.</para>
 
+  <section id="safe_numerics.eliminate_runtime_penalty.2">
+    <title>Using <link linkend="safe_numerics.safe_range">safe_range</link>
+    and <link linkend="safe_numerics.safe_literal">safe_literal</link></title>
+
+    <para>Instead of relying on automatic type promotion, we can just create
+    our own types in such a way that we know they won't overflow. In the
+    example below, we presume we know that the values we want to work with
+    fall in the range [-24,82]. So we "know" the program will always result in
+    a correct result. But since we trust no one, and since the program could
+    change and the expressions be replaced with other ones, we'll still use
+    the <link
+    linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
+    exception policy to verify at compile time that what we "know" to be true
+    is in fact true.</para>
+
+    <programlisting><xi:include href="../../example/example83.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><code><code>safe_signed_range</code></code> defines a type
+          which is limited to the indicated range. Out of range assignments
+          will be detected at compile time if possible (as in this case) or at
+          run time if necessary.</para>
+        </listitem>
+
+        <listitem>
+          <para>A safe range could be defined with the same minimum and
+          maximum value effectively restricting the type to holding one
+          specific value. This is what <code>safe_signed_literal</code>
+          does.</para>
+        </listitem>
+
+        <listitem>
+          <para>Defining constants with <code>safe_signed_literal</code>
+          enables the library to correctly anticipate the correct range of the
+          results of arithmetic expressions.</para>
+        </listitem>
+
+        <listitem>
+          <para>The usage of <code><link
+          linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link></code>
+          will mean that any assignment to z which could be outside its legal
+          range will result in a compile time error.</para>
+        </listitem>
+
+        <listitem>
+          <para>All safe integer operations are implemented as constant
+          expressions. The usage of <code>constexpr</code> will guarantee that
+          <code>z</code> will be available at compile time for any subsequent
+          use.</para>
+        </listitem>
+
+        <listitem>
+          <para>So if this program compiles, it's guaranteed to return a valid
+          result.</para>
+        </listitem>
+      </itemizedlist>This program produces the following run time
+    output.</para>
+
+    <screen>example 83:
+x = &lt;signed char&gt;[10,10] = 10
+y = &lt;signed char&gt;[67,67] = 67
+z = &lt;signed char&gt;[-24,82] = 77
+za = &lt;int&gt;[77,77] = 77
+</screen>
+
+    <para>Take note of the various variable types:<itemizedlist>
+        <listitem>
+          <para><code>x</code> and <code>y</code> are safe types with fixed
+          ranges which encompass one single value. They can hold only that
+          value which they have been assigned at compile time.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>z</code> is the sum of x and y. The type of z is defined
+          so that It can hold only values in the closed range -24,82. We can
+          assign the sum of x and y because it is in the range that
+          <code>z</code> is guaranteed to hold. If the sum or not known at
+          compile time, and it cannot be be guaranteed to fall in the range of
+          <code>z</code>, we would get a compile time error due to the fact we
+          are using the <code>loose_trap_policy</code> exception
+          policy.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>za</code> is sum of <code>x</code> and <code>y</code>
+          both of which are known a compile time. The type of the result is
+          also known at compile which can be seen from the fact that it is an
+          integer value (since it is the result of native C++ promotion rules)
+          in the range 77,77. That is, it is guaranteed to be equal to
+          77.</para>
+        </listitem>
+      </itemizedlist>All this information regarding the values of variables
+    has been determined at compile time. There is no runtime overhead. The
+    usage of safe types does not alter the calculations or results in anyway.
+    So <code>safe_t</code> and <code>const_safe_t</code> could be redefined to
+    <code>int</code> and <code>const int</code> respectively and the program
+    would operate identically. We could compile the program for another
+    machine - as is common when building embedded systems and know (assuming
+    the target machine architecture was the same as our native one) that no
+    erroneous results would ever be produced.</para>
+  </section>
+
   <section id="safe_numerics.eliminate_runtime_penalty.1">
     <title>Using Automatic Type Promotion</title>
 
@@ -191,7 +295,7 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     <para>The output uses a custom output manipulator for safe types to
     display the underlying type and its range as well as current value. Note
     that if any time in the future we were to change safe&lt;int&gt; to
-    safe&lt;long long&gt; the program would now overflow. But since we're
+    safe&lt;long long&gt; the program could now overflow. But since we're
     using <link
     linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
     the modified program would fail to compile. At this point we'd have to
@@ -199,60 +303,6 @@ z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     goal of zero run time overhead and change the exception policy to <link
     linkend="safe_numerics.exception_policies.default_exception_policy"><code>default_exception_policy</code></link>
     .</para>
-  </section>
-
-  <section id="safe_numerics.eliminate_runtime_penalty.2">
-    <title>Using <link
-    linkend="safe_numerics.safe_range">safe_range</link></title>
-
-    <para>Instead of relying on automatic type promotion, we can just create
-    our own types in such a way that we know they won't overflow. In the
-    example below, we presume we know that the values we want to work with
-    fall in the range [-24,82]. So we "know" the program will always result in
-    a correct result. But since we trust no one, and since the program could
-    change and the expressions be replaced with other ones, we'll still use
-    the <link
-    linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
-    exception policy to verify at compile time that what we "know" to be true
-    is in fact true.</para>
-
-    <programlisting><xi:include href="../../example/example83.cpp"
-        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
-
-    <para><itemizedlist>
-        <listitem>
-          <para><code><code>safe_signed_range</code></code> defines a type
-          which is limited to the indicated range. Out of range assignments
-          will be detected at compile time if possible (as in this case) or at
-          run time if necessary.</para>
-        </listitem>
-
-        <listitem>
-          <para><code>safe_signed_literal</code> defines a constant with a
-          specific value. Defining constants in this way enables the library
-          to correctly anticipate the range of the results of arithmetic
-          expressions.</para>
-        </listitem>
-
-        <listitem>
-          <para>The usage of <code><link
-          linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link></code>
-          will mean that any assignment to z which could be outside the legal
-          range will result in a compile time error.</para>
-        </listitem>
-
-        <listitem>
-          <para>So if this program compiles, it's guaranteed to return a valid
-          result.</para>
-        </listitem>
-      </itemizedlist>This program produces the following run time
-    output.</para>
-
-    <screen>example 83:
-x = &lt;signed char&gt;[10,10] = 10
-y = &lt;signed char&gt;[67,67] = 67
-z = &lt;signed char&gt;[-24,82] = 77
-</screen>
   </section>
 
   <section id="safe_numerics.eliminate_runtime_penalty.3">
@@ -311,12 +361,13 @@ z = &lt;signed char&gt;[-24,82] = 77
     are input from the console:</para>
 
     <screen>example 84:
-12 32
-x&lt;signed char&gt;[-24,82] = 12
-y&lt;signed char&gt;[-24,82] = 32
-z = &lt;short&gt;[-48,164] = 44
-(x + y) = &lt;short&gt;[-48,164] = 44
-(x - y) = &lt;short&gt;[-106,106] = -20
-&lt;short&gt;[-48,164] = 44</screen>
+type in values in format x y:33 45
+x&lt;signed char&gt;[-24,82] = 33
+y&lt;signed char&gt;[-24,82] = 45
+z = &lt;short&gt;[-48,164] = 78
+(x + y) = &lt;short&gt;[-48,164] = 78
+(x - y) = &lt;signed char&gt;[-106,106] = -12
+&lt;short&gt;[-48,164] = 78
+</screen>
   </section>
 </section>
