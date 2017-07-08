@@ -184,14 +184,14 @@ private:
     }
 
 public:
-
     ////////////////////////////////////////////////////////////
     // constructors
 
-    constexpr explicit safe_base(const Stored & rhs, std::false_type) :
+    struct skip_validation{};
+
+    constexpr explicit safe_base(const Stored & rhs, skip_validation) :
         m_t(rhs)
     {}
-
     // default constructor
     /*
     constexpr explicit safe_base() {
@@ -211,7 +211,10 @@ public:
     template<class T>
     constexpr /*explicit*/ safe_base(
         const T & t,
-        typename std::enable_if<std::numeric_limits<T>::is_integer, bool>::type = true
+        typename std::enable_if<
+            std::numeric_limits<T>::is_integer,
+            bool
+        >::type = true
     ) :
         m_t(validated_cast(t))
     {}
@@ -220,20 +223,23 @@ public:
     // custom constructor, custom destructor, custom assignment
     // custom move, custom move assignment
     // Let the compiler build the defaults.
-public:
+
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
+
     // convert to any type which is not safe.  safe types need to be
     // excluded to prevent ambiguous function selection which
     // would otherwise occur
     template<
         class R,
         typename std::enable_if<
-            !boost::numeric::is_safe<R>::value,
+            ! boost::numeric::is_safe<R>::value
+            && std::numeric_limits<R>::is_integer,
             int
         >::type = 0
     >
     constexpr /*explicit*/ operator R () const;
+    
     constexpr /*explicit*/ operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
@@ -319,13 +325,13 @@ class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
     using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
 public:
     constexpr static SB lowest() noexcept {
-        return SB(Min, std::false_type());
+        return SB(Min, typename SB::skip_validation());
     }
     constexpr static SB min() noexcept {
-        return SB(Min, std::false_type());
+        return SB(Min, typename SB::skip_validation());
     }
     constexpr static SB max() noexcept {
-        return SB(Max, std::false_type());
+        return SB(Max, typename SB::skip_validation());
     }
 };
 

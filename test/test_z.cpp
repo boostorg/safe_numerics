@@ -1,351 +1,3 @@
-#if 0
-#include <iostream>
-#include <cstdint>
-#include <type_traits>
-
-#include "../include/safe_integer.hpp"
-
-template <class T>
-using safe_t = boost::numeric::safe<
-    T,
-    boost::numeric::native
->;
-
-int main(){
-    using namespace boost::numeric;
-    {
-        const safe_t<std::int8_t> t = 1;
-        const std::uint32_t u = 1;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    return 0;
-}
-
-#include <iostream>
-#include <cstdint>
-
-template<typename T>
-struct division_result {
-    static const T t = '0';
-};
-
-template<class T>
-int test(){
-    std::cout << "t = " << division_result<T>::t << std::endl;
-    return 0;
-}
-int main(){
-    test<std::int8_t>();
-    return 0;
-}
-#endif
-
-#if 0
-#include <iostream>
-#include <cstdint>
-#include <type_traits>
-
-#include "../include/safe_integer.hpp"
-#include "../include/automatic.hpp"
-
-template <class T>
-using safe_t = boost::numeric::safe<
-    T,
-    boost::numeric::automatic
->;
-
-int main(){
-    using namespace boost::numeric;
-    {
-        const safe_t<std::int64_t> t = (std::int64_t)0x8000000000000000;
-        const std::uint8_t u = (std::uint8_t)0x01;
-        auto z = t * u;
-        std::cout << z << std::endl;
-    }
-    /*
-    {
-        const safe_t<std::int64_t> t = (std::int64_t)0x8000000000000000;
-        const safe_t<std::uint64_t> u = (std::uint64_t)0x8000000000000000;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::uint8_t> t = 10;
-        const std::uint8_t u = 2;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::uint8_t> t = std::numeric_limits<safe_t<std::uint8_t>>::max();
-        const std::uint8_t u = 0;
-        try {
-            auto z = t / u;
-            std::cout << z << std::endl;
-        }
-        catch(const std::exception & e){}
-    }
-    {
-        const safe_t<std::uint8_t> t = 10;
-        const std::uint8_t u = 2;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::uint8_t> t = 10;
-        const std::int8_t u = -1;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::int8_t> t = -10;
-        const std::uint8_t u = 2;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::int8_t> t = 10;
-        const std::int8_t u = -1;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        safe_t<std::int8_t> t = 1;
-        std::int32_t u = 0x7fffffff;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::int8_t> t = 10;
-        const std::int64_t u = 2;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::uint32_t> t = std::numeric_limits<safe_t<std::uint8_t>>::max();
-        const std::int8_t u = -128;
-        try {
-            auto z = t / u;
-            std::cout << z << std::endl;
-        }
-        catch(const std::exception & e){}
-    }
-    {
-        const safe_t<std::int32_t> t = 10;
-        const std::int8_t u = -1;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    {
-        const safe_t<std::int64_t> t = 10;
-        const std::int8_t u = -1;
-        auto z = t / u;
-        std::cout << z << std::endl;
-    }
-    */
-    return 0;
-}
-
-#include "../include/cpp.hpp"
-#include "../include/safe_common.hpp"
-
-using namespace boost::numeric;
-
-// create custom policy which emulates native one
-using custom = cpp<
-    CHAR_BIT,
-    CHAR_BIT * sizeof(short),
-    CHAR_BIT * sizeof(int),
-    CHAR_BIT * sizeof(long),
-    CHAR_BIT * sizeof(long long)
->;
-
-template<typename T>
-using test = custom::rank<T>;
-
-print_value<sizeof(int)> pv_int;
-using pt_r_int = print_type<test<int>>t;
-
-print_value<sizeof(long long)> pv_long_long;
-using pt_long_long = print_type<long long>;
-using p_r_long_long = print_type<test<long long>>;
-
-print_value<sizeof(custom::local_long_long_type)> pv_local_long_long_type;
-using pt_local_long_long print_type<custom::local_long_long_type>;
-using p_r_local_long_long print_type<test<custom::local_long_long_type>>;
-
-using pt_same = print_type<
-    std::is_same<
-        long long,
-        custom::local_long_long_type
-    >::type
->;
-
-
-// testing trap
-#include "../include/exception_policies.hpp"
-#include "../include/safe_integer.hpp"
-
-using namespace boost::numeric;
-template <typename T> // T is char, int, etc data type
-using safe_t = safe<
-    T,
-    native,
-    loose_trap_policy // use for compiling and running tests
->;
-
-template<typename T, typename U>
-void test(){
-    safe_t<T> t;
-    safe_t<U> u;
-    t + u;
-    t - u;
-    t * u;
-    t / u;
-    t % u;
-    t << u;
-    t >> u;
-    t | u;
-    t & u;
-    t ^ u;
-}
-int main(int argc, char *argv[]){
-    test<std::int8_t, std::int8_t>();
-    test<std::int16_t, std::int16_t>();
-    test<std::int32_t, std::int32_t>();
-    test<std::int64_t, std::int64_t>();
-    // this is a compile only test - but since many build systems
-    // can't handle a compile-only test - make sure it passes trivially.
-    return 0;
-}
-
-#endif 
-
-#if 0
-
-#include <iostream>
-#include "../include/interval.hpp"
-
-using namespace boost::numeric;
-
-int main(){
-    interval<std::int8_t> t;
-    interval<std::int8_t> u;
-    auto r = right_shift_positive<std::int8_t>(t, u);
-    std::cout << r << '\n';
-    return 0;
-}
-
-#endif
-
-#if 0
-
-// testing floating point
-#include "../include/safe_integer.hpp"
-
-using namespace boost::numeric;
-
-template<typename T, typename U>
-void test(){
-    T t;
-    U u;
-    t + u;
-    t - u;
-    t * u;
-
-    t / u;
-    // the operators below are restricted to integral types
-/*
-    t << u;
-    t >> u;
-    t % u;
-    t | u;
-    t & u;
-    t ^ u;
-*/
-}
-int main(int argc, char *argv[]){
-    // compiles OK but seems to throw with the
-    // following output (Ubuntu 16.06 / clang 3.8):
-    // john macfarland
-    // fixed now
-    float x = 0.0f;
-    float y = std::numeric_limits<float>::min();
-
-    auto s = boost::numeric::safe<int8_t>{0};
-    auto f = static_cast<float>(s);
-
-    test<safe<std::int8_t>, float>();
-    test<safe<std::int16_t>,float>();
-    test<safe<std::int32_t>, float>();
-    test<safe<std::int64_t>, float>();
-    // this is a compile only test - but since many build systems
-    // can't handle a compile-only test - make sure it passes trivially.
-    return 0;
-}
-
-#endif
-
-#if 0
-#include <iostream>
-
-#include "../include/safe_range.hpp"
-//#include "../include/safe_literal.hpp"
-#include "../include/native.hpp"
-#include "../include/exception.hpp"
-
-using namespace boost::numeric; // for safe_literal
-
-// create a type for holding small integers.  We "know" that C++ type
-// promotion rules will work such that operations on this type
-// will never overflow. If change the program to break this, the
-// usage of the loose_trap_policy will prevent compilation.
-using safe_t = safe_signed_range<
-    -24,
-    82,
-    native,         // C++ type promotion rules work OK for this example
-    loose_trap_policy  // catch problems at compile time
->;
-
-int main(int argc, const char * argv[]){
-    constexpr safe_t z(3); // fails to compile
-    return 0;
-}
-
-
-// test safe_literal.
-// can't make this an offcial test yet as we need implement
-// some baroque CMake logic to create a test which passes
-// when the program fails to compile
-#include <stdexcept>
-#include <iostream>
-#include "../include/safe_integer.hpp"
-#include "../include/safe_literal.hpp"
-
-int main(int argc, const char * argv[]){
-    using namespace boost::numeric;
-
-    constexpr safe_signed_literal<1000> x;
-    constexpr safe_signed_literal<0> y;
-    // should compile and execute without problem
-    std::cout << x << '\n';
-    // all the following statements should fail to compile
-    /*
-    constexpr safe<int> z = x / y;
-    y++;
-    y--;
-    ++y;
-    --y;
-    y = 1;
-    y += 1;
-    y -= 1;
-    y *= 1;
-    y /= 1;
-    */
-    return 0;
-}
-
-#endif
 
 #if 0
 auto val()
@@ -356,8 +8,7 @@ auto val()
 #include <stdexcept>
 #include <iostream>
 #include "../include/safe_integer.hpp"
-#include "../include/safe_literal.hpp"
-
+#include "../include/safe_integer_literal.hpp"
 
 void val0(){
     const boost::numeric::safe<unsigned int> x{0};
@@ -402,7 +53,6 @@ int main(){
     return 0;
 }
 
-
 // test automatic type promotion
 #include "../include/automatic.hpp"
 #include "../include/safe_integer.hpp"
@@ -423,8 +73,8 @@ int main(){
 
 // test automatic type promotion
 #include "../include/safe_integer.hpp"
-#include "../include/safe_range.hpp"
-#include "../include/safe_literal.hpp"
+#include "../include/safe_integer_range.hpp"
+#include "../include/safe_integer_literal.hpp"
 #include "../include/automatic.hpp"
 #include <type_traits>
 #include <cstdint>
@@ -481,6 +131,9 @@ int main(){
 }
 
 
+
+
+
 #include "../include/utility.hpp"
 #include "../include/cpp.hpp"
 #include "../include/safe_common.hpp"
@@ -500,13 +153,6 @@ using pic16_promotion = boost::numeric::cpp<
         integral_promotion<typename base_type<U>::type>
     >;
 */
-
-using pr = pic16_promotion::rank<short>;
-
-int main(){
-    return 0;
-}
-
 
 #include <type_traits>
 #include "../include/safe_integer.hpp"
@@ -540,176 +186,43 @@ int main(){
     return 0;
 }
 
-#include <iostream>
-#include <iomanip>
-#include <functional>
-#include <string>
-#include <unordered_set>
-
-struct S {
-    std::string first_name;
-    std::string last_name;
-};
-bool operator==(const S& lhs, const S& rhs) {
-    return lhs.first_name == rhs.first_name && lhs.last_name == rhs.last_name;
-}
- 
-// custom hash can be a standalone function object:
-struct MyHash
+auto val()
 {
-    std::size_t operator()(S const& s) const 
-    {
-        std::size_t h1 = std::hash<std::string>{}(s.first_name);
-        std::size_t h2 = std::hash<std::string>{}(s.last_name);
-        return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
-    }
-};
- 
-// custom specialization of std::hash can be injected in namespace std
-namespace std
-{
-    template<> struct hash<S>
-    {
-        typedef S argument_type;
-        typedef std::size_t result_type;
-        result_type operator()(argument_type const& s) const
-        {
-            result_type const h1 ( std::hash<std::string>{}(s.first_name) );
-            result_type const h2 ( std::hash<std::string>{}(s.last_name) );
-            return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
-        }
-    };
-}
- 
-int main()
-{
- 
-    std::string str = "Meet the new boss...";
-    std::size_t str_hash = std::hash<std::string>{}(str);
-    std::cout << "hash(" << std::quoted(str) << ") = " << str_hash << '\n';
- 
-    S obj = { "Hubert", "Farnsworth"};
-    // using the standalone function object
-    std::cout << "hash(" << std::quoted(obj.first_name) << ',' 
-               << std::quoted(obj.last_name) << ") = "
-               << MyHash{}(obj) << " (using MyHash)\n                           or "
-               << std::hash<S>{}(obj) << " (using std::hash) " << '\n';
- 
-    // custom hash makes it possible to use custom types in unordered containers
-    // The example will use the injected std::hash specialization,
-    // to use MyHash instead, pass it as a second template argument
-    std::unordered_set<S> names = {obj, {"Bender", "Rodriguez"}, {"Leela", "Turanga"} };
-    for(auto& s: names)
-        std::cout << std::quoted(s.first_name) << ' ' << std::quoted(s.last_name) << '\n';
+  return -0xFFFFFFFF;
 }
 
+#include <stdexcept>
 #include <iostream>
-#include <functional> // std::hash
-#include <string>
-#include <unordered_map>
 #include "../include/safe_integer.hpp"
+#include "../include/safe_integer_literal.hpp"
 
-#include <boost/concept/usage.hpp>
+void val0(){
+    const boost::numeric::safe<unsigned int> x{0};
+    std::cout << x << std::endl;
+    std::cout << -x << std::endl;
+    auto y = -x;
+    std::cout << y << std::endl;
+}
 
-template<class F>
-struct FunctionObject {
-    static_assert(
-        std::is_object<F>::value,
-        "is a function object"
-    );
-    using argument_type = typename F::argument_type;
-
-    BOOST_CONCEPT_USAGE(FunctionObject){
-        const F f;
-        argument_type x;
-        f(x);
-    }
-};
-
-template<class H>
-struct Hash {
-    using argument_type = typename H::argument_type;
-    static_assert(
-        std::is_copy_constructible<argument_type>::value,
-        "Hash argument is copy constructible"
-    );
-
-    BOOST_CONCEPT_ASSERT((FunctionObject<H>));
-    /*
-    // these don't seem to work in my clang compiler
-    static_assert(
-        std::is_destructible<H>::value,
-        "Is destructible"
-    );
-    static_assert(
-        std::is_copy_constructible<H>::value,
-        "Hash is copy constructible"
-    );
-    */
-    using key = typename H::argument_type;
-    BOOST_CONCEPT_USAGE(Hash){
-        const key k{};
-        const H h;
-        const size_t x = h(k);
-    }
-};
-
-
-namespace std
-{
-#if 1
-    template<typename T>
-    struct hash<boost::numeric::safe<T>>
-    {
-        typedef boost::numeric::safe<T> argument_type;
-        typedef std::size_t result_type;
-        result_type operator()(argument_type const & st) const {
-            return std::hash<T>{}(st);
-        }
-        BOOST_CONCEPT_ASSERT((Hash<hash>));
-    };
-#else
-    template<>
-    struct hash<boost::numeric::safe<int>>
-    {
-        typedef boost::numeric::safe<int> argument_type;
-        static_assert(
-            std::is_copy_constructible<argument_type>::value,
-            "safe<int> is copy constructible"
-        );
-        typedef std::size_t result_type;
-        result_type operator()(argument_type const & st) const noexcept {
-            return std::hash<int>{}(st);
-        }
-        BOOST_CONCEPT_ASSERT((Hash<hash>));
-    };
-#endif
-} // std
+constexpr boost::numeric::safe<unsigned int> val1(){
+    constexpr boost::numeric::safe<unsigned int> x = 0xFFFFFFFF;
+    return -x;
+}
+constexpr boost::numeric::safe<unsigned int> val2(){
+    const boost::numeric::safe<unsigned int> x
+        = -boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+    return x;
+}
+constexpr boost::numeric::safe<unsigned int> val3(){
+    return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+}
 
 int main(){
-    // using key_type = int;
-    using key_type = boost::numeric::safe<int>;
-    using data_type = std::string;
-    using map_type = std::unordered_map<key_type, data_type>;
-    // using map_type = std::unordered_map<int, std::string>;
-    map_type om{
-        {1, "one"},
-        {2, "two"},
-        {3, "three"}
-    };
-    // test that key type meets CopyInsertable requirements
-    std::allocator_traits<
-        typename map_type::allocator_type::construct()
-    >
-    
-    boost::numeric::safe<int> x = 1;
-    //std::string s = om.at(x);
-    std::string s = om[x];
-    om.insert({x, "one"});
-    std::cout << om.at(x) << std::endl;
-
-    om.empty();
-    //om[4] = "four";
+    val0();
+    std::cout << val1() << std::endl;
+    std::cout << val2() << std::endl;
+    std::cout << val3() << std::endl;
+    return 0;
 }
 
 #endif
@@ -717,3 +230,4 @@ int main(){
 int main(){
     return 0;
 }
+

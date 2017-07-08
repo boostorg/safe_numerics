@@ -11,70 +11,56 @@
 
     <programlisting>// safe casting on primitive types
 template&lt;class R, class T&gt;
-constexpr checked_result&lt;R&gt;
-checked::cast(const T &amp; t);
+checked_result&lt;R&gt; constexpr checked::cast(const T &amp; t);
 
 // safe addition on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::add(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::add(const T &amp; t, const U &amp; u);
 
 // safe subtraction on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::subtract(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::subtract(const T &amp; t, const U &amp; u);
 
 // safe multiplication on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::multiply(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::multiply(const T &amp; t, const U &amp; u);
 
 // safe division on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::divide(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::divide(const T &amp; t, const U &amp; u);
 
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::divide_automatic(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::divide_automatic(const T &amp; t, const U &amp; u);
 
 // safe modulus on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt;
-checked::modulus(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::modulus(const T &amp; t, const U &amp; u);
 
 // safe less than predicate on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr bool
-checked::less_than(const T &amp; t, const U &amp; u);
+bool constexpr checked::less_than(const T &amp; t, const U &amp; u);
 
 // safe equal predicate on primitive types
 template&lt;class R, class T, class U&gt;
-constexpr bool
-checked::equal(const T &amp; t, const U &amp; u);
+bool constexpr checked::equal(const T &amp; t, const U &amp; u);
 
 // left shift
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::left_shift(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::left_shift(const T &amp; t, const U &amp; u);
 
 // right shift
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::right_shift(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::right_shift(const T &amp; t, const U &amp; u);
 
 // bitwise operations
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_or(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::bitwise_or(const T &amp; t, const U &amp; u);
 
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_and(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::bitwise_and(const T &amp; t, const U &amp; u);
 
 template&lt;class R, class T, class U&gt;
-constexpr checked_result&lt;R&gt; 
-checked::bitwise_xor(const T &amp; t, const U &amp; u);
+checked_result&lt;R&gt; constexpr checked::bitwise_xor(const T &amp; t, const U &amp; u);
 </programlisting>
   </section>
 

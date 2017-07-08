@@ -3,7 +3,7 @@
 #include <limits>
 
 #include "../include/utility.hpp"
-#include "../include/safe_range.hpp"
+#include "../include/safe_integer_range.hpp"
 
 template<typename T>
 void display_log(T Max){

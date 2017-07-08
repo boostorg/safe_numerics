@@ -1,7 +1,8 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../include/safe_range.hpp"
+#include "../include/safe_integer.hpp"
+#include "../include/safe_integer_range.hpp"
 #include "../include/automatic.hpp"
 #include "../include/exception.hpp"
 

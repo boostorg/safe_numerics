@@ -12,8 +12,10 @@
     <para>checked_result is a wrapper class designed to hold the result of
     some operation. It can hold either the result of the operation or
     information on why the operation failed to produce a valid result. Note
-    that this type is an internal feature of the library and shouldn't be
-    exposed to library users because it has some unsafe behavior.</para>
+    that this type is an internal feature of the library and is not explicitly
+    exposed to users. But it is important to know about this of one wants to
+    extend the application of the library to other types. It may be useful in
+    other applications.</para>
   </section>
 
   <section>
@@ -23,22 +25,14 @@
     operation.</para>
 
     <informaltable>
-      <tgroup cols="4">
+      <tgroup cols="2">
         <colspec align="left"/>
-
-        <colspec align="left"/>
-
-        <colspec align="left" colwidth="4*"/>
 
         <colspec align="left" colwidth="4*"/>
 
         <thead>
           <row>
             <entry align="left">Parameter</entry>
-
-            <entry>Default</entry>
-
-            <entry align="left">Type Requirements</entry>
 
             <entry>Description</entry>
           </row>
@@ -48,11 +42,8 @@
           <row>
             <entry><code>R</code></entry>
 
-            <entry><code/></entry>
-
-            <entry/>
-
-            <entry><para>The value type. </para></entry>
+            <entry>Type of value expected if there is not error to be
+            reported</entry>
           </row>
         </tbody>
       </tgroup>
@@ -78,6 +69,19 @@
 
         <tbody>
           <row>
+            <entry><code>R</code></entry>
+
+            <entry>Type of value expected if there is not error to be
+            reported</entry>
+          </row>
+
+          <row>
+            <entry><code>r</code></entry>
+
+            <entry>An instance of type R</entry>
+          </row>
+
+          <row>
             <entry><code>c</code></entry>
 
             <entry>an instance of checked_result&lt;R&gt;</entry>
@@ -91,23 +95,10 @@
           </row>
 
           <row>
-            <entry><code>r</code></entry>
-
-            <entry>An instance of type R</entry>
-          </row>
-
-          <row>
             <entry><code>e</code></entry>
 
             <entry>An instance of type <link
             linkend="safe_numerics.safe_numerics_error">safe_numerics_error</link></entry>
-          </row>
-
-          <row>
-            <entry><code>EP</code></entry>
-
-            <entry><link
-            linkend="safe_numerics.exception_policy">ExceptionPolicy</link></entry>
           </row>
         </tbody>
       </tgroup>
@@ -147,14 +138,6 @@
             </row>
 
             <row>
-              <entry><code>checked_result(e, msg)</code></entry>
-
-              <entry><code>checked_result&lt;R&gt;</code></entry>
-
-              <entry>constructor with error information</entry>
-            </row>
-
-            <row>
               <entry><code>checked_result(t)</code></entry>
 
               <entry><code>checked_result&lt;R&gt;</code></entry>
@@ -164,7 +147,23 @@
             </row>
 
             <row>
+              <entry><code>checked_result(e, msg)</code></entry>
+
+              <entry><code>checked_result&lt;R&gt;</code></entry>
+
+              <entry>constructor with error information</entry>
+            </row>
+
+            <row>
               <entry><code>static_cast&lt;R&gt;(c)</code></entry>
+
+              <entry>R</entry>
+
+              <entry>extract wrapped value - asserts if not possible</entry>
+            </row>
+
+            <row>
+              <entry><code>static_cast&lt;e&gt;(c)</code></entry>
 
               <entry>R</entry>
 
@@ -208,15 +207,6 @@
 
               <entry>true if checked_result contains an error
               condition</entry>
-            </row>
-
-            <row>
-              <entry><code>dispatch&lt;EP&gt;(c)</code></entry>
-
-              <entry>void</entry>
-
-              <entry>invoke exception in accordance with exception_type
-              value</entry>
             </row>
           </tbody>
         </tgroup>

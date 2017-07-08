@@ -24,6 +24,7 @@ int main(){
     catch(std::exception){
         // never arrive here - just produce the wrong answer!
         std::cout << "error detected!" << std::endl;
+        return 1;
     }
 
     // solution: replace int with safe<int> and unsigned int with safe<unsigned int>
@@ -40,6 +41,7 @@ int main(){
             std::cout << "b is less than a\n";
         }
         std::cout << "error NOT detected!" << std::endl;
+        return 1;
     }
     catch(std::exception & e){
         // never arrive here - just produce the correct answer!

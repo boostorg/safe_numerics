@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "../include/checked_result.hpp"
-#include "../include/checked.hpp"
+#include "../include/checked_integer.hpp"
 
 template<class T1, class T2>
 bool test_checked_divide(

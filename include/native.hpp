@@ -15,7 +15,7 @@
 #include <type_traits>
 #include <limits>
 
-#include "checked.hpp"
+//#include "checked.hpp"
 
 // policy which creates results types and values equal to that of C++ promotions.
 // When used in conjunction with a desired exception policy, traps errors but

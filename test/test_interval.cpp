@@ -8,6 +8,7 @@
 #include <boost/core/demangle.hpp>
 
 #include "../include/checked_result.hpp"
+#include "../include/checked_integer.hpp"
 #include "../include/interval.hpp"
 
 // test simple interval addition

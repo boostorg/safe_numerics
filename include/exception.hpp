@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <system_error> // error_code, system_error
 #include <string>
+#include <cassert>
 
 // Using the system_error code facility.  This facility is more complex
 // than meets the eye.  To fully understand what out intent here is,

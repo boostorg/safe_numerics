@@ -46,3 +46,5 @@ run test_subtract_automatic.cpp ;
 run test_subtract_native.cpp ;
 run test_xor_automatic.cpp ;
 run test_xor_native.cpp ;
+compile-fail test_trap.cpp ;
+compile-fail test_float.cpp ;

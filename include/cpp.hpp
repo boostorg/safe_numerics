@@ -23,7 +23,7 @@
 #include <boost/mpl/if.hpp>
 
 #include "safe_common.hpp"
-#include "checked.hpp"
+//#include "checked.hpp"
 #include "checked_result.hpp"
 
 namespace boost {

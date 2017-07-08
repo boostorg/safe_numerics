@@ -58,11 +58,11 @@ struct bit {
             m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_unsigned_literal<0>){
+    bit & operator=(const boost::numeric::safe_signed_literal<0>){
         m_word &= ~(1 << N);
         return *this;
     }
-    bit & operator=(const boost::numeric::safe_unsigned_literal<1>){
+    bit & operator=(const boost::numeric::safe_signed_literal<1>){
         m_word |= (1 << N);
         return *this;
     }
@@ -75,7 +75,7 @@ void ftest(){
     unsigned int x;
     bit<unsigned int, 2> ready_bit(x);
     ready_bit = 0;
-    ready_bit = boost::numeric::safe_unsigned_literal<0>();
+    ready_bit = boost::numeric::safe_signed_literal<0>();
     if(ready_bit)
         return;
 }
@@ -84,7 +84,7 @@ void ftest(){
 // define a macro for literal types.  This may not be strictly necessary
 // but it provides more information at compile time to the safe numerics
 // library which may result in faster code.
-#define literal(x) boost::numeric::safe_unsigned_literal<x>{}
+#define literal(x) boost::numeric::safe_signed_literal<x>{}
 //#define literal(x) x
 #endif
 

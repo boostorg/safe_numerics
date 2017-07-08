@@ -170,26 +170,8 @@
   <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;boost/numeric/safe_numerics/safe_range.hpp&gt;
-
-void f(){
-    using namespace boost::numeric;
-    safe_unsigned_range&lt;7, 24&gt; i
-    // since the range is included in [0,255], the underlying type of i 
-    // will be an unsigned char.
-    i = 0;  // throws out_of_range exception
-    i = 9;  // ok
-    i *= 9; // throws out_of_range exception
-    i = -1; // throws out_of_range exception
-    std::uint8_t j = 4;
-    auto k = i + j;
-
-    // the range of i is [7, 24] and the range of j is [0,255]
-    // if either or both types are safe types, the result is a safe type
-    // determined by promotion policy.  With the default native promotion policy
-    // k will be safe&lt;unsigned int&gt;
-    static_assert(std::is_same&lt;decltype(k), safe&lt;unsigned int&gt;);
-  }</programlisting>
+    <programlisting><xi:include href="../../example/example19.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
   </section>
 
   <section>

@@ -12,6 +12,10 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
+// not actually used here - but needed for integer arithmetic
+// so this is a good place to include it
+#include "checked_integer.hpp"
+
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"
 #include "native.hpp"

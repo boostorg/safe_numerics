@@ -24,8 +24,8 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     /* test conversion constructor to safe<T2> from v1 */
     safe<T2> s2;
     try{
-        s2 = static_cast<safe<T2> >(v1);
-        if(! safe_compare::equal(s2, v1)){
+        s2 = static_cast<safe<T2>>(v1);
+        if(! safe_compare::equal(base_value(s2), v1)){
             std::cout
                 << "failed to detect error in construction "
                 << t2_name << "<-" << t1_name
@@ -38,7 +38,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     catch(std::exception){
-        if( safe_compare::equal(s2, v1)){
+        if( safe_compare::equal(base_value(s2), v1)){
             std::cout
                 << "erroneously emitted error "
                 << t1_name << "<-" << t2_name

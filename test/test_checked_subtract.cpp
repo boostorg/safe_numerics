@@ -10,7 +10,7 @@
 #include <cassert>
 
 #include "../include/checked_result.hpp"
-#include "../include/checked.hpp"
+#include "../include/checked_integer.hpp"
 
 template<class T1, class T2>
 bool test_checked_subtract(
@@ -23,7 +23,7 @@ bool test_checked_subtract(
     using namespace boost::numeric;
     std::cout
         << "testing  "
-        << av1 << " + " << av2
+        << av1 << " - " << av2
         << std::endl;
 
     using result_type = decltype(T1() + T2());
@@ -36,7 +36,7 @@ bool test_checked_subtract(
         std::cout
             << "failed to detect error in subtraction "
             << std::hex << result << "(" << std::dec << result << ")"
-            << " != "<< av1 << " + " << av2
+            << " != "<< av1 << " - " << av2
             << std::endl;
         result = checked::subtract<result_type>(v1, v2);
         return false;
@@ -46,7 +46,7 @@ bool test_checked_subtract(
     && expected_result != 'x'){
         std::cout
             << "erroneously detected error "
-            << std::hex << result <<  av1 << " + " << av2
+            << std::hex << result <<  av1 << " - " << av2
             << std::endl;
         result = checked::subtract<result_type>(v1, v2);
         return false;

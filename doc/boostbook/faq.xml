@@ -39,7 +39,100 @@
 
     <qandaentry>
       <question>
-        <para>Why is Boost.Convert not used?</para>
+        <para>Why are there special types for literal such as
+        <code>safe_signed_literal&lt;42&gt;</code>? Why not just use
+        std::integral_const&lt;int, 42&gt;?</para>
+      </question>
+
+      <answer>
+        <para>By defining our own "special" type we can simplify the
+        interface. Using <code>std::integral_const</code> requires one to
+        specify both the type <emphasis>and</emphasis> the value. Using
+        <code>safe_signed_literal&lt;42&gt;</code> doesn't require a parameter
+        for the type. So the library can select the best type to hold the
+        specified value. It also means that one won't have the opportunity to
+        specify a type-value pair which are inconsistent.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why is safe...literal needed at all? What's the matter with
+        <code>const safe&lt;int&gt;(42)</code>?</para>
+      </question>
+
+      <answer>
+        <para><code>const safe&lt;int&gt;(42)</code> looks like it might be
+        what we want: An immutable value which invokes the "safe" operators
+        when used in an expression. But there is one problem. The
+        <code>std::numeric_limits&lt;safe&lt;int&gt;&gt;</code> is a range
+        from INTMIN to INTMAX even though the value is fixed to 42 at compile
+        time. It is this range which is used at compile time to calculate the
+        range of the result of the operation.</para>
+
+        <para>So when an operation is performed, the range of the result is
+        calculated from [INTMIN, INTMAX] rather than from [42,42].</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Are safe type operations <code>constexpr</code>? That is, can
+        they be invoked at compile time?</para>
+      </question>
+
+      <answer>
+        <para>Yes. safe type construction and calculations are all
+        <code>constexpr</code>. Note that to get maximum benefit, you'll have
+        to use <code>safe...literal</code> to specify the independent values
+        at compile time.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why define <link
+        linkend="safe_numerics.safe_literal"><code>safe_literal</code></link>?
+        Isn't it effectively the same as
+        <code>std::integral_constant</code>?</para>
+      </question>
+
+      <answer>
+        <para>Almost, but there are still good reasons to create a different
+        type.<itemizedlist>
+            <listitem>
+              <para><code>std::integral_constant&lt;int, 42&gt;</code>
+              requires specification of type as well as value so it's less
+              convenient than safe_signed_literal which maps to the smallest
+              type required to hold the value.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>std::numeric_limits&lt;std::integral_constant&lt;int,
+              42&gt;&gt;::is_integer</code> returns <code>false</code>. This
+              would complicate implementation of the library</para>
+            </listitem>
+
+            <listitem>
+              <para>type trait <code>is_safe&lt;std::integral_constant&lt;int,
+              42&gt;&gt;</code> would have to be defined to return
+              <code>true</code>. </para>
+            </listitem>
+
+            <listitem>
+              <para>But globally altering the traits of
+              <code>std::integral_constant</code> might have unintended
+              side-effects related to other code. These might well be
+              surprises which are create errors which are hard to find and
+              hard to work around.</para>
+            </listitem>
+          </itemizedlist></para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Why is Boost.Convert not used?&lt;</para>
       </question>
 
       <answer>

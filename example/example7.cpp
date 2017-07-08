@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../include/safe_range.hpp"
+#include "../include/safe_integer_range.hpp"
 
 // NOT using safe numerics - enforce program contract explicitly
 // return total number of minutes
@@ -65,6 +65,7 @@ int main(int argc, const char * argv[]){
 
     try {
         total_minutes = test3(17, 83);
+        std::cout << "total minutes = " << total_minutes << std::endl;
     }
     catch(std::exception e){
         std::cout << "parameter error detected" << std::endl;
@@ -72,6 +73,7 @@ int main(int argc, const char * argv[]){
 
     try {
         total_minutes = test3(17, 10);
+        std::cout << "total minutes = " << total_minutes << std::endl;
     }
     catch(std::exception e){
         // should never arrive here

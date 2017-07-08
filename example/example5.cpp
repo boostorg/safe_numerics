@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../include/safe_range.hpp"
+#include "../include/safe_integer_range.hpp"
 
 void detected_msg(bool detected){
     std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;

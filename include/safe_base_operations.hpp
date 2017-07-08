@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_base_of, is_same
+#include <type_traits> // is_base_of, is_same, is_floating_point
 #include <algorithm>   // max
 #include <cassert>
 
@@ -25,17 +25,26 @@
 #include <boost/integer.hpp>
 #include <boost/logic/tribool.hpp>
 
-#include "safe_base.hpp"
-#include "safe_literal.hpp"
-#include "safe_compare.hpp"
 #include "checked_result.hpp"
+#include "safe_base.hpp"
+#include "safe_compare.hpp"
 #include "interval.hpp"
-#include "checked.hpp"
-
 #include "utility.hpp"
+#include "safe_integer_literal.hpp"
 
 namespace boost {
 namespace numeric {
+
+// invoke error handling
+template<class EP, typename R>
+constexpr void
+dispatch(const checked_result<R> & cr){
+    // if the result contains an error condition
+    if(cr.exception())
+        // dispatch to the appropriate function
+        dispatch<EP>(cr.m_e, cr.m_msg);
+    // otherwise just do a simple return
+}
 
 /////////////////////////////////////////////////////////////////
 // validation
@@ -110,11 +119,14 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 
 /////////////////////////////////////////////////////////////////
 // casting operators
+
+// cast from other safe type
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
     typename std::enable_if<
-        !boost::numeric::is_safe<R>::value,
+        ! boost::numeric::is_safe<R>::value
+        && std::numeric_limits<R>::is_integer,
         int
     >::type
 >
@@ -135,6 +147,7 @@ operator R () const {
     >::type::template return_value(m_t, r_interval);
 }
 
+// cast from stored type
 template< class Stored, Stored Min, Stored Max, class P, class E>
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator Stored () const {
@@ -220,30 +233,59 @@ struct common_promotion_policy {
 
 };
 
+#if 0
 /////////////////////////////////////////////////////////////////
 // utility
 namespace utility {
 
+    // see "The C++ Programming language 4th edition, 1st printing,
+    // by Bjarne Stroustrup" Page 785
+    template<template<typename ...> class F, typename... Args>
+    using delay = F<Args ...>;
+
+    template<typename T>
+    struct is_integer : public std::integral_constant<
+        bool,
+        std::numeric_limits<T>::is_integer
+    >
+    {};
+
     template<typename T, typename U>
-    struct binary_selector1 {
-        using type = std::integral_constant<
+    struct safe_integer_selector : public
+            boost::mpl::if_c<
+                is_safe<T>::value,
+                delay<is_integer, U>,
+            typename boost::mpl::if_c<
+                is_safe<U>::value,
+                delay<is_integer, T>,
+                std::false_type
+            >::type
+            >::type
+    {};
+
+    // don't need this now but maybe later
+    template<typename T, typename U>
+    struct float_selector : public
+        std::integral_constant<
             bool,
-               std::numeric_limits<T>::is_integer
-            && std::numeric_limits<U>::is_integer
-        >;
-        static const bool value = type::value;
-    };
-    template<typename T, typename U>
-    struct binary_selector {
-        using type = typename boost::mpl::eval_if_c<
-            (is_safe<T>::value || is_safe<U>::value),
-            binary_selector1<T, U>,
-            std::false_type
+            (is_safe<T>::value && std::is_floating_point<U>::value)
+            || (std::is_floating_point<T>::value && is_safe<U>::value)
+        >
+    {
+        using float_value_type =
+        typename boost::mpl::if_c<
+            std::is_floating_point<T>::value,
+            T,
+        typename boost::mpl::if_c<
+            std::is_floating_point<U>::value,
+            U,
+        std::false_type
+        >::type
         >::type;
-        static const bool value = type::value;
     };
 
 } // utility
+#endif
 
 // Note: the following global operators will be found via
 // argument dependent lookup.
@@ -291,7 +333,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
 
@@ -354,7 +396,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     addition_result<T, U>
 >::type
 constexpr operator+(const T & t, const U & u){
@@ -363,7 +405,7 @@ constexpr operator+(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator+=(T & t, const U & u){
@@ -415,7 +457,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -472,7 +514,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     subtraction_result<T, U>
 >::type
 constexpr operator-(const T & t, const U & u){
@@ -481,7 +523,7 @@ constexpr operator-(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator-=(T & t, const U & u){
@@ -530,7 +572,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -595,7 +637,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     multiplication_result<T, U>
 >::type
 constexpr operator*(const T & t, const U & u){
@@ -605,7 +647,7 @@ constexpr operator*(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator*=(T & t, const U & u){
@@ -637,19 +679,37 @@ private:
             base_value(std::numeric_limits<U>::min()),
             base_value(std::numeric_limits<U>::max())
         };
+        static_assert(
+            u_interval != interval<result_base_type>(0, 0),
+            "Cannot divide by zero"
+        );
+        // we know that the denominator is not equal to zero
 
         constexpr static const interval<checked_result<result_base_type>> r_interval
             = divide<result_base_type>(t_interval, u_interval);
 
         static_assert(! r_interval.l.exception(), "unexpected negative overflow");
         static_assert(! r_interval.u.exception(), "unexpected positive overflow");
+        // the result interval is definitely valid
 
         constexpr static const bool exception_possible() {
+            // section needs some work. issues:
+            // cast 1) t = 1, u = -128
+            //    we know the answer so we returned false.
+            //    But when the answer is re-calculated at runtime
+            //    we get an exception when we try to calculate
+            //   -(-128) in preparate.
+            /*
+            if(r_interval.l == r_interval.u)
+                // so it's not going to throw an exception
+                return false;
+            */
             return
+                // these should really be handled in checked
                 u_interval.includes(0)
-                ||
-                    (u_interval.includes(-1)
-                    && t_interval.includes(std::numeric_limits<T>::min())
+                || (
+                    u_interval.includes(-1)
+                    && t_interval.includes(base_value(std::numeric_limits<T>::min()))
                 )
             ;
         }
@@ -661,7 +721,7 @@ private:
             exception_policy
         >;
         constexpr static type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -739,7 +799,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     division_result<T, U>
 >::type
 constexpr operator/(const T & t, const U & u){
@@ -748,7 +808,7 @@ constexpr operator/(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator/=(T & t, const U & u){
@@ -777,14 +837,31 @@ private:
             base_value(std::numeric_limits<U>::max())
         };
 
+        static_assert(
+            u_interval != interval<result_base_type>(0, 0),
+            "Cannot divide by zero"
+        );
+        // we know that the denominator is not equal to zero
+
         constexpr static const interval<checked_result<result_base_type>> r_interval = modulus<result_base_type>(t_interval, u_interval);
 
+        static_assert(! r_interval.l.exception(), "unexpected negative overflow");
+        static_assert(! r_interval.u.exception(), "unexpected positive overflow");
+        // the result interval is definitely valid
+
         constexpr static bool exception_possible() {
+            #if 0 // see divide above
+            // result is definitely known a compile time
+            if(r_interval.l == r_interval.u)
+                // so it's not going to throw an exception
+                return false;
+            #endif
             return
-                // if over/under flow or domain error possible
-                (r_interval.l.exception() || r_interval.u.exception())
-                // if the denominator can contain zero
-                || u_interval.includes(0)
+                u_interval.includes(0)
+                || (
+                    u_interval.includes(-1)
+                    && t_interval.includes(base_value(std::numeric_limits<T>::min()))
+                )
             ;
         }
 
@@ -800,7 +877,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -864,7 +941,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+   is_safe<T>::value || is_safe<U>::value,
     modulus_result<T, U>
 >::type
 constexpr operator%(const T & t, const U & u){
@@ -874,7 +951,7 @@ constexpr operator%(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator%=(T & t, const U & u){
@@ -936,20 +1013,19 @@ public:
             typename boost::mpl::if_c<
                 static_cast<const bool>(!tb),
                 std::false_type,
-                typename boost::mpl::if_c<
-                    static_cast<const bool>(tb),
-                    std::true_type,
-                    logic::detail::indeterminate_t
-                >::type
+            typename boost::mpl::if_c<
+                static_cast<const bool>(tb),
+                std::true_type,
+            logic::detail::indeterminate_t
+            >::type
             >::type()
         );
     }
-
 };
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator<(const T & lhs, const U & rhs) {
@@ -958,7 +1034,7 @@ constexpr operator<(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator>(const T & lhs, const U & rhs) {
@@ -967,7 +1043,7 @@ constexpr operator>(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator>=(const T & lhs, const U & rhs) {
@@ -976,7 +1052,7 @@ constexpr operator>=(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator<=(const T & lhs, const U & rhs) {
@@ -1041,7 +1117,7 @@ public:
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator==(const T & lhs, const U & rhs) {
@@ -1050,7 +1126,7 @@ constexpr operator==(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bool
 >::type
 constexpr operator!=(const T & lhs, const U & rhs) {
@@ -1150,7 +1226,7 @@ typename boost::lazy_enable_if_c<
     // handle safe<T> << int, int << safe<U>, safe<T> << safe<U>
     // exclude std::ostream << ...
     (! std::is_base_of<std::ios_base, T>::value)
-    && utility::binary_selector<T, U>::value,
+    && (is_safe<T>::value || is_safe<U>::value),
     left_shift_result<T, U>
 >::type
 constexpr operator<<(const T & t, const U & u){
@@ -1167,7 +1243,7 @@ constexpr operator<<(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator<<=(T & t, const U & u){
@@ -1258,11 +1334,10 @@ public:
     }
 };
 
-
 template<class T, class U>
 typename boost::lazy_enable_if_c<
     (! std::is_base_of<std::ios_base, T>::value)
-    && utility::binary_selector<T, U>::value,
+    && (is_safe<T>::value || is_safe<U>::value),
     right_shift_result<T, U>
 >::type
 constexpr operator>>(const T & t, const U & u){
@@ -1278,7 +1353,7 @@ constexpr operator>>(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator>>=(T & t, const U & u){
@@ -1329,7 +1404,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -1386,7 +1461,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bitwise_or_result<T, U>
 >::type
 constexpr operator|(const T & t, const U & u){
@@ -1395,7 +1470,7 @@ constexpr operator|(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator|=(T & t, const U & u){
@@ -1441,7 +1516,7 @@ struct bitwise_and_result {
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
     struct unsafe_type {
@@ -1495,7 +1570,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bitwise_and_result<T, U>
 >::type
 constexpr operator&(const T & t, const U & u){
@@ -1504,7 +1579,7 @@ constexpr operator&(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator&=(T & t, const U & u){
@@ -1551,7 +1626,7 @@ private:
             exception_policy
         >;
         constexpr static const type make(const result_base_type & t){
-            return type(t, std::false_type());
+            return type(t, typename safe_type::type::skip_validation());
         }
     };
 
@@ -1608,7 +1683,7 @@ public:
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     bitwise_xor_result<T, U>
 >::type
 constexpr operator^(const T & t, const U & u){
@@ -1617,7 +1692,7 @@ constexpr operator^(const T & t, const U & u){
 
 template<class T, class U>
 typename std::enable_if<
-    utility::binary_selector<T, U>::value,
+    is_safe<T>::value || is_safe<U>::value,
     T
 >::type
 constexpr operator^=(T & t, const U & u){

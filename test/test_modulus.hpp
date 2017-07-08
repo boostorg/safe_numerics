@@ -70,7 +70,7 @@ bool test_modulus(
     }
     {
         safe_t<T2> t2 = v2;
-        using result_type = decltype(v1 + t2);
+        using result_type = decltype(v1 % t2);
         std::cout << av1 << " % " << "safe<" << av2 << "> -> ";
         static_assert(
             boost::numeric::is_safe<safe_t<T2> >::value,

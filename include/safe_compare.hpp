@@ -16,9 +16,6 @@
 #include <limits>
 
 #include <boost/mpl/if.hpp>
-#include <boost/mpl/identity.hpp>
-
-#include "safe_common.hpp"
 
 namespace boost {
 namespace numeric {
@@ -26,13 +23,12 @@ namespace safe_compare {
 
 ////////////////////////////////////////////////////
 // safe comparison on primitive types
-namespace detail {
+namespace safe_compare_detail {
     template<typename T>
     using make_unsigned = typename boost::mpl::if_c<
-        //std::numeric_limits<T>::is_signed,
         std::is_signed<T>::value,
         std::make_unsigned<T>,
-        boost::mpl::identity<T>
+        T
     >::type;
 
     // both arguments unsigned or signed
@@ -76,11 +72,11 @@ namespace detail {
                 ;
         }
     };
-} // detail
+} // safe_compare_detail
 
 template<class T, class U>
 constexpr bool less_than(const T & lhs, const U & rhs) {
-    return detail::less_than<
+    return safe_compare_detail::less_than<
         std::is_signed<T>::value,
         std::is_signed<U>::value
     >::template invoke(lhs, rhs);
@@ -92,16 +88,16 @@ constexpr bool greater_than(const T & lhs, const U & rhs) {
 }
 
 template<class T, class U>
-constexpr bool greater_than_equal(const T & lhs, const U & rhs) {
-    return ! less_than(lhs, rhs);
-}
-
-template<class T, class U>
 constexpr bool less_than_equal(const T & lhs, const U & rhs) {
     return ! greater_than(lhs, rhs);
 }
 
-namespace detail { 
+template<class T, class U>
+constexpr bool greater_than_equal(const T & lhs, const U & rhs) {
+    return ! less_than(lhs, rhs);
+}
+
+namespace safe_compare_detail {
     // both arguments unsigned or signed
     template<bool TS, bool US>
     struct equal {
@@ -143,11 +139,11 @@ namespace detail {
                 ;
         }
     };
-} // detail
+} // safe_compare_detail
 
 template<class T, class U>
 constexpr bool equal(const T & lhs, const U & rhs) {
-    return detail::equal<
+    return safe_compare_detail::equal<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed
     >::template invoke(lhs, rhs);
@@ -155,7 +151,7 @@ constexpr bool equal(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 constexpr bool not_equal(const T & lhs, const U & rhs) {
-    return ! detail::equal<
+    return ! safe_compare_detail::equal<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed
     >::template invoke(lhs, rhs);

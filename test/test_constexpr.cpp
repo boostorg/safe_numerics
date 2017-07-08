@@ -1,13 +1,18 @@
+//  Copyright (c) 2012 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+// testing constexpr and safe_literal.
 #include <iostream>
 
 #include "../include/safe_integer.hpp"
+#include "../include/safe_integer_literal.hpp"
 #include "../include/native.hpp"
 #include "../include/exception.hpp"
-#include "../include/safe_integer_literal.hpp"
 
 using namespace boost::numeric;
-
-
 template<std::intmax_t N>
 using compile_time_value = safe_signed_literal<N, native, loose_trap_policy>;
 
@@ -29,4 +34,24 @@ int main(){
     constexpr auto x_divided_by_y = x / y;
     constexpr auto x_mod_y = x % y;
 
+// this is a compile only test - but since many build systems
+// can't handle a compile-only test - make sure it passes trivially.
+
+#include <stdexcept>
+#include <iostream>
+
+    // all the following statements should fail to compile
+    /*
+    y++;
+    y--;
+    ++y;
+    --y;
+    y = 1;
+    y += 1;
+    y -= 1;
+    y *= 1;
+    y /= 1;
+    */
+    return 0;
 }
+

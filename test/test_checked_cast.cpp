@@ -8,7 +8,7 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "../include/checked.hpp"
+#include "../include/checked_integer.hpp"
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>

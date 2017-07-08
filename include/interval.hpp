@@ -23,7 +23,6 @@
 
 #include "utility.hpp" // log
 #include "checked_result.hpp"
-#include "checked.hpp"
 
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
@@ -75,6 +74,9 @@ struct interval {
             &&
             safe_compare::less_than_equal(t, u)
         ;
+    }
+    constexpr bool width() const {
+        return u - l;
     }
 };
 

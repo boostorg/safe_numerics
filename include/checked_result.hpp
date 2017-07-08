@@ -67,10 +67,16 @@ struct checked_result {
 
     // accesors
     constexpr operator R() const {
-        assert(! exception());
+        // don't assert here.  Let the library catch these errors
+        //assert(! exception());
         return m_r;
     }
     
+    constexpr operator safe_numerics_error () const {
+        // don't assert here.  Let the library catch these errors
+        //assert(exception());
+        return m_e;
+    }
     constexpr operator const char *() const {
         assert(exception());
         return m_msg;
@@ -133,17 +139,6 @@ constexpr bool operator!=(const checked_result<T> &lhs, const safe_numerics_erro
 template<typename T>
 constexpr bool operator!=(const safe_numerics_error & lhs, const checked_result<T> &rhs){
     return ! (lhs == rhs);
-}
-
-// invoke error handling
-template<class EP, typename R>
-constexpr void
-dispatch(const checked_result<R> & cr){
-    // if the result contains an error condition
-    if(cr.exception())
-        // dispatch to the appropriate function
-        dispatch<EP>(cr.m_e, cr.m_msg);
-    // otherwise just do a simple return
 }
 
 } // numeric
