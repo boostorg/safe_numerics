@@ -21,23 +21,17 @@
 #include <boost/utility/enable_if.hpp>
 
 #include "checked_result.hpp"
+#include "checked_default.hpp"
+#include "safe_compare.hpp"
 #include "utility.hpp"
 #include "exception.hpp"
-#include "safe_compare.hpp"
-#include "checked_default.hpp"
 
 namespace boost {
 namespace numeric {
 
 // utility
 
-// convert boolean value into boolean integral constant.
-// just a short cout to safe typing
-//constexpr auto bool_type(const bool & tf){
-//    return tf ? std::true_type() : std::false_type();
-//}
-
-template<int tf>
+template<bool tf>
 using bool_type = typename boost::mpl::if_c<tf, std::true_type, std::false_type>::type;
 
 ////////////////////////////////////////////////////
@@ -157,22 +151,24 @@ struct checked_unary_operation<R, T,
     constexpr static checked_result<R>
     cast(const T & t) noexcept {
         return
-        (! std::numeric_limits<T>::is_integer) ?
-            // conversions to integer types
-            // from floating point types are never OK
-            checked_result<R>(
-                safe_numerics_error::domain_error,
-                "conversion of integer to float loses precision"
-            )
-        :
-            // for integer to integer conversions
-            // it depends ...
             cast_impl_detail::cast_impl(
                 t,
                 std::is_signed<R>(),
                 std::is_signed<T>()
             );
-        ;
+    }
+};
+
+template<typename R, typename T>
+struct checked_unary_operation<R, T,
+    typename std::enable_if<
+        std::is_floating_point<R>::value
+        && std::is_integral<T>::value
+    >::type
+>{
+    constexpr static checked_result<R>
+    cast(T & t) noexcept {
+        return static_cast<R>(t);
     }
 };
 
@@ -539,6 +535,19 @@ struct checked_binary_operation<R, T, U,
         return static_cast<R>(tx) < static_cast<R>(ux);
     }
 
+    constexpr static checked_result<bool> greater_than(
+        const T & t,
+        const U & u
+    ) noexcept {
+        const checked_result<R> tx = checked::cast<R>(t);
+        if(tx.exception())
+            return tx;
+        const checked_result<R> ux = checked::cast<R>(u);
+        if(ux.exception())
+            return ux;
+        return static_cast<R>(tx) > static_cast<R>(ux);
+    }
+
     constexpr static checked_result<bool> equal(
         const T & t,
         const U & u
@@ -596,7 +605,12 @@ struct checked_binary_operation<R, T, U,
             // see 5.8 & 1
             // if right operand is
             // greater than or equal to the length in bits of the promoted left operand.
-            if(u > std::numeric_limits<R>::digits - utility::significant_bits(t)){
+            if(
+                safe_compare::greater_than(
+                    u,
+                    std::numeric_limits<R>::digits - utility::significant_bits(t)
+                )
+            ){
                 // behavior is undefined
                 return checked_result<R>(
                    safe_numerics_error::undefined_behavior,

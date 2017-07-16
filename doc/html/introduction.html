@@ -68,8 +68,8 @@
 <span class="special">}</span>
 </pre>
 <p>This will indeed trap the error. However, it would be tedious and
-    laborious for a programmer to alter his code to do so. Altering code in
-    this way for all arithmetic operations would likely render the code
+    laborious for a programmer to alter his code in this manner. Altering code
+    in this way for all arithmetic operations would likely render the code
     unreadable and add another source of potential programming errors. This
     approach is clearly not functional when the expression is even a little
     more complex as is shown in the following example.</p>
@@ -84,10 +84,26 @@
     types such as <code class="computeroutput">unsigned</code>, <code class="computeroutput">long</code>, etc. And it also
     applies to other operations such as subtraction, multiplication etc. .
     C/C++ often automatically and silently converts some integer types to
-    others in the course of implementing binary operations and similar
-    problems occur in this case as well. Since the problems and their solution
-    are similar, We'll confine the current discussion to just this one
-    example.</p>
+    others in the course of implementing binary operations. Sometimes such
+    conversions can silently change arithmetic values which inject errors. The
+    C/C++ standards designate some behavior such as right shifting a negative
+    number as "implementation defined behavior". These days machines usually
+    do what the programmer expects - but such behavior is not guaranteed.
+    Relying on such behavior will create a program which cannot be guaranteed
+    to be portable. And then there is undefined behavior. In this case,
+    compiler writer is under no obligation to do anything in particular.
+    Sometimes this will break the program. At the very least, the program is
+    rendered non-portable. Finally there is the case of behavior that is
+    arithmetically wrong to begin with - for example divide by zero. Some
+    runtime environments will just terminate the program, others may throw
+    some sort of exception. In any case, the execution has failed in a manner
+    from which there is no recovery. </p>
+<p>All of the above conditions prevent obstacles to creation of a
+    program which will never fail. The Safe Numerics Library addresses all of
+    these conditions, at least as far as integer operations are
+    concerned.</p>
+<p>Since the problems and their solution are similar, We'll confine the
+    current discussion to just the one example shown above.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -125,7 +141,7 @@
 <li class="listitem"><p>the expression will invoke a runtime exception.</p></li>
 </ul></div>
 <p>In other words, the <span class="bold"><strong>library absolutely
-    guarantees that no arithmetic expression will yield incorrect
+    guarantees that no integer arithmetic expression will yield incorrect
     results</strong></span>.</p>
 </div>
 <div class="section">
@@ -165,34 +181,43 @@
 <p>Select or define an exception policy class to specify handling
           of exceptions.</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
-<li class="listitem"><p>throw exception on runtime, trap at compile time.</p></li>
-<li class="listitem"><p>trap at compiler time all operations which might fail at
-                runtime.</p></li>
-<li class="listitem"><p>specify custom functions which should be called at
-                runtime</p></li>
+<li class="listitem"><p>Throw exception on runtime, trap at compile time if
+                possible.</p></li>
+<li class="listitem"><p>Trap at compiler time all operations which could
+                possibly fail at runtime.</p></li>
+<li class="listitem"><p>Specify custom functions which should be called in case
+                errors are detected at runtime.</p></li>
 </ul></div>
 </li>
 <li class="listitem">
 <p>Select or define a promotion policy class to alter the C/C++
           type promotion rules. This can be used to </p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
-<li class="listitem"><p>use C/C++ native type promotion rules so that, except
+<li class="listitem"><p>Use C/C++ native type promotion rules so that, except
                 for throwing/trapping of exceptions on operations resulting in
                 incorrect arithmetic behavior, programs will operate
-                identically when using/not using safe types.</p></li>
-<li class="listitem"><p>replace C/C++ native promotion rules with ones which are
+                identically when using/not using safe types. This might be
+                used if safe types are only enabled during debug and
+                testing.</p></li>
+<li class="listitem"><p>Replace C/C++ native promotion rules with ones which are
                 arithmetically equivalent but minimize the need for runtime
-                checking of arithmetic results.</p></li>
-<li class="listitem"><p>replace C/C++ native promotion rules with ones which
+                checking of arithmetic results. Such a policy will effectively
+                change the semantics of a C++ program. It's not really C++ any
+                more. The program cannot be expected to function the same as
+                when normal integer types are used.</p></li>
+<li class="listitem"><p>Replace C/C++ native promotion rules with ones which
                 emulate other machine architectures. This is designed to
                 permit the testing of C/C++ code destined to be run on another
                 machine on one's development platform. Such a situation often
                 occurs while developing code for embedded systems.</p></li>
 </ul></div>
 </li>
-<li class="listitem"><p>Enforce other program requirements using ranged integer types.
-          The library includes the types for ranges and literals. These types
-          can be used to improve program correctness and performance.</p></li>
+<li class="listitem"><p>Enforce other program requirements using bounded integer
+          types. The library includes the types for ranges and literals.
+          Operations which result in operations which violate these
+          requirements will trapped at either compile or runtime and not
+          silently return invalid values. These types can be used to improve
+          program correctness and performance.</p></li>
 </ul></div>
 </div>
 <div class="section">
@@ -209,6 +234,8 @@
 <li class="listitem"><p>Concept Checking</p></li>
 <li class="listitem"><p>Tribool</p></li>
 <li class="listitem"><p>Enable_if</p></li>
+<li class="listitem"><p>Integer</p></li>
+<li class="listitem"><p>Core</p></li>
 </ul></div>
 <p>The Safe Numerics library is delivered with an exhaustive
     suite of test programs. Users who choose to run this test suite will also

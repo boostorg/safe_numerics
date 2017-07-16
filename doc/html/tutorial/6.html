@@ -58,26 +58,23 @@
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="special">}</span>
         <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
-            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+            <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected:"</span>  <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="special">}</span>
     <span class="special">}</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<pre class="programlisting"><span class="identifier">example</span> <span class="number">6</span><span class="special">:</span> <span class="identifier">checking</span> <span class="identifier">of</span> <span class="identifier">externally</span> <span class="identifier">produced</span> <span class="identifier">value</span> <span class="identifier">can</span> <span class="identifier">be</span> <span class="identifier">overlooked</span>
-<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="number">2147483647</span> <span class="number">0</span>
-<span class="identifier">error</span> <span class="identifier">NOT</span> <span class="identifier">detected</span><span class="special">!</span>
-<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="identifier">error</span> <span class="identifier">in</span> <span class="identifier">file</span> <span class="identifier">input</span>
-<span class="identifier">error</span> <span class="identifier">detected</span><span class="special">!</span>
-<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
-<p>Without safe integer, one will
-    have to insert new code every time an integer variable is retrieved. This
-    is a tedious and error prone procedure. Here we have used program input.
-    But in fact this problem can occur with any externally produced
-    input.</p>
+<pre class="screen">example 6: checking of externally produced value can be overlooked
+Not using safe numerics
+2147483647 0
+error NOT detected!
+Using safe numerics
+error detected:error in file input: domain error
+</pre>
+<p>Without safe integer, one will have to insert new code every time an
+    integer variable is retrieved. This is a tedious and error prone
+    procedure. Here we have used program input. But in fact this problem can
+    occur with any externally produced input.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

@@ -102,9 +102,9 @@
 
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="4*"/>
+        <colspec align="left" colwidth="3*"/>
 
         <thead>
           <row>
@@ -143,7 +143,8 @@
       </tgroup>
     </informaltable>
 
-    <para>But of course one is free to provide his own.</para>
+    <para>But of course one is free to provide his own. Here is an example of
+    a function object which would could be used exception conditions.</para>
 
     <programlisting>// log an exception condition but continue processing as though nothing has happened
 // this would emulate the behavior of an unsafe type.
@@ -170,9 +171,9 @@ struct log_runtime_exception {
 
     <para><informaltable>
         <tgroup cols="2">
-          <colspec align="left"/>
+          <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="4*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>

@@ -18,6 +18,10 @@
     and run. This can happen when developing code for embedded systems.
     Algorithms developed or borrowed from one architecture but destined for
     another can be tested on the desktop.</para>
+
+    <para>Note that this policy is only applicable to safe types whose base
+    type is a type fulfilling the type requirements of <link
+    linkend="safe_numerics.integer">Integer</link>. </para>
   </section>
 
   <section>

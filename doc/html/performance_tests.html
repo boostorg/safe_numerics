@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="checked_integer_arithmetic.html" title="Checked Integer Arithmetic">
+<link rel="prev" href="checked_integer_arithmetic.html" title="safe_compare&lt;T, U&gt;">
 <link rel="next" href="rationale.html" title="Rationale and FAQ">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -26,7 +26,29 @@
     facilities impacts performance to a significant degree. Although we've
     taken precautions to avoid doing this, the only real way to know is to
     create and run some tests.</p>
-<p>To Do</p>
+<p>So far we've only run one explicit performance test -
+    <code class="filename"><a href="../../test/test_performance.cpp" target="_top">test_performance.cpp</a></code>.
+    This runs a test from the Boost Multiprecision library to count prime
+    numbers and uses on integer arithmetic. We've run the tests with
+    <code class="computeroutput">unsigned</code> integers and with <code class="computeroutput">safe&lt;unsigned&gt;</code>
+    on two different compilers.. No other change was made to the program. We
+    list the results without further comment. </p>
+<pre class="screen">g++ (GCC) 6.2.0
+Testing type unsigned:
+time = 17.6215
+count = 1857858
+Testing type safe&lt;unsigned&gt;:
+time = 22.4226
+count = 1857858
+
+clang-802.0.41
+Testing type unsigned:
+time = 16.9174
+count = 1857858
+Testing type safe&lt;unsigned&gt;:
+time = 36.5166
+count = 1857858
+</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

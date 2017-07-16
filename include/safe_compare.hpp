@@ -22,7 +22,7 @@ namespace numeric {
 namespace safe_compare {
 
 ////////////////////////////////////////////////////
-// safe comparison on primitive types
+// safe comparison on primitive integral types
 namespace safe_compare_detail {
     template<typename T>
     using make_unsigned = typename boost::mpl::if_c<
@@ -151,10 +151,7 @@ constexpr bool equal(const T & lhs, const U & rhs) {
 
 template<class T, class U>
 constexpr bool not_equal(const T & lhs, const U & rhs) {
-    return ! safe_compare_detail::equal<
-        std::numeric_limits<T>::is_signed,
-        std::numeric_limits<U>::is_signed
-    >::template invoke(lhs, rhs);
+    return ! equal(lhs, rhs);
 }
 
 } // safe_compare

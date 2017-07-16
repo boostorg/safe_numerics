@@ -21,40 +21,55 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.rationale"></a>Rationale and FAQ</h2></div></div></div>
 <div class="qandaset">
-<a name="idm378945733536"></a><dl>
-<dt>1. <a href="rationale.html#idm378945733040">Is this really necessary? If I'm writing the program with the
+<a name="idm90272200960"></a><dl>
+<dt>1. <a href="rationale.html#idm90272200480">Is this really necessary? If I'm writing the program with the
         requisite care and competence, problems noted in the introduction will
         never arise. Should they arise, they should be fixed "at the source"
         and not with a "band aid" to cover up bad practice.</a>
 </dt>
-<dt>2. <a href="rationale.html#idm378945729680">Can safe types be used as drop-in replacements for built-in
+<dt>2. <a href="rationale.html#idm90272196880">Can safe types be used as drop-in replacements for built-in
         types?</a>
 </dt>
-<dt>3. <a href="rationale.html#idm378945727344">Why is Boost.Convert not used?</a>
+<dt>3. <a href="rationale.html#idm90272194560">Why are there special types for literal such as
+        safe_signed_literal&lt;42&gt;? Why not just use
+        std::integral_const&lt;int, 42&gt;?</a>
 </dt>
-<dt>4. <a href="rationale.html#idm378945725344">Why is the library named "safe ..." rather than something like
+<dt>4. <a href="rationale.html#idm90272189408">Why is safe...literal needed at all? What's the matter with
+        const safe&lt;int&gt;(42)?</a>
+</dt>
+<dt>5. <a href="rationale.html#idm90272184336">Are safe type operations constexpr? That is, can
+        they be invoked at compile time?</a>
+</dt>
+<dt>6. <a href="rationale.html#idm90272179952">Why define safe_literal?
+        Isn't it effectively the same as
+        std::integral_constant?</a>
+</dt>
+<dt>7. <a href="rationale.html#idm90272167520">Why is Boost.Convert not used?&lt;</a>
+</dt>
+<dt>8. <a href="rationale.html#idm90272165424">Why is the library named "safe ..." rather than something like
         "checked ..." ?</a>
 </dt>
-<dt>5. <a href="rationale.html#idm378945722976">Given that the library is called "numerics" why is floating
+<dt>9. <a href="rationale.html#idm90272163056">Given that the library is called "numerics" why is floating
         point arithmetic not addressed?</a>
 </dt>
-<dt>6. <a href="rationale.html#idm378945718224">Isn't putting a defensive check just before any potential
+<dt>10. <a href="rationale.html#idm90272158336">Isn't putting a defensive check just before any potential
         undefined behavior often considered a bad practice?</a>
 </dt>
-<dt>7. <a href="rationale.html#idm378945715648">It looks like the implementation presumes two's complement
+<dt>11. <a href="rationale.html#idm90272155760">It looks like the implementation presumes two's complement
         arithmetic at the hardware level. So this library is not portable -
         correct? What about other hardware architectures?</a>
 </dt>
-<dt>8. <a href="rationale.html#idm378945713328">Why do you specialize numeric_limits for "safe"
-        types? Do you need it?</a>
+<dt>12. <a href="rationale.html#idm90272153440">Why is it necessary to specialize numeric_limits
+        for "safe" types?</a>
 </dt>
-<dt>9. <a href="rationale.html#idm378945706784">According to C/C++ standards, unsigned integers cannot overflow
-        - they are modular integers which "wrap around". Yet the safe numerics
-        library detects and traps this behavior as errors. Why is that?</a>
+<dt>13. <a href="rationale.html#idm90272145808">According to C/C++ standards, unsigned integers
+        cannot overflow - they are modular integers which "wrap around". Yet
+        the safe numerics library detects and traps this behavior as errors.
+        Why is that?</a>
 </dt>
-<dt>10. <a href="rationale.html#idm378945702800">Why does the library require C++14?</a>
+<dt>14. <a href="rationale.html#idm90272139600">Why does the library require C++14?</a>
 </dt>
-<dt>11. <a href="rationale.html#idm378945700016">This is a C++ library - yet you refer to C/C++. Which is
+<dt>15. <a href="rationale.html#idm90272134304">This is a C++ library - yet you refer to C/C++. Which is
         it?</a>
 </dt>
 </dl>
@@ -66,7 +81,7 @@
 <tbody>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945733040"></a><a name="idm378945732784"></a><p><b>1.</b></p>
+<a name="idm90272200480"></a><a name="idm90272200224"></a><p><b>1.</b></p>
 </td>
 <td align="left" valign="top"><p>Is this really necessary? If I'm writing the program with the
         requisite care and competence, problems noted in the introduction will
@@ -82,7 +97,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945729680"></a><a name="idm378945729424"></a><p><b>2.</b></p>
+<a name="idm90272196880"></a><a name="idm90272196624"></a><p><b>2.</b></p>
 </td>
 <td align="left" valign="top"><p>Can safe types be used as drop-in replacements for built-in
         types?</p></td>
@@ -91,15 +106,100 @@
 <td align="left" valign="top"></td>
 <td align="left" valign="top"><p>Almost. Replacing all built-in types with their safe
         counterparts should result in a program that will compile and run as
-        expected. In some cases compile time errors will occur and adjustments
+        expected. Occasionally compile time errors will occur and adjustments
         to the source code will be required. Typically these will result in
         code which is more correct.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945727344"></a><a name="idm378945727088"></a><p><b>3.</b></p>
+<a name="idm90272194560"></a><a name="idm90272194304"></a><p><b>3.</b></p>
 </td>
-<td align="left" valign="top"><p>Why is Boost.Convert not used?</p></td>
+<td align="left" valign="top"><p>Why are there special types for literal such as
+        <code class="computeroutput">safe_signed_literal&lt;42&gt;</code>? Why not just use
+        std::integral_const&lt;int, 42&gt;?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>By defining our own "special" type we can simplify the
+        interface. Using <code class="computeroutput">std::integral_const</code> requires one to
+        specify both the type <span class="emphasis"><em>and</em></span> the value. Using
+        <code class="computeroutput">safe_signed_literal&lt;42&gt;</code> doesn't require a parameter
+        for the type. So the library can select the best type to hold the
+        specified value. It also means that one won't have the opportunity to
+        specify a type-value pair which are inconsistent.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm90272189408"></a><a name="idm90272189152"></a><p><b>4.</b></p>
+</td>
+<td align="left" valign="top"><p>Why is safe...literal needed at all? What's the matter with
+        <code class="computeroutput">const safe&lt;int&gt;(42)</code>?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top">
+<p><code class="computeroutput">const safe&lt;int&gt;(42)</code> looks like it might be
+        what we want: An immutable value which invokes the "safe" operators
+        when used in an expression. But there is one problem. The
+        <code class="computeroutput">std::numeric_limits&lt;safe&lt;int&gt;&gt;</code> is a range
+        from INTMIN to INTMAX even though the value is fixed to 42 at compile
+        time. It is this range which is used at compile time to calculate the
+        range of the result of the operation.</p>
+<p>So when an operation is performed, the range of the result is
+        calculated from [INTMIN, INTMAX] rather than from [42,42].</p>
+</td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm90272184336"></a><a name="idm90272184080"></a><p><b>5.</b></p>
+</td>
+<td align="left" valign="top"><p>Are safe type operations <code class="computeroutput">constexpr</code>? That is, can
+        they be invoked at compile time?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top"><p>Yes. safe type construction and calculations are all
+        <code class="computeroutput">constexpr</code>. Note that to get maximum benefit, you'll have
+        to use <code class="computeroutput">safe...literal</code> to specify the independent values
+        at compile time.</p></td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm90272179952"></a><a name="idm90272179696"></a><p><b>6.</b></p>
+</td>
+<td align="left" valign="top"><p>Why define <a class="link" href="safe_literal.html" title="safe_signed_literal&lt;Value, PP , EP&gt; and safe_unsigned_literal&lt;Value, PP, EP&gt;"><code class="computeroutput">safe_literal</code></a>?
+        Isn't it effectively the same as
+        <code class="computeroutput">std::integral_constant</code>?</p></td>
+</tr>
+<tr class="answer">
+<td align="left" valign="top"></td>
+<td align="left" valign="top">
+<p>Almost, but there are still good reasons to create a different
+        type.</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p><code class="computeroutput">std::integral_constant&lt;int, 42&gt;</code>
+              requires specification of type as well as value so it's less
+              convenient than safe_signed_literal which maps to the smallest
+              type required to hold the value.</p></li>
+<li class="listitem"><p><code class="computeroutput">std::numeric_limits&lt;std::integral_constant&lt;int,
+              42&gt;&gt;::is_integer</code> returns <code class="computeroutput">false</code>. This
+              would complicate implementation of the library</p></li>
+<li class="listitem"><p>type trait <code class="computeroutput">is_safe&lt;std::integral_constant&lt;int,
+              42&gt;&gt;</code> would have to be defined to return
+              <code class="computeroutput">true</code>. </p></li>
+<li class="listitem"><p>But globally altering the traits of
+              <code class="computeroutput">std::integral_constant</code> might have unintended
+              side-effects related to other code. These might well be
+              surprises which are create errors which are hard to find and
+              hard to work around.</p></li>
+</ul></div>
+</td>
+</tr>
+<tr class="question">
+<td align="left" valign="top">
+<a name="idm90272167520"></a><a name="idm90272167264"></a><p><b>7.</b></p>
+</td>
+<td align="left" valign="top"><p>Why is Boost.Convert not used?&lt;</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
@@ -108,7 +208,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945725344"></a><a name="idm378945725088"></a><p><b>4.</b></p>
+<a name="idm90272165424"></a><a name="idm90272165168"></a><p><b>8.</b></p>
 </td>
 <td align="left" valign="top"><p>Why is the library named "safe ..." rather than something like
         "checked ..." ?</p></td>
@@ -123,7 +223,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945722976"></a><a name="idm378945722720"></a><p><b>5.</b></p>
+<a name="idm90272163056"></a><a name="idm90272162800"></a><p><b>9.</b></p>
 </td>
 <td align="left" valign="top"><p>Given that the library is called "numerics" why is floating
         point arithmetic not addressed?</p></td>
@@ -140,7 +240,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945718224"></a><a name="idm378945717968"></a><p><b>6.</b></p>
+<a name="idm90272158336"></a><a name="idm90272158080"></a><p><b>10.</b></p>
 </td>
 <td align="left" valign="top"><p>Isn't putting a defensive check just before any potential
         undefined behavior often considered a bad practice?</p></td>
@@ -155,7 +255,7 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945715648"></a><a name="idm378945715392"></a><p><b>7.</b></p>
+<a name="idm90272155760"></a><a name="idm90272155504"></a><p><b>11.</b></p>
 </td>
 <td align="left" valign="top"><p>It looks like the implementation presumes two's complement
         arithmetic at the hardware level. So this library is not portable -
@@ -169,26 +269,28 @@
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945713328"></a><a name="idm378945713072"></a><p><b>8.</b></p>
+<a name="idm90272153440"></a><a name="idm90272153184"></a><p><b>12.</b></p>
 </td>
-<td align="left" valign="top"><p>Why do you specialize <code class="computeroutput">numeric_limits</code> for "safe"
-        types? Do you need it?</p></td>
+<td align="left" valign="top"><p>Why is it necessary to specialize <code class="computeroutput">numeric_limits</code>
+        for "safe" types?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
-<td align="left" valign="top"><p><code class="computeroutput">safe&lt;T&gt;</code> behaves like a "number" just as int
-        does. It has max, min, etc Any code which uses numeric limits to test
-        a type <code class="computeroutput">T</code> should work with <code class="computeroutput">safe&lt;T&gt;</code>.
-        <code class="computeroutput">safe&lt;T&gt;</code> is a drop-in replacement for <code class="computeroutput">T</code>
-        so it has to implement all the operations.</p></td>
+<td align="left" valign="top"><p><code class="computeroutput">safe&lt;T&gt;</code> behaves like a "number" just as
+        <code class="computeroutput"><code class="computeroutput">int</code></code> does. It has max, min, etc Any code
+        which uses numeric limits to test a type <code class="computeroutput">T</code> should work
+        with <code class="computeroutput">safe&lt;T&gt;</code>. <code class="computeroutput">safe&lt;T&gt;</code> is a
+        drop-in replacement for <code class="computeroutput">T</code> so it has to implement all the
+        operations.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945706784"></a><a name="idm378945706528"></a><p><b>9.</b></p>
+<a name="idm90272145808"></a><a name="idm90272145552"></a><p><b>13.</b></p>
 </td>
-<td align="left" valign="top"><p>According to C/C++ standards, unsigned integers cannot overflow
-        - they are modular integers which "wrap around". Yet the safe numerics
-        library detects and traps this behavior as errors. Why is that?</p></td>
+<td align="left" valign="top"><p>According to C/C++ standards, <code class="computeroutput">unsigned integers</code>
+        cannot overflow - they are modular integers which "wrap around". Yet
+        the safe numerics library detects and traps this behavior as errors.
+        Why is that?</p></td>
 </tr>
 <tr class="answer">
 <td align="left" valign="top"></td>
@@ -197,19 +299,19 @@
         user may understand and keep present in his mind that an unsigned
         integer is really a modular type, the plain reading of an arithmetic
         expression conveys the idea that all operands are integers. Also in
-        many cases, unsigned integers are used in cases where modular
-        arithmetic is not intended, such as array indexes. Finally, the
-        modulus for such an integer would vary depending upon the machine
+        many cases, <code class="computeroutput">unsigned integers</code> are used in cases where
+        modular arithmetic is not intended, such as array indices. Finally,
+        the modulus for such an integer would vary depending upon the machine
         architecture. For these reasons, in the context of this library, an
-        unsigned integer is considered to be a representation of a subset of
-        integers. Note that this decision is consistent with
+        <code class="computeroutput">unsigned integer</code> is considered to be a representation of
+        a subset of integers. Note that this decision is consistent with
         [<a class="citation" href="bibliography.html#seacord2"><span class="citation">INT30-C</span></a>], &#8220;Ensure that unsigned integer operations
         do not wrap&#8221; in the CERT C Secure Coding Standard
         [<a class="citation" href="bibliography.html#seacord1"><span class="citation">Seacord</span></a>].</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945702800"></a><a name="idm378945702544"></a><p><b>10.</b></p>
+<a name="idm90272139600"></a><a name="idm90272139344"></a><p><b>14.</b></p>
 </td>
 <td align="left" valign="top"><p>Why does the library require C++14?</p></td>
 </tr>
@@ -224,16 +326,17 @@
         only way to really minimize run-time penalty was to implement
         compile-time integer range arithmetic - a pretty elaborate sub
         library. By doing range arithmetic at compile-time, I could skip
-        runtime checking on many/most integer operations. C++11 constexpr
-        wasn't quite enough to do the job. C++14 constexpr can do the job. The
-        library currently relies very heavily on C++14 constexpr. I think that
-        those who delve into the library will be very surprised at the extent
-        that minor changes in user code can produce guaranteed correct integer
-        code with zero run-time penalty.</p></td>
+        runtime checking on many/most integer operations. While C++11
+        <code class="computeroutput">constexpr</code> wasn't quite powerful enough to do the job,
+        C++14 <code class="computeroutput">constexpr</code> is. The library currently relies very
+        heavily on C++14 <code class="computeroutput">constexpr</code>. I think that those who delve
+        into the library will be very surprised at the extent that minor
+        changes in user code can produce guaranteed correct integer code with
+        zero run-time penalty.</p></td>
 </tr>
 <tr class="question">
 <td align="left" valign="top">
-<a name="idm378945700016"></a><a name="idm378945699760"></a><p><b>11.</b></p>
+<a name="idm90272134304"></a><a name="idm90272134048"></a><p><b>15.</b></p>
 </td>
 <td align="left" valign="top"><p>This is a C++ library - yet you refer to C/C++. Which is
         it?</p></td>
@@ -286,6 +389,8 @@
               with the macro TEST defined.</p></li>
 <li class="listitem"><p>Run the tests and change the code to address any thrown
               exceptions.</p></li>
+<li class="listitem"><p>Compile for the target C platform with the macro TEST
+              undefined.</p></li>
 </ul></div>
 <p>This example illustrates how this library, implemented with
         C++14 can be useful in the development of correct code for programs

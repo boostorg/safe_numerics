@@ -21,24 +21,24 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numeric.exception_policies"></a>exception_policy&lt;AE, IDB, UB, UV&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception_policies.html#idm378978121264">Description</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978119968">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978106656">Model of</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978105248">Inherited Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978103584">Function Objects</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978072896">Policies Provided by the library</a></span></dt>
-<dt><span class="section"><a href="exception_policies.html#idm378978046976">Header</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273386080">Description</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273384784">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273368912">Model of</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273367200">Inherited Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273365088">Function Objects</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273327104">Policies Provided by the library</a></span></dt>
+<dt><span class="section"><a href="exception_policies.html#idm90273294432">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978121264"></a>Description</h4></div></div></div>
+<a name="idm90273386080"></a>Description</h4></div></div></div>
 <p>Create a valid exception policy from 4 function objects. This
     specifies the actions to be taken for different types of invalid
     results.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978119968"></a>Template Parameters</h4></div></div></div>
+<a name="idm90273384784"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -48,55 +48,53 @@
 <thead><tr>
 <th align="left">Parameter</th>
 <th align="left">Type Requirements</th>
-<th align="left">Description</th>
+<th align="left">Invoked when:</th>
 </tr></thead>
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">AE</code></td>
-<td align="left">Must be a function object callable with the expression
-            AE(e, message)</td>
-<td align="left"><p>invoked when operation produces an invalid arithmetic
-            result.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">IDB</code></td>
-<td align="left">Must be a function object callable with the expression
-            IDB(e, message)</td>
-<td align="left"><p>invoked when operation produces an invalid arithmetic
-            result.</p></td>
+<td align="left">Function object callable with the expression AE(e,
+            message)</td>
+<td align="left"><p>The operation cannot produce valid arithmetic result
+            such as overflows, divide by zero, etc.</p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">UB</code></td>
-<td align="left">Must be a function object callable with the expression
-            UB(e, message)</td>
-<td align="left"><p>invoked when operation produces an invalid arithmetic
-            result.</p></td>
+<td align="left">Function object callable with the expression UB(e,
+            message)</td>
+<td align="left"><p>The result is undefined by the C++
+            standard</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">IDB</code></td>
+<td align="left">Function object callable with the expression IDB(e,</td>
+<td align="left"><p>The result depends upon implementation defined
+            behavior according to the C++ standard</p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">UV</code></td>
-<td align="left">Must be a function object callable with the expression
-            UV(e, message)</td>
-<td align="left"><p>invoked when operation produces an invalid arithmetic
-            result.</p></td>
+<td align="left">Function object callable with the expression UV(e,
+            message)</td>
+<td align="left"><p>A variable is not initialized</p></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978106656"></a>Model of</h4></div></div></div>
+<a name="idm90273368912"></a>Model of</h4></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978105248"></a>Inherited Valid Expressions</h4></div></div></div>
+<a name="idm90273367200"></a>Inherited Valid Expressions</h4></div></div></div>
 <p>This class implements all the valid operations from the type
     requirements <a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">ExceptionPolicy</a>. Aside
     from these, there are no other operations implemented.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978103584"></a>Function Objects</h4></div></div></div>
+<a name="idm90273365088"></a>Function Objects</h4></div></div></div>
 <p>In order to create an exception policy, one needs some function
     objects. The library includes some appropriate examples of these:</p>
 <div class="informaltable"><table class="table">
@@ -130,7 +128,8 @@
 </tr>
 </tbody>
 </table></div>
-<p>But of course one is free to provide his own.</p>
+<p>But of course one is free to provide his own. Here is an example of
+    a function object which would could be used exception conditions.</p>
 <pre class="programlisting"><span class="comment">// log an exception condition but continue processing as though nothing has happened</span>
 <span class="comment">// this would emulate the behavior of an unsafe type.</span>
 <span class="keyword">struct</span> <span class="identifier">log_runtime_exception</span> <span class="special">{</span>
@@ -143,7 +142,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978072896"></a>Policies Provided by the library</h4></div></div></div>
+<a name="idm90273327104"></a>Policies Provided by the library</h4></div></div></div>
 <p>The above function object can be composed into an exception policy
     by this class. The library provides common policies all ready to use. In
     the table below, the word "loose" is used to indicate that implementation
@@ -221,7 +220,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378978046976"></a>Header</h4></div></div></div>
+<a name="idm90273294432"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/exception_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concept/exception_policy.hpp&gt;</code></a></p>
 </div>

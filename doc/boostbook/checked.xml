@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.checked_integer_arithmetic">
-  <title>Checked Integer Arithmetic</title>
+<section id="safe_numerics.checked_arithmetic">
+  <title>Checked Arithmetic</title>
 
   <?dbhtml stop-chunking?>
 
@@ -29,9 +29,6 @@ checked_result&lt;R&gt; constexpr checked::multiply(const T &amp; t, const U &am
 template&lt;class R, class T, class U&gt;
 checked_result&lt;R&gt; constexpr checked::divide(const T &amp; t, const U &amp; u);
 
-template&lt;class R, class T, class U&gt;
-checked_result&lt;R&gt; constexpr checked::divide_automatic(const T &amp; t, const U &amp; u);
-
 // safe modulus on primitive types
 template&lt;class R, class T, class U&gt;
 checked_result&lt;R&gt; constexpr checked::modulus(const T &amp; t, const U &amp; u);
@@ -39,6 +36,18 @@ checked_result&lt;R&gt; constexpr checked::modulus(const T &amp; t, const U &amp
 // safe less than predicate on primitive types
 template&lt;class R, class T, class U&gt;
 bool constexpr checked::less_than(const T &amp; t, const U &amp; u);
+
+// safe greater_than_equal predicate on primitive types
+template&lt;class R, class T, class U&gt;
+bool constexpr checked::greater_than_equal(const T &amp; t, const U &amp; u);
+
+// safe greater_than predicate on primitive types
+template&lt;class R, class T, class U&gt;
+bool constexpr checked::greater_than(const T &amp; t, const U &amp; u);
+
+// safe less_than_equal predicate on primitive types
+template&lt;class R, class T, class U&gt;
+bool constexpr checked::less_than_equal(const T &amp; t, const U &amp; u);
 
 // safe equal predicate on primitive types
 template&lt;class R, class T, class U&gt;
@@ -109,14 +118,20 @@ checked_result&lt;int&gt; r = checked::multiply&lt;int&gt;(24, 42);
     <title>See Also</title>
 
     <para><link
-    linkend="safenumerics.checked_result">checked_result&lt;typename
-    R&gt;</link></para>
+    linkend="safenumerics.checked_result">checked_result&lt;R&gt;</link></para>
   </section>
 
   <section>
     <title>Header</title>
 
     <para><ulink url="../../include/checked.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
+
+    <para><ulink url="../../include/checked.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
+
+    <para><ulink url="../../include/checked.hpp"><code/></ulink><ulink
+    url="../../include/checked.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
   </section>
 </section>

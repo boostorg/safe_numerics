@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safenumerics.checked_result">
-  <title>checked_result&lt;typename R&gt;</title>
+  <title>checked_result&lt;R&gt;</title>
 
   <?dbhtml stop-chunking?>
 
@@ -26,7 +26,7 @@
 
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
         <colspec align="left" colwidth="4*"/>
 
@@ -55,7 +55,7 @@
 
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
         <colspec align="left" colwidth="4*"/>
 
@@ -98,7 +98,7 @@
             <entry><code>e</code></entry>
 
             <entry>An instance of type <link
-            linkend="safe_numerics.safe_numerics_error">safe_numerics_error</link></entry>
+            linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
           </row>
         </tbody>
       </tgroup>
@@ -108,15 +108,15 @@
   <section>
     <title>Valid Expressions</title>
 
-    <para>All expressions are constexpr.</para>
+    <para>All expressions are <code>constexpr</code>.</para>
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="2*"/>
+          <colspec align="left" colwidth="1*"/>
 
           <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="4*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>
@@ -138,12 +138,12 @@
             </row>
 
             <row>
-              <entry><code>checked_result(t)</code></entry>
+              <entry><code>checked_result&lt;R&gt;(t)</code></entry>
 
               <entry><code>checked_result&lt;R&gt;</code></entry>
 
-              <entry>constructor with checked_result&lt;T&gt; where T is not
-              R. T must be convertible to R.</entry>
+              <entry>constructor with <code>checked_result&lt;T&gt;</code>
+              where T is not R. T must be convertible to R.</entry>
             </row>
 
             <row>
@@ -165,7 +165,8 @@
             <row>
               <entry><code>static_cast&lt;e&gt;(c)</code></entry>
 
-              <entry>R</entry>
+              <entry><link
+              linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
 
               <entry>extract wrapped value - asserts if not possible</entry>
             </row>
@@ -173,7 +174,7 @@
             <row>
               <entry><code>static_cast&lt;const char *&gt;(c)</code></entry>
 
-              <entry>const char *</entry>
+              <entry><code>const char *</code></entry>
 
               <entry>returns pointer to error message</entry>
             </row>
@@ -193,19 +194,19 @@
                   <member>c != t</member>
                 </simplelist></code></entry>
 
-              <entry>boost::logic::tribool</entry>
+              <entry><code>boost::logic::tribool</code></entry>
 
               <entry>compare the wrapped values of two checked_result
               instances. If either one contains an error_type value, return
-              boost::logic::tribool::indeterminant.</entry>
+              <code>boost::logic::tribool::indeterminant</code>.</entry>
             </row>
 
             <row>
               <entry><code>c.exception()</code></entry>
 
-              <entry>bool</entry>
+              <entry><code>bool</code></entry>
 
-              <entry>true if checked_result contains an error
+              <entry>true if <code>checked_result</code> contains an error
               condition</entry>
             </row>
           </tbody>

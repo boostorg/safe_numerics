@@ -20,9 +20,9 @@
 
     <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="6*"/>
 
         <tbody>
           <row>
@@ -58,7 +58,7 @@
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="8*"/>
+          <colspec align="left" colwidth="9*"/>
 
           <colspec align="left" colwidth="1*"/>
 

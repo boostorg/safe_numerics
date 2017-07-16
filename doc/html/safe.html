@@ -21,25 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe.html#idm378946855248">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946853248">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946845904">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946838864">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946820240">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946817584">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946815296">Examples of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm378946630752">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90274016752">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90274014784">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90274007440">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90274000400">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90273981840">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90273979184">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90273973280">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm90273690864">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946855248"></a>Description</h4></div></div></div>
+<a name="idm90274016752"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or to trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946853248"></a>Notation</h4></div></div></div>
+<a name="idm90274014784"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -58,7 +58,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946845904"></a>Associated Types</h4></div></div></div>
+<a name="idm90274007440"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -80,7 +80,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946838864"></a>Template Parameters</h4></div></div></div>
+<a name="idm90274000400"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -116,22 +116,33 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946820240"></a>Model of</h4></div></div></div>
+<a name="idm90273981840"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946817584"></a>Valid Expressions</h4></div></div></div>
+<a name="idm90273979184"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
-    <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
-    requirements. Thus, the result type of such an expression will be another
-    safe type. The actual type of the result of such an expression will depend
-    upon the specific promotion policy template parameter.</p>
+    <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a>&lt;T&gt;
+    type requirements. Note that all these expressions are
+    <code class="computeroutput">constexpr</code>. Thus, the result type of such an expression will
+    be another safe type. The actual type of the result of such an expression
+    will depend upon the specific promotion policy template parameter.</p>
+<p>When a binary operand is applied to two instances of safe&lt;T, PP,
+    EP&gt;on of the following must be true:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>The promotion policies of the two operands must be the same or
+          one of them must be void</p></li>
+<li class="listitem"><p>The exception policies of the two operands must be the same or
+          one of them must be void</p></li>
+</ul></div>
+<p>If either of the above is not true, a compile error will
+    result.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946815296"></a>Examples of use</h4></div></div></div>
+<a name="idm90273973280"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -173,55 +184,103 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">j</span><span class="special">;</span>
 <span class="special">}</span></pre>
 <p>The term "drop-in replacement" reveals the aspiration of
-      this library. In most cases, this aspiration is realized. But in some
-      cases it isn't and can't be. Consider:</p>
-<pre class="programlisting"><span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="special">;</span>
+      this library. In most cases, this aspiration is realized. In the
+      following example, the normal implicit conversions function the same for
+      safe integers as they do for built-in integers. </p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+
+<span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">long</span><span class="special">&gt;</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="keyword">long</span> <span class="identifier">x</span><span class="special">;</span>
-    <span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>         <span class="comment">// OK - builtin implicit version</span>
-    <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">long</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
-    <span class="identifier">f</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span><span class="special">;</span>         <span class="comment">// compile time error</span>
+    <span class="keyword">const</span> <span class="keyword">long</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">97</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// OK - implicit conversion to int</span>
+    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">97</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// Also OK - checked implicit conversion to int</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
-<span class="special">}</span></pre>
-<p>The built-in integer types are freely and silently converted
-      to other integer types in order to permit passing of integer arguments
-      to other function types. Our view is that this is bad practice and
-      creates the possibility of subtle bugs. It conflicts with the purpose of
-      the library in a fundamental way. The library specifies that these
-      conversions are errors that are to be invoked at compile time. If one
-      wants to switch between safe and built-in types via an alias, this type
-      of code will have to be fixed so that implicit conversions to built-in
-      types do not occur. In our view, this will be a net improvement to the
-      code in any case.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h5 class="title">
-<a name="idm378946738448"></a>Guarantee correct behavior at compile time.</h5></div></div></div>
-<p>In some instances, catching an error at run time is not
-      sufficient. We want to be sure that the program can never fail. To
-      achieve this, use the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
-      rather than the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.default_exception_policy"><code class="computeroutput">default_exception_policy</code></a>.</p>
-<p>The following program will emit a compile error at any statement
-      which might possibly result in incorrect behavior.</p>
-<p>This is because there is no way to guarantee that the expression i
-      * i will return an arithmetically correct result. Since we know that the
-      program cannot compile if there is any possibility of arithmetic error,
-      we can dispense with the exception handling used above.</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="special">}</span>
+</pre>
+<p>When
+      the <code class="computeroutput">safe&lt;long&gt;</code> is implicitly converted to an
+      <code class="computeroutput">int</code> when calling <code class="computeroutput">f</code>, the value is checked to be
+      sure that it is within the legal range of an int and will invoke an
+      exception if it cannot. We can easily verify this by altering the
+      exception handling policy in the above example to
+      <code class="computeroutput">loose_trap_policy</code>. This will invoke a compile time error on
+      any conversion might invoke a runtime exception.</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
 
-<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">safe_int</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">native</span><span class="special">,</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">trap_exception</span><span class="special">&gt;</span><span class="special">;</span> 
-    <span class="identifier">safe_int</span> <span class="identifier">i</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">i</span><span class="special">;</span>  <span class="comment">// could throw exception here !!!</span>
-    <span class="identifier">safe_int</span> <span class="identifier">j</span><span class="special">;</span>
-    <span class="identifier">j</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">*</span> <span class="identifier">i</span><span class="special">;</span> <span class="comment">// could throw exception here !!!</span>
-<span class="special">}</span></pre>
+<span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">long</span><span class="special">,</span> <span class="identifier">native</span><span class="special">,</span> <span class="identifier">loose_trap_policy</span><span class="special">&gt;</span><span class="special">;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">const</span> <span class="keyword">long</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">97</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// OK - implicit conversion to int</span>
+    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">97</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// Would be OK, but will invoke compile time error</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>But this raises it's own questions. We can see that in this
+      example, the program can never fail:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>The value 97 is assigned to y</p></li>
+<li class="listitem"><p>y is converted to an int</p></li>
+<li class="listitem"><p>and used as an argument to f</p></li>
+</ul></div>
+<p>The conversion can never fail because the value of 97 can always
+      fit into an int. But the library code can't detect this and emits the
+      checking code even though it's not necessary.</p>
+<p>This can be addressed by using a <a class="link" href="safe_literal.html" title="safe_signed_literal&lt;Value, PP , EP&gt; and safe_unsigned_literal&lt;Value, PP, EP&gt;"><code class="computeroutput">safe_literal</code></a>. A
+      safe literal can contain one and only one value. All the functions in
+      this library are marked <code class="computeroutput">constexpr</code>. So it can be determined
+      at compile time that conversion to an <code class="computeroutput">int</code> can never fail
+      and no runtime checking code need be emitted. Making this small change
+      will permit the above example to run with zero runtime overhead while
+      guaranteeing that no error can ever occur.</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+
+<span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
+<span class="special">}</span>
+
+<span class="keyword">template</span><span class="special">&lt;</span><span class="identifier">intmax_t</span> <span class="identifier">N</span><span class="special">&gt;</span>
+<span class="keyword">using</span> <span class="identifier">safe_literal</span> <span class="special">=</span> <span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="identifier">N</span><span class="special">,</span> <span class="identifier">native</span><span class="special">,</span> <span class="identifier">loose_trap_policy</span><span class="special">&gt;</span><span class="special">;</span>
+
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">const</span> <span class="keyword">long</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">97</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// OK - implicit conversion to int</span>
+    <span class="keyword">const</span> <span class="identifier">safe_literal</span><span class="special">&lt;</span><span class="number">97</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="identifier">f</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span><span class="special">;</span>   <span class="comment">// OK - y is a type with min/max = 97;</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
+<span class="special">}</span>
+</pre>
+<p>With this trivial example, such efforts would hardly be deemed
+      necessary. But in a more complex case, perhaps including compile time
+      arithmetic expressions, it could be much more difficult to verify that
+      the constant is valid and/or no checking code is needed. And there is
+      also possibility that over the life time of the application, the compile
+      time constants might change, thus rendering any ad hoc analyse obsolete.
+      Using <a class="link" href="safe_literal.html" title="safe_signed_literal&lt;Value, PP , EP&gt; and safe_unsigned_literal&lt;Value, PP, EP&gt;"><code class="computeroutput">safe_literal</code></a>
+      will future-proof your code against well-meaning, but code-breaking
+      updates.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm378946699040"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm90273775440"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic.</p>
 <p>Stepping back, we can see that many of the cases of invalid
@@ -254,7 +313,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378946630752"></a>Header</h4></div></div></div>
+<a name="idm90273690864"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>

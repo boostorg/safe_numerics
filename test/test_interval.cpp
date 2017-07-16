@@ -157,8 +157,8 @@ namespace test4 {
         using namespace boost::numeric;
         std::cout << "test4::multiply" << std::endl;
         const interval<T> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+            std::numeric_limits<T>::min(),
+            std::numeric_limits<T>::max()
         };
         std::cout
             << boost::core::demangle(typeid(t_interval).name())
@@ -166,8 +166,8 @@ namespace test4 {
             << t_interval
             << std::endl;
         const interval<U> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+            std::numeric_limits<U>::min(),
+            std::numeric_limits<U>::max()
         };
         std::cout
             << boost::core::demangle(typeid(u_interval).name())
@@ -190,8 +190,8 @@ namespace test4 {
         using namespace boost::numeric;
         std::cout << "test4::test4 divide" << std::endl;
         const interval<T> t_interval = {
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+            std::numeric_limits<T>::min(),
+            std::numeric_limits<T>::max()
         };
         std::cout
             << boost::core::demangle(typeid(t_interval).name())
@@ -199,8 +199,8 @@ namespace test4 {
             << t_interval
             << std::endl;
         const interval<U> u_interval = {
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+            std::numeric_limits<U>::min(),
+            std::numeric_limits<U>::max()
         };
         std::cout
             << boost::core::demangle(typeid(u_interval).name())

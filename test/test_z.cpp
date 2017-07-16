@@ -146,14 +146,6 @@ using pic16_promotion = boost::numeric::cpp<
     32  // long long
 >;
 
-/*
-    template<typename T, typename U>
-    using result_type = usual_arithmetic_conversions<
-        integral_promotion<typename base_type<T>::type>,
-        integral_promotion<typename base_type<U>::type>
-    >;
-*/
-
 #include <type_traits>
 #include "../include/safe_integer.hpp"
 #include "../include/range_value.hpp"
@@ -226,6 +218,8 @@ int main(){
 }
 
 #endif
+
+#include <interval.hpp>
 
 int main(){
     return 0;

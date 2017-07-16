@@ -14,12 +14,7 @@
 
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
-
 #include <cassert>
-#include <boost/logic/tribool.hpp>
-
-#include "safe_common.hpp"
-#include "safe_compare.hpp"
 #include "exception.hpp"
 
 namespace boost {
@@ -86,66 +81,68 @@ struct checked_result {
     // damn! turns out I use this in a sort of pathological case
     // fix this later
     // checked_result & operator=(const checked_result &) = delete;
-
-    // comparison operators
-    template<class T>
-    constexpr boost::logic::tribool operator<(const checked_result<T> & t) const {
-        return
-            (! this->exception() && ! t.exception()) ?
-                safe_compare::less_than(m_r, t.m_r)
-            :
-                boost::logic::tribool::indeterminate_value
-            ;
-    }
-    template<class T>
-    constexpr boost::logic::tribool operator>=(const checked_result<T> & t) const {
-        return ! operator<(t);
-    }
-    template<class T>
-    constexpr boost::logic::tribool operator>(const checked_result<T> & t) const {
-        return
-            (! this->exception() && ! t.exception()) ?
-                safe_compare::greater_than(m_r, t.m_r)
-            :
-                boost::logic::tribool::indeterminate_value
-            ;
-    }
-    template<class T>
-    constexpr boost::logic::tribool  operator<=(const checked_result<T> & t) const {
-        return ! operator>(t);
-    }
-    template<class T>
-    constexpr boost::logic::tribool operator!=(const checked_result<T> & t) const {
-        return operator<(t) || operator>(t);
-    }
-    template<class T>
-    constexpr boost::logic::tribool operator==(const checked_result<T> & t) const {
-        return ! operator!=(t);
-    }
 };
 
-template<typename T>
-constexpr bool operator==(const checked_result<T> &lhs, const safe_numerics_error & rhs){
-    return (! lhs.exception()) ? false : lhs.m_e == rhs;
+} // numeric
+} // boost
+
+#include <boost/logic/tribool.hpp>
+#include "safe_compare.hpp"
+
+namespace boost {
+namespace numeric {
+
+// comparison operators
+template<class T, class U>
+constexpr boost::logic::tribool
+operator<(const checked_result<T> & t, const checked_result<U> & u) {
+    return
+        (t.exception() || u.exception()) ?
+            boost::logic::tribool::indeterminate_value
+        :
+            safe_compare::less_than(t.m_r, u.m_r)
+        ;
 }
-template<typename T>
-constexpr bool operator==(const safe_numerics_error & lhs, const checked_result<T> &rhs){
-    return (! rhs.exception()) ? false : lhs = rhs.m_e;
+template<class T, class U>
+constexpr boost::logic::tribool
+operator>(const checked_result<T> & t, const checked_result<U> & u) {
+    return
+        (t.exception() || u.exception()) ?
+            boost::logic::tribool::indeterminate_value
+        :
+            safe_compare::greater_than(t.m_r, u.m_r)
+        ;
 }
-template<typename T>
-constexpr bool operator!=(const checked_result<T> &lhs, const safe_numerics_error & rhs){
-    return ! (lhs == rhs);
+template<class T, class U>
+constexpr boost::logic::tribool
+operator==(const checked_result<T> & t, const checked_result<U> & u) {
+    return
+        (t.exception() || u.exception()) ?
+            boost::logic::tribool::indeterminate_value
+        :
+            safe_compare::equal(t.m_r, u.m_r)
+        ;
 }
-template<typename T>
-constexpr bool operator!=(const safe_numerics_error & lhs, const checked_result<T> &rhs){
-    return ! (lhs == rhs);
+template<class T, class U>
+constexpr boost::logic::tribool
+operator>=(const checked_result<T> & t, const checked_result<U> & u){
+    return ! (t < u);
+}
+template<class T, class U>
+constexpr boost::logic::tribool
+operator<=(const checked_result<T> & t, const checked_result<U> & u){
+    return ! (t > u);
+}
+template<class T, class U>
+constexpr boost::logic::tribool
+operator!=(const checked_result<T> & t, const checked_result<U> & u){
+    return ! (t == u);
 }
 
 } // numeric
 } // boost
 
-#include <ostream>
-#include <istream>
+#include <iosfwd>
 
 namespace std {
 

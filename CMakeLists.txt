@@ -3,9 +3,10 @@
 cmake_minimum_required(VERSION 3.6)
 
 project("SafeIntegers")
-set (CMAKE_CXX_STANDARD 14)
-
 enable_language(CXX)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 ########################################################
 # Compiler settings - special settings for known compilers
@@ -19,6 +20,7 @@ elseif( CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" )
   add_definitions( /wd4996 )
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" )
   add_definitions( -ftemplate-depth=300 )
+  add_compile_options(-Wnon-virtual-dtor -ansi -Wcast-align -Wchar-subscripts -Wall -W -Wshadow -Wsign-compare )
 endif()
 
 #

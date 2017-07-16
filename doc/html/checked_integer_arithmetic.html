@@ -1,12 +1,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>Checked Integer Arithmetic</title>
+<title>safe_compare&lt;T, U&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
-<link rel="prev" href="checked_result.html" title="checked_result&lt;typename R&gt;">
+<link rel="prev" href="interval.html" title="interval&lt;typename R&gt;">
 <link rel="next" href="performance_tests.html" title="Performance Tests">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,128 +15,86 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="checked_result.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="performance_tests.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="performance_tests.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.checked_integer_arithmetic"></a>Checked Integer Arithmetic</h3></div></div></div>
+<a name="safe_numerics.checked_integer_arithmetic"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945979040">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945764464">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945763120">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945761024">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945759872">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945742608">Notes</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945741040">See Also</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm378945739328">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272341808">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272253632">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272246400">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272242896">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272241664">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm90272211008">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945979040"></a>Synopsis</h4></div></div></div>
-<pre class="programlisting"><span class="comment">// safe casting on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">cast</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">)</span><span class="special">;</span>
+<a name="idm90272341808"></a>Synopsis</h4></div></div></div>
+<pre class="programlisting"><span class="comment">// compare any pair of integers</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">less_than</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
 
-<span class="comment">// safe addition on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">add</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">greater_than</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
 
-<span class="comment">// safe subtraction on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">subtract</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">less_than_equal</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
 
-<span class="comment">// safe multiplication on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">multiply</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">greater_than_equal</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
 
-<span class="comment">// safe division on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">divide</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">equal</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
 
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">divide_automatic</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="comment">// safe modulus on primitive types</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span>
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">modulus</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="comment">// left shift</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">left_shift</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="comment">// right shift</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">right_shift</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="comment">// bitwise operations</span>
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_or</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_and</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-
-<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
-<span class="keyword">constexpr</span> <span class="identifier">checked_result</span><span class="special">&lt;</span><span class="identifier">R</span><span class="special">&gt;</span> 
-<span class="identifier">checked</span><span class="special">::</span><span class="identifier">bitwise_xor</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">t</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">u</span><span class="special">)</span><span class="special">;</span>
-</pre>
+<span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
+<span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">not_equal</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945764464"></a>Description</h4></div></div></div>
-<p>Perform binary operations on arithmetic types. Return either a valid
-    result or an error code. Under no circumstances should an incorrect result
-    be returned.</p>
+<a name="idm90272253632"></a>Description</h4></div></div></div>
+<p>Compare two primitive integers. These functions will return a
+    correct result regardless of the type of the operands. Specifically it is
+    guaranteed to return the correct arithmetic result when comparing signed
+    and unsigned types of any size. It does not follow the standard C/C++
+    procedure of converting the operands to some common type then doing the
+    compare. So it is not equivalent to the C/C++ binary operations
+    <code class="computeroutput">&lt;</code>, <code class="computeroutput">&gt;</code>, <code class="computeroutput"><code class="computeroutput">&gt;</code>=</code>,
+    <code class="computeroutput">&lt;=</code>, <code class="computeroutput">==</code>, <code class="computeroutput">!=</code>. The functions are
+    free functions defined inside the namespace
+    <code class="computeroutput">boost::numeric::safe_compare</code>.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945763120"></a>Type requirements</h4></div></div></div>
-<p>All template parameters of the functions must model <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a> type requirements.</p>
+<a name="idm90272246400"></a>Type requirements</h4></div></div></div>
+<p>All template parameters of the functions must be C/C++ built-in
+    integer types, <code class="computeroutput"><code class="computeroutput">char</code></code>,
+    <code class="computeroutput"><code class="computeroutput">int</code></code> ....</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945761024"></a>Complexity</h4></div></div></div>
+<a name="idm90272242896"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945759872"></a>Example of use</h4></div></div></div>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">checked</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<a name="idm90272241664"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_compare</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
-<span class="identifier">checked_result</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">r</span> <span class="special">=</span> <span class="identifier">checked</span><span class="special">::</span><span class="identifier">multiply</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span><span class="special">(</span><span class="number">24</span><span class="special">,</span> <span class="number">42</span><span class="special">)</span><span class="special">;</span>
-</pre>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="keyword">const</span> <span class="keyword">short</span> <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="special">-</span><span class="number">64</span><span class="special">;</span>
+<span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">42000</span><span class="special">;</span>
+
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">x</span> <span class="special">&lt;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">;</span> <span class="comment">// fails</span>
+<span class="identifier">assert</span><span class="special">(</span><span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">less_than</span><span class="special">(</span><span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">)</span><span class="special">)</span><span class="special">;</span> <span class="comment">// OK</span></pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945742608"></a>Notes</h4></div></div></div>
-<p>Some compilers have command line switches (e.g. -ftrapv) which
-    enable special behavior such that erroneous integer operations are
-    detected at run time. The library has been implemented in such a way that
-    these facilities are not used. It's possible they might be helpful in
-    particular environment. These could be be exploited by re-implementing
-    some functions in this library.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945741040"></a>See Also</h4></div></div></div>
-<p><a class="link" href="checked_result.html" title="checked_result&lt;typename R&gt;">checked_result&lt;typename
-    R&gt;</a></p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm378945739328"></a>Header</h4></div></div></div>
-<p><a href="../../include/checked.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></a></p>
+<a name="idm90272211008"></a>Header</h4></div></div></div>
+<p><a href="../../include/safe_compare.hpp" target="_top"><code class="computeroutput">#include
+    &lt;boost/numeric/safe_numerics/safe_compare.hpp&gt;
+    </code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
@@ -147,7 +105,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="checked_result.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="performance_tests.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="interval.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="performance_tests.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

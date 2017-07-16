@@ -59,14 +59,13 @@
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<pre class="programlisting"><span class="identifier">example</span> <span class="number">2</span><span class="special">:</span><span class="identifier">undetected</span> <span class="identifier">overflow</span> <span class="identifier">in</span> <span class="identifier">data</span> <span class="identifier">type</span>
-<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="special">-</span><span class="number">2147483648</span> <span class="special">!=</span> <span class="number">2147483647</span> <span class="special">+</span> <span class="number">1</span>
-<span class="identifier">error</span> <span class="identifier">NOT</span> <span class="identifier">detected</span><span class="special">!</span>
-<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="identifier">addition</span> <span class="identifier">result</span> <span class="identifier">too</span> <span class="identifier">large</span>
-<span class="identifier">error</span> <span class="identifier">detected</span><span class="special">!</span>
-<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
+<pre class="screen">example 2:undetected overflow in data type
+Not using safe numerics
+-2147483648 != 2147483647 + 1
+error NOT detected!
+Using safe numerics
+addition result too large
+error detected!</pre>
 <p>When variables of unsigned integer type are decremented below zero,
     they "roll over" to the highest possible unsigned version of that integer
     type. This is a common problem which is generally never detected.</p>

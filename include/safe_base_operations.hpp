@@ -91,6 +91,7 @@ validated_cast(const T & t) const {
         base_value(std::numeric_limits<T>::max())
     };
     constexpr const interval<Stored> this_interval(Min, Max);
+
     // if static values don't overlap, the program can never function
     static_assert(
         indeterminate(t_interval < this_interval),
@@ -120,13 +121,12 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 /////////////////////////////////////////////////////////////////
 // casting operators
 
-// cast from other safe type
+// convert to a builtin integer type from a safe type
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
     typename std::enable_if<
-        ! boost::numeric::is_safe<R>::value
-        && std::numeric_limits<R>::is_integer,
+        !boost::numeric::is_safe<R>::value,
         int
     >::type
 >
@@ -134,6 +134,7 @@ constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
     constexpr const interval<R> r_interval;
     constexpr const interval<Stored> this_interval(Min, Max);
+
     // if static values don't overlap, the program can never function
     static_assert(
         indeterminate(r_interval < this_interval),
@@ -147,12 +148,6 @@ operator R () const {
     >::type::template return_value(m_t, r_interval);
 }
 
-// cast from stored type
-template< class Stored, Stored Min, Stored Max, class P, class E>
-constexpr safe_base<Stored, Min, Max, P, E>::
-operator Stored () const {
-    return m_t;
-}
 
 /////////////////////////////////////////////////////////////////
 // binary operators
@@ -233,60 +228,6 @@ struct common_promotion_policy {
 
 };
 
-#if 0
-/////////////////////////////////////////////////////////////////
-// utility
-namespace utility {
-
-    // see "The C++ Programming language 4th edition, 1st printing,
-    // by Bjarne Stroustrup" Page 785
-    template<template<typename ...> class F, typename... Args>
-    using delay = F<Args ...>;
-
-    template<typename T>
-    struct is_integer : public std::integral_constant<
-        bool,
-        std::numeric_limits<T>::is_integer
-    >
-    {};
-
-    template<typename T, typename U>
-    struct safe_integer_selector : public
-            boost::mpl::if_c<
-                is_safe<T>::value,
-                delay<is_integer, U>,
-            typename boost::mpl::if_c<
-                is_safe<U>::value,
-                delay<is_integer, T>,
-                std::false_type
-            >::type
-            >::type
-    {};
-
-    // don't need this now but maybe later
-    template<typename T, typename U>
-    struct float_selector : public
-        std::integral_constant<
-            bool,
-            (is_safe<T>::value && std::is_floating_point<U>::value)
-            || (std::is_floating_point<T>::value && is_safe<U>::value)
-        >
-    {
-        using float_value_type =
-        typename boost::mpl::if_c<
-            std::is_floating_point<T>::value,
-            T,
-        typename boost::mpl::if_c<
-            std::is_floating_point<U>::value,
-            U,
-        std::false_type
-        >::type
-        >::type;
-    };
-
-} // utility
-#endif
-
 // Note: the following global operators will be found via
 // argument dependent lookup.
 
@@ -314,7 +255,7 @@ private:
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         add<result_base_type>(t_interval, u_interval);
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
@@ -438,7 +379,7 @@ private:
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         subtract<result_base_type>(t_interval, u_interval);
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
@@ -556,7 +497,7 @@ private:
         constexpr static const interval<checked_result<result_base_type>> r_interval =
             multiply<result_base_type>(t_interval, u_interval);
 
-        constexpr static const bool exception_possible() {
+        constexpr static bool exception_possible() {
             return r_interval.l.exception() || r_interval.u.exception();
         }
 
@@ -692,7 +633,7 @@ private:
         static_assert(! r_interval.u.exception(), "unexpected positive overflow");
         // the result interval is definitely valid
 
-        constexpr static const bool exception_possible() {
+        constexpr static bool exception_possible() {
             // section needs some work. issues:
             // cast 1) t = 1, u = -128
             //    we know the answer so we returned false.
@@ -1164,7 +1105,7 @@ private:
         left_shift<result_base_type>(t_interval, u_interval)
     };
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
@@ -1278,7 +1219,7 @@ struct right_shift_result {
         right_shift<result_base_type>(t_interval, u_interval)
     };
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
@@ -1386,7 +1327,7 @@ private:
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         bitwise_or<result_base_type>(t_interval, u_interval);
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
     using exception_policy = typename common_exception_policy<T, U>::type;
@@ -1499,7 +1440,7 @@ struct bitwise_and_result {
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         bitwise_and<result_base_type>(t_interval, u_interval);
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
     using exception_policy = typename common_exception_policy<T, U>::type;
@@ -1609,7 +1550,7 @@ private:
     constexpr static const interval<checked_result<result_base_type>> r_interval =
         bitwise_xor<result_base_type>(t_interval, u_interval);
 
-    constexpr static const bool exception_possible() {
+    constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
     using exception_policy = typename common_exception_policy<T, U>::type;
@@ -1699,9 +1640,6 @@ constexpr operator^=(T & t, const U & u){
     t = static_cast<T>(t ^ u);
     return t;
 }
-
-/////////////////////////////////////////////////////////////////
-// assignment operators
 
 /////////////////////////////////////////////////////////////////
 // stream helpers

@@ -9,6 +9,7 @@
 <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/fo/docbook.xsl"/>
 <xsl:param name="fop1.extensions">1</xsl:param>
 <xsl:param name="sidebar.float.type">none</xsl:param>
+<xsl:param name="alignment">left</xsl:param>
 
 <!--
 Make all hyperlinks blue colored:
@@ -122,7 +123,7 @@ General default options go here:
 <xsl:param name="body.margin.top">0.50in</xsl:param>
 <xsl:param name="section.autolabel" select="1"></xsl:param>
 <xsl:param name="section.autolabel.max.depth">2</xsl:param>
-
+<xsl:param name="ulink.show" select="0"></xsl:param>
 <xsl:param name="admon.graphics.path">http://svn.boost.org/svn/boost/trunk/doc/src/images/</xsl:param>
 <xsl:param name="callout.graphics.path">http://svn.boost.org/svn/boost/trunk/doc/src/images/callouts/</xsl:param>
 

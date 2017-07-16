@@ -39,16 +39,19 @@
     <span class="keyword">try</span><span class="special">{</span>
         <span class="keyword">signed</span> <span class="keyword">int</span>   <span class="identifier">a</span><span class="special">{</span><span class="special">-</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
         <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="identifier">b</span><span class="special">{</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">a</span> <span class="special">&lt;&lt;</span> <span class="string">" b is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">b</span> <span class="special">&lt;&lt;</span> <span class="char">'\n'</span><span class="special">;</span>
         <span class="keyword">if</span><span class="special">(</span><span class="identifier">a</span> <span class="special">&lt;</span> <span class="identifier">b</span><span class="special">)</span><span class="special">{</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is less than b\n"</span><span class="special">;</span>
         <span class="special">}</span>
         <span class="keyword">else</span><span class="special">{</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"b is less than a\n"</span><span class="special">;</span>
         <span class="special">}</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
         <span class="comment">// never arrive here - just produce the wrong answer!</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="number">1</span><span class="special">;</span>
     <span class="special">}</span>
 
     <span class="comment">// solution: replace int with safe&lt;int&gt; and unsigned int with safe&lt;unsigned int&gt;</span>
@@ -57,12 +60,15 @@
         <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">signed</span> <span class="keyword">int</span><span class="special">&gt;</span>   <span class="identifier">a</span><span class="special">{</span><span class="special">-</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">{</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">a</span> <span class="special">&lt;&lt;</span> <span class="string">" b is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">b</span> <span class="special">&lt;&lt;</span> <span class="char">'\n'</span><span class="special">;</span>
         <span class="keyword">if</span><span class="special">(</span><span class="identifier">a</span> <span class="special">&lt;</span> <span class="identifier">b</span><span class="special">)</span><span class="special">{</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is less than b\n"</span><span class="special">;</span>
         <span class="special">}</span>
         <span class="keyword">else</span><span class="special">{</span>
             <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"b is less than a\n"</span><span class="special">;</span>
         <span class="special">}</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="keyword">return</span> <span class="number">1</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="comment">// never arrive here - just produce the correct answer!</span>
@@ -72,12 +78,16 @@
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
-<pre class="programlisting"><span class="identifier">example</span> <span class="number">3</span><span class="special">:</span> <span class="identifier">implicit</span> <span class="identifier">conversions</span> <span class="identifier">change</span> <span class="identifier">data</span> <span class="identifier">values</span>
-<span class="identifier">Not</span> <span class="keyword">using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="identifier">b</span> <span class="identifier">is</span> <span class="identifier">less</span> <span class="identifier">than</span> <span class="identifier">a</span>
-<span class="identifier">Using</span> <span class="identifier">safe</span> <span class="identifier">numerics</span>
-<span class="identifier">a</span> <span class="identifier">is</span> <span class="identifier">less</span> <span class="identifier">than</span> <span class="identifier">b</span>
-<span class="identifier">Program</span> <span class="identifier">ended</span> <span class="identifier">with</span> <span class="identifier">exit</span> <span class="identifier">code</span><span class="special">:</span> <span class="number">0</span></pre>
+<pre class="screen">example 3: implicit conversions change data values
+Not using safe numerics
+a is -1 b is 1
+b is less than a
+error NOT detected!
+Using safe numerics
+a is -1 b is 1
+converted negative value to unsigned: domain error
+error detected!
+</pre>
 <p>A normal person reads the above code and has to be dumbfounded by
     this. The code doesn't do what the text - according to the rules of
     algebra - says it does. But C++ doesn't follow the rules of algebra - it

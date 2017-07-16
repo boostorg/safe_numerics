@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
 <link rel="prev" href="exception_safety.html" title="Exception Safety">
-<link rel="next" href="interval.html" title="interval&lt;typename R&gt;">
+<link rel="next" href="checked_result.html" title="checked_result&lt;R&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,15 +15,16 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="interval.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_result.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.library_implementation"></a>Library Implementation</h2></div></div></div>
 <div class="toc"><dl class="toc">
+<dt><span class="section"><a href="checked_result.html">checked_result&lt;R&gt;</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html">Checked Arithmetic</a></span></dt>
 <dt><span class="section"><a href="interval.html">interval&lt;typename R&gt;</a></span></dt>
-<dt><span class="section"><a href="checked_result.html">checked_result&lt;typename R&gt;</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html">Checked Integer Arithmetic</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html">safe_compare&lt;T, U&gt;</a></span></dt>
 </dl></div>
 <p>This library should compile and run correctly on any conforming
     C++14 compiler.</p>
@@ -68,6 +69,10 @@
 </ul></div>
 </li>
 </ul></div>
+<p>The following components realize the design described here. Although
+    they have been crafted specifically to support this library, there is no
+    reason that that they cannot be used on their own. In fact, several of
+    them very much lend themselves to such usage.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -77,7 +82,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="interval.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="exception_safety.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_result.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

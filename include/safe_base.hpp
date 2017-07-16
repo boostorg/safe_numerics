@@ -14,15 +14,12 @@
 
 #include <limits>
 #include <type_traits> // is_integral, enable_if
-#include <iosfwd>
-#include <cassert>
 
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/and.hpp>
 
-#include "concept/integer.hpp"
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"
 
@@ -123,7 +120,6 @@ template<
 >
 class safe_base {
 private:
-    BOOST_CONCEPT_ASSERT((Integer<Stored>));
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     Stored m_t;
@@ -208,11 +204,13 @@ public:
     */
     constexpr safe_base() = default;
 
+    // convert instance of a safe type from an instance from a convertible
+    // underlying type.
     template<class T>
     constexpr /*explicit*/ safe_base(
         const T & t,
         typename std::enable_if<
-            std::numeric_limits<T>::is_integer,
+            std::is_convertible<T, Stored>::value,
             bool
         >::type = true
     ) :
@@ -226,21 +224,17 @@ public:
 
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
-
     // convert to any type which is not safe.  safe types need to be
     // excluded to prevent ambiguous function selection which
     // would otherwise occur
     template<
         class R,
         typename std::enable_if<
-            ! boost::numeric::is_safe<R>::value
-            && std::numeric_limits<R>::is_integer,
+            ! boost::numeric::is_safe<R>::value,
             int
         >::type = 0
     >
     constexpr /*explicit*/ operator R () const;
-    
-    constexpr /*explicit*/ operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators

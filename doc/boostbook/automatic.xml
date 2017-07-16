@@ -12,9 +12,7 @@
     operation.</para>
 
     <para>The standard C/C++ procedure for executing arithmetic operations on
-    operands of different types is:</para>
-
-    <para><itemizedlist>
+    operands of different types is:<itemizedlist>
         <listitem>
           <para>Convert operands to some common type using a somewhat
           elaborate elaborate rules defined in the C++ standard.</para>
@@ -28,8 +26,10 @@
           <para>If the result of the operation cannot fit in the common type
           of the operands, discard the high order bits.</para>
         </listitem>
-      </itemizedlist>The automatic promotion policy replaces the standard
-    C/C++ procedure for the following one:<itemizedlist>
+      </itemizedlist></para>
+
+    <para>The automatic promotion policy replaces the standard C/C++ procedure
+    for the following one:<itemizedlist>
         <listitem>
           <para>Convert operands to some common type using to the following
           rules.<itemizedlist>
@@ -83,6 +83,10 @@
             </itemizedlist></para>
         </listitem>
       </itemizedlist></para>
+
+    <para>This type promotion policy is applicable only to safe types whose
+    base type is an <link linkend="safe_numerics.integer">Integer</link>
+    type.</para>
   </section>
 
   <section>

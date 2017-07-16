@@ -40,9 +40,9 @@
 
     <para><informaltable>
         <tgroup cols="2">
-          <colspec align="left"/>
+          <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="4*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>
@@ -139,9 +139,9 @@
 
     <informaltable>
       <tgroup cols="2">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="4*"/>
+        <colspec align="left" colwidth="3*"/>
 
         <thead>
           <row>
@@ -201,19 +201,9 @@ make_safe_numerics_action(const safe_numerics_error &amp; e);</programlisting></
 
     <itemizedlist>
       <listitem>
-        <para><ulink url="???">Boost System Library</ulink> This is the
-        official documentation for the Boost System Library which includes the
-        description of boost::system::error_code used by this library</para>
-      </listitem>
-
-      <listitem>
         <para><ulink url="http://en.cppreference.com/w/cpp/error">C++ Standard
-        Library version</ulink> The Boost System Library has been incorporated
-        into the standard library as part of the C++ standard error handling
-        utilities. Except for the substitution of <code>std:</code>: for the
-        <code>boost::system::</code> namespace, the libraries are identical.
-        This link points to the standard library documentation which may be
-        used in addition to the boost version.</para>
+        Library version</ulink> The C++ standard error handling
+        utilities.</para>
       </listitem>
 
       <listitem>

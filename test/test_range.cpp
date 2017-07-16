@@ -8,8 +8,8 @@
 template<typename T>
 void display_log(T Max){
     std::cout
-        << "log(" << Max << ") = "
-        << boost::numeric::utility::log2(Max) << std::endl;
+        << "ilog2(" << Max << ") = "
+        << boost::numeric::utility::ilog2(Max) << std::endl;
 }
 
 bool test_significant_bits(){

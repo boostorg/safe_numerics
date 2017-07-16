@@ -84,6 +84,7 @@ public:
         default:
             assert(false);
         }
+        return ""; // suppress bogus warning
     }
 } safe_numerics_error_category ;
 

@@ -22,7 +22,9 @@
 #include <boost/core/demangle.hpp>
 
 #include "utility.hpp" // log
-#include "checked_result.hpp"
+#include "checked_default.hpp"
+#include "safe_compare.hpp"
+#include <boost/logic/tribool.hpp>
 
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
@@ -81,10 +83,13 @@ struct interval {
 };
 
 template<class R>
-constexpr interval<R> make_interval(const R & r){
+constexpr interval<R> make_interval(){
     return interval<R>();
 }
-
+template<class R>
+constexpr interval<R> make_interval(const R & r){
+    return interval<R>(r, r);
+}
 template<class R>
 constexpr interval<R>::interval() :
     l(std::numeric_limits<R>::lowest()),
@@ -281,7 +286,6 @@ constexpr interval<checked_result<R>> modulus(
             checked_result<R>(0)
         }
     );
-
 }
 
 template<typename R, typename T, typename U>
@@ -381,13 +385,11 @@ constexpr interval<checked_result<R>> union_interval(
     const interval<T> & t,
     const interval<U> & u
 ){
-    const checked_result<R>
-        //rl = checked::cast<R>(safe_compare::less_than(t.l, u.l) ? t.l : u.l);
-        rl = safe_compare::less_than(t.l, u.l) ? t.l : u.l;
+    const checked_result<R> rl =
+        checked::cast<R>(safe_compare::less_than(t.l, u.l) ? t.l : u.l);
         utility::constexpr_assert(! rl.exception());
-    const checked_result<R>
-        //ru = checked::cast<R>(safe_compare::greater_than(t, u) ? t.u : u.u);
-        ru = safe_compare::greater_than(t.u, u.u) ? t.u : u.u;
+    const checked_result<R> ru =
+        checked::cast<R>(safe_compare::greater_than(t, u) ? t.u : u.u);
         utility::constexpr_assert(! ru.exception());
     return interval<checked_result<R>>(rl, ru);
 }

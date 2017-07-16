@@ -86,44 +86,48 @@ can be trimmed off by using four tables, with the possible additions incorporate
 Using int table elements may be faster, depending on your architecture.
 */
 
-// I've "improved" the above and recast as C++ code which depends upon
-// the optimizer to minimize the operations.  This should result in
-// nine operations to calculate the position of the highest order
-// bit in a 64 bit number. RR
+namespace detail {
 
-constexpr unsigned int log2(const boost::uint_t<8>::exact & t){
-    constexpr const char LogTable256[256] = {
-        #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
-        -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
-        LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
-        LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
-    };
-    return LogTable256[t];
-}
-constexpr unsigned int log2(const boost::uint_t<16>::exact & t){
-    const boost::uint_t<8>::exact upper_half = (t >> 8);
-    return upper_half == 0
-        ? log2(static_cast<boost::uint_t<8>::exact>(t))
-        : 8 + log2(upper_half);
-}
-constexpr unsigned int log2(const boost::uint_t<32>::exact & t){
-    const boost::uint_t<16>::exact upper_half = (t >> 16);
-    return upper_half == 0
-        ? log2(static_cast<boost::uint_t<16>::exact>(t))
-        : 16 + log2(upper_half);
-}
-constexpr unsigned int log2(const boost::uint_t<64>::exact & t){
-    const boost::uint_t<32>::exact upper_half = (t >> 32);
-    return upper_half == 0
-        ? log2(static_cast<boost::uint_t<32>::exact>(t))
-        : 32 + log2(upper_half);
-}
+    // I've "improved" the above and recast as C++ code which depends upon
+    // the optimizer to minimize the operations.  This should result in
+    // nine operations to calculate the position of the highest order
+    // bit in a 64 bit number. RR
+
+    constexpr unsigned int ilog2(const boost::uint_t<8>::exact & t){
+        constexpr const char LogTable256[256] = {
+            #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
+            -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+            LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
+            LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
+        };
+        return LogTable256[t];
+    }
+    constexpr unsigned int ilog2(const boost::uint_t<16>::exact & t){
+        const boost::uint_t<8>::exact upper_half = (t >> 8);
+        return upper_half == 0
+            ? ilog2(static_cast<boost::uint_t<8>::exact>(t))
+            : 8 + ilog2(upper_half);
+    }
+    constexpr unsigned int ilog2(const boost::uint_t<32>::exact & t){
+        const boost::uint_t<16>::exact upper_half = (t >> 16);
+        return upper_half == 0
+            ? ilog2(static_cast<boost::uint_t<16>::exact>(t))
+            : 16 + ilog2(upper_half);
+    }
+    constexpr unsigned int ilog2(const boost::uint_t<64>::exact & t){
+        const boost::uint_t<32>::exact upper_half = (t >> 32);
+        return upper_half == 0
+            ? ilog2(static_cast<boost::uint_t<32>::exact>(t))
+            : 32 + ilog2(upper_half);
+    }
+
+} // detail
 
 template<typename T>
-constexpr unsigned int log(const T & t){
+constexpr unsigned int ilog2(const T & t){
 //  log not defined for negative numbers
     assert(t >= 0);
-    return log2(
+    return detail::ilog2(
         static_cast<
             typename boost::uint_t<
                 bits_type<T>::value
@@ -136,7 +140,7 @@ constexpr unsigned int log(const T & t){
 // excluding sign bit
 template<typename T>
 constexpr unsigned int significant_bits(const T & t){
-    return 1 + (t < 0 ? log(~t) : log(t));
+    return 1 + (t < 0 ? ilog2(~t) : ilog2(t));
 }
 
 // get bit max for values of type T

@@ -41,20 +41,6 @@ using boost::rational;
 using namespace boost::numeric;
 
 using int_type = safe<int>;
-// using int_type = int;
-
-// code to keep rational library from
-#if 0
-namespace boost {namespace rational_detail{
-   template <>
-   struct boost::rational_detail::is_compatible_integer<rational<int_type>, int_type>
-   {
-         BOOST_STATIC_CONSTANT(bool, value = false);
-   };
-
-} // rational_detail
-} // boost
-#endif
 
 int main ()
 {

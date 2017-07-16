@@ -54,7 +54,7 @@
 
         <colspec align="left" colwidth="1*"/>
 
-        <colspec align="left" colwidth="2*"/>
+        <colspec align="left" colwidth="3*"/>
 
         <thead>
           <row>
@@ -146,11 +146,11 @@ constexpr safe&lt;int&gt; z = x / y;
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="2*"/>
+          <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="2*"/>
+          <colspec align="left" colwidth="1*"/>
 
-          <colspec align="left" colwidth="8*"/>
+          <colspec align="left" colwidth="3*"/>
 
           <thead>
             <row>
@@ -163,16 +163,6 @@ constexpr safe&lt;int&gt; z = x / y;
           </thead>
 
           <tbody>
-            <row>
-              <entry><code>make_safe_literal(value, PP = void, EP =
-              vaoi</code></entry>
-
-              <entry>unspecified safe literal</entry>
-
-              <entry><para>construct and return a safe signed or unsigned
-              literal with the specified value and parameters</para></entry>
-            </row>
-
             <row>
               <entry><code>t op s</code></entry>
 

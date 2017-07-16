@@ -201,7 +201,31 @@
     taken precautions to avoid doing this, the only real way to know is to
     create and run some tests.</para>
 
-    <para>To Do</para>
+    <para>So far we've only run one explicit performance test -
+    <filename><ulink
+    url="../../test/test_performance.cpp">test_performance.cpp</ulink></filename>.
+    This runs a test from the Boost Multiprecision library to count prime
+    numbers and uses on integer arithmetic. We've run the tests with
+    <code>unsigned</code> integers and with <code>safe&lt;unsigned&gt;</code>
+    on two different compilers.. No other change was made to the program. We
+    list the results without further comment. </para>
+
+    <screen>g++ (GCC) 6.2.0
+Testing type unsigned:
+time = 17.6215
+count = 1857858
+Testing type safe&lt;unsigned&gt;:
+time = 22.4226
+count = 1857858
+
+clang-802.0.41
+Testing type unsigned:
+time = 16.9174
+count = 1857858
+Testing type safe&lt;unsigned&gt;:
+time = 36.5166
+count = 1857858
+</screen>
   </section>
 
   <xi:include href="faq.xml" xpointer="element(/1)"
@@ -241,10 +265,10 @@
       </listitem>
 
       <listitem>
-        <para>Currently the library permits a safe&lt;int&gt; value to be
-        uninitialized. This supports the goal of "drop-in" replacement of
-        C++/C built-in types with safe counter parts. On the other hand, this
-        breaks the "always valid" guarantee.</para>
+        <para>Currently the library permits a <code>safe&lt;int&gt;</code>
+        value to be uninitialized. This supports the goal of "drop-in"
+        replacement of C++/C built-in types with safe counter parts. On the
+        other hand, this breaks the "always valid" guarantee.</para>
       </listitem>
     </itemizedlist>
   </section>

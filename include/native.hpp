@@ -15,8 +15,6 @@
 #include <type_traits>
 #include <limits>
 
-//#include "checked.hpp"
-
 // policy which creates results types and values equal to that of C++ promotions.
 // When used in conjunction with a desired exception policy, traps errors but
 // does not otherwise alter the results produced by the program using it.
@@ -24,77 +22,90 @@ namespace boost {
 namespace numeric {
 
 struct native {
-private:
-    template<typename T, typename U>
-    using usual_arithmetic_conversions =
-        decltype(
-            typename base_type<T>::type()
-            + typename base_type<U>::type()
-        );
-    // note: right/left shift require integer arguments
-   template<typename T, typename U>
-    using bitwise_shift_operator_type =
-        decltype(
-            typename base_type<T>::type()
-            << typename base_type<U>::type()
-        );
-    template<typename T, typename U>
-    using bitwise_logic_operator_type =
-        decltype(
-            typename base_type<T>::type()
-            & typename base_type<U>::type()
-        );
- public:
+public:
     // arithmetic operators
     template<typename T, typename U>
     struct addition_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            + typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct subtraction_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            - typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct multiplication_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            * typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct division_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            / typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct modulus_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            % typename base_type<U>::type()
+        );
     };
     // note: comparison_result (<, >, ...) is special.
     // The return value is always a bool.  The type returned here is
     // the intermediate type applied to make the values comparable.
     template<typename T, typename U>
     struct comparison_result {
-        using type = usual_arithmetic_conversions<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            + typename base_type<U>::type()
+        );
     };
 
     // shift operators
     template<typename T, typename U>
     struct left_shift_result {
-        using type = bitwise_shift_operator_type<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            << typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct right_shift_result {
-        using type = bitwise_shift_operator_type<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            >> typename base_type<U>::type()
+        );
     };
     // bitwise operators
     template<typename T, typename U>
     struct bitwise_or_result {
-        using type = bitwise_logic_operator_type<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            | typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct bitwise_and_result {
-        using type = bitwise_logic_operator_type<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            & typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct bitwise_xor_result {
-        using type = bitwise_logic_operator_type<T, U>;
+        using type = decltype(
+            typename base_type<T>::type()
+            ^ typename base_type<U>::type()
+        );
     };
 };
 

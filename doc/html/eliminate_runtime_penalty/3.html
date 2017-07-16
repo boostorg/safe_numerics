@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../eliminate_runtime_penalty.html" title="Eliminating Runtime Penalty">
-<link rel="prev" href="2.html" title="Using safe_range">
-<link rel="next" href="../notes.html" title="Background">
+<link rel="prev" href="1.html" title="Using Automatic Type Promotion">
+<link rel="next" href="../index.html" title="Composition with Other Libraries">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,11 +15,11 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../notes.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../index.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.eliminate_runtime_penalty.3"></a>Mixing Approaches</h3></div></div></div>
+<div class="titlepage"><div><div><h4 class="title">
+<a name="safe_numerics.eliminate_runtime_penalty.3"></a>Mixing Approaches</h4></div></div></div>
 <p>For purposes of exposition, we've divided the discussion of how to
     eliminate runtime penalties by the different approaches available. A
     realistic program would likely include all techniques mentioned above.
@@ -27,7 +27,8 @@
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_range.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer_range.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/automatic.hpp"</span>
 <span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
 
@@ -39,7 +40,7 @@
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
     <span class="identifier">automatic</span><span class="special">,</span>
-    <span class="identifier">no_exceptions_policy</span>
+    <span class="identifier">loose_trap_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// define variables used for input</span>
@@ -47,7 +48,7 @@
     <span class="special">-</span><span class="number">24</span><span class="special">,</span>
     <span class="number">82</span><span class="special">,</span>
     <span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// we don't need automatic in this case</span>
-    <span class="identifier">throw_exception</span> <span class="comment">// assignment of out of range value should throw</span>
+    <span class="identifier">loose_exception_policy</span> <span class="comment">// assignment of out of range value should throw</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// function arguments can never be outside of limits</span>
@@ -63,6 +64,7 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 84:\n"</span><span class="special">;</span>
     <span class="identifier">input_safe_t</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"type in values in format x y:"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">flush</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cin</span> <span class="special">&gt;&gt;</span> <span class="identifier">x</span> <span class="special">&gt;&gt;</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// read varibles, maybe throw exception</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
@@ -106,13 +108,14 @@
 <p>Here is the output from the program when values 12 and 32
     are input from the console:</p>
 <pre class="screen">example 84:
-12 32
-x&lt;signed char&gt;[-24,82] = 12
-y&lt;signed char&gt;[-24,82] = 32
-z = &lt;short&gt;[-48,164] = 44
-(x + y) = &lt;short&gt;[-48,164] = 44
-(x - y) = &lt;short&gt;[-106,106] = -20
-&lt;short&gt;[-48,164] = 44</pre>
+type in values in format x y:33 45
+x&lt;signed char&gt;[-24,82] = 33
+y&lt;signed char&gt;[-24,82] = 45
+z = &lt;short&gt;[-48,164] = 78
+(x + y) = &lt;short&gt;[-48,164] = 78
+(x - y) = &lt;signed char&gt;[-106,106] = -12
+&lt;short&gt;[-48,164] = 78
+</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
@@ -122,7 +125,7 @@ z = &lt;short&gt;[-48,164] = 44
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../notes.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="1.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="../index.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

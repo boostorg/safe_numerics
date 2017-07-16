@@ -34,11 +34,8 @@ int main(){
     constexpr auto x_divided_by_y = x / y;
     constexpr auto x_mod_y = x % y;
 
-// this is a compile only test - but since many build systems
-// can't handle a compile-only test - make sure it passes trivially.
-
-#include <stdexcept>
-#include <iostream>
+    // this is a compile only test - but since many build systems
+    // can't handle a compile-only test - make sure it passes trivially.
 
     // all the following statements should fail to compile
     /*

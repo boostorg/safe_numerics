@@ -48,7 +48,7 @@ struct base_type<safe_literal_impl<T, N, P, E> > {
 
 template<typename T, T N, class P, class E>
 constexpr T base_value(
-    const safe_literal_impl<T, N, P, E>  & st
+    const safe_literal_impl<T, N, P, E> & st
 ) {
     return N;
 }

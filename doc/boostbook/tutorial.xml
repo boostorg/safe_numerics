@@ -176,23 +176,6 @@ Using safe numerics
 error detected:Value out of range for this safe type: domain error
 </screen></para>
 
-    <para>Note the usage of <code>static_cast</code> in order to convert an
-    instance of a safe type, i_index, to a built-in integer type in order to
-    index into an array with the expression <code>i_array[]</code>. This is
-    necessary because conversion from a safe type to it's underlying built-in
-    type is marked with <code>explicit</code>. This is intentional. Although
-    it hampers readability and subverts the design goal of making safe types
-    "drop-in" replacements for their underlying built-in types, It has been
-    deemed that permitted implicit (and therefore silent) conversions to
-    unsafe times will inhibit the inadvertent loss of "safeness". If one uses
-    a safe type where a built-in type is expected, a syntax error will result
-    - thus requiring the programmer to actively decide how he might want to
-    handle this. He can always use an explicit <code>safe_cast</code> to
-    convert the safe type to the underlying type. But in some cases he might
-    want to change the target type to a safe type there by propagating the
-    "safeness" to other types in the program. For more on this topic see <link
-    linkend="safe_numerics.rationale.static_cast">Rational</link>e.</para>
-
     <para>Collections like standard arrays and vectors do array index checking
     in some function calls and not in others so this may not be the best
     example. However it does illustrate the usage of

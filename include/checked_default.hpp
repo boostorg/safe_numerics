@@ -17,20 +17,6 @@
 // invoke the operation with no checking.  These are overloaded
 // for specific types such as integer, etc.
 
-/*
-#include <limits>
-#include <type_traits> // is_fundamental, make_unsigned
-#include <algorithm>   // std::max
-#include <type_traits> // std::is_integer
-#include <boost/utility/enable_if.hpp>
-
-#include "safe_common.hpp"
-#include "checked_result.hpp"
-#include "utility.hpp"
-#include "exception.hpp"
-#include "safe_compare.hpp"
-*/
-
 // implement the equivant of template partial specialization for functions
 
 // what we need is
@@ -48,11 +34,19 @@
 
 // usage example: checked<int>::add(t, u) ...
 
+#include "checked_result.hpp"
+
 namespace boost {
 namespace numeric {
 
 // main function object which contains functions which handle
-// primitives which haven't been overriden
+// primitives which haven't been overriden.  For now, these
+// implement the default operation.  But I see this as an indicator
+// that there is more work to be done.  For example float * int should
+// never be called because promotions on operands should occur before
+// the operation is invoked. So rather than returning the default operation
+// it should trap with a static_assert. This occurs at compile time while
+// calculating result interval.  This needs more investigation.
 
 template<typename R, typename T, class Default = void>
 struct checked_unary_operation{
@@ -81,6 +75,9 @@ struct checked_binary_operation{
     }
     constexpr static bool less_than(const T & t, const U & u) noexcept {
         return t < u;
+    }
+    constexpr static bool greater_than(const T & t, const U & u) noexcept {
+        return t > u;
     }
     constexpr static bool equal(const T & t, const U & u) noexcept {
         return t < u;
@@ -134,6 +131,18 @@ constexpr checked_result<R> modulus(const T & t, const U & u) noexcept {
 template<typename R, typename T, typename U>
 constexpr checked_result<bool> less_than(const T & t, const U & u) noexcept {
     return checked_binary_operation<R, T, U>::less_than(t, u);
+}
+template<typename R, typename T, typename U>
+constexpr checked_result<bool> greater_than_equal(const T & t, const U & u) noexcept {
+    return ! checked_binary_operation<R, T, U>::less_than(t, u);
+}
+template<typename R, typename T, typename U>
+constexpr checked_result<bool> greater_than(const T & t, const U & u) noexcept {
+    return checked_binary_operation<R, T, U>::greater_than(t, u);
+}
+template<typename R, typename T, typename U>
+constexpr checked_result<bool> less_than_equal(const T & t, const U & u) noexcept {
+    return ! checked_binary_operation<R, T, U>::greater_than(t, u);
 }
 template<typename R, typename T, typename U>
 constexpr checked_result<bool> equal(const T & t, const U & u) noexcept {

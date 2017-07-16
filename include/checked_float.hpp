@@ -18,18 +18,6 @@
 // for specific types such as integer, etc.
 
 #include <type_traits> // std::is_floating_point, make_unsigned
-/*
-#include <limits>
-#include <algorithm>   // std::max
-#include <type_traits> // std::is_integer
-#include <boost/utility/enable_if.hpp>
-
-#include "safe_common.hpp"
-#include "checked_result.hpp"
-#include "utility.hpp"
-#include "exception.hpp"
-#include "safe_compare.hpp"
-*/
 
 namespace boost {
 namespace numeric {
