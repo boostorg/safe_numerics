@@ -96,7 +96,7 @@ const char *test_result[VALUE_ARRAY_SIZE] = {
     )                                              \
 /**/
 
-int main(int argc, char *argv[]){
+int main(){
     bool rval = true;
     BOOST_PP_REPEAT(                               \
         BOOST_PP_ARRAY_SIZE(TYPES),                \

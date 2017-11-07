@@ -25,9 +25,12 @@
 #include <boost/integer.hpp>
 #include <boost/logic/tribool.hpp>
 
+#include "checked_default.hpp"
+#include "checked_integer.hpp"
 #include "checked_result.hpp"
+#include "checked_result_operations.hpp"
 #include "safe_base.hpp"
-#include "safe_compare.hpp"
+
 #include "interval.hpp"
 #include "utility.hpp"
 #include "safe_integer_literal.hpp"
@@ -49,60 +52,57 @@ dispatch(const checked_result<R> & cr){
 /////////////////////////////////////////////////////////////////
 // validation
 
-template<typename R, typename E>
+template<typename R, R Min, R Max, typename T, typename E>
 struct validate_detail {
+    constexpr static const interval<checked_result<R>> t_interval{
+        checked::cast<R>(base_value(std::numeric_limits<T>::min())),
+        checked::cast<R>(base_value(std::numeric_limits<T>::max()))
+    };
+    constexpr static const interval<checked_result<R>> r_interval{Min, Max};
+
+/*
+    static_assert(
+        true != r_interval.excludes(t_interval),
+        "ranges don't overlap: can't cast"
+    );
+*/
+
     struct exception_possible {
-        template<typename T>
         constexpr static R return_value(
-            const T & t,
-            const interval<R> & r_interval
+            const T & t
         ){
             // INT08-C
-            const checked_result<R> r = r_interval.includes(t) ?
-                checked::cast<R>(t)
-            :
-                checked_result<R>(
-                    safe_numerics_error::domain_error,
-                    "Value out of range for this safe type"
-                )
-            ;
+            const checked_result<R> r = checked::cast<R>(t);
             dispatch<E>(r);
-            return r;
+            return base_value(r);
         }
     };
     struct exception_not_possible {
-        template<typename T>
         constexpr static R return_value(
-            const T & t,
-            const interval<R> & this_interval
+            const T & t
         ){
+            static_assert(
+                static_cast<bool>(r_interval.includes(t_interval)),
+                "exeption not possible"
+            );
             return static_cast<R>(t);
         }
     };
+
+    static R return_value(const T & t){
+        return boost::mpl::if_c<
+            static_cast<bool>(r_interval.includes(t_interval)),
+            exception_not_possible,
+            exception_possible
+        >::type::return_value(t);
+    }
 };
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
 constexpr Stored safe_base<Stored, Min, Max, P, E>::
 validated_cast(const T & t) const {
-    using t_base_type = typename base_type<T>::type;
-    constexpr const interval<t_base_type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
-    };
-    constexpr const interval<Stored> this_interval(Min, Max);
-
-    // if static values don't overlap, the program can never function
-    static_assert(
-        indeterminate(t_interval < this_interval),
-        "safe type cannot be constructed with this type"
-    );
-
-    return boost::mpl::if_c<
-        this_interval.includes(t_interval),
-        typename validate_detail<Stored, E>::exception_not_possible,
-        typename validate_detail<Stored, E>::exception_possible
-    >::type::template return_value(base_value(t), this_interval);
+    return validate_detail<Stored,Min,Max,T,E>::return_value(t);
 }
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
@@ -121,33 +121,43 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 /////////////////////////////////////////////////////////////////
 // casting operators
 
-// convert to a builtin integer type from a safe type
+
+// cast to a builtin type from a safe type
 template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
     typename std::enable_if<
-        !boost::numeric::is_safe<R>::value,
+        ! boost::numeric::is_safe<R>::value,
         int
     >::type
 >
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
-    constexpr const interval<R> r_interval;
-    constexpr const interval<Stored> this_interval(Min, Max);
 
     // if static values don't overlap, the program can never function
+    constexpr const interval<R> r_interval;
+    constexpr const interval<Stored> this_interval(Min, Max);
     static_assert(
-        indeterminate(r_interval < this_interval),
+        ! r_interval.excludes(this_interval),
         "safe type cannot be constructed with this type"
     );
 
-    return boost::mpl::if_c<
-        r_interval.includes(this_interval),
-        typename validate_detail<R, E>::exception_not_possible,
-        typename validate_detail<R, E>::exception_possible
-    >::type::template return_value(m_t, r_interval);
+    return validate_detail<
+        R,
+        std::numeric_limits<R>::min(),
+        std::numeric_limits<R>::max(),
+        Stored,
+        E
+    >::return_value(m_t);
+
 }
 
+// cast to the underlying builtin type from a safe type
+template< class Stored, Stored Min, Stored Max, class P, class E>
+constexpr safe_base<Stored, Min, Max, P, E>::
+operator Stored () const {
+    return m_t;
+}
 
 /////////////////////////////////////////////////////////////////
 // binary operators
@@ -228,9 +238,19 @@ struct common_promotion_policy {
 
 };
 
+// give the resultant base type, figure out what the final result
+// type will be.  Note we currently need this because we support
+// return of only safe integer types. Someday ..., we'll support
+// all other safe types including float and user defined ones.
+//
+
 // Note: the following global operators will be found via
 // argument dependent lookup.
 
+template<typename T>
+constexpr bool exception(const interval<checked_result<T>> & i){
+    return i.l.exception() || i.u.exception();
+}
 /////////////////////////////////////////////////////////////////
 // addition
 
@@ -241,55 +261,25 @@ private:
     using result_base_type =
         typename promotion_policy::template addition_result<T,U>::type;
 
-    constexpr static const interval<typename base_type<T>::type> t_interval{
-        base_value(std::numeric_limits<T>::min()),
-        base_value(std::numeric_limits<T>::max())
+    using r_interval_type = interval<checked_result<result_base_type>>;
+
+    constexpr static const r_interval_type t_interval{
+        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
+        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
     };
 
-    constexpr static const interval<typename base_type<U>::type> u_interval{
-        base_value(std::numeric_limits<U>::min()),
-        base_value(std::numeric_limits<U>::max())
+    constexpr static const r_interval_type u_interval{
+        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
+        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
     };
-    // when we add the temporary intervals above, we'll get a new interval
-    // with the correct range for the sum !
-    constexpr static const interval<checked_result<result_base_type>> r_interval =
-        add<result_base_type>(t_interval, u_interval);
+
+    constexpr static const r_interval_type r_interval = t_interval + u_interval;
 
     constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
     }
 
     using exception_policy = typename common_exception_policy<T, U>::type;
-
-    struct safe_type {
-        using type = safe_base<
-            result_base_type,
-            r_interval.l.exception()
-                ? std::numeric_limits<result_base_type>::min()
-                : static_cast<result_base_type>(r_interval.l),
-            r_interval.u.exception()
-                ? std::numeric_limits<result_base_type>::max()
-                : static_cast<result_base_type>(r_interval.u),
-            promotion_policy,
-            exception_policy
-        >;
-        constexpr static const type make(const result_base_type & t){
-            return type(t, typename safe_type::type::skip_validation());
-        }
-    };
-
-    struct unsafe_type {
-        using type = result_base_type;
-        constexpr static const type make(const result_base_type & t){
-            return t;
-        }
-    };
-
-    using type_helper = typename boost::mpl::if_c<
-        std::numeric_limits<result_base_type>::is_integer,
-        safe_type,
-        unsafe_type
-    >::type;
 
     constexpr static result_base_type
     add(const T & t, const U & u){
@@ -298,22 +288,21 @@ private:
             + static_cast<result_base_type>(base_value(u))
         ;
     }
-
-    // exception not possible
+    // if exception not possible
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::false_type){
-        static_assert(! exception_possible(), "no runtime check");
         return add(t,u);
     }
 
-    // exception possible
+    // if exception possible
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         static_assert(exception_possible(), "implement runtime check");
-        checked_result<result_base_type> r = checked::add<result_base_type>(
-            base_value(t),
-            base_value(u)
-        );
+        checked_result<result_base_type> tx
+            = checked::cast<result_base_type>(base_value(t));
+        checked_result<result_base_type> ux
+            = checked::cast<result_base_type>(base_value(u));
+        checked_result<result_base_type> r = tx + ux;
         if(!r.exception())
             return static_cast<result_base_type>(r);
         // handle error condition
@@ -324,14 +313,24 @@ private:
     }
 
 public:
-    using type = typename type_helper::type;
+    using type = safe_base<
+        result_base_type,
+        r_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_interval.l),
+        r_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_interval.u),
+       promotion_policy,
+        exception_policy
+    >;
 
     constexpr static type return_value(const T & t, const U & u){
-        return type_helper::make( return_value(
+        return return_value(
             t,
             u,
             typename std::integral_constant<bool, exception_possible()>()
-        ));
+        );
     }
 };
 
@@ -374,10 +373,28 @@ private:
         base_value(std::numeric_limits<U>::max())
     };
 
-    // when we subtract the temporary intervals above, we'll get a new interval
-    // with the correct range for the difference !
-    constexpr static const interval<checked_result<result_base_type>> r_interval =
-        subtract<result_base_type>(t_interval, u_interval);
+    // when we add the temporary intervals above, we'll get a new interval
+    // with the correct range for the sum !
+
+    using r_interval_type = interval<checked_result<result_base_type>>;
+
+    constexpr static const r_interval_type r_interval =
+        static_cast<r_interval_type>(t_interval)
+        - static_cast<r_interval_type>(u_interval);
+
+/*
+    constexpr static const r_interval_type max_interval{
+        base_value(std::numeric_limits<result_base_type>::min()),
+        base_value(std::numeric_limits<result_base_type>::max())
+    };
+
+    static_assert(
+        max_interval.l.exception()
+        || max_interval.u.exception()
+        || indeterminate(r_interval < max_interval),
+        "range does not contain result"
+    );
+*/
 
     constexpr static bool exception_possible() {
         return r_interval.l.exception() || r_interval.u.exception();
@@ -926,11 +943,11 @@ private:
     using exception_policy = typename common_exception_policy<T, U>::type;
 
     constexpr static bool
-    return_value(const T & t, const U & u, std::false_type){
+    return_value(const T &, const U &, std::false_type){
         return false;
     }
     constexpr static bool
-    return_value(const T & t, const U & u, std::true_type){
+    return_value(const T &, const U &, std::true_type){
         return true;
     }
     constexpr static bool
@@ -1031,7 +1048,7 @@ private:
 
     // exception not possible
     constexpr static bool
-    return_value(const T & t, const U & u, std::false_type){
+    return_value(const T &, const U &, std::false_type){
         return false;
     }
     // exception possible

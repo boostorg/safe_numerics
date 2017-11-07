@@ -18,6 +18,7 @@
 
 #include "safe_base.hpp"
 #include "safe_base_operations.hpp"
+
 #include "native.hpp"
 #include "exception_policies.hpp"
 

@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include "../include/checked_result.hpp"
+#include "../include/checked_result_operations.hpp"
 #include "../include/checked_integer.hpp"
 
 template<class T1, class T2>
@@ -37,27 +38,21 @@ bool test_checked_add(
     if(! result.exception()
     && expected_result != '.'){
         std::cout
-            << "failed to detect error in addition "
+            << "failed to detect in addition "
             << std::hex << result << "(" << std::dec << result << ")"
             << " != "<< av1 << " + " << av2
             << std::endl;
-        result = checked::add<result_type>(
-                v1,
-                v2
-            );
+        checked::add<result_type>(v1, v2);
         return false;
     }
     else
     if(result.exception()
     && expected_result != 'x'){
         std::cout
-            << "erroneously detected error "
+            << "erroneously detected error  in addition "
             << std::hex << result <<  av1 << " + " << av2
             << std::endl;
-        result = checked::add<result_type>(
-                v1,
-                v2
-            );
+        checked::add<result_type>(v1, v2);
 
         return false;
     }
@@ -136,7 +131,7 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char *argv[]){
+int main(int , char *[]){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
         for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
@@ -144,7 +139,8 @@ int main(int argc, char *argv[]){
 
     bool rval = true;
 
-    TEST_EACH_VALUE_PAIR
+    TESTX(2, 24);
+    //TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

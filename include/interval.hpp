@@ -23,7 +23,6 @@
 
 #include "utility.hpp" // log
 #include "checked_default.hpp"
-#include "safe_compare.hpp"
 #include <boost/logic/tribool.hpp>
 
 // from stack overflow
@@ -57,28 +56,35 @@ struct interval {
         l(rhs.l),
         u(rhs.u)
     {}
+
     constexpr interval();
 
-    // return true if this interval contains every point found in some
-    // other inteval t
+    // return true if this interval contains the given point
     template<typename T>
-    constexpr bool includes(const interval<T> & t) const {
-        return
-            safe_compare::greater_than_equal(t.l, l)
-            &&
-            safe_compare::less_than_equal(t.u, u)
-        ;
+    constexpr boost::logic::tribool includes(const T & t) const {
+        return l <= t && t <= u;
     }
+    // if this interval contains every point found in some other inteval t
+    //  return true
+    // otherwise
+    //  return false or indeterminant
     template<typename T>
-    constexpr bool includes(const T & t) const {
-        return
-            safe_compare::greater_than_equal(t, l)
-            &&
-            safe_compare::less_than_equal(t, u)
-        ;
+    constexpr boost::logic::tribool includes(const interval<T> & t) const {
+        return u >= t.u && l <= t.l;
     }
-    constexpr bool width() const {
-        return u - l;
+
+    // return true if this interval contains the given point
+    template<typename T>
+    constexpr boost::logic::tribool excludes(const T & t) const {
+        return t < l || t > u;
+    }
+    // if this interval contains every point found in some other inteval t
+    //  return true
+    // otherwise
+    //  return false or indeterminant
+    template<typename T>
+    constexpr boost::logic::tribool excludes(const interval<T> & t) const {
+        return t.u < l || u < t.l;
     }
 };
 
@@ -162,26 +168,22 @@ minmax(const std::initializer_list<T> & l){
 
 }  // detail
 
-template<typename R, typename T, typename U>
-constexpr interval<checked_result<R>> add(
+template<typename T>
+constexpr interval<T> operator+(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    const checked_result<R> lower = checked::add<R>(t.l, u.l);
-    const checked_result<R> upper = checked::add<R>(t.u, u.u);
-    return interval<checked_result<R>>(lower, upper);
+    return {t.l + u.l, t.u + u.u};
 }
 
-template<typename R, typename T, typename U>
-constexpr interval<checked_result<R>> subtract(
+template<typename T>
+constexpr interval<T> operator-(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
-    const checked_result<R> lower = checked::subtract<R>(t.l, u.u);
-    const checked_result<R> upper = checked::subtract<R>(t.u, u.l);
-    return interval<checked_result<R>>(lower, upper);
+    return {t.l - u.l, t.u - u.u};
 }
 
 template<typename R, typename T, typename U>
@@ -250,7 +252,7 @@ constexpr interval<checked_result<R>> divide(
 // have to be considered separately.
 template<typename R, typename T, typename U>
 constexpr interval<checked_result<R>> modulus(
-    const interval<T> & t,
+    const interval<T> &,
     const interval<U> & u
 ){
     /* Turns out that getting the exact range is a suprisingly difficult
@@ -394,74 +396,65 @@ constexpr interval<checked_result<R>> union_interval(
     return interval<checked_result<R>>(rl, ru);
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr boost::logic::tribool operator<(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     return
         // if every element in t is less than every element in u
-        safe_compare::less_than(t.u, u.l) ?
-            boost::logic::tribool(true)
-        :
+        t.u < u.l ? boost::logic::tribool(true):
         // if every element in t is greater than every element in u
-        safe_compare::greater_than(t.l, u.u) ?
-            boost::logic::tribool(false)
-        :
+        t.l > u.u ? boost::logic::tribool(false):
         // otherwise some element(s) in t are greater than some element in u
-            boost::logic::indeterminate
+        boost::logic::indeterminate
     ;
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr boost::logic::tribool operator>(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     return
         // if every element in t is greater than every element in u
-        safe_compare::greater_than(t.l, u.u) ?
-            boost::logic::tribool(true)
-        :
+        t.l > u.u ? boost::logic::tribool(true) :
         // if every element in t is less than every element in u
-        safe_compare::less_than(t.u, u.l) ?
-            boost::logic::tribool(false)
-        :
+        t.u < u.l ? boost::logic::tribool(false) :
         // otherwise some element(s) in t are greater than some element in u
-            boost::logic::indeterminate
+        boost::logic::indeterminate
     ;
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr bool operator==(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     // intervals have the same limits
-    return safe_compare::equal(t.l, u.l)
-    && safe_compare::equal(t.u, u.u) ;
+    return t.l == u.l && t.u == u.u;
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr bool operator!=(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     return ! (t == u);
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr boost::logic::tribool operator<=(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     return ! (t > u);
 }
 
-template<typename T, typename U>
+template<typename T>
 constexpr boost::logic::tribool operator>=(
     const interval<T> & t,
-    const interval<U> & u
+    const interval<T> & u
 ){
     return ! (t < u);
 }

@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include "../include/checked_result.hpp"
+#include "../include/checked_result_operations.hpp"
 #include "../include/checked_integer.hpp"
 
 template<class T1, class T2>
@@ -38,7 +39,7 @@ bool test_checked_subtract(
             << std::hex << result << "(" << std::dec << result << ")"
             << " != "<< av1 << " - " << av2
             << std::endl;
-        result = checked::subtract<result_type>(v1, v2);
+        checked::subtract<result_type>(v1, v2);
         return false;
     }
     else
@@ -48,7 +49,7 @@ bool test_checked_subtract(
             << "erroneously detected error "
             << std::hex << result <<  av1 << " - " << av2
             << std::endl;
-        result = checked::subtract<result_type>(v1, v2);
+        checked::subtract<result_type>(v1, v2);
         return false;
     }
 
@@ -126,7 +127,7 @@ const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     bool rval = true;
 
     TEST_EACH_VALUE_PAIR

@@ -23,74 +23,73 @@ namespace boost {
 namespace numeric {
 namespace checked {
 
-template<class R, class T>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value,
-    checked_result<R>
->::type
-constexpr checked_result<R>
-cast(const T & t){
-    return static_cast<R>(t);
-}
+////////////////////////////////////////////////////
+// layer 0 - implement safe operations for floating
 
-template<class R, class T, class U>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value
-    && std::is_floating_point<U>::value,
-    checked_result<R>
->::type
-constexpr add(const T & t, const U & u) noexcept {
-template<class R, class T, class U>
-constexpr checked_result<R> add(const T & t, const U & u) noexcept {
-    return t + u;
-}
+template<typename R, typename T>
+struct checked_unary_operation<R, T,
+    typename std::enable_if<
+        std::is_floating_point<R>::value
+        && std::is_floating_point<T>::value
+    >::type
+>{
+    constexpr static checked_result<R>
+    cast(const T & t) noexcept {
+        return t;
+    };
+}; // checked_unary_operation
 
-template<class R, class T, class U>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value
-    && std::is_floating_point<U>::value,
-    checked_result<R>
->::type
-constexpr checked_result<R> subtract(const T & t, const U & u) noexcept {
-    return t - u;
-}
+template<typename R, typename T, typename U>
+struct checked_binary_operation<R, T, U,
+    typename std::enable_if<
+        std::is_floating_point<R>::value
+    >::type
+>{
+    constexpr static checked_result<R> add(const T & t, const U & u) noexcept {
+        return t + u;
+    }
 
-template<class R, class T, class U>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value
-    && std::is_floating_point<U>::value,
-    checked_result<R>
->::type
-constexpr checked_result<R> multiply(const T & t, const U & u) noexcept {
-    return t * u;
-}
+    constexpr static checked_result<R> subtract(
+        const T & t,
+        const U & u
+    ) noexcept {
+        return t - u;
+    }
 
-template<class R, class T, class U>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value
-    && std::is_floating_point<U>::value,
-    checked_result<R>
->::type
-constexpr checked_result<R> divide(const T & t, const U & u) noexcept {
-    return t / u;
-}
+    constexpr static checked_result<R> multiply(
+        const T & t,
+        const U & u
+    ) noexcept {
+        return t * u;
+    }
 
-template<class R, class T, class U>
-typename std::enable_if<
-    std::is_floating_point<R>::value
-    && std::is_floating_point<T>::value
-    && std::is_floating_point<U>::value,
-    checked_result<R>
->::type
-constexpr checked_result<R> modulus(const T & t, const U & u) noexcept {
-    return t % u;
-}
+    constexpr static checked_result<R> divide(
+        const T & t,
+        const U & u
+    ) noexcept {
+        return t / u;
+    }
 
+    constexpr static checked_result<R> modulus(
+        const T & t,
+        const U & u
+    ) noexcept {
+        return t % u;
+    }
+
+    constexpr static bool less_than(const T & t, const U & u) noexcept {
+        return t < u;
+    }
+
+    constexpr static bool greater_than(const T & t, const U & u) noexcept {
+        return t > u;
+    }
+
+    constexpr static bool equal(const T & t, const U & u) noexcept {
+        return t < u;
+    }
+
+}; // checked_binary_operation
 template<class R, class T, class U>
 typename std::enable_if<
     std::is_floating_point<R>::value

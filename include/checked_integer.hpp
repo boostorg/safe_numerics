@@ -16,7 +16,7 @@
 // C++ types.
 
 #include <limits>
-#include <type_traits> // is_integral, make_unsigned
+#include <type_traits> // is_integral, make_unsigned, enable_if
 #include <algorithm>   // std::max
 #include <boost/utility/enable_if.hpp>
 
@@ -38,6 +38,7 @@ using bool_type = typename boost::mpl::if_c<tf, std::true_type, std::false_type>
 // layer 0 - implement safe operations for intrinsic integers
 // Note presumption of twos complement integer arithmetic
 
+// convert an integral value to some other integral type
 template<typename R, typename T>
 struct checked_unary_operation<R, T,
     typename std::enable_if<
@@ -127,6 +128,7 @@ struct checked_unary_operation<R, T,
             std::false_type, // R is unsigned
             std::true_type   // T is signed
         ) noexcept {
+            // static_assert(boost::numeric::safe_compare::less_than(t, 0), "asdfasdf");
             return
             boost::numeric::safe_compare::less_than(t, 0) ?
                 checked_result<R>(
@@ -159,25 +161,49 @@ struct checked_unary_operation<R, T,
     }
 };
 
+// converting floating point value to integral type
+template<typename R, typename T>
+struct checked_unary_operation<R, T,
+    typename std::enable_if<
+        std::is_integral<R>::value
+        && std::is_floating_point<T>::value
+    >::type
+>{
+//    static_assert(std::is_same<T, void>::value, "asdfasdf");
+    constexpr static checked_result<R>
+    cast(const T & t) noexcept {
+        return static_cast<R>(t);
+    }
+};
+
+// converting integral value to floating point type
+
+// INT35-C. Use correct integer precisions
 template<typename R, typename T>
 struct checked_unary_operation<R, T,
     typename std::enable_if<
         std::is_floating_point<R>::value
         && std::is_integral<T>::value
-    >::type
->{
-    constexpr static checked_result<R>
-    cast(T & t) noexcept {
-        return static_cast<R>(t);
+     >::type
+ >{
+     constexpr static checked_result<R>
+     cast(const T & t) noexcept {
+        if(std::numeric_limits<R>::digits < std::numeric_limits<T>::digits){
+            if(utility::significant_bits(t) > std::numeric_limits<R>::digits){
+                return {
+                    safe_numerics_error::precision_overflow_error,
+                    "keep precision"
+                };
+            }
+        }
+        return t;
     }
 };
 
-template<typename R, typename T, typename U>
-struct checked_binary_operation<R, T, U,
+template<typename R>
+struct checked_binary_operation<R,
     typename std::enable_if<
         std::is_integral<R>::value
-        && std::is_integral<T>::value
-        && std::is_integral<U>::value
     >::type
 >{
     ////////////////////////////////////////////////////
@@ -228,14 +254,8 @@ struct checked_binary_operation<R, T, U,
     }; // add_impl_detail
 
     constexpr static checked_result<R>
-    add(const T & t, const U & u) noexcept {
-        const checked_result<R> rt(checked::cast<R>(t));
-        if(rt.exception() )
-            return rt;
-        const checked_result<R> ru(checked::cast<R>(u));
-        if(ru.exception() )
-            return ru;
-        return add_impl_detail::add(rt, ru, std::is_signed<R>());
+    add(const R & t, const R & u) noexcept {
+        return add_impl_detail::add(t, u, std::is_signed<R>());
     }
 
     ////////////////////////////////////////////////////
@@ -286,13 +306,7 @@ struct checked_binary_operation<R, T, U,
 
     }; // subtract_impl_detail
 
-    constexpr static checked_result<R> subtract(const T & t, const U & u) noexcept {
-        const checked_result<R> rt(checked::cast<R>(t));
-        if(rt.exception() )
-            return rt;
-        const checked_result<R> ru(checked::cast<R>(u));
-        if(ru.exception() )
-            return ru;
+    constexpr static checked_result<R> subtract(const R & t, const R & u) noexcept {
         return subtract_impl_detail::subtract(t, u, std::is_signed<R>());
     }
 
@@ -421,13 +435,7 @@ struct checked_binary_operation<R, T, U,
         }
     }; // multiply_impl_detail
 
-    constexpr static checked_result<R> multiply(const T & t, const U & u) noexcept {
-        checked_result<R> rt(checked::cast<R>(t));
-        if(rt.exception() )
-            return rt;
-        checked_result<R> ru(checked::cast<R>(u));
-        if(ru.exception() )
-            return ru;
+    constexpr static checked_result<R> multiply(const R & t, const R & u) noexcept {
         return multiply_impl_detail::multiply(
             t,
             u,
@@ -443,8 +451,6 @@ struct checked_binary_operation<R, T, U,
     // safe division on unsafe types
 
     struct divide_impl_detail {
-
-        //
         constexpr static checked_result<R> divide(
             const R & t,
             const R & u,
@@ -471,39 +477,31 @@ struct checked_binary_operation<R, T, U,
     }; // divide_impl_detail
 
     // note that we presume that the size of R >= size of T
-    constexpr static checked_result<R> divide(const T & t, const U & u) noexcept {
+    constexpr static checked_result<R> divide(const R & t, const R & u) noexcept {
         if(u == 0){
             return checked_result<R>(
                 safe_numerics_error::domain_error,
                 "divide by zero"
             );
         }
-        checked_result<R> tx = checked::cast<R>(t);
-        checked_result<R> ux = checked::cast<R>(u);
-        if(tx.exception()
-        || ux.exception())
-            return checked_result<R>(
-                safe_numerics_error::domain_error,
-                "failure converting argument types"
-            );
-        return divide_impl_detail::divide(tx, ux, std::is_signed<R>());
+        return divide_impl_detail::divide(t, u, std::is_signed<R>());
     }
 
     ////////////////////////////////
     // safe modulus on unsafe types
 
     // built-in abs isn't constexpr - so fix this here
-    template<class Tx>
-    constexpr static std::make_unsigned_t<Tx>
-    abs(const Tx & t) noexcept {
-        return (t < 0 && t != std::numeric_limits<Tx>::min()) ?
+    template<class T>
+    constexpr static std::make_unsigned_t<T>
+    abs(const T & t) noexcept {
+        return (t < 0 && t != std::numeric_limits<T>::min()) ?
             -t
         :
             t
         ;
     }
 
-    constexpr static checked_result<R> modulus(const T & t, const U & u) noexcept {
+    constexpr static checked_result<R> modulus(const R & t, const R & u) noexcept {
         if(0 == u)
             return checked_result<R>(
                 safe_numerics_error::domain_error,
@@ -519,48 +517,30 @@ struct checked_binary_operation<R, T, U,
         // since -128 % -1 = -128 % 1 = 0
         return t % abs(u);
     }
-
+/*
     ////////////////////////////////
     // safe comparison on unsafe types
     constexpr static checked_result<bool> less_than(
-        const T & t,
-        const U & u
+        const R & t,
+        const R & u
     ) noexcept {
-        const checked_result<R> tx = checked::cast<R>(t);
-        if(tx.exception())
-            return tx;
-        const checked_result<R> ux = checked::cast<R>(u);
-        if(ux.exception())
-            return ux;
-        return static_cast<R>(tx) < static_cast<R>(ux);
+        return t < u;
     }
 
     constexpr static checked_result<bool> greater_than(
-        const T & t,
-        const U & u
+        const R & t,
+        const R & u
     ) noexcept {
-        const checked_result<R> tx = checked::cast<R>(t);
-        if(tx.exception())
-            return tx;
-        const checked_result<R> ux = checked::cast<R>(u);
-        if(ux.exception())
-            return ux;
-        return static_cast<R>(tx) > static_cast<R>(ux);
+        return t > u;
     }
 
     constexpr static checked_result<bool> equal(
-        const T & t,
-        const U & u
+        const R & t,
+        const R & u
     ) noexcept {
-        checked_result<R> tx = checked::cast<R>(t);
-        if(tx.exception())
-            return tx;
-        checked_result<R> ux = checked::cast<R>(u);
-        if(ux.exception())
-            return ux;
-        return static_cast<R>(tx) == static_cast<R>(ux);
+        return t == u;
     }
-
+*/
     ///////////////////////////////////
     // shift operations
 
@@ -595,9 +575,9 @@ struct checked_binary_operation<R, T, U,
         // The value of E1 << E2 is E1 left-shifted E2 bit positions;
         // vacated bits are zero-filled.
         constexpr static checked_result<R> left_shift(
-            const T & t,
-            const U & u,
-            std::false_type // T is unsigned
+            const R & t,
+            const R & u,
+            std::false_type // R is unsigned
         ) noexcept {
             // the value of the result is E1 x 2^E2, reduced modulo one more than
             // the maximum value representable in the result type.
@@ -621,9 +601,9 @@ struct checked_binary_operation<R, T, U,
         }
 
         constexpr static checked_result<R> left_shift(
-            const T & t,
-            const U & u,
-            std::true_type // T is signed
+            const R & t,
+            const R & u,
+            std::true_type // R is signed
         ) noexcept {
             // and [E1] has a non-negative value
             if(t >= 0){
@@ -633,7 +613,7 @@ struct checked_binary_operation<R, T, U,
                 // then that value, converted to the result type,
                 // is the resulting value
                 return checked::left_shift<R>(
-                    static_cast<typename std::make_unsigned<T>::type>(t),
+                    static_cast<typename std::make_unsigned<R>::type>(t),
                     u
                 );
             }
@@ -647,8 +627,8 @@ struct checked_binary_operation<R, T, U,
     }; // left_shift_integer_detail
 
     constexpr static checked_result<R> left_shift(
-        const T & t,
-        const U & u
+        const R & t,
+        const R & u
     ) noexcept {
         // INT34-C - Do not shift an expression by a negative number of bits
 
@@ -670,9 +650,7 @@ struct checked_binary_operation<R, T, U,
                "shifting more bits than available is implementation defined behavior"
             );
         }
-        if(t == 0)
-            return checked::cast<R>(t);
-        return left_shift_integer_detail::left_shift(t, u, std::is_signed<T>());
+        return left_shift_integer_detail::left_shift(t, u, std::is_signed<R>());
     }
 
 // right shift
@@ -685,18 +663,18 @@ struct checked_binary_operation<R, T, U,
         // The value of E1 << E2 is E1 left-shifted E2 bit positions;
         // vacated bits are zero-filled.
         constexpr static checked_result<R> right_shift(
-            const T & t,
-            const U & u,
+            const R & t,
+            const R & u,
             std::false_type // T is unsigned
         ) noexcept {
             // the value of the result is the integral part of the
             // quotient of E1/2E2
-            return checked::cast<R>(t >> u);
+            return t >> u;
         }
 
         constexpr static checked_result<R> right_shift(
-            const T & t,
-            const U & u,
+            const R & t,
+            const R & u,
             std::true_type  // T is signed;
         ) noexcept {
         if(t < 0){
@@ -709,21 +687,18 @@ struct checked_binary_operation<R, T, U,
          }
 
          // the value is the integral part of E1 / 2^E2,
-         return checked::cast<R>(t >> u);
+         return t >> u;
         }
     }; // right_shift_integer_detail
 
 constexpr static checked_result<R> right_shift(
-    const T & t,
-    const U & u
+    const R & t,
+    const R & u
 ) noexcept {
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
     // if the right operand is negative
-    if(u == 0){
-        return t;
-    }
     if(u < 0){
         return checked_result<R>(
            safe_numerics_error::implementation_defined_behavior,
@@ -737,9 +712,7 @@ constexpr static checked_result<R> right_shift(
            "shifting more bits than available is implementation defined behavior"
         );
     }
-    if(t == 0)
-        return checked::cast<R>(0);
-    return right_shift_integer_detail::right_shift(t, u ,std::is_signed<T>());
+    return right_shift_integer_detail::right_shift(t, u ,std::is_signed<R>());
 }
 
 ///////////////////////////////////
@@ -749,7 +722,7 @@ constexpr static checked_result<R> right_shift(
 // as it would break too many programs.  Specifically, we permit signed
 // integer operands.
 
-constexpr static checked_result<R> bitwise_or(const T & t, const U & u) noexcept {
+constexpr static checked_result<R> bitwise_or(const R & t, const R & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -763,7 +736,7 @@ constexpr static checked_result<R> bitwise_or(const T & t, const U & u) noexcept
     return t | u;
 }
 
-constexpr static checked_result<R> bitwise_xor(const T & t, const U & u) noexcept {
+constexpr static checked_result<R> bitwise_xor(const R & t, const R & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
@@ -777,7 +750,7 @@ constexpr static checked_result<R> bitwise_xor(const T & t, const U & u) noexcep
     return t ^ u;
 }
 
-constexpr static checked_result<R> bitwise_and(const T & t, const U & u) noexcept {
+constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcept {
     using namespace boost::numeric::utility;
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));

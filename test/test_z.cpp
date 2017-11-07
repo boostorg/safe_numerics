@@ -130,10 +130,6 @@ int main(){
     return 0;
 }
 
-
-
-
-
 #include "../include/utility.hpp"
 #include "../include/cpp.hpp"
 #include "../include/safe_common.hpp"
@@ -217,11 +213,317 @@ int main(){
     return 0;
 }
 
-#endif
+#include <boost/logic/tribool.hpp>
+#include "checked_integer.hpp"
+#include "checked_default.hpp"
+#include "checked_result.hpp"
+#include "checked_result_operations.hpp"
+#include "interval.hpp"
 
-#include <interval.hpp>
+namespace boost {
+namespace numeric {
+
+template<class EP, typename R>
+constexpr void
+dispatch(const checked_result<R> & cr){
+}
+
+template<class T>
+constexpr T base_value(const T & t){
+    return t;
+}
+
+template<typename R, R Min, R Max, typename T, typename E>
+struct validate_detail {
+
+    constexpr static const interval<checked_result<R>> t_interval{
+        checked::cast<R>(base_value(std::numeric_limits<T>::min())),
+        checked::cast<R>(base_value(std::numeric_limits<T>::max()))
+    };
+    constexpr static const interval<checked_result<R>> r_interval{Min, Max};
+
+/*
+    static_assert(
+        ! static_cast<bool>(r_interval.excludes(t_interval)),
+        "ranges don't overlap: can't cast"
+    );
+*/
+
+    struct exception_possible {
+        constexpr static R return_value(
+            const T & t
+        ){
+            static_assert(
+                ! static_cast<bool>(r_interval.includes(t_interval)),
+                "exeption not possible"
+            );
+            // INT08-C
+            const checked_result<R> r = checked::cast<R>(t);
+            dispatch<E>(r);
+            return base_value(r);
+        }
+    };
+    struct exception_not_possible {
+        constexpr static R return_value(
+            const T & t
+        ){
+            static_assert(
+                static_cast<bool>(r_interval.includes(t_interval)),
+                "exeption not possible"
+            );
+            return static_cast<R>(t);
+        }
+    };
+
+    static R return_value(const T & t){
+        return boost::mpl::if_c<
+            static_cast<bool>(r_interval.includes(t_interval)),
+            exception_not_possible,
+            exception_possible
+        >::type::return_value(t);
+    }
+};
+
+template<typename R, R Min, R Max, typename T>
+bool test1(const T & t){
+    const interval<checked_result<R>> t_interval{
+        checked::cast<R>(base_value(std::numeric_limits<T>::min())),
+        checked::cast<R>(base_value(std::numeric_limits<T>::max()))
+    };
+    const interval<checked_result<R>> r_interval{Min, Max};
+
+/*
+    static_assert(
+        ! static_cast<bool>(r_interval.excludes(t_interval)),
+        "ranges don't overlap: can't cast"
+    );
+*/
+    const boost::logic::tribool tb1 = r_interval.includes(t_interval);
+    const bool x1 = tb1;
+
+    const boost::logic::tribool tb2 = r_interval.excludes(t_interval);
+    const bool x2 = tb2;
+    return x2;
+}
+
+
+} // numeric
+} // boost
 
 int main(){
+    unsigned int x1 = boost::numeric::test1<
+        unsigned int, 0, 100, signed char
+    >(-1);
+    bool x2 = boost::numeric::validate_detail<
+        unsigned int, 0, 100, signed char, void
+    >::return_value(-1);
     return 0;
 }
+
+using uint8_t = unsigned char;
+
+enum class safe_numerics_error : uint8_t {
+    success = 0,
+    failure,    // result is above representational maximum
+    error_count
+};
+
+template<typename R>
+struct checked_result {
+    const safe_numerics_error m_e;
+    const union {
+        const R m_r;
+        char const * const m_msg;
+    };
+    constexpr /*explicit*/ checked_result(const R & r) :
+        m_e(safe_numerics_error::success),
+        m_r(r)
+    {}
+    constexpr /*explicit*/ checked_result(const safe_numerics_error & e) :
+        m_e(e),
+        m_msg("")
+    {}
+};
+
+// integers addition
+template<class T>
+constexpr inline checked_result<T> operator+(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+#if 1  // compile fails
+    constexpr const safe_numerics_error x[2][2]{
+        // t == success
+        {
+            // u == ...
+            safe_numerics_error::success,
+            safe_numerics_error::failure
+        },
+        // t == positive_overflow_error,
+        {
+            // u == ...
+            safe_numerics_error::success,
+            safe_numerics_error::failure
+        }
+    };
+
+    // "Constexpr variable 'e' must be initialized by a constant expression"
+    constexpr const safe_numerics_error e = x
+        [static_cast<uint8_t>(t.m_e)]
+        [static_cast<uint8_t>(u.m_e)]
+    ;
+
+    return
+        safe_numerics_error::success == e
+        ? t.m_r + u.m_r
+        : checked_result<T>(e)
+    ;
+#else  // works as expected
+    constexpr const safe_numerics_error x[2][2]{
+        // t == success
+        {
+            // u == ...
+            safe_numerics_error::success,
+            safe_numerics_error::failure
+        },
+        // t == failure,
+        {
+            // u == ...
+            safe_numerics_error::failure,
+            safe_numerics_error::failure
+        }
+    };
+
+    return
+        safe_numerics_error::success == x
+        [static_cast<uint8_t>(t.m_e)]
+        [static_cast<uint8_t>(u.m_e)]
+        ? t.m_r + u.m_r
+        : checked_result<T>(x
+        [static_cast<uint8_t>(t.m_e)]
+        [static_cast<uint8_t>(u.m_e)]
+        )
+    ;
+#endif
+}
+
+int main(){
+    constexpr const checked_result<unsigned> i = 0;
+    constexpr const checked_result<unsigned> j = 0;
+
+    constexpr const checked_result<unsigned> k = i + j;
+
+    // return k.m_r;
+
+    constexpr const checked_result<unsigned> i2 = safe_numerics_error::failure;
+    constexpr const checked_result<unsigned> j2 = 0;
+
+    constexpr const checked_result<unsigned> k2 = i2 + j2;
+    return k2.m_r;
+}
+#endif
+
+using uint8_t = unsigned char;
+
+
+#if 1
+enum class safe_numerics_error : uint8_t {
+    success = 0,
+    failure,    // result is above representational maximum
+    error_count
+};
+#else
+// avoiding enum class fails to solve problem
+struct safe_numerics_error {
+    const uint8_t m_t;
+    constexpr const static uint8_t success = 0;
+    constexpr const static uint8_t failure = 1;
+    constexpr safe_numerics_error(uint8_t t) :
+        m_t(t)
+    {}
+    constexpr operator uint8_t () const {
+        return m_t;
+    }
+};
+#endif
+
+template<typename R>
+struct checked_result {
+    const safe_numerics_error m_e;
+    const union {
+        const R m_r;
+        char const * const m_msg;
+    };
+    constexpr /*explicit*/ checked_result(const R & r) :
+        m_e(safe_numerics_error::success),
+        m_r(r)
+    {}
+    constexpr /*explicit*/ checked_result(const safe_numerics_error & e) :
+        m_e(e),
+        m_msg("")
+    {}
+};
+
+// integers addition
+template<class T>
+constexpr inline checked_result<T> operator+(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    // "Constexpr variable 'e' must be initialized by a constant expression"
+    constexpr const safe_numerics_error x[2][2]{
+        // t == success
+        {
+            // u == ...
+            safe_numerics_error::success,
+            safe_numerics_error::failure
+        },
+        // t == positive_overflow_error,
+        {
+            // u == ...
+            safe_numerics_error::failure,
+            safe_numerics_error::failure
+        }
+    };
+
+#if 1  // compile fails
+    const safe_numerics_error e = x
+        [static_cast<uint8_t>(t.m_e)]
+        [static_cast<uint8_t>(u.m_e)]
+    ;
+
+    return
+        (safe_numerics_error::success == e)
+        ? t.m_r + u.m_r
+        : checked_result<T>(e)
+    ;
+#else  // works as expected
+    return
+        safe_numerics_error::success == x
+            [static_cast<uint8_t>(t.m_e)]
+            [static_cast<uint8_t>(u.m_e)]
+        ? t.m_r + u.m_r
+        : checked_result<T>(x
+            [static_cast<uint8_t>(t.m_e)]
+            [static_cast<uint8_t>(u.m_e)]
+        )
+    ;
+#endif
+}
+
+int main(){
+    constexpr const checked_result<unsigned> i = 0;
+    constexpr const checked_result<unsigned> j = 0;
+
+    constexpr const checked_result<unsigned> k = i + j;
+
+    // return k.m_r;
+
+    constexpr const checked_result<unsigned> i2 = safe_numerics_error::failure;
+    constexpr const checked_result<unsigned> j2 = 0;
+
+    constexpr const checked_result<unsigned> k2 = i2 + j2;
+    return k2.m_r;
+}
+
 

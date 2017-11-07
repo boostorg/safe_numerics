@@ -19,6 +19,7 @@
 #include <system_error> // error_code, system_error
 #include <string>
 #include <cassert>
+#include <cstdint> // std::uint8_t
 
 // Using the system_error code facility.  This facility is more complex
 // than meets the eye.  To fully understand what out intent here is,
@@ -32,17 +33,27 @@ namespace numeric {
 
 // in spite of the similarity, this list is distinct from the exceptions
 // listed in documentation for std::exception.
-enum class safe_numerics_error {
+
+// note: Don't reorder these.  Code in the file checked_result_operations.hpp
+// depends upon this order !!!
+enum class safe_numerics_error : std::uint8_t {
     success = 0,
-    positive_overflow_error,
-    negative_overflow_error,
-    underflow_error,
-    range_error,
-    domain_error,
+    positive_overflow_error,    // result is above representational maximum
+    negative_overflow_error,    // result is below representational minimum
+    range_error,                // one operand is out of valid range
+    domain_error,               // result cannot be produced for this value
+    casting_error_count,        // number errors which could result from casting
+    precision_overflow_error,   // result lost precision
+    underflow_error,            // result is too small to be represented
     implementation_defined_behavior,
     undefined_behavior,
-    uninitialized_value
+    uninitialized_value,
+    total_error_count,           // number errors in list
+    can_never_happen             // from operation on pair of inputs which can't occur
 };
+
+const unsigned int safe_numerics_error_count =
+    static_cast<unsigned int>(safe_numerics_error::uninitialized_value) + 1;
 
 } // numeric
 } // boost
@@ -122,7 +133,7 @@ public:
     virtual const char* name() const noexcept {
         return "safe numerics error group";
     }
-    virtual std::string message(int ev) const {
+    virtual std::string message(int) const {
         return "safe numerics error group";
     }
     // return true if a given error code corresponds to a

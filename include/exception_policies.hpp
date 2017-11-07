@@ -57,7 +57,7 @@ struct exception_policy {
 
 // ignore any error and just return.
 struct ignore_exception {
-    constexpr ignore_exception(const safe_numerics_error & e, const char * msg){}
+    constexpr ignore_exception(const safe_numerics_error &, const char *){}
 };
 
 // If an exceptional condition is detected at runtime throw the exception.

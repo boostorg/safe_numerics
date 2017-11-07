@@ -75,11 +75,24 @@ namespace safe_compare_detail {
 } // safe_compare_detail
 
 template<class T, class U>
-constexpr bool less_than(const T & lhs, const U & rhs) {
+typename std::enable_if<
+    std::is_integral<T>::value && std::is_integral<U>::value,
+    bool
+>::type
+constexpr less_than(const T & lhs, const U & rhs) {
     return safe_compare_detail::less_than<
         std::is_signed<T>::value,
         std::is_signed<U>::value
     >::template invoke(lhs, rhs);
+}
+
+template<class T, class U>
+typename std::enable_if<
+    std::is_floating_point<T>::value && std::is_floating_point<U>::value,
+    bool
+>::type
+constexpr less_than(const T & lhs, const U & rhs) {
+    return lhs < rhs;
 }
 
 template<class T, class U>
@@ -142,11 +155,24 @@ namespace safe_compare_detail {
 } // safe_compare_detail
 
 template<class T, class U>
-constexpr bool equal(const T & lhs, const U & rhs) {
+typename std::enable_if<
+    std::is_integral<T>::value && std::is_integral<U>::value,
+    bool
+>::type
+constexpr equal(const T & lhs, const U & rhs) {
     return safe_compare_detail::equal<
         std::numeric_limits<T>::is_signed,
         std::numeric_limits<U>::is_signed
     >::template invoke(lhs, rhs);
+}
+
+template<class T, class U>
+typename std::enable_if<
+    std::is_floating_point<T>::value && std::is_floating_point<U>::value,
+    bool
+>::type
+constexpr equal(const T & lhs, const U & rhs) {
+    return lhs == rhs;
 }
 
 template<class T, class U>

@@ -204,6 +204,18 @@ public:
     */
     constexpr safe_base() = default;
 
+    // note: Rule of Five. Supply all or none of the following
+    // a) user-defined destructor
+    ~safe_base() = default;
+    // b) copy-constructor
+    constexpr safe_base(const safe_base &) = default;
+    // c) copy-assignment
+    constexpr safe_base & operator=(const safe_base &) = default;
+    // d) move constructor
+    constexpr safe_base(safe_base &&) = default;
+    // e) move assignment operator
+    constexpr safe_base & operator=(safe_base &&) = default;
+
     // convert instance of a safe type from an instance from a convertible
     // underlying type.
     template<class T>
@@ -216,11 +228,6 @@ public:
     ) :
         m_t(validated_cast(t))
     {}
-
-    // note: Rule of Five.  Don't specify
-    // custom constructor, custom destructor, custom assignment
-    // custom move, custom move assignment
-    // Let the compiler build the defaults.
 
     /////////////////////////////////////////////////////////////////
     // casting operators for intrinsic integers
@@ -235,6 +242,8 @@ public:
         >::type = 0
     >
     constexpr /*explicit*/ operator R () const;
+
+    constexpr /*explicit*/ operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators

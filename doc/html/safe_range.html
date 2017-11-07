@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_range.html#idm90273687040">Description</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273684176">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273676848">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273669760">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273648496">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273645840">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273643552">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm90273561152">Header</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259187824">Description</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259184960">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259177632">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259170544">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259149248">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259146592">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259144304">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm352259045568">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273687040"></a>Description</h4></div></div></div>
+<a name="idm352259187824"></a>Description</h4></div></div></div>
 <p>This type holds a signed or unsigned integer in the closed range
     [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
@@ -43,7 +43,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273684176"></a>Notation</h4></div></div></div>
+<a name="idm352259184960"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273676848"></a>Associated Types</h4></div></div></div>
+<a name="idm352259177632"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -84,7 +84,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273669760"></a>Template Parameters</h4></div></div></div>
+<a name="idm352259170544"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -130,13 +130,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273648496"></a>Model of</h4></div></div></div>
+<a name="idm352259149248"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273645840"></a>Valid Expressions</h4></div></div></div>
+<a name="idm352259146592"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. Thus, the result type of such an expression will be another
@@ -145,7 +145,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273643552"></a>Example of use</h4></div></div></div>
+<a name="idm352259144304"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">type_traits</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="special">.</span><span class="special">.</span><span class="special">/</span><span class="identifier">include</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="special">.</span><span class="special">.</span><span class="special">/</span><span class="identifier">include</span><span class="special">/</span><span class="identifier">safe_range</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
@@ -180,7 +180,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90273561152"></a>Header</h4></div></div></div>
+<a name="idm352259045568"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_range.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>

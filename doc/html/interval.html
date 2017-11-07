@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
-<link rel="prev" href="checked_integer_arithmetic.html" title="Checked Arithmetic">
+<link rel="prev" href="checked_arithmetic.html" title="Checked Arithmetic">
 <link rel="next" href="checked_integer_arithmetic.html" title="safe_compare&lt;T, U&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,34 +15,34 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="checked_integer_arithmetic.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="checked_arithmetic.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.interval"></a>interval&lt;typename R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="interval.html#idm90272530960">Description</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272529728">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272527840">Notation</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272513968">Associated Types</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272508160">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272438432">Example of use</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm90272345600">Header</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352263257888">Description</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352263256656">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352257995872">Notation</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352257982848">Associated Types</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352257977344">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352257914608">Example of use</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm352257825776">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272530960"></a>Description</h4></div></div></div>
+<a name="idm352263257888"></a>Description</h4></div></div></div>
 <p>A closed arithmetic interval represented by a pair of elements of
     type R.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272529728"></a>Template Parameters</h4></div></div></div>
+<a name="idm352263256656"></a>Template Parameters</h4></div></div></div>
 <p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272527840"></a>Notation</h4></div></div></div>
+<a name="idm352257995872"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -78,7 +78,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272513968"></a>Associated Types</h4></div></div></div>
+<a name="idm352257982848"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -93,7 +93,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272508160"></a>Valid Expressions</h4></div></div></div>
+<a name="idm352257977344"></a>Valid Expressions</h4></div></div></div>
 <p>Note that all expressions are constexpr.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -243,7 +243,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272438432"></a>Example of use</h4></div></div></div>
+<a name="idm352257914608"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
@@ -263,7 +263,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272345600"></a>Header</h4></div></div></div>
+<a name="idm352257825776"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/interval.hpp&gt;</code></p>
 </div>
@@ -276,7 +276,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="checked_integer_arithmetic.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="checked_arithmetic.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

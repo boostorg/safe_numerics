@@ -89,7 +89,7 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
         test_addition_result[value_index1][value_index2] \
     )
 /**/
-int main(int argc, char * argv[]){
+int main(){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
         for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)

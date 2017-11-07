@@ -7,7 +7,7 @@
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
 <link rel="prev" href="library_implementation.html" title="Library Implementation">
-<link rel="next" href="checked_integer_arithmetic.html" title="Checked Arithmetic">
+<link rel="next" href="checked_arithmetic.html" title="Checked Arithmetic">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,23 +15,23 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="library_implementation.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="library_implementation.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safenumerics.checked_result"></a>checked_result&lt;R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_result.html#idm90272959584">Description</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272957936">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272950416">Notation</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272935136">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272901504">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272866256">See Also</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm90272864544">Header</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263649328">Description</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263647696">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263640416">Notation</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263626080">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263595952">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263562192">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm352263560688">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272959584"></a>Description</h4></div></div></div>
+<a name="idm352263649328"></a>Description</h4></div></div></div>
 <p>checked_result is a wrapper class designed to hold the result of
     some operation. It can hold either the result of the operation or
     information on why the operation failed to produce a valid result. Note
@@ -42,7 +42,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272957936"></a>Template Parameters</h4></div></div></div>
+<a name="idm352263647696"></a>Template Parameters</h4></div></div></div>
 <p>The sole template parameter is the return type of some
     operation.</p>
 <div class="informaltable"><table class="table">
@@ -63,7 +63,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272950416"></a>Notation</h4></div></div></div>
+<a name="idm352263640416"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -102,7 +102,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272935136"></a>Valid Expressions</h4></div></div></div>
+<a name="idm352263626080"></a>Valid Expressions</h4></div></div></div>
 <p>All expressions are <code class="computeroutput">constexpr</code>.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -172,7 +172,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272901504"></a>Example of use</h4></div></div></div>
+<a name="idm352263595952"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">checked_result</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">R</span><span class="special">&gt;</span>
@@ -192,12 +192,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272866256"></a>See Also</h4></div></div></div>
+<a name="idm352263562192"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm90272864544"></a>Header</h4></div></div></div>
+<a name="idm352263560688"></a>Header</h4></div></div></div>
 <p><a href="../include/checked_result.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
     </code></a></p>
@@ -211,7 +211,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="library_implementation.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_integer_arithmetic.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="library_implementation.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="library_implementation.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="checked_arithmetic.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>
