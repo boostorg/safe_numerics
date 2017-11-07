@@ -117,66 +117,105 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand its limitations.
     These components are also interesting in their own right. For all these
-    reasons, they are documented here. In general terms, the library works in
-    the following manner:</para>
+    reasons, they are documented here. </para>
+
+    <para>In general terms, the library works in the following manner:</para>
+
+    <para>The library works by overloading all operations which include safe
+    types with "safe" versions of these operations which are enhanced versions
+    of the standard C/C++ implementations. These overloads are declared and
+    implemented in the files "safe_base.hpp" and
+    "safe_base_operations.hpp".</para>
 
     <itemizedlist>
       <listitem>
-        <para>All unary/binary expressions where one of the operands is a
-        "safe" type are overloaded. These overloads are declared and defined
-        in the header file "safe_integer.hpp". SFINAE - "Substitution Failure
-        Is Not An Error" and <code>std::enable_if</code> are key features of
-        C++ used to define these overloads in a correct manner.</para>
+        <para>If both operands are safe types, verify that they have the same
+        promotion and and exception handling policies. If they don't, invoke
+        compilation error.</para>
       </listitem>
 
       <listitem>
-        <para>Each overloaded operation implements the following:<itemizedlist>
-            <listitem>
-              <para>Retrieve range of values for each operand of type T from
-              <code>std::numeric_limits&lt;T&gt;::min()</code> and
-              <code>std::numeric_limits&lt;T&gt;::max()</code>.</para>
-            </listitem>
+        <para>Each operand is converted to a result type, R, in accordance
+        with the promotion policy.</para>
+      </listitem>
 
-            <listitem>
-              <para>Given the ranges of the operands, determine the range of
-              the result of the operation using interval arithmetic. This is
-              implemented in the "interval.hpp" header file using the
-              <code>constexpr</code> facility of C++14.</para>
-            </listitem>
+      <listitem>
+        <para>Retrieve range of values for each operand of type T from
+        <code>std::numeric_limits&lt;T&gt;::min()</code> and
+        <code>std::numeric_limits&lt;T&gt;::max()</code>.</para>
+      </listitem>
 
-            <listitem>
-              <para>If the range of the result type includes the range of the
-              result of the operation, no run time checking of the result is
-              necessary. So the operation reduces to the original built-in
-              C/C++ operation.</para>
-            </listitem>
+      <listitem>
+        <para>These ranges are cast to equivalent values in the type R. It's
+        possible that values cannot be cast to the result type. So the result
+        of the cast is returned as a variant type,
+        <code>checked_result&lt;R&gt;</code>, which may hold either a value of
+        type R or a <code>safe_numeric_error</code> value indicating why the
+        cast could not be accomplished. So ranges are represented as a pair of
+        values of the type <code>checked_result&lt;R&gt;</code>.</para>
+      </listitem>
 
-            <listitem>
-              <para>Otherwise, the operation is implemented as a "checked
-              integer operation" at run time. This operation returns a variant
-              which will contain either a correct result or an exception enum
-              indicating why a correct result could not be obtained. The
-              variant object is implemented in the header file
-              "checked_result.hpp" and the checked operations are implemented
-              in "checked.hpp".</para>
-            </listitem>
+      <listitem>
+        <para><code>checked_result&lt;R&gt;</code> can be considered enhanced
+        versions of the underlying type R. Operations which are legal on
+        values of type R such as +, -, ... are also legal on values of
+        <code>checked_result&lt;R&gt;</code>. The difference is that the
+        latter can record operation failures and propagate such failures to
+        subsequent operations.<code> checked_result&lt;R&gt;</code> is
+        implemented in the header file "checked_result.hpp". Operations on
+        such types are implemented in "checked_result_operations.hpp".</para>
+      </listitem>
 
-            <listitem>
-              <para>If a valid result has been obtained, it is passed to the
-              caller.</para>
-            </listitem>
+      <listitem>
+        <para>Given the ranges of the operands, determine the range of the
+        result of the operation using interval arithmetic. Using the
+        <code>constexpr</code> facility of C++14 permits the range of the
+        result to be calculated at compile time. Interval arithmetic is
+        implemented in the header file "interval.hpp". The range of the result
+        is also represented as a pair of values of the type
+        <code>checked_result&lt;R&gt;</code>.</para>
+      </listitem>
 
-            <listitem>
-              <para>Otherwise, an exception is invoked.</para>
-            </listitem>
-          </itemizedlist></para>
+      <listitem>
+        <para>If the range of the result type, R, includes the range of the
+        result, the operation is guaranteed to produce an arithmetically
+        correct result and no runtime checking is necessary. The operation
+        invokes the original built-in C/C++ operation and returns the result
+        value as a safe type of the appropriate range.</para>
+      </listitem>
+
+      <listitem>
+        <para>Otherwise, operands are cast to the result type, R, according to
+        the selected promotion policy. These "checked" cast operations return
+        values of type <code>checked_result&lt;R&gt;</code>.</para>
+      </listitem>
+
+      <listitem>
+        <para>If either of the casting operations fails, an exception is
+        handled in accordance with the exception policy.</para>
+      </listitem>
+
+      <listitem>
+        <para>Otherwise, the operation is performed as another "checked
+        operation". These free functions mirror the normal operators +, -, *,
+        ... except that rather than returning values of type R, they return
+        values of the type checked_result&lt;R&gt;. They are defined in files
+        "checked_default.hpp", "checked_integer.hpp"
+        ,"checked_float.hpp".</para>
+      </listitem>
+
+      <listitem>
+        <para>If the result of the above is a valid arithmetic value, that
+        value is returned as a safe&lt;R&gt; type.</para>
+      </listitem>
+
+      <listitem>
+        <para>Otherwise, the operation is considered an exception. Such
+        exceptions are handled via the designed exception policy.</para>
       </listitem>
     </itemizedlist>
 
-    <para>The following components realize the design described here. Although
-    they have been crafted specifically to support this library, there is no
-    reason that that they cannot be used on their own. In fact, several of
-    them very much lend themselves to such usage.</para>
+    <para>The following components realize the design described here. </para>
 
     <xi:include href="checked_result.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
@@ -208,7 +247,7 @@
     numbers and uses on integer arithmetic. We've run the tests with
     <code>unsigned</code> integers and with <code>safe&lt;unsigned&gt;</code>
     on two different compilers.. No other change was made to the program. We
-    list the results without further comment. </para>
+    list the results without further comment.</para>
 
     <screen>g++ (GCC) 6.2.0
 Testing type unsigned:

@@ -89,15 +89,6 @@ constexpr inline operator+(
         },
     };
 
-/*
-    constexpr const safe_numerics_error ej = u.m_e;
-    constexpr const uint8_t j = static_cast<std::uint8_t>(ej);
-    utility::print_value<j> pj;
-    constexpr const safe_numerics_error ei = t.m_e;
-    constexpr const uint8_t i = static_cast<std::uint8_t>(ei);
-    utility::print_value<i> pi;
-*/
-
     const safe_numerics_error e = result
         [static_cast<std::uint8_t>(static_cast<std::uint8_t>(t.m_e))]
         [static_cast<std::uint8_t>(static_cast<std::uint8_t>(u.m_e))]

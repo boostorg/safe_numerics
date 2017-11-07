@@ -82,7 +82,7 @@
           </row>
 
           <row>
-            <entry><code>c</code></entry>
+            <entry><code>c, c1, c2</code></entry>
 
             <entry>an instance of checked_result&lt;R&gt;</entry>
           </row>
@@ -99,6 +99,20 @@
 
             <entry>An instance of type <link
             linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
+          </row>
+
+          <row>
+            <entry><code>OS</code></entry>
+
+            <entry>A type convertible to <link
+            linkend="safe_numerics.safe_numerics_error"><code>std::basic_ostream</code></link></entry>
+          </row>
+
+          <row>
+            <entry><code>os</code></entry>
+
+            <entry>An instance of type convertible to <link
+            linkend="safe_numerics.safe_numerics_error"><code>std::basic_ostream</code></link></entry>
           </row>
         </tbody>
       </tgroup>
@@ -159,7 +173,8 @@
 
               <entry>R</entry>
 
-              <entry>extract wrapped value - asserts if not possible</entry>
+              <entry>extract wrapped value - compile time error if not
+              possible</entry>
             </row>
 
             <row>
@@ -168,7 +183,9 @@
               <entry><link
               linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
 
-              <entry>extract wrapped value - asserts if not possible</entry>
+              <entry>extract wrapped value - may return
+              <code>safe_numeric_error::success</code> if there is no
+              error</entry>
             </row>
 
             <row>
@@ -177,6 +194,15 @@
               <entry><code>const char *</code></entry>
 
               <entry>returns pointer to error message</entry>
+            </row>
+
+            <row>
+              <entry><code>c.exception()</code></entry>
+
+              <entry><code>bool</code></entry>
+
+              <entry>true if <code>checked_result</code> contains an error
+              condition.</entry>
             </row>
 
             <row>
@@ -202,12 +228,41 @@
             </row>
 
             <row>
-              <entry><code>c.exception()</code></entry>
+              <entry><code><simplelist>
+                  <member>c1 + c2</member>
 
-              <entry><code>bool</code></entry>
+                  <member>c1 - c2</member>
 
-              <entry>true if <code>checked_result</code> contains an error
-              condition</entry>
+                  <member>c1 * c2</member>
+
+                  <member>c1 / c2</member>
+
+                  <member>c1 % c2</member>
+
+                  <member>c1 | c2</member>
+
+                  <member>c1 &amp; c2</member>
+
+                  <member>c1 ^ c2</member>
+                </simplelist></code></entry>
+
+              <entry><code>checked_result&lt;R&gt;</code></entry>
+
+              <entry>returns a new instance of
+              <code>checked_result&lt;R&gt;.</code></entry>
+            </row>
+
+            <row>
+              <entry><code><simplelist>
+                  <member>os &lt;&lt; c</member>
+                </simplelist></code></entry>
+
+              <entry><code>OS</code></entry>
+
+              <entry>writes result to output stream. If the result is an error
+              it writes the string corresponding to the error message.
+              Otherwise, it writes the numeric value resulting from the
+              operation. Returns reference to output stream.</entry>
             </row>
           </tbody>
         </tgroup>
@@ -218,20 +273,16 @@
     <title>Example of use</title>
 
     <programlisting>#include &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
+#include &lt;boost/numeric/safe_numerics/checked_result_operations.hpp&gt;
 
 template&lt;class R&gt;
-checked_result&lt;R&gt;
-constexpr modulus(
-    const R &amp; t,
-    const R &amp; u
+constexpr checked_result&lt;R&gt; sum(
+    const checked_result&lt;R&gt; &amp; t,
+    const checked_result&lt;R&gt; &amp; u
 ) {
-    if(0 == u)
-        return checked_result&lt;R&gt;(
-            exception_type::domain_error,
-            "denominator is zero"
-        );
-
-    return t % u;
+    checked_result&lt;R&gt; r = t + u;
+    std::cout &lt;&lt; r;
+    return r;
 }</programlisting>
   </section>
 
@@ -246,7 +297,10 @@ constexpr modulus(
     <title>Header</title>
 
     <para><ulink url="../include/checked_result.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
+    &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;</code></ulink></para>
+
+    <para><ulink url="../include/checked_result_operations.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked_result_operations.hpp&gt;
     </code></ulink></para>
   </section>
 </section>

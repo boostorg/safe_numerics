@@ -15,6 +15,7 @@
 // contains operations for doing checked aritmetic on NATIVE
 // C++ types.
 #include <cassert>
+#include <type_traits> // is_convertible
 #include "exception.hpp"
 
 namespace boost {
@@ -51,11 +52,15 @@ struct checked_result {
     {
         assert(m_e != safe_numerics_error::success);
     }
-    // permit construct from convertible type
+    // permit construct from another checked result type
     template<typename T>
     constexpr /*explicit*/ checked_result(const checked_result<T> & t) :
         m_e(t.m_e)
     {
+        static_assert(
+            std::is_convertible<T, R>::value,
+            "T must be convertible to R"
+        );
         if(safe_numerics_error::success == t.m_e)
             m_r = t.m_r;
         else

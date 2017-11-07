@@ -74,17 +74,24 @@
             </row>
 
             <row>
-              <entry><code>underflow_error</code></entry>
-
-              <entry>A number is too close to zero to be represented by the
-              data type.</entry>
-            </row>
-
-            <row>
               <entry><code>range_error</code></entry>
 
               <entry>an argument to a function or operator is outside the
               legal range - e.g. sqrt(-1).</entry>
+            </row>
+
+            <row>
+              <entry><code>precision_overflow_error</code></entry>
+
+              <entry>precision was lost in the course of executing the
+              operation.</entry>
+            </row>
+
+            <row>
+              <entry><code>underflow_error</code></entry>
+
+              <entry>A number is too close to zero to be represented by the
+              data type.</entry>
             </row>
 
             <row>
