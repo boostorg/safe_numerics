@@ -4,87 +4,183 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <iostream>
+#include <exception>
 #include <cstdlib>   // EXIT_SUCCESS
+#include <iostream>
+#include <cassert>
+#include <typeinfo>
+#include <boost/core/demangle.hpp>
 
-#include "test_checked_divide.hpp"
-#include "test.hpp"
-#include "test_values.hpp"
+#include "../include/checked_result.hpp"
+#include "../include/checked_result_operations.hpp"
+#include "../include/checked_integer.hpp"
 
-// note: same test matrix as used in test_divide.  Here we test all combinations
-// safe and unsafe integers.  in test_checked we test all combinations of
-// integer primitives
+template<class T>
+bool test_checked_divide(
+    boost::numeric::checked_result<T> v1,
+    boost::numeric::checked_result<T> v2,
+    char expected_result
+){
+    using namespace boost::numeric;
+    const checked_result<T> result = v1 / v2;
+    std::cout
+        << "testing  "
+        << v1 << " / " << v2 << " -> " << result
+        << std::endl;
 
-const char *test_division_result[VALUE_ARRAY_SIZE] = {
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/* 0*/ "................................x",
-/* 1*/ "................................x",
-/* 2*/ "........................xxxxxxxxx",
-/* 3*/ "........................xxxxxxxxx",
-/* 4*/ "................................x",
-/* 5*/ "................................x",
-/* 6*/ "........................xxxxxxxxx",
-/* 7*/ "........................xxxxxxxxx",
+    switch(expected_result){
+    case '.':
+    case '0':
+        if(result.exception()){
+            std::cout
+                << "erroneously detected error in division"
+                << std::endl;
+            v1 / v2;
+            return false;
+        }
+        if(expected_result == '0'
+        && result != T(0)
+        ){
+            std::cout
+                << "failed to get expected zero result "
+                << std::endl;
+            v1 / v2;
+            return false;
+        }
+        return true;
+    case '-':
+        if(safe_numerics_error::negative_overflow_error == result.m_e)
+            return true;
+    case '+':
+        if(safe_numerics_error::positive_overflow_error == result.m_e)
+            return true;
+    case '!':
+        if(safe_numerics_error::range_error == result.m_e)
+            return true;
+    }
+    std::cout
+        << "failed to detect error in division "
+        << std::hex << result << "(" << std::dec << result << ")"
+        << " != "<< v1 << " / " << v2
+        << std::endl;
+    v1 / v2;
+    return false;
+}
 
-/* 8*/ "................................x",
-/* 9*/ "................................x",
-/*10*/ "...x...x...x............xxxxxxxxx",
-/*11*/ "........................xxxxxxxxx",
-/*12*/ "................................x",
-/*13*/ "................................x",
-/*14*/ "...x...x...x...x............xxxxx",
-/*15*/ "............................xxxxx",
-
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/*16*/ "................................x",
-/*17*/ "................................x",
-/*18*/ "................................x",
-/*19*/ "................................x",
-/*20*/ "................................x",
-/*21*/ "................................x",
-/*22*/ "................................x",
-/*23*/ "................................x",
-
-/*24*/ "..xx..xx..xx....................x",
-/*25*/ "..xx..xx..xx....................x",
-/*26*/ "..xx..xx..xx....................x",
-/*27*/ "..xx..xx..xx....................x",
-/*28*/ "..xx..xx..xx..xx................x",
-/*29*/ "..xx..xx..xx..xx................x",
-/*30*/ "..xx..xx..xx..xx................x",
-/*31*/ "..xx..xx..xx..xx................x",
-/*32*/ "................................x"
+// values
+template<typename T>
+const boost::numeric::checked_result<T> signed_value[] = {
+    boost::numeric::safe_numerics_error::range_error,
+    boost::numeric::safe_numerics_error::domain_error,
+    boost::numeric::safe_numerics_error::positive_overflow_error,
+    std::numeric_limits<T>::max(),
+    1,
+    0,
+    -1,
+    std::numeric_limits<T>::lowest(),
+    boost::numeric::safe_numerics_error::negative_overflow_error,
 };
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_checked_divide(     \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+template<typename T>
+const boost::numeric::checked_result<T> unsigned_value[] = {
+    boost::numeric::safe_numerics_error::range_error,
+    boost::numeric::safe_numerics_error::domain_error,
+    boost::numeric::safe_numerics_error::positive_overflow_error,
+    std::numeric_limits<T>::max(),
+    1,
+    0,
+    boost::numeric::safe_numerics_error::negative_overflow_error,
+};
 
-#define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
-    TEST_IMPL(                                     \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_division_result[value_index1][value_index2] \
-    )
-/**/
+// test result matrices
 
-int main(int argc, char *argv[]){
-    bool rval = true;
+// key
+// . success
+// - negative_overflow_error
+// + positive_overflow_error
+// ! range_error
 
-    TEST_EACH_VALUE_PAIR
+const char * signed_division_results[] = {
+//      012345678
+/* 0*/ "!!!!!!!!!",
+/* 1*/ "!!!!!!!!!",
+/* 2*/ "!!!+++---",
+/* 3*/ "!!0..+..0",
+/* 4*/ "!!0..+.00",
+/* 5*/ "!!000!000",
+/* 6*/ "!!0..-.00",
+/* 7*/ "!!0..-+.0",
+/* 8*/ "!!----+++",
+};
+
+const char * unsigned_division_results[] = {
+//      0123456
+/* 0*/ "!!!!!!!",
+/* 1*/ "!!!!!!!",
+/* 2*/ "!!!+++-",
+/* 3*/ "!!0..+.",
+/* 4*/ "!!0..+.",
+/* 5*/ "!!000!0",
+/* 6*/ "!!----!",
+};
+
+// given an array of values of particula
+// test all value pairs of a given collection
+template<typename T, unsigned int N>
+bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
+    using namespace boost::numeric;
+    // for each pair of values p1, p2 (100)
+    for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++){
+        std::cout << std::dec << i << ',' << j << ',';
+        if(! test_checked_divide(value[i], value[j], results[i][j]))
+            return false;
+    }
+    return true;
+}
+
+#include <boost/mp11/algorithm.hpp>
+
+struct t {
+    static bool m_error;
+    template<typename T>
+    void operator()(const T &){        std::cout
+            << "** testing "
+            << boost::core::demangle(typeid(T).name())
+            << std::endl;
+        m_error &=
+            std::numeric_limits<T>::is_signed
+            ? test_pairs(signed_value<T>, signed_division_results)
+            : test_pairs(unsigned_value<T>, unsigned_division_results)
+        ;
+    }
+};
+bool t::m_error = true;
+
+bool test_all_types(){
+    t rval;
+    boost::mp11::mp_for_each<
+        boost::mp11::mp_list<
+            std::int8_t, std::int16_t, std::int32_t, std::int64_t,
+            std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t
+        >
+    >(rval);
+    return rval.m_error;
+}
+
+// given an array of values of particula
+template<typename T, unsigned int N>
+constexpr void check_symmetry(const T (&value)[N]) {
+    using namespace boost::numeric;
+    // for each pair of values p1, p2 (100)
+    for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++)
+        assert(value[i][j] == value[j][i]);
+}
+
+int main(int , char *[]){
+    // sanity check on test matrix - should be symetrical
+    bool rval = test_all_types();
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }
-
-

@@ -57,7 +57,7 @@ auto test3(unsigned int hours, unsigned int minutes){
     return hours_t(hours) * 60 + minutes_t(minutes);
 }
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     std::cout << "example 7: ";
     std::cout << "enforce contracts with zero runtime cost" << std::endl;
 

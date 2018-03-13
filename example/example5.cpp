@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <iostream>
+#include <array>
 
 #include "../include/safe_integer_range.hpp"
 
@@ -7,7 +8,7 @@ void detected_msg(bool detected){
     std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
 }
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     // problem: array index values can exceed array bounds
     std::cout << "example 5: ";
     std::cout << "array index values can exceed array bounds" << std::endl;

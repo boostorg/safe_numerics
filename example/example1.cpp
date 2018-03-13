@@ -5,7 +5,7 @@
 
 #include "../include/safe_integer.hpp"
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     std::cout << "example 1:";
     std::cout << "undetected erroneous expression evaluation" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;

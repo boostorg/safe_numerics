@@ -89,7 +89,7 @@ const char *test_left_shift_result[VALUE_ARRAY_SIZE] = {
         test_left_shift_result[value_index1][value_index2] \
     )
 /**/
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

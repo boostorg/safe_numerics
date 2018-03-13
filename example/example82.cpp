@@ -11,7 +11,7 @@ using safe_t = boost::numeric::safe<
     boost::numeric::loose_trap_policy
 >;
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     std::cout << "example 82:\n";
     safe_t x(INT_MAX);
     safe_t y = 2;

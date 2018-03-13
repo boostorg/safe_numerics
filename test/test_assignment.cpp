@@ -25,7 +25,7 @@ using safe_t = boost::numeric::safe<
 // safe and unsafe integers.  in test_checked we test all combinations of
 // integer primitives
 
-const char *test_addition_result[VALUE_ARRAY_SIZE] = {
+const char *test_assignment_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012
@@ -88,10 +88,10 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_addition_result[value_index1][value_index2] \
+        test_assignment_result[value_index1][value_index2] \
     )
 /**/
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

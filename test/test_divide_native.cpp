@@ -76,7 +76,7 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
 /**/
 
 #define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << '\n'); \
+    (std::cout << "testing " << value_index1 << ',' << value_index2 << '\n'); \
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
@@ -84,7 +84,7 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char * argv[]){
+int main(int , char * []){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

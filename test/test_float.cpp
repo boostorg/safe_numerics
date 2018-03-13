@@ -26,11 +26,11 @@ void test(){
 }
 int main(){
     using namespace boost::numeric;
+    /*
     test<safe<std::int8_t>, float>();
     test<safe<std::int16_t>,float>();
     test<safe<std::int32_t>, float>();
     test<safe<std::int64_t>, float>();
-    /*
     */
     return 0;
 }

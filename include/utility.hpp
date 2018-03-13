@@ -17,6 +17,7 @@
 #include <type_traits>
 #include <limits>
 #include <cassert>
+#include <utility> // pair
 
 #include <boost/mpl/if.hpp> // if_c
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
@@ -25,6 +26,7 @@ namespace boost {
 namespace numeric {
 namespace utility {
 
+///////////////////////////////////////////////////////////////////////////////
 // used for debugging
 
 // usage - print_type<T>;
@@ -42,11 +44,15 @@ struct print_value
 };
 
 // can be called by constexpr to produce a compile time
-// trap of paramter passed is false.
+// trap of parameter passed is false.
 // usage constexpr_assert(bool)
 constexpr int constexpr_assert(const bool tf){
     return 1 / tf;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// return an integral constant equal to the the number of bits
+// held by some integer type
 
 template<typename T>
 using bits_type = std::integral_constant<
@@ -54,6 +60,7 @@ using bits_type = std::integral_constant<
     std::numeric_limits<T>::digits
     + (std::numeric_limits<T>::is_signed ? 1 : 0)
 >;
+
 
 /*
 From http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
@@ -143,78 +150,46 @@ constexpr unsigned int significant_bits(const T & t){
     return 1 + (t < 0 ? ilog2(~t) : ilog2(t));
 }
 
-// get bit max for values of type T
+/*
+// give the value t, return the number which corresponds
+// to all 1's which is higher than that number
 template<typename T>
 constexpr unsigned int bits_value(const T & t){
     const unsigned int sb = significant_bits(t);
     const unsigned int sb_max = significant_bits(std::numeric_limits<T>::max());
     return sb < sb_max ? ((sb << 1) - 1) : std::numeric_limits<T>::max();
 }
+*/
 
-// return type required to store a particular range
-template<
-    std::intmax_t Min,
-    std::intmax_t Max
->
-// signed range
-using signed_stored_type = typename boost::int_t<
-    std::max({
-        significant_bits(Min),
-        significant_bits(Max)
-    }) + 1
->::least ;
-
-template<
-    std::uintmax_t Min,
-    std::uintmax_t Max
->
-// unsigned range
-using unsigned_stored_type = typename boost::uint_t<
-    significant_bits(Max)
->::least ;
-
-// return type required to store a particular range
-#ifdef BOOST_MSVC
+///////////////////////////////////////////////////////////////////////////////
+// meta functions returning types
 
 // If we use std::max in here we get internal compiler errors
-// (tested VC2017) ...
+// with MSVC (tested VC2017) ...
 
 template <class T>
-constexpr const T & msvc_max(
+constexpr const T & max(
     const T & lhs,
     const T & rhs
 ){
     return lhs > rhs ? lhs : rhs;
 }
 
+// given a signed range, return type required to hold all the values
+// in the range
 template<
     std::intmax_t Min,
     std::intmax_t Max
 >
-// signed range
 using signed_stored_type = typename boost::int_t<
-    std::msvc_max({
+    max(
         significant_bits(Min),
         significant_bits(Max)
-    }) + 1
+    ) + 1
 >::least ;
 
-#else
-
-template<
-    std::intmax_t Min,
-    std::intmax_t Max
->
-// signed range
-using signed_stored_type = typename boost::int_t<
-    std::max({
-        significant_bits(Min),
-        significant_bits(Max)
-    }) + 1
->::least;
-
-#endif // BOOST_MSVC
-
+// given an unsigned range, return type required to hold all the values
+// in the range
 template<
     std::uintmax_t Min,
     std::uintmax_t Max
@@ -223,6 +198,28 @@ template<
 using unsigned_stored_type = typename boost::uint_t<
     significant_bits(Max)
 >::least;
+
+///////////////////////////////////////////////////////////////////////////////
+// constexpr functions
+
+// need our own version because official version
+// a) is not constexpr
+// b) is not guarenteed to handle non-assignable types
+template<typename T>
+constexpr std::pair<T, T>
+minmax(const std::initializer_list<T> & l){
+    assert(l.size() > 0);
+    const T * minimum = l.begin();
+    const T * maximum = l.begin();
+    for( const T & t : l){
+        if(t < * minimum)
+            minimum = & t;
+        else
+        if(* maximum < t)
+            maximum = & t;
+    }
+    return std::pair<T, T>{* minimum, * maximum};
+}
 
 } // utility
 } // numeric

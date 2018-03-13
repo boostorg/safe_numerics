@@ -51,7 +51,7 @@ int main ()
     // Some basic checks
     assert(half.numerator() == 1);
     assert(half.denominator() == 2);
-    assert(boost::rational_cast<double>(half) == 0.5);
+//    assert(boost::rational_cast<double>(half) == 0.5);
 
     static_assert(
         ! boost::numeric::is_safe<rational<int_type>>::value,
@@ -91,8 +91,8 @@ int main ()
          << " (rational: " << rational<int>(maxint) << ")" << endl;
 
     // Some extras
-    rational<int_type> pi(22,7);
-    cout << "pi = " << boost::rational_cast<double>(pi) << " (nearly)" << endl;
+//    rational<int_type> pi(22,7);
+//    cout << "pi = " << boost::rational_cast<double>(pi) << " (nearly)" << endl;
 
     // Exception handling
     try {

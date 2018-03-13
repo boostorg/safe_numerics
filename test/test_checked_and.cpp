@@ -16,35 +16,25 @@
 #include "../include/checked_integer.hpp"
 
 template<class T>
-bool test_checked_multiply(
+bool test_checked_and(
     boost::numeric::checked_result<T> v1,
     boost::numeric::checked_result<T> v2,
     char expected_result
 ){
     using namespace boost::numeric;
-    const checked_result<T> result = v1 * v2;
+    const checked_result<T> result = v1 & v2;
     std::cout
         << "testing  "
-        << v1 << " * " << v2 << " -> " << result
+        << v1 << " & " << v2 << " -> " << result
         << std::endl;
 
     switch(expected_result){
-    case '0':
     case '.':
         if(result.exception()){
             std::cout
-                << "erroneously detected error in multiplication "
+                << "erroneously detected error in and operation "
                 << std::endl;
-            v1 * v2;
-            return false;
-        }
-        if(expected_result == '0'
-        && result != T(0)
-        ){
-            std::cout
-                << "failed to get expected zero result "
-                << std::endl;
-            v1 * v2;
+            v1 & v2;
             return false;
         }
         return true;
@@ -59,11 +49,11 @@ bool test_checked_multiply(
             return true;
     }
     std::cout
-        << "failed to detect error in multiplication "
+        << "failed to detect error in and operation "
         << std::hex << result << "(" << std::dec << result << ")"
-        << " != "<< v1 << " * " << v2
+        << " != "<< v1 << " & " << v2
         << std::endl;
-    v1 * v2;
+    v1 & v2;
     return false;
 }
 
@@ -98,30 +88,30 @@ const boost::numeric::checked_result<T> unsigned_value[] = {
 // . success
 // - negative_overflow_error
 // + positive_overflow_error
-// ! range_error
+// ? range_error
 
-const char * signed_multiplication_results[] = {
+const char * signed_and_results[] = {
 //      012345678
 /* 0*/ "!!!!!!!!!",
 /* 1*/ "!!!!!!!!!",
-/* 2*/ "!!+++.---",
-/* 3*/ "!!++...--",
-/* 4*/ "!!+.....-",
-/* 5*/ "!!...0000",
-/* 6*/ "!!-..0.+-",
-/* 7*/ "!!--.0+-+",
-/* 8*/ "!!---0-++",
+/* 2*/ "!!!!!!!!!",
+/* 3*/ "!!!.....!",
+/* 4*/ "!!!.....!",
+/* 5*/ "!!!.....!",
+/* 6*/ "!!!.....!",
+/* 7*/ "!!!.....!",
+/* 8*/ "!!!!!!!!!",
 };
 
-const char * unsigned_multiplication_results[] = {
+const char * unsigned_and_results[] = {
 //      0123456
 /* 0*/ "!!!!!!!",
 /* 1*/ "!!!!!!!",
-/* 2*/ "!!+++.-",
-/* 3*/ "!!++..-",
-/* 4*/ "!!+...-",
-/* 5*/ "!!...00",
-/* 6*/ "!!---0+",
+/* 2*/ "!!!!!!!",
+/* 3*/ "!!!...!",
+/* 4*/ "!!!...!",
+/* 5*/ "!!!...!",
+/* 6*/ "!!!!!!!",
 };
 
 // given an array of values of particula
@@ -133,7 +123,7 @@ bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
     for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++){
         std::cout << std::dec << i << ',' << j << ',';
-        if(! test_checked_multiply(value[i], value[j], results[i][j]))
+        if(! test_checked_and(value[i], value[j], results[i][j]))
             return false;
     }
     return true;
@@ -144,14 +134,15 @@ bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
 struct t {
     static bool m_error;
     template<typename T>
-    void operator()(const T &){        std::cout
+    void operator()(const T &){
+        std::cout
             << "** testing "
             << boost::core::demangle(typeid(T).name())
             << std::endl;
         m_error &=
             std::numeric_limits<T>::is_signed
-            ? test_pairs(signed_value<T>, signed_multiplication_results)
-            : test_pairs(unsigned_value<T>, unsigned_multiplication_results)
+            ? test_pairs(signed_value<T>, signed_and_results)
+            : test_pairs(unsigned_value<T>, unsigned_and_results)
         ;
     }
 };
@@ -180,8 +171,8 @@ constexpr void check_symmetry(const T (&value)[N]) {
 
 int main(int , char *[]){
     // sanity check on test matrix - should be symetrical
-    check_symmetry(signed_multiplication_results);
-    check_symmetry(unsigned_multiplication_results);
+    check_symmetry(signed_and_results);
+    check_symmetry(unsigned_and_results);
     bool rval = test_all_types();
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;

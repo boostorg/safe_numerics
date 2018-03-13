@@ -11,6 +11,7 @@
 #include <exception>
 
 #include "../include/safe_integer.hpp"
+#include "../include/range_value.hpp"
 
 template<class T1, class T2>
 bool test_subtract(
@@ -37,22 +38,24 @@ bool test_subtract(
 
         try{
             result = t1 - v2;
+            /*
             std::cout << std::hex << result << "(" << std::dec << result << ")"
             << std::endl;
             static_assert(
                 boost::numeric::is_safe<decltype(t1 - v2)>::value,
                 "Expression failed to return safe type"
             );
+            */
+            std::cout
+                << make_result_display(result)
+                << std::endl;
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in subtraction "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << make_result_display(result)
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
-                try{
-                    t1 - v2;
-                }
-                catch(std::exception){}
+                t1 - v2;
                 return false;
             }
         }
@@ -89,18 +92,16 @@ bool test_subtract(
 
         try{
             result = v1 - t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            std::cout
+                << make_result_display(result)
+                << std::endl;
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in subtraction "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << make_result_display(result)
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
-                try{
-                    v1 - t2;
-                }
-                catch(std::exception){}
+                v1 - t2;
                 return false;
             }
         }
@@ -136,20 +137,13 @@ bool test_subtract(
             result = t1 - t2;
             std::cout << std::hex << result << "(" << std::dec << result << ")"
             << std::endl;
-            static_assert(
-                boost::numeric::is_safe<decltype(t1 - v2)>::value,
-                "Expression failed to return safe type"
-            );
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in subtraction "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << make_result_display(result)
                     << " ! = "<< av1 << " - " << av2
                     << std::endl;
-                try{
-                    t1 - t2;
-                }
-                catch(std::exception){}
+                t1 - t2;
                 return false;
             }
         }

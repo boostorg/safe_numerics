@@ -24,27 +24,27 @@ using safe_t = boost::numeric::safe<
 // safe and unsafe integers.  in test_checked we test all combinations of
 // integer primitives
 
-const char *test_or_result[VALUE_ARRAY_SIZE] = {
+constexpr const char *test_or_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012
 /* 0*/ ".................................",
 /* 1*/ ".................................",
-/* 2*/ ".................................",
-/* 3*/ ".................................",
+/* 2*/ "........................xxxxxxxx.",
+/* 3*/ "........................xxxxxxxx.",
 /* 4*/ ".................................",
 /* 5*/ ".................................",
-/* 6*/ ".................................",
-/* 7*/ ".................................",
+/* 6*/ "........................xxxxxxxx.",
+/* 7*/ "........................xxxxxxxx.",
 
 /* 8*/ ".................................",
 /* 9*/ ".................................",
-/*10*/ ".................................",
-/*11*/ ".................................",
+/*10*/ "........................xxxxxxxx.",
+/*11*/ "........................xxxxxxxx.",
 /*12*/ ".................................",
 /*13*/ ".................................",
-/*14*/ ".................................",
-/*15*/ ".................................",
+/*14*/ "............................xxxx.",
+/*15*/ "............................xxxx.",
 
 //      0       0       0       0
 //      012345670123456701234567012345670
@@ -58,16 +58,28 @@ const char *test_or_result[VALUE_ARRAY_SIZE] = {
 /*22*/ ".................................",
 /*23*/ ".................................",
 
-/*24*/ ".................................",
-/*25*/ ".................................",
-/*26*/ ".................................",
-/*27*/ ".................................",
-/*28*/ ".................................",
-/*29*/ ".................................",
-/*30*/ ".................................",
-/*31*/ ".................................",
+/*24*/ "..xx..xx..xx.....................",
+/*25*/ "..xx..xx..xx.....................",
+/*26*/ "..xx..xx..xx.....................",
+/*27*/ "..xx..xx..xx.....................",
+/*28*/ "..xx..xx..xx..xx.................",
+/*29*/ "..xx..xx..xx..xx.................",
+/*30*/ "..xx..xx..xx..xx.................",
+/*31*/ "..xx..xx..xx..xx.................",
 /*32*/ "................................."
 };
+
+// given an array of values of particula
+template<typename T, unsigned int N>
+constexpr bool check_symmetry(const T (&value)[N]) {
+    using namespace boost::numeric;
+    // for each pair of values p1, p2 (100)
+    for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++)
+        if(value[i][j] != value[j][i])
+            return false;
+    return true;
+}
 
 #include <boost/preprocessor/stringize.hpp>
 
@@ -89,14 +101,9 @@ const char *test_or_result[VALUE_ARRAY_SIZE] = {
         test_or_result[value_index1][value_index2] \
     )
 /**/
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(test_or_result[i][j] != test_or_result[j][i]){
-                std::cout << i << ',' << j << std::endl;
-                return 1;
-            }
+    static_assert(check_symmetry(test_or_result), "should be symmetrical");
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

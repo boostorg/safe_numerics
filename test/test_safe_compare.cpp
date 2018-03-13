@@ -147,7 +147,7 @@ void break_check(unsigned int i, unsigned int j){
     )
 /**/
 
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

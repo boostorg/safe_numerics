@@ -84,7 +84,7 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     // sanity check on test matrix - should be symetrical
     for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
         for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)

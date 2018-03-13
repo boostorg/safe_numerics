@@ -4,7 +4,7 @@
 
 #include "../include/safe_integer.hpp"
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     // problem: checking of externally produced value can be overlooked
     std::cout << "example 6: ";
     std::cout << "checking of externally produced value can be overlooked" << std::endl;

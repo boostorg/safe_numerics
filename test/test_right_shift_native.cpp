@@ -30,21 +30,21 @@ const char *test_right_shift_result[VALUE_ARRAY_SIZE] = {
 //      012345678901234567890123456789012
 /* 0*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
 /* 1*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
-/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /* 4*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
 /* 5*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
-/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
 /* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
 /* 9*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
-/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 /*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
 /*13*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
-/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.",
+/*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 
 //      0       0       0       0
 //      012345670123456701234567012345670
@@ -89,7 +89,7 @@ const char *test_right_shift_result[VALUE_ARRAY_SIZE] = {
         test_right_shift_result[value_index1][value_index2] \
     )
 /**/
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

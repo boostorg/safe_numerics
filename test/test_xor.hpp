@@ -48,10 +48,7 @@ bool test_xor(
                         << make_result_display(result)
                         << " ! = "<< av1 << " ^ " << av2
                         << std::endl;
-                try{
-                    t1 ^ v2;
-                }
-                catch(std::exception){}
+                t1 ^ v2;
                 return false;
             }
         }
@@ -97,10 +94,7 @@ bool test_xor(
                         << make_result_display(result)
                         << " ! = "<< av1 << " ^ " << av2
                         << std::endl;
-                try{
-                    v1 ^ t2;
-                }
-                catch(std::exception){}
+                v1 ^ t2;
                 return false;
             }
         }
@@ -144,10 +138,7 @@ bool test_xor(
                     << make_result_display(result)
                     << " ! = "<< av1 << " ^ " << av2
                     << std::endl;
-                try{
-                    t1 ^ t2;
-                }
-                catch(std::exception){}
+                t1 ^ t2;
                 return false;
             }
         }

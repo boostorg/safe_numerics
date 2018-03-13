@@ -42,10 +42,7 @@ bool test_right_shift(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " >> " << av2
                     << std::endl;
-                try{
-                    t1 >> v2;
-                }
-                catch(std::exception){}
+                t1 >> v2;
                 return false;
             }
         }
@@ -82,10 +79,7 @@ bool test_right_shift(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " >> " << av2
                     << std::endl;
-                try{
-                    v1 >> t2;
-                }
-                catch(std::exception){}
+                v1 >> t2;
                 return false;
             }
         }
@@ -123,10 +117,7 @@ bool test_right_shift(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " << " << av2
                     << std::endl;
-                try{
-                    t1 >> t2;
-                }
-                catch(std::exception){}
+                t1 >> t2;
                 return false;
             }
         }

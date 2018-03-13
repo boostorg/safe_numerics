@@ -88,8 +88,9 @@ const char *test_division_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
+    //TESTX(0, 30);
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;

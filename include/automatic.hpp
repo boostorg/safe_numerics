@@ -48,6 +48,7 @@ private:
             defer_stored_signed_lazily<T, Min, Max>,
             defer_stored_unsigned_lazily<T, Min, Max>
         >::type;
+
 public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
@@ -62,18 +63,20 @@ public:
             std::intmax_t
         >::type;
 
-        constexpr static const interval<typename base_type<T>::type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<typename base_type<U>::type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>>
-        r_interval = add<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_interval_type r_interval = t_interval + u_interval;
 
         using type = typename result_type<
             temp_base_type,
@@ -92,17 +95,20 @@ public:
         // result of subtraction are always signed.
         using temp_base_type = intmax_t;
 
-        constexpr static const interval<typename base_type<T>::type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<typename base_type<U>::type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
-        constexpr static const interval<checked_result<temp_base_type>>
-        r_interval = subtract<temp_base_type>(t_interval, u_interval);
+
+        constexpr static const r_interval_type r_interval = t_interval - u_interval;
 
         using type = typename result_type<
             temp_base_type,
@@ -128,18 +134,20 @@ public:
             std::intmax_t
         >::type;
 
-        constexpr static const interval<typename base_type<T>::type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<typename base_type<U>::type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>>
-        r_interval = multiply<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_interval_type r_interval = t_interval * u_interval;
 
         using type = typename result_type<
             temp_base_type,
@@ -165,39 +173,47 @@ public:
             std::intmax_t
         >::type;
 
-        constexpr static const interval<typename base_type<T>::type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<typename base_type<U>::type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>>
-        r_interval = divide<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_interval_type rx(){
+        if(u_interval.u < r_type(0)
+        || u_interval.l > r_type(0))
+            return t_interval / u_interval;
+        return utility::minmax(
+            std::initializer_list<r_type> {
+                t_interval.l / u_interval.l,
+                t_interval.l / r_type(-1),
+                t_interval.l / r_type(1),
+                t_interval.l / u_interval.u,
+                t_interval.u / u_interval.l,
+                t_interval.u / r_type(-1),
+                t_interval.u / r_type(1),
+                t_interval.u / u_interval.u,
+            }
+        );
+        }
 
-        constexpr static temp_base_type lower_helper =
-            r_interval.l.exception()
-            ? std::numeric_limits<temp_base_type>::min()
-            : static_cast<temp_base_type>(r_interval.l);
-
-        constexpr static temp_base_type lower =
-            lower_helper < 0 &&
-            lower_helper != std::numeric_limits<temp_base_type>::min()
-            ? lower_helper - 1
-            : lower_helper;
-
-        constexpr static temp_base_type upper =
-            r_interval.u.exception()
-            ? std::numeric_limits<temp_base_type>::max()
-            : static_cast<temp_base_type>(r_interval.u);
+        constexpr static const r_interval_type r_interval = rx();
 
         using type = typename result_type<
             temp_base_type,
-            lower,
-            upper
+            r_interval.l.exception()
+                ? std::numeric_limits<temp_base_type>::min()
+                : static_cast<temp_base_type>(r_interval.l),
+            r_interval.u.exception()
+                ? std::numeric_limits<temp_base_type>::max()
+                : static_cast<temp_base_type>(r_interval.u)
         >::type;
     };
 
@@ -214,18 +230,38 @@ public:
             std::intmax_t
         >::type;
 
-        constexpr static const interval<typename base_type<T>::type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<typename base_type<U>::type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>>
-        r_interval = modulus<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_interval_type rx(){
+            if(u_interval.u < r_type(0)
+            || u_interval.l > r_type(0))
+                return t_interval / u_interval;
+            return utility::minmax(
+                std::initializer_list<r_type> {
+                    t_interval.l % u_interval.l,
+                    t_interval.l % r_type(-1),
+                    t_interval.l % r_type(1),
+                    t_interval.l % u_interval.u,
+                    t_interval.u % u_interval.l,
+                    t_interval.u % r_type(-1),
+                    t_interval.u % r_type(1),
+                    t_interval.u % u_interval.u,
+                }
+            );
+        }
+
+        constexpr static const r_interval_type r_interval = rx();
 
         using type = typename result_type<
             temp_base_type,
@@ -251,34 +287,30 @@ public:
             std::intmax_t
         >::type;
 
-        constexpr static typename base_type<T>::type min_t
-            = base_value(std::numeric_limits<T>::min());
-        constexpr static typename base_type<U>::type min_u
-            = base_value(std::numeric_limits<U>::min());
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
 
-        constexpr static checked_result<temp_base_type> minx =
-            safe_compare::less_than(min_t, min_u)
-            ? checked::cast<temp_base_type>(min_t)
-            : checked::cast<temp_base_type>(min_u);
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
+        };
 
-        constexpr static typename base_type<T>::type max_t
-            = base_value(std::numeric_limits<T>::max());
-        constexpr static typename base_type<U>::type max_u
-            = base_value(std::numeric_limits<U>::max());
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
+        };
 
-        constexpr static checked_result<temp_base_type> maxx =
-            safe_compare::less_than(max_t, max_u)
-            ? checked::cast<temp_base_type>(max_u)
-            : checked::cast<temp_base_type>(max_t);
+        constexpr static const r_interval_type r_interval =
+            t_interval | u_interval;
 
         using type = typename result_type<
             temp_base_type,
-            minx.exception()
+            r_interval.l.exception()
                 ? std::numeric_limits<temp_base_type>::min()
-                : static_cast<temp_base_type>(minx),
-            maxx.exception()
+                : static_cast<temp_base_type>(r_interval.l),
+            r_interval.u.exception()
                 ? std::numeric_limits<temp_base_type>::max()
-                : static_cast<temp_base_type>(maxx)
+                : static_cast<temp_base_type>(r_interval.u)
         >::type;
     };
 
@@ -286,26 +318,27 @@ public:
     // shift operations
     template<typename T, typename U>
     struct left_shift_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-
         using temp_base_type = typename boost::mpl::if_c<
             std::numeric_limits<T>::is_signed,
             std::intmax_t,
             std::uintmax_t
         >::type;
 
-        constexpr static const interval<u_base_type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>> r_interval =
-            left_shift<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_interval_type u_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
+        };
+
+        constexpr static const r_interval_type r_interval =
+            t_interval << u_interval;
 
         using type = typename result_type<
             temp_base_type,
@@ -321,26 +354,34 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct right_shift_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        constexpr static const interval<t_base_type> t_interval{
-            base_value(std::numeric_limits<T>::min()),
-            base_value(std::numeric_limits<T>::max())
-        };
-
         using temp_base_type = typename boost::mpl::if_c<
             std::numeric_limits<T>::is_signed,
             std::intmax_t,
             std::uintmax_t
         >::type;
 
-        constexpr static const interval<u_base_type> u_interval{
-            base_value(std::numeric_limits<U>::min()),
-            base_value(std::numeric_limits<U>::max())
+        using r_type = checked_result<temp_base_type>;
+        using r_interval_type = interval<r_type>;
+
+        constexpr static const r_interval_type t_interval{
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::min())),
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr static const interval<checked_result<temp_base_type>> r_interval =
-            right_shift<temp_base_type>(t_interval, u_interval);
+        constexpr static const r_type u_min
+            = checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::min()));
+
+        constexpr static const r_interval_type u_interval{
+            u_min.exception()
+            ? r_type(0)
+            : u_min,
+            checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
+        };
+
+        constexpr static const r_interval_type r_interval = t_interval >> u_interval;
+
+        //const utility::print_value<r_interval.l> pv_r_interval_l;
+        //const utility::print_value<r_interval.u> pv_r_interval_u;
 
         using type = typename result_type<
             temp_base_type,
@@ -351,6 +392,7 @@ public:
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(r_interval.u)
         >::type;
+
     };
 
     ///////////////////////////////////////////////////////////////////////

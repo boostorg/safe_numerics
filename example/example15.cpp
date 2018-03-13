@@ -4,7 +4,7 @@
 #include <boost/rational.hpp>
 #include <safe_integer.hpp>
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     // simple demo of rational library
     const boost::rational<int> r {1, 2};
     std::cout << "r = " << r << std::endl;

@@ -118,7 +118,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     )                                              \
 /**/
 
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     bool rval = true;
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),

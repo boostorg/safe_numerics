@@ -1,4 +1,4 @@
-#ifndef BOOST_TEST_LESS_THAN_HPP
+  #ifndef BOOST_TEST_LESS_THAN_HPP
 #define BOOST_TEST_LESS_THAN_HPP
 
 //  Copyright (c) 2015 Robert Ramey
@@ -40,7 +40,7 @@ bool test_equal(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " < " << av2
                     << std::endl;
-                result = t1 == v2;
+                result = (t1 == v2);
                 return false;
             }
             if(result != (expected_result == '=')){
@@ -62,10 +62,7 @@ bool test_equal(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " < " << av2
                     << std::endl;
-                try{
-                    result = (t1 == v2);
-                }
-                catch(std::exception){}
+                result = (t1 == v2);
                 return false;
             }
         }

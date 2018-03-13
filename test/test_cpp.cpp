@@ -109,7 +109,7 @@ BOOST_PP_REPEAT(
     nothing
 )
 
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     // this is a compile only test - but since many build systems
     // can't handle a compile-only test - make sure it passes trivially.
     return 0;

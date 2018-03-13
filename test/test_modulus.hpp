@@ -44,10 +44,7 @@ bool test_modulus(
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " % " << av2
                     << std::endl;
-                try{
-                    t1 % v2;
-                }
-                catch(std::exception){}
+                t1 % v2;
                 return false;
             }
         }

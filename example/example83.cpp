@@ -23,7 +23,7 @@ using const_safe_t = safe_signed_literal<I, native, loose_trap_policy>;
 // We "know" that C++ type promotion rules will work such that
 // addition will never overflow. If we change the program to break this,
 // the usage of the loose_trap_policy promotion policy will prevent compilation.
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     std::cout << "example 83:\n";
 
     constexpr const const_safe_t<10> x;
@@ -31,7 +31,9 @@ int main(int argc, const char * argv[]){
     constexpr const const_safe_t<67> y;
     std::cout << "y = " << safe_format(y) << std::endl;
 
-    constexpr const safe_t z = x + y;
+    constexpr const auto t = x + y;
+    constexpr const safe_t z = t;
+
     std::cout << "z = " << safe_format(z) << std::endl;
 
     const auto za = x + y;

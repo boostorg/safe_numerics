@@ -88,9 +88,10 @@ const char *test_modulus_result[VALUE_ARRAY_SIZE] = {
     )
 /**/
 
-int main(int argc, char * argv[]){
+int main(int, char *[]){
     bool rval = true;
-    TEST_EACH_VALUE_PAIR
+    TESTX(1,19)
+    // TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

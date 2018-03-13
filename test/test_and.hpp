@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <exception>
-#include <iosfwd>
 
 #include "../include/safe_integer.hpp"
 #include "../include/range_value.hpp"
@@ -22,7 +21,7 @@ bool test_and(
     const char *av2,
     char expected_result
 ){
-    using namespace boost::numeric;
+    //using namespace boost::numeric;
     std::cout << "testing"<< std::endl;
     {
         safe_t<T1> t1 = v1;
@@ -48,10 +47,7 @@ bool test_and(
                         << make_result_display(result)
                         << " ! = "<< av1 << " & " << av2
                         << std::endl;
-                try{
-                    t1 & v2;
-                }
-                catch(std::exception){}
+                t1 & v2;
                 return false;
             }
         }
@@ -98,10 +94,7 @@ bool test_and(
                         << make_result_display(result)
                         << " ! = "<< av1 << " & " << av2
                         << std::endl;
-                try{
-                    v1 & t2;
-                }
-                catch(std::exception){}
+                v1 & t2;
                 return false;
             }
         }
@@ -145,10 +138,7 @@ bool test_and(
                     << make_result_display(result)
                     << " != "<< av1 << " & " << av2
                     << std::endl;
-                try{
-                    t1 & t2;
-                }
-                catch(std::exception){}
+                t1 & t2;
                 return false;
             }
         }

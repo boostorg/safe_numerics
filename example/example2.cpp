@@ -4,7 +4,7 @@
 
 #include "../include/safe_integer.hpp"
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     std::cout << "example 2:";
     std::cout << "undetected overflow in data type" << std::endl;
     // problem: undetected overflow

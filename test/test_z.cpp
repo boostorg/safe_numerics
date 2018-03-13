@@ -215,7 +215,6 @@ int main(){
 
 #include <boost/logic/tribool.hpp>
 #include "checked_integer.hpp"
-#include "checked_default.hpp"
 #include "checked_result.hpp"
 #include "checked_result_operations.hpp"
 #include "interval.hpp"
@@ -515,8 +514,7 @@ int main(){
     constexpr const checked_result<unsigned> i = 0;
     constexpr const checked_result<unsigned> j = 0;
 
-    constexpr const checked_result<unsigned> k = i + j;
-
+    //constexpr const checked_result<unsigned> k = i + j;
     // return k.m_r;
 
     constexpr const checked_result<unsigned> i2 = safe_numerics_error::failure;

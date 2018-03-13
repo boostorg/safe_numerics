@@ -1,4 +1,4 @@
-#ifndef BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
+  #ifndef BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
 #define BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
 
 // MS compatible compilers support #pragma once
@@ -12,22 +12,67 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// contains operations for doing checked aritmetic on NATIVE
-// C++ types.
+// Implemenation of arithmetic on "extended" integers.
+// extended integers are
+//     a) an interger range
+//     b) extra elements +inf, -inf, indeterminant
+//
+// arithmetic operations are closed on the set of extended integers
+// but operations are not associative when they result in the
+// extensions +inf, -inf, and indeterminant
+//
+// in this code, the type "checked_result<T>" where T is some
+// integer type is an "extended" integer.
+
 #include <cassert>
-#include "exception.hpp"
-//#include "exception_operations.hpp"
-#include "checked_result.hpp"
 
 #include <boost/logic/tribool.hpp>
-#include "safe_compare.hpp"
-#include "checked_default.hpp"
+#include <boost/functional/hash.hpp>
+
+#include "checked_result.hpp"
 #include "checked_integer.hpp"
 
-#include "utility.hpp"
+//////////////////////////////////////////////////////////////////////////
+// the following idea of "value_type" is used by several of the operations
+// defined by checked_result arithmetic.
 
 namespace boost {
 namespace numeric {
+
+//////////////////////////////////////////////////////////////////////////
+// implement C++ operators for check_result<T>
+
+template<class T>
+struct sum_value_type {
+    // characterization of various values
+    const enum flag {
+        known_value = 0,
+        less_than_min,
+        greater_than_max,
+        indeterminant,
+        count
+    } m_flag;
+    constexpr enum flag to_flag(const checked_result<T> & t) const {
+        switch(static_cast<safe_numerics_error>(t)){
+        case safe_numerics_error::success:
+            return known_value;
+        case safe_numerics_error::negative_overflow_error:
+            // result is below representational minimum
+            return less_than_min;
+        case safe_numerics_error::positive_overflow_error:
+            // result is above representational maximum
+            return greater_than_max;
+        default:
+            return indeterminant;
+        }
+    }
+    constexpr sum_value_type(const checked_result<T> & t) :
+        m_flag(to_flag(t))
+    {}
+    constexpr operator std::uint8_t () const {
+        return static_cast<std::uint8_t>(m_flag);
+    }
+};
 
 // integers addition
 template<class T>
@@ -39,211 +84,487 @@ constexpr inline operator+(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    constexpr const std::uint8_t order =
-        static_cast<std::uint8_t>(safe_numerics_error::casting_error_count);
-    constexpr const safe_numerics_error result[order][order]{
-        // t == success
+    using value_type = sum_value_type<T>;
+    constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    constexpr const enum safe_numerics_error result[order][order] = {
+        // t == known_value
         {
             // u == ...
-            safe_numerics_error::success,
-            safe_numerics_error::positive_overflow_error,
-            safe_numerics_error::negative_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::success,                   // known_value,
+            safe_numerics_error::negative_overflow_error,   // less_than_min,
+            safe_numerics_error::positive_overflow_error,   // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == positive_overflow_error,
+        // t == less_than_min,
         {
             // u == ...
-            safe_numerics_error::positive_overflow_error,
-            safe_numerics_error::positive_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::negative_overflow_error,   // known_value,
+            safe_numerics_error::negative_overflow_error,   // less_than_min,
+            safe_numerics_error::range_error,               // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == negative_overflow_error,
+        // t == greater_than_max,
         {
             // u == ...
-            safe_numerics_error::negative_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::negative_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::positive_overflow_error,   // known_value,
+            safe_numerics_error::range_error,               // less_than_min,
+            safe_numerics_error::positive_overflow_error,   // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == range_error,
+        // t == indeterminant,
         {
             // u == ...
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
-        },
-        // t == domain_error,
-        {
-            // u == ...
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::range_error,      // known_value,
+            safe_numerics_error::range_error,      // less_than_min,
+            safe_numerics_error::range_error,      // greater_than_max,
+            safe_numerics_error::range_error,      // indeterminant,
         },
     };
 
-    const safe_numerics_error e = result
-        [static_cast<std::uint8_t>(static_cast<std::uint8_t>(t.m_e))]
-        [static_cast<std::uint8_t>(static_cast<std::uint8_t>(u.m_e))]
-    ;
-
-    return
-        safe_numerics_error::success == e
-        ? checked::add<T>(t, u)
-        : checked_result<T>(e, "addition result")
-    ;
+    safe_numerics_error e = result[value_type(t)][value_type(u)];
+    if(safe_numerics_error::success == e)
+        return checked::add<T>(t, u);
+    return checked_result<T>(e, "addition result");
 }
 
-// when subtracting integers
+// integers subtraction
 template<class T>
 typename std::enable_if<
-    std::is_integral<T>::value && std::is_unsigned<T>::value,
+    std::is_integral<T>::value,
     checked_result<T>
 >::type
-constexpr operator-(
+constexpr inline operator-(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    constexpr const std::uint8_t order =
-        static_cast<std::uint8_t>(safe_numerics_error::casting_error_count);
-    constexpr const safe_numerics_error result[order][order]{
-        // t == success
+    using value_type = sum_value_type<T>;
+    constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    constexpr const enum safe_numerics_error result[order][order] = {
+        // t == known_value
         {
             // u == ...
-            safe_numerics_error::success,
-            safe_numerics_error::negative_overflow_error,
-            safe_numerics_error::positive_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::success,                   // known_value,
+            safe_numerics_error::positive_overflow_error,   // less_than_min,
+            safe_numerics_error::negative_overflow_error,   // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == positive_overflow_error,
+        // t == less_than_min,
         {
             // u == ...
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::negative_overflow_error,   // known_value,
+            safe_numerics_error::range_error,               // less_than_min,
+            safe_numerics_error::negative_overflow_error,   // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == negative_overflow_error,
+        // t == greater_than_max,
         {
             // u == ...
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::negative_overflow_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::positive_overflow_error,   // known_value,
+            safe_numerics_error::positive_overflow_error,   // less_than_min,
+            safe_numerics_error::range_error,               // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
-        // t == range_error,
+        // t == indeterminant,
         {
             // u == ...
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::range_error,
-            safe_numerics_error::domain_error,
-        },
-        // t == domain_error,
-        {
-            // u == ...
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
-            safe_numerics_error::domain_error,
+            safe_numerics_error::range_error,               // known_value,
+            safe_numerics_error::range_error,               // less_than_min,
+            safe_numerics_error::range_error,               // greater_than_max,
+            safe_numerics_error::range_error,               // indeterminant,
         },
     };
-    constexpr const safe_numerics_error e = result[t.m_e][u.m_e];
-    return
-        safe_numerics_error::success == e
-        ? checked::subtract<T>(t.m_r, u.m_r)
-        : checked_result<T>(e)
-    ;
+
+    value_type vt(t);
+    value_type vu(u);
+    safe_numerics_error e = result[vt][vu];
+    if(safe_numerics_error::success == e)
+        return checked::subtract<T>(t, u);
+    return checked_result<T>(e, "subtraction result");
+}
+
+template<class T>
+struct product_value_type {
+    // characterization of various values
+    const enum flag {
+        less_than_min = 0,
+        less_than_zero,
+        zero,
+        greater_than_zero,
+        greater_than_max,
+        indeterminant,
+        count,
+        minus_one
+    } m_flag;
+    constexpr enum flag to_flag(const checked_result<T> & t) const {
+        switch(static_cast<safe_numerics_error>(t)){
+        case safe_numerics_error::success:
+            return (t < 0)
+                ? less_than_zero
+                : (t > 0)
+                ? greater_than_zero
+                : zero;
+        case safe_numerics_error::negative_overflow_error:
+            // result is below representational minimum
+            return less_than_min;
+        case safe_numerics_error::positive_overflow_error:
+            // result is above representational maximum
+            return greater_than_max;
+        default:
+            return indeterminant;
+        }
+    }
+    constexpr product_value_type(const checked_result<T> & t) :
+        m_flag(to_flag(t))
+    {}
+    constexpr operator std::uint8_t () const {
+        return static_cast<std::uint8_t>(m_flag);
+    }
+};
+
+// integers multiplication
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator*(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    using value_type = product_value_type<T>;
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    constexpr const enum value_type::flag result[order][order] = {
+        // t == less_than_min
+        {
+            // u == ...
+            value_type::greater_than_max,   // less_than_min,
+            value_type::greater_than_max,   // less_than_zero,
+            value_type::zero,               // zero,
+            value_type::less_than_min,      // greater_than_zero,
+            value_type::less_than_min,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == less_than_zero,
+        {
+            // u == ...
+            value_type::greater_than_max,   // less_than_min,
+            value_type::greater_than_zero,  // less_than_zero,
+            value_type::zero,               // zero,
+            value_type::less_than_zero,     // greater_than_zero,
+            value_type::less_than_min,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == zero,
+        {
+            // u == ...
+            value_type::zero,               // less_than_min,
+            value_type::zero,               // less_than_zero,
+            value_type::zero,               // zero,
+            value_type::zero,               // greater_than_zero,
+            value_type::zero,               // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == greater_than_zero,
+        {
+            // u == ...
+            value_type::less_than_min,      // less_than_min,
+            value_type::less_than_zero,     // less_than_zero,
+            value_type::zero,               // zero,
+            value_type::greater_than_zero,  // greater_than_zero,
+            value_type::greater_than_max,   // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == greater_than_max
+        {
+            value_type::less_than_min,      // less_than_min,
+            value_type::less_than_min,      // less_than_zero,
+            value_type::zero,               // zero,
+            value_type::greater_than_max,   // greater_than_zero,
+            value_type::greater_than_max,   // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == indeterminant
+        {
+            value_type::indeterminant,      // less_than_min,
+            value_type::indeterminant,      // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::indeterminant,      // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        }
+    };
+
+    switch(result[value_type(t)][value_type(u)]){
+        case value_type::less_than_min:
+            return safe_numerics_error::negative_overflow_error;
+        case value_type::zero:
+            return T(0);
+        case value_type::greater_than_max:
+            return safe_numerics_error::positive_overflow_error;
+        case value_type::less_than_zero:
+        case value_type::greater_than_zero:
+            return checked::multiply<T>(t, u);
+        case value_type::indeterminant:
+            return safe_numerics_error::range_error;
+        default:
+            assert(false);
+    }
+}
+
+// integers division
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator/(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    using value_type = product_value_type<T>;
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    constexpr const enum value_type::flag result[order][order] = {
+        // t == less_than_min
+        {
+            // u == ...
+            value_type::indeterminant,   // less_than_min,
+            value_type::greater_than_max,   // less_than_zero,
+            value_type::less_than_min,      // zero,
+            value_type::less_than_min,      // greater_than_zero,
+            value_type::less_than_min,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == less_than_zero,
+        {
+            // u == ...
+            value_type::zero,               // less_than_min,
+            value_type::greater_than_zero,  // less_than_zero,
+            value_type::less_than_min,      // zero,
+            value_type::less_than_zero,     // greater_than_zero,
+            value_type::zero,               // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == zero,
+        {
+            // u == ...
+            value_type::zero,               // less_than_min,
+            value_type::zero,               // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::zero,               // greater_than_zero,
+            value_type::zero,               // greater than max,
+            value_type::indeterminant,               // indeterminant,
+        },
+        // t == greater_than_zero,
+        {
+            // u == ...
+            value_type::zero,               // less_than_min,
+            value_type::less_than_zero,     // less_than_zero,
+            value_type::greater_than_max,   // zero,
+            value_type::greater_than_zero,  // greater_than_zero,
+            value_type::zero,               // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == greater_than_max
+        {
+            value_type::less_than_min,      // less_than_min,
+            value_type::less_than_min,      // less_than_zero,
+            value_type::greater_than_max,   // zero,
+            value_type::greater_than_max,   // greater_than_zero,
+            value_type::indeterminant,   // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == indeterminant
+        {
+            value_type::indeterminant,      // less_than_min,
+            value_type::indeterminant,      // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::indeterminant,      // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        }
+    };
+
+    switch(result[value_type(t)][value_type(u)]){
+        case value_type::less_than_min:
+            return safe_numerics_error::negative_overflow_error;
+        case value_type::zero:
+            return 0;
+        case value_type::greater_than_max:
+            return safe_numerics_error::positive_overflow_error;
+        case value_type::less_than_zero:
+        case value_type::greater_than_zero:
+            return checked::divide<T>(t, u);
+        case value_type::indeterminant:
+            return safe_numerics_error::range_error;
+        default:
+            assert(false);
+    }
+}
+
+// integers modulus
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator%(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    using value_type = product_value_type<T>;
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    constexpr const enum value_type::flag result[order][order] = {
+        // t == less_than_min
+        {
+            // u == ...
+            value_type::indeterminant,      // less_than_min,
+            value_type::indeterminant,      // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::indeterminant,      // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == less_than_zero,
+        {
+            // u == ...
+            value_type::indeterminant,      // less_than_min,
+            value_type::greater_than_zero,  // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::less_than_zero,     // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == zero,
+        {
+            // u == ...
+            value_type::zero,               // less_than_min,
+            value_type::zero,               // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::zero,               // greater_than_zero,
+            value_type::zero,               // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == greater_than_zero,
+        {
+            // u == ...
+            value_type::indeterminant,      // less_than_min,
+            value_type::less_than_zero,     // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::greater_than_zero,  // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == greater_than_max
+        {
+            value_type::indeterminant,      // less_than_min,
+            value_type::indeterminant,      // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::indeterminant,      // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        },
+        // t == indeterminant
+        {
+            value_type::indeterminant,      // less_than_min,
+            value_type::indeterminant,      // less_than_zero,
+            value_type::indeterminant,      // zero,
+            value_type::indeterminant,      // greater_than_zero,
+            value_type::indeterminant,      // greater than max,
+            value_type::indeterminant,      // indeterminant,
+        }
+    };
+
+    switch(result[value_type(t)][value_type(u)]){
+        case value_type::zero:
+            return 0;
+        case value_type::less_than_zero:
+        case value_type::greater_than_zero:
+            return checked::modulus<T>(t, u);
+        case value_type::indeterminant:
+            return safe_numerics_error::range_error;
+        case value_type::greater_than_max:
+        case value_type::less_than_min:
+        default:
+            assert(false);
+    }
 }
 
 // comparison operators
+
 template<class T>
 constexpr boost::logic::tribool operator<(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    constexpr const std::uint8_t order =
-        static_cast<std::uint8_t>(safe_numerics_error::casting_error_count);
-    constexpr const boost::logic::tribool result[order][order]{
-        // t == success
+    using value_type = sum_value_type<T>;
+    constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    enum class result_type : std::uint8_t {
+        runtime,
+        false_value,
+        true_value,
+        indeterminant,
+    };
+
+    constexpr const result_type result[order][order]{
+        // t == known_value
         {
             // u == ...
-            boost::logic::tribool::tribool(indeterminate), // success,
-            false, // negative_overflow_error,
-            true,  // positive_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // range_error,
-            boost::logic::tribool::tribool(indeterminate) // domain_error,
+            result_type::runtime,       // known_value,
+            result_type::false_value,   // less_than_min,
+            result_type::true_value,    // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == positive_overflow_error,
+        // t == less_than_min
         {
             // u == ...
-            false, // success,
-            false, // negative_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // positive_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // range_error,
-            boost::logic::tribool::tribool(indeterminate) // domain_error,
+            result_type::true_value,    // known_value,
+            result_type::indeterminant, // less_than_min,
+            result_type::true_value,    // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == negative_overflow_error,
+        // t == greater_than_max
         {
             // u == ...
-            true, // success,
-            boost::logic::tribool::tribool(indeterminate), // negative_overflow_error,
-            true,  // positive_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // range_error,
-            boost::logic::tribool::tribool(indeterminate) // domain_error,
+            result_type::false_value,   // known_value,
+            result_type::false_value,   // less_than_min,
+            result_type::indeterminant, // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == range_error,
-        {
-            boost::logic::tribool::tribool(indeterminate), // success,
-            boost::logic::tribool::tribool(indeterminate), // negative_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // positive_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // range_error,
-            boost::logic::tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == domain_error,
+        // t == indeterminant
         {
             // u == ...
-            boost::logic::tribool::tribool(indeterminate), // success,
-            boost::logic::tribool::tribool(indeterminate), // negative_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // positive_overflow_error,
-            boost::logic::tribool::tribool(indeterminate), // range_error,
-            boost::logic::tribool::tribool(indeterminate) // domain_error,
+            result_type::indeterminant, // known_value,
+            result_type::indeterminant, // less_than_min,
+            result_type::indeterminant, // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
     };
-    // this seems to fail in preserving constexprness.
-    // I can't figure out why.
-    return (t.exception() || u.exception()) ?
-        result
-            [static_cast<std::uint8_t>(t.m_e)]
-            [static_cast<std::uint8_t>(u.m_e)]
-    :
-        (t.m_r < u.m_r);
+
+    switch(result[value_type(t)][value_type(u)]){
+    case result_type::runtime:
+        return static_cast<const T &>(t) < static_cast<const T &>(u);
+    case result_type::false_value:
+        return false;
+    case result_type::true_value:
+        return true;
+    case result_type::indeterminant:
+        return boost::logic::indeterminate;
+    }
 }
+
 template<class T>
 constexpr boost::logic::tribool
 operator>=(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    // return ! (t < u);
-    if(t.exception() || u.exception()){
-        return boost::logic::tribool::tribool(indeterminate);
-    }
-    else{
-        return !(t.m_r < u.m_r);
-    }
+    return !(t < u);
 }
 
 template<class T>
@@ -251,70 +572,8 @@ constexpr boost::logic::tribool
 operator>(
     const checked_result<T> & t,
     const checked_result<T> & u
-) {
-    constexpr const std::uint8_t order =
-        static_cast<std::uint8_t>(safe_numerics_error::casting_error_count);
-    constexpr const tribool result[order][order]{
-        // t == success
-        {
-            // u == ...
-            tribool::tribool(indeterminate), // success,
-            true, // negative_overflow_error,
-            false,  // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == positive_overflow_error,
-        {
-            // u == ...
-            true, // success,
-            true, // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == negative_overflow_error,
-        {
-            // u == ...
-            false, // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            false,  // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == range_error,
-        {
-            tribool::tribool(indeterminate), // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == domain_error,
-        {
-            // u == ...
-            tribool::tribool(indeterminate), // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-    };
-    /*
-    return (t.exception() || u.exception())
-    ? result
-            [static_cast<std::uint8_t>(t.m_e)]
-            [static_cast<std::uint8_t>(u.m_e)]
-    : t.m_r < u.m_r;
-    */
-    if(t.exception() || u.exception()){
-        return result
-            [static_cast<std::uint8_t>(t.m_e)]
-            [static_cast<std::uint8_t>(u.m_e)];
-    }
-    else{
-        return t.m_r < u.m_r;
-    }
+){
+    return u < t;
 }
 
 template<class T>
@@ -323,13 +582,7 @@ operator<=(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    //return ! (t < u);
-    if(t.exception() || u.exception()){
-        return boost::logic::tribool::tribool(indeterminate);
-    }
-    else{
-        return !(t.m_r < u.m_r);
-    }
+    return !(u < t);
 }
 
 template<class T>
@@ -338,67 +591,395 @@ operator==(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    constexpr const std::uint8_t order =
-        static_cast<std::uint8_t>(safe_numerics_error::casting_error_count);
-    constexpr const tribool result[order][order]{
-        // t == success
+    using value_type = sum_value_type<T>;
+    constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    enum class result_type : std::uint8_t {
+        runtime,
+        false_value,
+        true_value,
+        indeterminant,
+    };
+
+    constexpr const result_type result[order][order]{
+        // t == known_value
         {
             // u == ...
-            tribool::tribool(indeterminate), // success,
-            false, // negative_overflow_error,
-            false,  // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
+            result_type::runtime,       // known_value,
+            result_type::false_value,   // less_than_min,
+            result_type::false_value,   // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == positive_overflow_error,
+        // t == less_than_min
         {
             // u == ...
-            false, // success,
-            false, // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
+            result_type::false_value,   // known_value,
+            result_type::indeterminant, // less_than_min,
+            result_type::false_value,   // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == negative_overflow_error,
+        // t == greater_than_max
         {
             // u == ...
-            false, // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            false,  // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
+            result_type::false_value,   // known_value,
+            result_type::false_value,   // less_than_min,
+            result_type::indeterminant, // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
-        // t == range_error,
-        {
-            tribool::tribool(indeterminate), // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
-        },
-        // t == domain_error,
+        // t == indeterminant
         {
             // u == ...
-            tribool::tribool(indeterminate), // success,
-            tribool::tribool(indeterminate), // negative_overflow_error,
-            tribool::tribool(indeterminate), // positive_overflow_error,
-            tribool::tribool(indeterminate), // range_error,
-            tribool::tribool(indeterminate) // domain_error,
+            result_type::indeterminant, // known_value,
+            result_type::indeterminant, // less_than_min,
+            result_type::indeterminant, // greater_than_max,
+            result_type::indeterminant, // indeterminant,
         },
     };
-    if(t.exception() || u.exception()){
-        return result
-            [static_cast<std::uint8_t>(t.m_e)]
-            [static_cast<std::uint8_t>(u.m_e)];
-    }
-    else{
-        return t.m_r == u.m_r;
+    switch(result[value_type(t)][value_type(u)]){
+    case result_type::runtime:
+        return static_cast<const T &>(t) == static_cast<const T &>(u);
+    case result_type::false_value:
+        return false;
+    case result_type::true_value:
+        return true;
+    case result_type::indeterminant:
+        return boost::logic::indeterminate;
     }
 }
-template<class T, class U>
+
+template<class T>
 constexpr boost::logic::tribool
-operator!=(const checked_result<T> & t, const checked_result<U> & u){
+operator!=(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
     return ! (t == u);
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator>>(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+);
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator-(
+    const checked_result<T> & t
+){
+//    assert(false);
+    return checked_result<T>(0) - t;
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator~(
+    const checked_result<T> & t
+){
+//    assert(false);
+    return ~t.m_r;
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator<<(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    using value_type = product_value_type<T>;
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    const std::uint8_t result[order][order] = {
+        // t == less_than_min
+        {
+            // u == ...
+            1, // -1,                                           // less_than_min,
+            2, // safe_numerics_error::negative_overflow_error, // less_than_zero,
+            2, // safe_numerics_error::negative_overflow_error, // zero,
+            2, // safe_numerics_error::negative_overflow_error, // greater_than_zero,
+            2, // safe_numerics_error::negative_overflow_error, // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == less_than_zero,
+        {
+            // u == ...
+            3, // -1,                                           // less_than_min,
+            4, // - (-t >> -u),                                 // less_than_zero,
+            5, // safe_numerics_error::negative_overflow_error, // zero,
+            6, // - (-t << u),                                  // greater_than_zero,
+            2, // safe_numerics_error::negative_overflow_error, // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == zero,
+        {
+            // u == ...
+            3, // 0     // less_than_min,
+            3, // 0     // less_than_zero,
+            3, // 0,    // zero,
+            3, // 0,    // greater_than_zero,
+            3, // 0,    // greater than max,
+            3, // safe_numerics_error::range_error,    // indeterminant,
+        },
+        // t == greater_than_zero,
+        {
+            // u == ...
+            3, // 0,                                            // less_than_min,
+            7, // t >> -u,                                      // less_than_zero,
+            5, // t,                                            // zero,
+            8, // t >> u                                        // greater_than_zero,
+            9, // safe_numerics_error::positive_overflow_error, // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == greater_than_max
+        {
+            // u == ...
+            1, // safe_numerics_error::range_error,               // less_than_min,
+            9, // safe_numerics_error::positive_overflow_error),  // less_than_zero,
+            9, // safe_numerics_error::positive_overflow_error,   // zero,
+            9, // safe_numerics_error::positive_overflow_error),  // greater_than_zero,
+            9, // safe_numerics_error::positive_overflow_error,   // greater than max,
+            1, // safe_numerics_error::range_error,               // indeterminant,
+         },
+        // t == indeterminant
+        {
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+        }
+    };
+
+    const value_type vt(t);
+    const value_type vu(u);
+    switch(result[vt][vu]){
+    case 1:
+        return safe_numerics_error::range_error;
+    case 2:
+        return safe_numerics_error::negative_overflow_error;
+    case 3:
+        return 0;
+    // the following gymnastics are to handle the case where 
+    // a value is changed from a negative to a positive number.
+    // For example, and 8 bit number t == -128.  Then -t also
+    // equals -128 since 128 cannot be held in an 8 bit signed
+    // integer.
+    case 4:{ // - (-t >> -u)
+        assert(t < 0);
+        assert(u < 0);
+        return t >> -u;
+    }
+    case 5:
+        return t;
+    case 6:{ // - (-t << u)
+        assert(t < 0);
+        assert(u > 0);
+        const checked_result<T> tx = t * checked_result<T>(2);
+        const checked_result<T> ux = u - checked_result<T>(1);
+        return  - (-tx << ux);
+    }
+    case 7:{  // t >> -u
+        assert(t > 0);
+        assert(u < 0);
+        return t >> -u;
+    }
+    case 8:{ // t << u
+        assert(t > 0);
+        assert(u > 0);
+        checked_result<T> r = checked::left_shift<T>(t, u);
+        return (r.m_e == safe_numerics_error::shift_too_large)
+        ? checked_result<T>(safe_numerics_error::positive_overflow_error)
+        : r;
+    }
+    case 9:
+        return safe_numerics_error::positive_overflow_error;
+    default:
+        assert(false);
+    };
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator>>(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    using value_type = product_value_type<T>;
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+
+    const std::uint8_t result[order][order] = {
+        // t == less_than_min
+        {
+            // u == ...
+            2, // safe_numerics_error::negative_overflow_error, // less_than_min,
+            2, // safe_numerics_error::negative_overflow_error, // less_than_zero,
+            2, // safe_numerics_error::negative_overflow_error, // zero,
+            2, // safe_numerics_error::negative_overflow_error, // greater_than_zero,
+            1, // safe_numerics_error::range_error,             // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == less_than_zero,
+        {
+            // u == ...
+            2, // safe_numerics_error::negative_overflow_error  // less_than_min,
+            4, // - (-t << -u),                                 // less_than_zero,
+            5, // safe_numerics_error::negative_overflow_error. // zero,
+            6, // - (-t >> u),                                  // greater_than_zero,
+            3, // 0, ? or -1                                    // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == zero,
+        {
+            // u == ...
+            3, // 0     // less_than_min,
+            3, // 0     // less_than_zero,
+            3, // 0,    // zero,
+            3, // 0,    // greater_than_zero,
+            3, // 0,    // greater than max,
+            3, // safe_numerics_error::range_error,    // indeterminant,
+        },
+        // t == greater_than_zero,
+        {
+            // u == ...
+            9, // safe_numerics_error::positive_overflow_error  // less_than_min,
+            7, // t << -u,                                      // less_than_zero,
+            5, // t,                                            // zero,
+            8, // t >> u                                        // greater_than_zero,
+            3, // 0,                                            // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+        },
+        // t == greater_than_max
+        {
+            // u == ...
+            9, // safe_numerics_error::positive_overflow_error, // less_than_min,
+            9, // safe_numerics_error::positive_overflow_error, // less_than_zero,
+            9, // safe_numerics_error::positive_overflow_error, // zero,
+            9, // safe_numerics_error::positive_overflow_error, // greater_than_zero,
+            1, // safe_numerics_error::range_error,             // greater than max,
+            1, // safe_numerics_error::range_error,             // indeterminant,
+         },
+        // t == indeterminant
+        {
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+            1, // safe_numerics_error::range_error,    // indeterminant,
+        }
+    };
+
+    const value_type vt(t);
+    const value_type vu(u);
+    switch(result[vt][vu]){
+    case 1:
+        return safe_numerics_error::range_error;
+    case 2:
+        return safe_numerics_error::negative_overflow_error;
+    case 3:
+        return 0;
+    case 4:{ // - (-t << -u)
+        assert(t < 0);
+        assert(u < 0);
+        return t << -u;
+    }
+    case 5:
+        return t;
+    case 6:{ //  - (-t >> u)
+        assert(t < 0);
+        assert(u > 0);
+        const checked_result<T> tx = t / checked_result<T>(2);
+        const checked_result<T> ux = u - checked_result<T>(1);
+        return  - (-tx >> ux);
+    }
+    case 7:{ // t << -u,
+        assert(t > 0);
+        assert(u < 0);
+        return t << -u;
+    }
+    case 8:{ // t >> u
+        assert(t > 0);
+        assert(u > 0);
+        checked_result<T> r = checked::right_shift<T>(t, u);
+        return (r.m_e == safe_numerics_error::shift_too_large)
+        ? checked_result<T>(0)
+        : r;
+    }
+    case 9:
+        return safe_numerics_error::positive_overflow_error;
+    default:
+        assert(false);
+    };
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator|(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    return
+        t.exception() || u.exception()
+        ? checked_result<T>(safe_numerics_error::range_error)
+        : checked::bitwise_or<T>(
+            static_cast<T>(t),
+            static_cast<T>(u)
+        );
+}
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator^(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    return
+        t.exception() || u.exception()
+        ? checked_result<T>(safe_numerics_error::range_error)
+        : checked::bitwise_xor<T>(
+            static_cast<T>(t),
+            static_cast<T>(u)
+        );
+}
+
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator&(
+    const checked_result<T> & t,
+    const checked_result<T> & u
+){
+    return
+        t.exception() || u.exception()
+        ? checked_result<T>(safe_numerics_error::range_error)
+        : checked::bitwise_and<T>(
+            static_cast<T>(t),
+            static_cast<T>(u)
+        );
 }
 
 } // numeric
@@ -416,7 +997,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     if(!r.exception())
         os << static_cast<R>(r);
     else
-        os << r.m_msg; //static_cast<const char *>(r);
+        os << std::error_code(r.m_e).message() << ':' << r.m_msg;
     return os;
 }
 
@@ -428,7 +1009,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     if(! r.exception())
         os << static_cast<std::int16_t>(r);
     else
-        os << r.m_msg; //static_cast<const char *>(r);
+        os << std::error_code(r.m_e).message() << ':' << r.m_msg;
     return os;
 }
 
@@ -440,7 +1021,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     if(! r.exception())
         os << static_cast<std::uint16_t>(r);
     else
-        os << r.m_msg; //static_cast<const char *>(r);
+        os << std::error_code(r.m_e).message() << ':' << r.m_msg;
     return os;
 }
 

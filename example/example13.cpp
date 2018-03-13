@@ -3,7 +3,7 @@
 
 #include "../include/safe_integer.hpp"
 
-int main(int argc, const char * argv[]){
+int main(int, const char *[]){
     // problem: cannot recover from arithmetic errors
     std::cout << "example 7: ";
     std::cout << "cannot recover from arithmetic errors" << std::endl;

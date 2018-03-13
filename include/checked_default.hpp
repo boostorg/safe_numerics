@@ -34,6 +34,7 @@
 
 // usage example: checked<int>::add(t, u) ...
 
+#include <boost/logic/tribool.hpp>
 #include "checked_result.hpp"
 
 namespace boost {
@@ -51,8 +52,12 @@ namespace numeric {
 template<typename R, typename T, class Default = void>
 struct checked_unary_operation{
     constexpr static checked_result<R>
-    cast(const T & t) noexcept {
+    cast(const T & t) /* noexcept */ {
         return static_cast<R>(t);
+    }
+    constexpr static checked_result<T>
+    minus(const T & t) noexcept {
+        return - t;
     }
 };
 
@@ -78,15 +83,15 @@ struct checked_binary_operation{
     modulus(const R & t, const R & u) noexcept {
         return t % u;
     }
-    constexpr static bool
+    constexpr static boost::logic::tribool
     less_than(const R & t, const R & u) noexcept {
         return t < u;
     }
-    constexpr static bool
+    constexpr static boost::logic::tribool
     greater_than(const R & t, const R & u) noexcept {
         return t > u;
     }
-    constexpr static bool
+    constexpr static boost::logic::tribool
     equal(const R & t, const R & u) noexcept {
         return t < u;
     }
@@ -118,8 +123,12 @@ namespace checked {
 // the result type R can be deduced from the function parameters.
 
 template<typename R, typename T>
-constexpr checked_result<R> cast(const T & t) noexcept {
+constexpr checked_result<R> cast(const T & t) /* noexcept */ {
     return checked_unary_operation<R, T>::cast(t);
+}
+template<typename R>
+constexpr checked_result<R> minus(const R & t) noexcept {
+    return checked_binary_operation<R>::minus(t);
 }
 template<typename R>
 constexpr checked_result<R> add(const R & t, const R & u) noexcept {

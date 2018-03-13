@@ -178,7 +178,7 @@ private:
         t.input(is);
         return is;
     }
-
+    
 public:
     ////////////////////////////////////////////////////////////
     // constructors
@@ -188,6 +188,7 @@ public:
     constexpr explicit safe_base(const Stored & rhs, skip_validation) :
         m_t(rhs)
     {}
+
     // default constructor
     /*
     constexpr explicit safe_base() {
@@ -216,8 +217,9 @@ public:
     // e) move assignment operator
     constexpr safe_base & operator=(safe_base &&) = default;
 
-    // convert instance of a safe type from an instance from a convertible
-    // underlying type.
+    // construct an instance of a safe type
+    // from an instance of a convertible underlying type.
+    #if 0
     template<class T>
     constexpr /*explicit*/ safe_base(
         const T & t,
@@ -226,6 +228,12 @@ public:
             bool
         >::type = true
     ) :
+    #else
+    template<class T>
+    constexpr /*explicit*/ safe_base(
+        const T & t
+    ) :
+    #endif
         m_t(validated_cast(t))
     {}
 
@@ -234,6 +242,7 @@ public:
     // convert to any type which is not safe.  safe types need to be
     // excluded to prevent ambiguous function selection which
     // would otherwise occur
+    #if 1
     template<
         class R,
         typename std::enable_if<
@@ -241,6 +250,9 @@ public:
             int
         >::type = 0
     >
+    #else
+    template<class R>
+    #endif
     constexpr /*explicit*/ operator R () const;
 
     constexpr /*explicit*/ operator Stored () const;

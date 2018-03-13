@@ -47,7 +47,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 << "failed to detect error in construction "
                 << "safe<" << t2_name << "> (" << t1_name << ")"
                 << std::endl;
-            safe<T2> s2(t1);
+            safe<T2> s2x(t1);
             return false;
         }
     }
@@ -105,7 +105,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 << "failed to detect error in construction "
                 << "safe<" << t1_name << "> (safe<" << t2_name << ">(" << t1 << "))"
                 << std::endl;
-            safe<T2> s1(t1);
+            safe<T2> s1x(t1);
             return false;
         }
     }
@@ -157,7 +157,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
         type_index                                 \
     )                                              \
 /**/
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     bool rval = true;
     BOOST_PP_REPEAT(
         BOOST_PP_ARRAY_SIZE(TYPES),

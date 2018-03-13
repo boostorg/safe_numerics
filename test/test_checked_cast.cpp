@@ -19,7 +19,7 @@ bool test_cast(
     char expected_result
 ){
     std::cout
-        << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
+        << "testing static_cast<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
 
     boost::numeric::checked_result<T2> r2 = boost::numeric::checked::cast<T2>(v1);

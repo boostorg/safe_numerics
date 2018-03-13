@@ -9,6 +9,9 @@
 
 #include <iostream>
 #include <exception>
+#include <typeinfo>
+
+#include <boost/core/demangle.hpp>
 
 #include "../include/safe_integer.hpp"
 #include "../include/range_value.hpp"
@@ -23,7 +26,8 @@ bool test_assignment(
 ){
     std::cout << "testing " << std::endl;
     {
-        std::cout << "safe<" << at1 << "> = " << at2 << std::endl;
+        //std::cout << "safe<" << at1 << "> = " << at2 << std::endl;
+        std::cout << boost::core::demangle(typeid(t1).name()) << " = " << at2 << std::endl;
         safe_t<T2> s2(t2);
 
         static_assert(
@@ -35,12 +39,11 @@ bool test_assignment(
             if(expected_result == 'x'){
                     std::cout
                         << "failed to detect error in assignment "
-                        << at1 << " = " << at2
+                        << boost::core::demangle(typeid(t1).name())
+                        << " = "
+                        << at2
                         << std::endl;
-                try{
-                    t1 = s2;
-                }
-                catch(std::exception){}
+                t1 = s2;
                 return false;
             }
         }
@@ -48,7 +51,9 @@ bool test_assignment(
             if(expected_result == '.'){
                     std::cout
                         << "erroneously detected error in assignment "
-                        << at1 << " = " << at2
+                        << boost::core::demangle(typeid(t1).name())
+                        << " = "
+                        << at2
                         << std::endl;
                 try{
                     t1 = s2;
@@ -59,20 +64,22 @@ bool test_assignment(
         }
     }
     {
-        std::cout << "safe<" << at1 << '>' << " = " << "safe<" << at2 << '>' << std::endl;
         safe_t<T1> s1(t1);
         safe_t<T2> s2(t2);
+        std::cout
+            << "safe<" << boost::core::demangle(typeid(t1).name()) << ">"
+            << " = "
+            << "safe<" << at2 << '>' << std::endl;
         try{
             s1 = s2;
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in assignment "
-                    << at1 << " = " << at2
+                    << "safe<" << boost::core::demangle(typeid(t1).name()) << ">"
+                    << " = "
+                    << at2
                     << std::endl;
-                try{
-                    s1 = s2;
-                }
-                catch(std::exception){}
+                s1 = s2;
                 return false;
             }
         }
@@ -80,7 +87,9 @@ bool test_assignment(
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in assignment "
-                    << at1 << " = " << at2
+                    << "safe<" << boost::core::demangle(typeid(t1).name()) << ">"
+                    << " = "
+                    << at2
                     << std::endl;
                 try{
                     s1 = t2;

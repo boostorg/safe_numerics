@@ -11,6 +11,7 @@
 
 #include "../include/checked_result.hpp"
 #include "../include/checked_integer.hpp"
+#include "../include/checked_result_operations.hpp"
 
 template<class T1, class T2>
 bool test_checked_divide(
@@ -27,10 +28,11 @@ bool test_checked_divide(
         << av1 << " / " << av2
         << std::endl;
 
-    typedef decltype(T1() / T2()) result_type;
+    using result_type = decltype(T1() / T2());
 
-    checked_result<result_type> result
-        = checked::divide<result_type>(v1, v2);
+    const checked_result<result_type> rv1 = checked::cast<result_type>(v1);
+    const checked_result<result_type> rv2 = checked::cast<result_type>(v2);
+    const checked_result<result_type> result = rv1 / rv2;
 
     if(! result.exception()
     && expected_result != '.'){
@@ -39,7 +41,7 @@ bool test_checked_divide(
             << std::hex << "0x" << result << "(" << std::dec << result << ")"
             << " != "<< av1 << " / " << av2
             << std::endl;
-        result = checked::divide<result_type>(v1, v2);
+        rv1 / rv2;
         return false;
     }
     else
@@ -48,7 +50,7 @@ bool test_checked_divide(
         std::cout
             << "erroneously detected error "
             << std::hex << result <<  av1 << " / " << av2 << std::dec << std::endl;
-        result = checked::divide<result_type>(v1, v2);
+        rv1 / rv2;
         return false;
     }
     return true; // correct result

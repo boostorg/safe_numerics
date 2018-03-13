@@ -16,54 +16,60 @@
 #include "../include/checked_integer.hpp"
 
 template<class T>
-bool test_checked_multiply(
+bool test_checked_right_shift(
     boost::numeric::checked_result<T> v1,
     boost::numeric::checked_result<T> v2,
     char expected_result
 ){
     using namespace boost::numeric;
-    const checked_result<T> result = v1 * v2;
-    std::cout
-        << "testing  "
-        << v1 << " * " << v2 << " -> " << result
-        << std::endl;
+
+    std::cout << "testing " << v1 << " >> " << v2 << std::flush;
+    const checked_result<T> result = v1 >> v2;
+    std::cout << " -> " << result << std::endl;
 
     switch(expected_result){
-    case '0':
     case '.':
         if(result.exception()){
             std::cout
-                << "erroneously detected error in multiplication "
+                << "erroneously detected error in right shift "
                 << std::endl;
-            v1 * v2;
-            return false;
-        }
-        if(expected_result == '0'
-        && result != T(0)
-        ){
-            std::cout
-                << "failed to get expected zero result "
-                << std::endl;
-            v1 * v2;
+            v1 >> v2;
             return false;
         }
         return true;
     case '-':
         if(safe_numerics_error::negative_overflow_error == result.m_e)
             return true;
+        break;
     case '+':
         if(safe_numerics_error::positive_overflow_error == result.m_e)
             return true;
+        break;
     case '!':
         if(safe_numerics_error::range_error == result.m_e)
             return true;
+        break;
+    case 'n':   // n negative_shift
+        if(safe_numerics_error::negative_shift == result.m_e)
+            return true;
+        break;
+    case 's':   // s negative_value_shift
+        if(safe_numerics_error::negative_value_shift == result.m_e)
+            return true;
+        break;
+    case 'l':   // l shift_too_large
+        if(safe_numerics_error::shift_too_large == result.m_e)
+            return true;
+        break;
+    default:
+        assert(false);
     }
     std::cout
-        << "failed to detect error in multiplication "
+        << "failed to detect error in right shift "
         << std::hex << result << "(" << std::dec << result << ")"
-        << " != "<< v1 << " * " << v2
+        << " != "<< v1 << " >> " << v2
         << std::endl;
-    v1 * v2;
+    v1 >> v2;
     return false;
 }
 
@@ -98,45 +104,49 @@ const boost::numeric::checked_result<T> unsigned_value[] = {
 // . success
 // - negative_overflow_error
 // + positive_overflow_error
-// ! range_error
+// ? range_error
+// n negative_shift,             // negative value in shift operator
+// s negative_value_shift,       // shift a negative value
+// l shift_too_large,            // l/r shift exceeds variable size
 
-const char * signed_multiplication_results[] = {
+char const * const signed_right_shift_results[] = {
 //      012345678
 /* 0*/ "!!!!!!!!!",
 /* 1*/ "!!!!!!!!!",
-/* 2*/ "!!+++.---",
-/* 3*/ "!!++...--",
-/* 4*/ "!!+.....-",
-/* 5*/ "!!...0000",
-/* 6*/ "!!-..0.+-",
-/* 7*/ "!!--.0+-+",
-/* 8*/ "!!---0-++",
+/* 2*/ "!!!++++++",
+/* 3*/ "!!....+++",
+/* 4*/ "!!.....++",
+/* 5*/ ".........",
+/* 6*/ "!!.....--",
+/* 7*/ "!!....---",
+/* 8*/ "!!!------",
 };
 
-const char * unsigned_multiplication_results[] = {
+char const * const unsigned_right_shift_results[] = {
 //      0123456
 /* 0*/ "!!!!!!!",
 /* 1*/ "!!!!!!!",
-/* 2*/ "!!+++.-",
-/* 3*/ "!!++..-",
-/* 4*/ "!!+...-",
-/* 5*/ "!!...00",
-/* 6*/ "!!---0+",
+/* 2*/ "!!!++++",
+/* 3*/ "!!....+",
+/* 4*/ "!!....+",
+/* 5*/ ".......",
+/* 6*/ "!!!----",
 };
 
 // given an array of values of particula
 // test all value pairs of a given collection
 template<typename T, unsigned int N>
-bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
+bool test_pairs(const T (&value)[N], const char * const (&results)[N]) {
+    bool result = true;
     using namespace boost::numeric;
     // for each pair of values p1, p2 (100)
     for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++){
         std::cout << std::dec << i << ',' << j << ',';
-        if(! test_checked_multiply(value[i], value[j], results[i][j]))
-            return false;
+        if(! test_checked_right_shift(value[i], value[j], results[i][j]))
+            result = false;
     }
-    return true;
+    return result;
 }
 
 #include <boost/mp11/algorithm.hpp>
@@ -144,14 +154,15 @@ bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
 struct t {
     static bool m_error;
     template<typename T>
-    void operator()(const T &){        std::cout
+    void operator()(const T &){
+        std::cout
             << "** testing "
             << boost::core::demangle(typeid(T).name())
             << std::endl;
         m_error &=
             std::numeric_limits<T>::is_signed
-            ? test_pairs(signed_value<T>, signed_multiplication_results)
-            : test_pairs(unsigned_value<T>, unsigned_multiplication_results)
+            ? test_pairs(signed_value<T>, signed_right_shift_results)
+            : test_pairs(unsigned_value<T>, unsigned_right_shift_results)
         ;
     }
 };
@@ -168,20 +179,13 @@ bool test_all_types(){
     return rval.m_error;
 }
 
-// given an array of values of particula
-template<typename T, unsigned int N>
-constexpr void check_symmetry(const T (&value)[N]) {
-    using namespace boost::numeric;
-    // for each pair of values p1, p2 (100)
-    for(unsigned int i = 0; i < N; i++)
-    for(unsigned int j = 0; j < N; j++)
-        assert(value[i][j] == value[j][i]);
-}
-
 int main(int , char *[]){
-    // sanity check on test matrix - should be symetrical
-    check_symmetry(signed_multiplication_results);
-    check_symmetry(unsigned_multiplication_results);
+    test_checked_right_shift(
+        signed_value<std::int8_t>[6],
+        signed_value<std::int8_t>[7],
+        signed_right_shift_results[6][7]
+    );
+    
     bool rval = test_all_types();
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;

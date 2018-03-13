@@ -132,7 +132,7 @@ bool test5(){
     return true;
 }
 
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     bool rval = (
         test1() &&
         test2() &&

@@ -47,10 +47,7 @@ bool test_multiply(
                     << "*** failed to detect error in multiplication "
                     << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
-                try{
-                    t1 * v2;
-                }
-                catch(std::exception){}
+                t1 * v2;
                 return false;
             }
         }
@@ -95,10 +92,7 @@ bool test_multiply(
                     << "*** failed to detect error in multiplication "
                     << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
-                try{
-                    v1 * t2;
-                }
-                catch(std::exception){}
+                v1 * t2;
                 return false;
             }
         }
@@ -141,10 +135,7 @@ bool test_multiply(
                     << "*** failed to detect error in multiplication "
                     << boost::core::demangle(ti.name()) << '\n'
                     << std::endl;
-                try{
-                    t1 * t2;
-                }
-                catch(std::exception){}
+                t1 * t2;
                 return false;
             }
         }

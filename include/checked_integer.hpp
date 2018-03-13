@@ -128,7 +128,6 @@ struct checked_unary_operation<R, T,
             std::false_type, // R is unsigned
             std::true_type   // T is signed
         ) noexcept {
-            // static_assert(boost::numeric::safe_compare::less_than(t, 0), "asdfasdf");
             return
             boost::numeric::safe_compare::less_than(t, 0) ?
                 checked_result<R>(
@@ -169,7 +168,6 @@ struct checked_unary_operation<R, T,
         && std::is_floating_point<T>::value
     >::type
 >{
-//    static_assert(std::is_same<T, void>::value, "asdfasdf");
     constexpr static checked_result<R>
     cast(const T & t) noexcept {
         return static_cast<R>(t);
@@ -272,7 +270,7 @@ struct checked_binary_operation<R,
             return
                 t < u ?
                     checked_result<R>(
-                        safe_numerics_error::range_error,
+                        safe_numerics_error::negative_overflow_error,
                         "subtraction result cannot be negative"
                     )
                 :
@@ -290,13 +288,13 @@ struct checked_binary_operation<R,
                 // INT32-C. Ensure that operations on signed integers do not result in overflow
                 ((u > 0) && (t < (std::numeric_limits<R>::min() + u))) ?
                     checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                        safe_numerics_error::negative_overflow_error,
                         "subtraction result overflows result type"
                     )
                 :
                 ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
                     checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                        safe_numerics_error::positive_overflow_error,
                         "subtraction result overflows result type"
                     )
                 :
@@ -308,6 +306,47 @@ struct checked_binary_operation<R,
 
     constexpr static checked_result<R> subtract(const R & t, const R & u) noexcept {
         return subtract_impl_detail::subtract(t, u, std::is_signed<R>());
+    }
+
+    ////////////////////////////////////////////////////
+    // safe minus on primitive types
+    struct minus_impl_detail {
+
+        // result unsigned
+        constexpr static checked_result<R> minus(
+            const R t,
+            std::false_type // R is unsigned
+        ) noexcept {
+            return t > 0 ?
+                    checked_result<R>(
+                        safe_numerics_error::negative_overflow_error,
+                        "minus unsigned would be negative"
+                    )
+                :
+                    // t == 0
+                    checked_result<R>(0)
+            ;
+        }
+
+        // result signed
+        constexpr static checked_result<R> minus(
+            const R t,
+            std::true_type // R is signed
+        ) noexcept { // INT32-C
+            return t == std::numeric_limits<R>::min() ?
+                checked_result<R>(
+                    safe_numerics_error::negative_overflow_error,
+                    "subtraction result overflows result type"
+                )
+            :
+                    -t
+            ;
+        }
+
+    }; // minus_impl_detail
+
+    constexpr static checked_result<R> minus(const R & t) noexcept {
+        return minus_impl_detail::minus(t, std::is_signed<R>());
     }
 
     ////////////////////////////////////////////////////
@@ -467,7 +506,7 @@ struct checked_binary_operation<R,
             return
                 (u == -1 && t == std::numeric_limits<R>::min()) ?
                     checked_result<R>(
-                        safe_numerics_error::range_error,
+                        safe_numerics_error::positive_overflow_error,
                         "result cannot be represented"
                     )
                 :
@@ -593,7 +632,7 @@ struct checked_binary_operation<R,
             ){
                 // behavior is undefined
                 return checked_result<R>(
-                   safe_numerics_error::undefined_behavior,
+                   safe_numerics_error::shift_too_large,
                    "shifting left more bits than available is undefined behavior"
                 );
             }
@@ -610,17 +649,29 @@ struct checked_binary_operation<R,
                 // and E1 x 2^E2 is representable in the corresponding
                 // unsigned type of the result type,
 
-                // then that value, converted to the result type,
-                // is the resulting value
-                return checked::left_shift<R>(
-                    static_cast<typename std::make_unsigned<R>::type>(t),
-                    u
-                );
+                // see 5.8 & 1
+                // if right operand is
+                // greater than or equal to the length in bits of the promoted left operand.
+                if(
+                    safe_compare::greater_than(
+                        u,
+                        std::numeric_limits<R>::digits - utility::significant_bits(t)
+                    )
+                ){
+                    // behavior is undefined
+                    return checked_result<R>(
+                       safe_numerics_error::shift_too_large,
+                       "shifting left more bits than available"
+                    );
+                }
+                else{
+                    return t << u;
+                }
             }
             // otherwise, the behavior is undefined.
             return checked_result<R>(
-               safe_numerics_error::undefined_behavior,
-               "shifting a negative value is undefined behavior"
+               safe_numerics_error::negative_shift,
+               "shifting a negative value"
             );
         }
 
@@ -639,15 +690,15 @@ struct checked_binary_operation<R,
         }
         if(u < 0){
             return checked_result<R>(
-               safe_numerics_error::implementation_defined_behavior,
-               "shifting negative amount is implementation defined behavior"
+               safe_numerics_error::negative_shift,
+               "shifting negative amount"
             );
         }
         if(u > std::numeric_limits<R>::digits){
             // behavior is undefined
             return checked_result<R>(
-               safe_numerics_error::implementation_defined_behavior,
-               "shifting more bits than available is implementation defined behavior"
+               safe_numerics_error::shift_too_large,
+               "shifting more bits than available"
             );
         }
         return left_shift_integer_detail::left_shift(t, u, std::is_signed<R>());
@@ -681,8 +732,8 @@ struct checked_binary_operation<R,
             // note that the C++ standard considers this case is "implemenation
             // defined" rather than "undefined".
             return checked_result<R>(
-                safe_numerics_error::implementation_defined_behavior,
-                "shifting a negative value is implementation defined behavior"
+                safe_numerics_error::negative_value_shift,
+                "shifting a negative value"
             );
          }
 
@@ -701,15 +752,15 @@ constexpr static checked_result<R> right_shift(
     // if the right operand is negative
     if(u < 0){
         return checked_result<R>(
-           safe_numerics_error::implementation_defined_behavior,
-           "shifting negative amount is implementation defined behavior"
+           safe_numerics_error::negative_shift,
+           "shifting negative amount"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
         return checked_result<R>(
-           safe_numerics_error::implementation_defined_behavior,
-           "shifting more bits than available is implementation defined behavior"
+           safe_numerics_error::shift_too_large,
+           "shifting more bits than available"
         );
     }
     return right_shift_integer_detail::right_shift(t, u ,std::is_signed<R>());
@@ -758,7 +809,7 @@ constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcep
     if(result_size > bits_type<R>::value){
         return checked_result<R>{
             safe_numerics_error::positive_overflow_error,
-            "result type too small to hold bitwise or"
+            "result type too small to hold bitwise and"
         };
     }
     return t & u;

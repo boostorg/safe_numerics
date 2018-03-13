@@ -1,479 +1,184 @@
+//  Copyright (c) 2012 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+#include <limits>
+#include <functional>
 #include <cassert>
 #include <iostream>
-#include <ostream>
-#include <cstdint>
-#include <algorithm> // max, min
-#include <limits>
-
+#include <typeinfo>
+#include <array>
 #include <boost/core/demangle.hpp>
 
 #include "../include/checked_result.hpp"
-#include "../include/checked_integer.hpp"
+#include "../include/checked_result_operations.hpp"
 #include "../include/interval.hpp"
 
-// test simple interval addition
-bool test1(){
+template<typename T>
+using fptr = T (*)(const T &, const T &);
+template<typename T>
+using fptr_interval = fptr<boost::numeric::interval<T>>;
+
+template<typename T>
+struct op {
+    const fptr<T> m_f;
+    const fptr_interval<T> m_finterval;
+    const char * m_symbol;
+    const bool skip_zeros;
+};
+
+template<
+    typename T,
+    unsigned int N
+>
+bool test_type_operator(
+    const T (&value)[N],
+    const op<T> & opi
+){
     using namespace boost::numeric;
-    std::cout << "test1" << std::endl;
-    interval<std::int16_t> x = {-64, 63};
-    std::cout << "x = " << x << std::endl;
-    interval<std::int16_t> y(-128, 126);
-    std::cout << "y = " << y << std::endl;
-    assert(static_cast<interval<std::int16_t>>(add<std::int16_t>(x,x)) == y);
-    if(add<std::int16_t>(x,x) != y)
-        return false;
-    std::cout << "x + x =" << add<std::int16_t>(x, x) << std::endl;
-    std::cout << "x - x = " << subtract<std::int16_t>(x, x) << std::endl;
+
+    // for each pair of values p1, p2 (100)
+    for(const T & l1 : value)
+    for(const T & u1 : value){
+        if(l1 > u1) continue; // skip reverse range
+        const interval<T> p1(l1, u1);
+        for(const T & l2 : value)
+        for(const T & u2 : value){
+            if(l2 > u2) continue; // skip reverse range
+            const interval<T> p2(l2, u2);
+
+            // maybe skip intervals which include zero
+            if(opi.skip_zeros){
+                if(l2 == safe_numerics_error::range_error
+                || l2 == safe_numerics_error::domain_error
+                || u2 == safe_numerics_error::range_error
+                || u2 == safe_numerics_error::domain_error
+                || p2.includes(T(0))
+                )
+                    continue;
+            }
+
+            // create a new interval from the operation
+            const interval<T> result_interval = opi.m_finterval(p1, p2);
+            std::cout
+                << p1 << opi.m_symbol << p2 << " -> " << result_interval << std::endl;
+            
+            // if resulting interval is null
+            if(result_interval.u < result_interval.l)
+                continue;
+
+            // for each pair test values
+            for(const T r1 : value)
+            for(const T r2 : value){
+                // calculate result of operation
+                const T result = opi.m_f(r1, r2);
+                if(result != safe_numerics_error::range_error
+                && result != safe_numerics_error::domain_error ){
+                    // note usage of tribool logic here !!!
+                    // includes returns indeterminant the conditional
+                    // returns false in both cases and this is what we want.
+                    // This is very subtle, don't skim over this.
+                    // if both r1 and r2 are within they're respective bounds
+                    if(p1.includes(r1) && p2.includes(r2)
+                    && ! result_interval.includes(result)){
+                        const boost::logic::tribool b1 = p1.includes(r1);
+                        const boost::logic::tribool b2 = p2.includes(r2);
+                        const boost::logic::tribool b3 = result_interval.includes(result);
+                        const interval<T> result_intervalx = opi.m_finterval(p1, p2);
+                        const T resultx = opi.m_f(r1, r2);
+                        return false;
+                    }
+                }
+            }
+        }
+    }
     return true;
 }
 
-// test simple interval equality
-bool test2(){
-    using namespace boost::numeric;
-    std::cout << "test2" << std::endl;
-    boost::numeric::interval<std::int16_t> x = {-64, 63};
-    std::cout << "x = " << x << std::endl;
-    std::cout << std::boolalpha << "(x == x) = " << (x == x) << std::endl;
-    return true;
-}
+// values
+template<typename T>
+const boost::numeric::checked_result<T> value[] = {
+    boost::numeric::safe_numerics_error::negative_overflow_error,
+    std::numeric_limits<T>::lowest(),
+    -1,
+    0,
+    1,
+    std::numeric_limits<T>::max(),
+    boost::numeric::safe_numerics_error::positive_overflow_error,
+    boost::numeric::safe_numerics_error::domain_error
+};
 
-// test erroneous addition
-bool test3(){
-    using namespace boost::numeric;
-    std::cout << "test3" << std::endl;
-    interval<std::int8_t> t;
-    std::cout << "t = " << t << std::endl;
-    interval<std::uint64_t> u;
-    std::cout << "u = " << u << std::endl;
-    using max_t = unsigned long long;
-    interval<checked_result<max_t>> r = add<max_t>(t, u);
-    std::cout << "r = " << r << std::endl;
-    return true;
-}
+template<typename T>
+const boost::numeric::checked_result<T> unsigned_value[] = {
+    boost::numeric::safe_numerics_error::negative_overflow_error,
+    0,
+    1,
+    std::numeric_limits<T>::max(),
+    boost::numeric::safe_numerics_error::positive_overflow_error,
+    boost::numeric::safe_numerics_error::domain_error
+};
 
-// test simple interval addition
-bool test6(){
-    using namespace boost::numeric;
-    std::cout << "test6" << std::endl;
-    interval<std::uint8_t> x;
-    std::cout << "x = " << x << std::endl;
-    interval<std::int16_t> y(0, 510);
-    std::cout << "y = " << y << std::endl;
-    
-    if(add<std::int16_t>(x,x) != y)
-        return false;
-    std::cout << "x + x =" << add<std::int16_t>(x, x) << std::endl;
-    std::cout << "x - x = " << subtract<std::int16_t>(x, x) << std::endl;
-    return true;
-}
-
-// test simple interval inclusion
-template<bool ExpectedResult, typename T, typename U>
-bool test5(){
-    using namespace boost::numeric;
-    std::cout << "test5" << std::endl;
-    interval<T> t;
-    std::cout << "t = " << t << std::endl;
-    interval<U> u;
-    std::cout << "u = " << u << std::endl;
-    if(t.includes(u))
-        std::cout << "t includes u\n";
-    if(u.includes(t))
-        std::cout << "u includes t\n";
-    if(!t.includes(u) && ! u.includes(t))
-        std::cout << "neither interval includes the other\n";
-    return ExpectedResult == t.includes(u);
-}
-
-// test simple interval union
-bool test7(){
-    using namespace boost::numeric;
-    std::cout << "test6" << std::endl;
-    interval<std::int8_t> x(-23, 47);
-    std::cout << "x = " << x << std::endl;
-    interval<std::uint16_t> y(0, 510);
-    std::cout << "y = " << y << std::endl;
-    std::cout << "x U y =" << union_interval<std::int16_t>(x, y) << std::endl;
-    return true;
-}
-
-namespace test4 {
-    using namespace boost::numeric;
-    using max_t = std::intmax_t;
-
-    // utilities
-
-    // figure the lower portion of range which includes zero
-    template<typename Tx>
-    constexpr static const interval<Tx> r_lower(const interval<Tx> & t){
-        static_assert(
-            std::is_literal_type< interval<Tx> >::value,
-            "interval<Tx> is not literal type"
-        );
-        return interval<Tx>(
-            t.l,
-            std::min(Tx(-1), t.u)
-        );
-    }
-
-    // figure the upper portion of range which includes zero
-    template<typename Tx>
-    constexpr static const interval<Tx> r_upper(const interval<Tx> & t){
-        static_assert(
-            std::is_literal_type< interval<Tx> >::value,
-            "interval<Tx> is not literal type"
-        );
-        return interval<Tx>(
-            std::max(Tx(1), t.l),
-            t.u
-        );
-    }
-
-    template<typename T, typename U>
-    bool divide_result(){
+struct test_type {
+    unsigned int m_error_count;
+    test_type() :
+        m_error_count(0)
+    {}
+    template<typename T>
+    bool operator()(const T &){
         using namespace boost::numeric;
-        std::cout << "divide result" << std::endl;
-        const interval<T> t;
         std::cout
-            << boost::core::demangle(typeid(t).name())
-            << " t = "
-            << t << std::endl;
-        const interval<U> u;
-        std::cout
-            << boost::core::demangle(typeid(u).name())
-            << " u = "
-            << u << std::endl;
-        const interval<checked_result<max_t>> rx = divide<max_t>(t, u); // r(t, u);
-        std::cout
-            << boost::core::demangle(typeid(rx).name())
-            << " rx = "
-            << rx
+            << "** testing "
+            << boost::core::demangle(typeid(T).name())
             << std::endl;
+
+        using R = checked_result<T>;
+        // pointers to operands for types T
+        static const std::array<op<R>, 7> op_table{{
+            {operator+, operator+, "+", false},
+            {operator-, operator-, "-", false},
+            {operator*, operator*, "*", false},
+            {operator/, operator/, "/", true},
+            {operator%, operator%, "%", true},
+            {operator<<, operator<<, "<<", false},
+            {operator>>, operator>>, ">>", false},
+        }};
+
+
+        //for(unsigned int i = 0; i < sizeof(op_table)/sizeof(op) / sizeof(fptr<R>); ++i){
+        for(const op<R> & o : op_table){
+            if(std::is_signed<T>::value){
+                if(! test_type_operator(value<T>, o)){
+                    ++m_error_count;
+                    return false;
+                }
+            }
+            else{
+                if(! test_type_operator(value<T>, o)){
+                    ++m_error_count;
+                    return false;
+                }
+            }
+        }
         return true;
     }
+};
 
-    template<typename T, typename U>
-    bool test_multiply(){
-        using namespace boost::numeric;
-        std::cout << "test4::multiply" << std::endl;
-        const interval<T> t_interval = {
-            std::numeric_limits<T>::min(),
-            std::numeric_limits<T>::max()
-        };
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        const interval<U> u_interval = {
-            std::numeric_limits<U>::min(),
-            std::numeric_limits<U>::max()
-        };
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(U() * T());
-        const interval<checked_result<max_t>> r_interval
-            = multiply<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
 
-    template<typename T, typename U>
-    bool test_divide(){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 divide" << std::endl;
-        const interval<T> t_interval = {
-            std::numeric_limits<T>::min(),
-            std::numeric_limits<T>::max()
-        };
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        const interval<U> u_interval = {
-            std::numeric_limits<U>::min(),
-            std::numeric_limits<U>::max()
-        };
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(U() * T());
-        const interval<checked_result<max_t>> r_interval
-            = divide<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
+int main(int, char *[]){
+    using namespace boost::mp11;
+    // list of signed types
+    using signed_types = mp_list<std::int8_t, std::int16_t, std::int32_t, std::int64_t>;
+    // list of unsigned types
+    using unsigned_types = mp_list<std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t>;
 
-    template<typename T, typename U>
-    bool test_add(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 add" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(U() + T());
-        const interval<checked_result<max_t>> r_interval
-            = add<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_add(){
-        return test_add<T,U>(interval<T>(), interval<U>());
-    }
+    test_type t;
+    mp_for_each<unsigned_types>(t);
+    mp_for_each<signed_types>(t);
 
-    template<typename T, typename U>
-    bool test_subtract(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 subtract" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(U() * T());
-        const interval<checked_result<max_t>> r_interval
-            = subtract<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_subtract(){
-        return test_subtract<T,U>(interval<T>(), interval<U>());
-    }
-
-    template<typename T, typename U>
-    bool test_left_shift(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 left shift" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(T() << U());
-        const interval<checked_result<R>> r_interval
-            = left_shift<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_left_shift(){
-        return test_left_shift<T,U>(interval<T>(), interval<U>());
-    }
-    template<typename T, typename U>
-    bool test_right_shift(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 right shift" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(T() << U());
-        const interval<checked_result<max_t>> r_interval
-            = right_shift<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_right_shift(){
-        return test_right_shift<T,U>(interval<T>(), interval<U>());
-    }
-    template<typename T, typename U>
-    bool test_mod(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 mod" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(T() % U());
-        const interval<checked_result<max_t>> r_interval
-            = modulus<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_mod(){
-        return test_mod<T,U>(interval<T>(), interval<U>());
-    }
-    template<typename T, typename U>
-    bool test(){
-        return
-            test_multiply<T, U>() &&
-            test_divide<T, U>() &&
-            test_add<T, U>() &&
-            test_subtract<T, U>() &&
-            test_left_shift<T, U>() &&
-            test_right_shift<T, U>() &&
-            test_mod<T, U>()
-        ;
-    }
-
-    template<typename T, typename U>
-    bool test_bitwise_or(
-        const interval<T> & t_interval,
-        const interval<U> & u_interval
-    ){
-        using namespace boost::numeric;
-        std::cout << "test4::test4 bitwise or" << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(t_interval).name())
-            << " t_interval = "
-            << t_interval
-            << std::endl;
-        std::cout
-            << boost::core::demangle(typeid(u_interval).name())
-            << " u_interval = "
-            << u_interval
-            << std::endl;
-        using R = decltype(T() | U());
-        const interval<checked_result<max_t>> r_interval
-            = bitwise_or<R>(t_interval, u_interval);
-        std::cout
-            << boost::core::demangle(typeid(r_interval).name())
-            << " r_interval = "
-            << r_interval
-            << std::endl;
-        return true;
-    }
-    template<typename T, typename U>
-    bool test_bitwise_or(){
-        return test_bitwise_or<T,U>(interval<T>(), interval<U>());
-    }
-
-} // test4
-
-int main(){
-    using namespace boost::numeric;
-    bool rval = (
-        test1() &&
-        test2() &&
-        test3() &&
-        test6() &&
-        test7() &&
-
-        test4::test_mod<std::int8_t, std::uint32_t>() &&
-        test4::test_add<std::int8_t, std::uint16_t>() &&
-
-        test4::test_bitwise_or<std::int8_t, std::uint16_t>() &&
-        test4::test_bitwise_or<std::int8_t, std::int32_t>() &&
-        test4::test_bitwise_or<unsigned char, unsigned char>() &&
-        test4::test_right_shift<unsigned char, unsigned char>() &&
-        test4::test_mod<unsigned char, unsigned char>() &&
-        test4::test_left_shift<int, signed char>() &&
-        test4::test_left_shift<unsigned char, unsigned char>() &&
-        test4::test_left_shift(
-            interval<unsigned char>(),
-            interval<unsigned char>(8, 8)
-        ) &&
-        test4::test_right_shift<std::uint8_t, std::uint8_t>() &&
-        test4::test_right_shift<std::int8_t, std::int8_t>() &&
-
-        test5<true, std::int8_t, std::int8_t>() &&
-        test5<false, std::int8_t, std::int16_t>() &&
-        test5<true, std::int16_t, std::int8_t>() &&
-        test5<true, std::int16_t, std::int16_t>() &&
-        test5<true, std::uint8_t, std::uint8_t>() &&
-        test5<false, std::uint8_t, std::uint16_t>() &&
-        test5<true, std::uint16_t, std::uint8_t>() &&
-        test5<true, std::uint16_t, std::uint16_t>() &&
-
-        test4::divide_result<std::int8_t, std::int8_t>() &&
-        test4::divide_result<std::int8_t, std::int16_t>() &&
-        test4::divide_result<std::int16_t, std::int8_t>() &&
-        test4::divide_result<std::int16_t, std::int16_t>() &&
-        test4::divide_result<std::uint8_t, std::uint8_t>() &&
-        test4::divide_result<std::uint8_t, std::uint16_t>() &&
-        test4::divide_result<std::uint16_t, std::uint8_t>() &&
-        test4::divide_result<std::uint16_t, std::uint16_t>() &&
-
-        test4::test<std::int16_t, std::int8_t>() &&
-        test4::test<std::int8_t, std::int8_t>() &&
-        test4::test<std::int8_t, std::uint8_t>() &&
-        test4::test<std::uint8_t, std::int16_t>() &&
-        test4::test<std::int32_t, std::uint8_t>() &&
-        test4::test<std::int32_t, std::int8_t>() &&
-        test4::test<std::int64_t, std::uint8_t>()
-    );
-    std::cout << (rval ? "success!" : "failure") << std::endl;
-    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
+    std::cout << (t.m_error_count == 0 ? "success!" : "failure") << std::endl;
+    return t.m_error_count ;
 }
