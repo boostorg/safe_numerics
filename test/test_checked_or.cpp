@@ -15,6 +15,8 @@
 #include "../include/checked_result_operations.hpp"
 #include "../include/checked_integer.hpp"
 
+#include "check_symmetry.hpp"
+
 template<class T>
 bool test_checked_or(
     boost::numeric::checked_result<T> v1,
@@ -160,21 +162,11 @@ bool test_all_types(){
     return rval.m_error;
 }
 
-// given an array of values of particula
-template<typename T, unsigned int N>
-constexpr void check_symmetry(const T (&value)[N]) {
-    using namespace boost::numeric;
-    // for each pair of values p1, p2 (100)
-    for(unsigned int i = 0; i < N; i++)
-    for(unsigned int j = 0; j < N; j++)
-        assert(value[i][j] == value[j][i]);
-}
-
 int main(int , char *[]){
     // sanity check on test matrix - should be symetrical
     check_symmetry(signed_or_results);
     check_symmetry(unsigned_or_results);
     bool rval = test_all_types();
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return ! rval ;
+    return rval ? 0 : 1;
 }

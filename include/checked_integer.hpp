@@ -556,30 +556,7 @@ struct checked_binary_operation<R,
         // since -128 % -1 = -128 % 1 = 0
         return t % abs(u);
     }
-/*
-    ////////////////////////////////
-    // safe comparison on unsafe types
-    constexpr static checked_result<bool> less_than(
-        const R & t,
-        const R & u
-    ) noexcept {
-        return t < u;
-    }
 
-    constexpr static checked_result<bool> greater_than(
-        const R & t,
-        const R & u
-    ) noexcept {
-        return t > u;
-    }
-
-    constexpr static checked_result<bool> equal(
-        const R & t,
-        const R & u
-    ) noexcept {
-        return t == u;
-    }
-*/
     ///////////////////////////////////
     // shift operations
 

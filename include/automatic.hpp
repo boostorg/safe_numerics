@@ -398,32 +398,89 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct bitwise_and_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        using type = typename boost::mpl::if_c<
-            (sizeof(t_base_type) > sizeof(u_base_type)),
-            u_base_type,
-            t_base_type
+        static const std::uintmax_t x = min(
+            std::initializer_list<std::uintmax_t>{
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::max())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                )
+            }
+        );
+
+        using type = typename result_type<
+            std::uintmax_t,
+            0,
+            utility::round_out(x)
         >::type;
     };
     template<typename T, typename U>
     struct bitwise_or_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        using type = typename boost::mpl::if_c<
-            (sizeof(t_base_type) > sizeof(u_base_type)),
-            t_base_type,
-            u_base_type
+        static const std::uintmax_t x = max(
+            std::initializer_list<std::uintmax_t>{
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::max())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                )
+            }
+        );
+
+        using type = typename result_type<
+            std::uintmax_t,
+            0,
+            utility::round_out(x)
         >::type;
     };
     template<typename T, typename U>
     struct bitwise_xor_result {
-        using t_base_type = typename base_type<T>::type;
-        using u_base_type = typename base_type<U>::type;
-        using type = typename boost::mpl::if_c<
-            (sizeof(t_base_type) > sizeof(u_base_type)),
-            t_base_type,
-            u_base_type
+        static const std::uintmax_t x = max(
+            std::initializer_list<std::uintmax_t>{
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::min())
+                    & base_value(std::numeric_limits<U>::max())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                ),
+                static_cast<std::uintmax_t>(
+                    base_value(std::numeric_limits<T>::max())
+                    & base_value(std::numeric_limits<U>::min())
+                )
+            }
+        );
+
+        using type = typename result_type<
+            std::uintmax_t,
+            0,
+            utility::round_out(x)
         >::type;
     };
 };

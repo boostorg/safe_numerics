@@ -221,6 +221,28 @@ minmax(const std::initializer_list<T> & l){
     return std::pair<T, T>{* minimum, * maximum};
 }
 
+// for any given t
+// a) figure number of significant bits
+// b) return a value with all significant bits set
+// so for example:
+// 3 == round_out(2) because
+// 2 == 10 and 3 == 11
+template<typename T>
+constexpr T round_out(const T & t){
+    if(t >= 0){
+        const std::uint8_t sb = utility::significant_bits(t);
+        return (sb < sizeof(T) * 8)
+            ? (1ul << sb) - 1
+            : std::numeric_limits<T>::max();
+    }
+    else{
+        const std::uint8_t sb = utility::significant_bits(~t);
+        return (sb < sizeof(T) * 8)
+            ? ~((1ul << sb) - 1)
+            : std::numeric_limits<T>::min();
+    }
+}
+
 } // utility
 } // numeric
 } // boost

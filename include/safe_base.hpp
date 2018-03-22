@@ -219,21 +219,26 @@ public:
 
     // construct an instance of a safe type
     // from an instance of a convertible underlying type.
-    #if 0
+
     template<class T>
     constexpr /*explicit*/ safe_base(
         const T & t,
         typename std::enable_if<
-            std::is_convertible<T, Stored>::value,
+            is_safe<T>::value,
             bool
         >::type = true
     ) :
-    #else
+        m_t(validated_cast(t))
+    {}
+
     template<class T>
     constexpr /*explicit*/ safe_base(
-        const T & t
+        const T & t,
+        typename std::enable_if<
+            std::is_integral<T>::value,
+            bool
+        >::type = true
     ) :
-    #endif
         m_t(validated_cast(t))
     {}
 
@@ -241,8 +246,8 @@ public:
     // casting operators for intrinsic integers
     // convert to any type which is not safe.  safe types need to be
     // excluded to prevent ambiguous function selection which
-    // would otherwise occur
-    #if 1
+    // would otherwise occur.  validity of safe types is checked in
+    // the constructor of safe types
     template<
         class R,
         typename std::enable_if<
@@ -250,9 +255,6 @@ public:
             int
         >::type = 0
     >
-    #else
-    template<class R>
-    #endif
     constexpr /*explicit*/ operator R () const;
 
     constexpr /*explicit*/ operator Stored () const;

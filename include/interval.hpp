@@ -276,8 +276,6 @@ template<typename T>
 constexpr interval<T> operator&(const interval<T> & t, const interval<T> & u){
     const T & rl = std::max(t.l, u.l);
     const T & ru = std::min(t.u, u.u);
-    //const T & rl = t.l > u.l ? t.l : u.l;
-    //const T & ru = t.u < u.u ? t.u : u.u;
     return interval<T>(rl, ru);
 }
 

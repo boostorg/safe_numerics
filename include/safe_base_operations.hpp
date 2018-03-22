@@ -53,11 +53,13 @@ dispatch(const checked_result<R> & cr){
 
 template<typename R, R Min, R Max, typename T, typename E>
 struct validate_detail {
-    constexpr static const interval<checked_result<R>> t_interval{
+    using r_type = checked_result<R>;
+
+    constexpr static const interval<r_type> t_interval{
         checked::cast<R>(base_value(std::numeric_limits<T>::min())),
         checked::cast<R>(base_value(std::numeric_limits<T>::max()))
     };
-    constexpr static const interval<checked_result<R>> r_interval{Min, Max};
+    constexpr static const interval<r_type> r_interval{r_type(Min), r_type(Max)};
 
 /*
     static_assert(
@@ -71,8 +73,10 @@ struct validate_detail {
             const T & t
         ){
             // INT08-C
-            const checked_result<R> r = checked::cast<R>(t);
-            dispatch<E>(r);
+            const r_type r = checked::cast<R>(t);
+            if(r.exception()){
+                dispatch<E>(r);
+            }
             return base_value(r);
         }
     };
@@ -122,7 +126,6 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 
 // cast to a builtin type from a safe type
 template< class Stored, Stored Min, Stored Max, class P, class E>
-#if 1
 template<
     class R,
     typename std::enable_if<
@@ -130,9 +133,6 @@ template<
         int
     >::type
 >
-#else
-template<class R>
-#endif
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
 
@@ -160,7 +160,6 @@ constexpr safe_base<Stored, Min, Max, P, E>::
 operator Stored () const {
     return m_t;
 }
-
 
 /////////////////////////////////////////////////////////////////
 // binary operators
@@ -1250,129 +1249,48 @@ constexpr operator>>=(T & t, const U & u){
 /////////////////////////////////////////////////////////////////
 // bitwise operators
 
-template<typename T>
-constexpr T round_out(const T & t){
-    if(t >= 0){
-        const std::uint8_t sb = utility::significant_bits(t);
-        return (sb < sizeof(T) * 8)
-            ? (1ul << sb) - 1
-            : std::numeric_limits<T>::max();
-    }
-    else{
-        const std::uint8_t sb = utility::significant_bits(~t);
-        return (sb < sizeof(T) * 8)
-            ? ~((1ul << sb) - 1)
-            : std::numeric_limits<T>::min();
-    }
-}
-
 // operator |
 template<class T, class U>
 struct bitwise_or_result {
 private:
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_or_result<T, U>::type;
+        typename promotion_policy::template bitwise_and_result<T, U>::type;
 
-    using r_type = checked_result<result_base_type>;
+    // according to the C++ standard, the bitwise operators are executed as if
+    // the operands are consider a logical array of bits.  That is, there is no
+    // sense that these are signed numbers.
+
+    using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_interval_type = interval<r_type>;
 
-    constexpr static const r_interval_type t_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
-    };
-
-    constexpr static const r_interval_type u_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
-    };
-
-    // get the union of the intervals.
-    // note unusual logic here.  This makes use of the fact that the results
-    // of the comparison are not booleans but rather boost::logic::tribool.
-    // for more information see documenation on boost.tribool
-    constexpr static const r_interval_type r1{
-        // if comparison is defined and true
-          t_interval.l < u_interval.l
-        ? t_interval.l
-        // if comparison is defined and false
-        : !(t_interval.l < u_interval.l)
-        ? u_interval.l
-        // if comparison is undefined, note this fact
-        : r_type(safe_numerics_error::domain_error),
-          t_interval.u < u_interval.u
-        ? t_interval.u
-        : u_interval.u < t_interval.u
-        ? u_interval.u
-        : r_type(safe_numerics_error::domain_error)
-    };
-
-    // extend them to include all bit set
     constexpr static const r_interval_type r_interval{
-        (r1.l.exception())
-            ? r1.l
-            : r_type(round_out(static_cast<result_base_type>(r1.l))),
-        (r1.u.exception())
-            ? r1.u
-            : r_type(round_out(static_cast<result_base_type>(r1.u)))
+        r_type(0),
+        utility::round_out(
+            std::max(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        )
     };
-
-    constexpr static bool exception_possible(){
-        return r_interval.l.exception() || r_interval.u.exception();
-    }
-
-    // if exception not possible
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::false_type){
-        return
-            static_cast<result_base_type>(base_value(t))
-            | static_cast<result_base_type>(base_value(u));
-    }
-
-    // if exception possible
-    using exception_policy = typename common_exception_policy<T, U>::type;
 
     // exception possible
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::true_type){
-        const r_type tx = checked::cast<result_base_type>(base_value(t));
-        if(tx.exception())
-            dispatch<exception_policy>(tx);
-        const r_type ux = checked::cast<result_base_type>(base_value(u));
-        if(ux.exception())
-            dispatch<exception_policy>(ux);
-        const r_type r = (tx | ux);
-        if(!r.exception())
-            return static_cast<result_base_type>(r);
-        // handle error condition
-        dispatch<exception_policy>(r);
-        // if we get here, the error has been ignored
-        // just get the result the old fashioned way
-        return
-            static_cast<result_base_type>(tx)
-            | static_cast<result_base_type>(ux);
-    }
+    using exception_policy = typename common_exception_policy<T, U>::type;
+
 public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
-            result_base_type,
-            r_interval.l.exception()
-                ? std::numeric_limits<result_base_type>::min()
-                : static_cast<result_base_type>(r_interval.l),
-            r_interval.u.exception()
-                ? std::numeric_limits<result_base_type>::max()
-                : static_cast<result_base_type>(r_interval.u),
-            promotion_policy,
-            exception_policy
-        >;
+        result_base_type,
+        r_interval.l,
+        r_interval.u,
+        promotion_policy,
+        exception_policy
+    >;
 
     constexpr static type return_value(const T & t, const U & u){
         return type(
-            return_value(
-                t,
-                u,
-                std::integral_constant<bool, exception_possible()>()
-            ),
+            static_cast<result_base_type>(base_value(t))
+            & static_cast<result_base_type>(base_value(u)),
             typename type::skip_validation()
         );
     }
@@ -1405,109 +1323,40 @@ private:
     using result_base_type =
         typename promotion_policy::template bitwise_and_result<T, U>::type;
 
-    using r_type = checked_result<result_base_type>;
+    // according to the C++ standard, the bitwise operators are executed as if
+    // the operands are consider a logical array of bits.  That is, there is no
+    // sense that these are signed numbers.
+
+    using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_interval_type = interval<r_type>;
-    
-    constexpr static const r_interval_type t_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
-    };
 
-    constexpr static const r_interval_type u_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
-    };
-
-    // get the intersection of the intervals.
-    // note unusual logic here.  This makes use of the fact that the results
-    // of the comparison are not booleans but rather boost::logic::tribool.
-    // for more information see documenation on boost.tribool
-    constexpr static const r_interval_type r1{
-        // if comparison is defined and true
-          t_interval.l < u_interval.l
-        ? u_interval.l
-        // if comparison is defined and false
-        : !(t_interval.l < u_interval.l)
-        ? t_interval.l
-        // if comparison is undefined, note this fact
-        : r_type(safe_numerics_error::domain_error),
-          t_interval.u < u_interval.u
-        ? t_interval.u
-        : u_interval.u < t_interval.u
-        ? u_interval.u
-        : r_type(safe_numerics_error::domain_error)
-    };
-
-    // extend them to include all bit set
     constexpr static const r_interval_type r_interval{
-        (r1.l.exception())
-            ? r1.l
-            : r_type(round_out(static_cast<result_base_type>(r1.l))),
-        (r1.u.exception())
-            ? r1.u
-            : r_type(round_out(static_cast<result_base_type>(r1.u)))
+        r_type(0),
+        utility::round_out(
+            std::min(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        )
     };
-
-    constexpr static bool exception_possible(){
-        return r_interval.l.exception() || r_interval.u.exception();
-    }
-
-    // if exception not possible
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::false_type){
-        return
-            static_cast<result_base_type>(base_value(t))
-            & static_cast<result_base_type>(base_value(u));
-    }
 
     // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
-    
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::true_type){
-    #if 0
-        const r_type tx = checked::cast<result_base_type>(base_value(t));
-        if(tx.exception())
-            dispatch<exception_policy>(tx);
-        const r_type ux = checked::cast<result_base_type>(base_value(u));
-        if(ux.exception())
-            dispatch<exception_policy>(ux);
-        const r_type r = (tx & ux);
-    #endif
-        const r_type r = (tx & ux);
-        if(!r.exception())
-            return static_cast<result_base_type>(r);
-        // handle error condition
-        dispatch<exception_policy>(r);
-        // if we get here, the error has been ignored
-        // just get the result the old fashioned way
-        return
-            static_cast<result_base_type>(tx)
-            & static_cast<result_base_type>(ux)
-        ;
-    }
 
 public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
         result_base_type,
-        r_interval.l.exception()
-            ? std::numeric_limits<result_base_type>::min()
-            : static_cast<result_base_type>(r_interval.l),
-        r_interval.u.exception()
-            ? std::numeric_limits<result_base_type>::max()
-            : static_cast<result_base_type>(r_interval.u),
+        r_interval.l,
+        r_interval.u,
         promotion_policy,
         exception_policy
     >;
     
     constexpr static type return_value(const T & t, const U & u){
         return type(
-            return_value(
-                t,
-                u,
-                std::integral_constant<bool, exception_possible()>()
-            ),
+            static_cast<result_base_type>(base_value(t))
+            & static_cast<result_base_type>(base_value(u)),
             typename type::skip_validation()
         );
     }
@@ -1535,106 +1384,44 @@ constexpr operator&=(T & t, const U & u){
 // operator ^
 template<class T, class U>
 struct bitwise_xor_result {
-private:
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_or_result<T, U>::type;
+        typename promotion_policy::template bitwise_and_result<T, U>::type;
 
-    using r_type = checked_result<result_base_type>;
+    // according to the C++ standard, the bitwise operators are executed as if
+    // the operands are consider a logical array of bits.  That is, there is no
+    // sense that these are signed numbers.
+
+    using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_interval_type = interval<r_type>;
 
-    constexpr static const r_interval_type t_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
-    };
-
-    constexpr static const r_interval_type u_interval{
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
-        checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
-    };
-
-    // get the union of the intervals.
-    // note unusual logic here.  This makes use of the fact that the results
-    // of the comparison are not booleans but rather boost::logic::tribool.
-    // for more information see documenation on boost.tribool
-    constexpr static const r_interval_type r1{
-        // if comparison is defined and true
-          t_interval.l < u_interval.l
-        ? t_interval.l
-        // if comparison is defined and false
-        : !(t_interval.l < u_interval.l)
-        ? u_interval.l
-        // if comparison is undefined, note this fact
-        : r_type(safe_numerics_error::domain_error),
-          t_interval.u < u_interval.u
-        ? t_interval.u
-        : u_interval.u < t_interval.u
-        ? u_interval.u
-        : r_type(safe_numerics_error::domain_error)
-    };
-
-    // extend them to include all bit set
     constexpr static const r_interval_type r_interval{
-        (r1.l.exception())
-            ? r1.l
-            : r_type(round_out(static_cast<result_base_type>(r1.l))),
-        (r1.u.exception())
-            ? r1.u
-            : r_type(round_out(static_cast<result_base_type>(r1.u)))
+        r_type(0),
+        utility::round_out(
+            std::max(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        )
     };
-
-    constexpr static bool exception_possible(){
-        return r_interval.l.exception() || r_interval.u.exception();
-    }
-
-    // if exception not possible
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::false_type){
-        return
-            static_cast<result_base_type>(base_value(t))
-            ^ static_cast<result_base_type>(base_value(u));
-    }
-
-    // if exception possible
-    using exception_policy = typename common_exception_policy<T, U>::type;
 
     // exception possible
-    constexpr static result_base_type
-    return_value(const T & t, const U & u, std::true_type){
-        const r_type tx = checked::cast<result_base_type>(base_value(t));
-        const r_type ux = checked::cast<result_base_type>(base_value(u));
-        const r_type r = (tx | ux);
-        if(!r.exception())
-            return static_cast<result_base_type>(r);
-        // handle error condition
-        dispatch<exception_policy>(r);
-        // if we get here, the error has been ignored
-        // just get the result the old fashioned way
-        return
-            static_cast<result_base_type>(tx)
-            ^ static_cast<result_base_type>(ux);
-    }
+    using exception_policy = typename common_exception_policy<T, U>::type;
+
 public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
-            result_base_type,
-            r_interval.l.exception()
-                ? std::numeric_limits<result_base_type>::min()
-                : static_cast<result_base_type>(r_interval.l),
-            r_interval.u.exception()
-                ? std::numeric_limits<result_base_type>::max()
-                : static_cast<result_base_type>(r_interval.u),
-            promotion_policy,
-            exception_policy
-        >;
+        result_base_type,
+        r_interval.l,
+        r_interval.u,
+        promotion_policy,
+        exception_policy
+    >;
 
     constexpr static type return_value(const T & t, const U & u){
         return type(
-            return_value(
-                t,
-                u,
-                std::integral_constant<bool, exception_possible()>()
-            ),
+            static_cast<result_base_type>(base_value(t))
+            & static_cast<result_base_type>(base_value(u)),
             typename type::skip_validation()
         );
     }

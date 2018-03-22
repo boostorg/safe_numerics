@@ -168,18 +168,7 @@ bool test_all_types(){
     return rval.m_error;
 }
 
-// given an array of values of particula
-template<typename T, unsigned int N>
-constexpr void check_symmetry(const T (&value)[N]) {
-    using namespace boost::numeric;
-    // for each pair of values p1, p2 (100)
-    for(unsigned int i = 0; i < N; i++)
-    for(unsigned int j = 0; j < N; j++)
-        assert(value[i][j] == value[j][i]);
-}
-
 int main(int , char *[]){
-    // sanity check on test matrix - should be symetrical
     bool rval = test_all_types();
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;

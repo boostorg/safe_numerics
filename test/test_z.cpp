@@ -521,7 +521,7 @@ int main(){
     constexpr const checked_result<unsigned> j2 = 0;
 
     constexpr const checked_result<unsigned> k2 = i2 + j2;
-    return k2.m_r;
+    return 0;
 }
 
 
