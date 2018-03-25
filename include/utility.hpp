@@ -14,12 +14,11 @@
 
 #include <cstdint> // intmax_t, uintmax_t, uint8_t, ...
 #include <algorithm>
-#include <type_traits>
+#include <type_traits> // conditional
 #include <limits>
 #include <cassert>
 #include <utility> // pair
 
-#include <boost/mpl/if.hpp> // if_c
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
 
 namespace boost {

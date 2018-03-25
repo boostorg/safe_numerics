@@ -291,7 +291,8 @@ void f(){
 
       <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
 #include &lt;iostream&gt;
-void f(){
+
+int main(int, char[]){
     using safe_int = safe&lt;
         int, boost::numeric::automatic, 
         boost::numeric::default_exception_policy
@@ -304,6 +305,8 @@ void f(){
         std::numeric_limits&lt;decltype(i * i)&gt;::max() &gt;=
         std::numeric_limits&lt;safe_int&gt;::max() * std::numeric_limits&lt;safe_int&gt;::max()
     ); // always true
+
+    return 0;
 }</programlisting></para>
     </section>
   </section>

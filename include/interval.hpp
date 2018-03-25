@@ -21,7 +21,6 @@
 #include <boost/logic/tribool.hpp>
 
 #include "utility.hpp" // log
-#include "safe_compare.hpp"
 
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
@@ -31,12 +30,6 @@ namespace numeric {
 
 template<typename R>
 struct interval {
-    #if 0
-    static_assert(
-        std::is_literal_type< checked_result<R> >::value,
-        "is literal type"
-    );
-    #endif
     const R l;
     const R u;
 
@@ -60,37 +53,8 @@ struct interval {
 
     constexpr interval();
 
-    #if 0
     // return true if this interval contains the given point
-    template<typename T>
-    constexpr boost::logic::tribool includes(const T & t) const {
-        return l <= t && t <= u;
-    }
-    // if this interval contains every point found in some other inteval t
-    //  return true
-    // otherwise
-    //  return false or indeterminant
-    template<typename T>
-    constexpr boost::logic::tribool includes(const interval<T> & t) const {
-        return u >= t.u && l <= t.l;
-    }
-
-    // return true if this interval contains the given point
-    template<typename T>
-    constexpr boost::logic::tribool excludes(const T & t) const {
-        return t < l || t > u;
-    }
-    // if this interval contains every point found in some other inteval t
-    //  return true
-    // otherwise
-    //  return false or indeterminant
-    template<typename T>
-    constexpr boost::logic::tribool excludes(const interval<T> & t) const {
-        return t.u < l || u < t.l;
-    }
-    #endif
-    // return true if this interval contains the given point
-    constexpr boost::logic::tribool includes(const R & t) const {
+    constexpr bool includes(const R & t) const {
         return l <= t && t <= u;
     }
     // if this interval contains every point found in some other inteval t
@@ -102,7 +66,7 @@ struct interval {
     }
 
     // return true if this interval contains the given point
-    constexpr boost::logic::tribool excludes(const R & t) const {
+    constexpr tribool excludes(const R & t) const {
         return t < l || t > u;
     }
     // if this interval contains every point found in some other inteval t

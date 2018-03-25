@@ -14,8 +14,7 @@
 
 #include <cstdint> // for intmax_t/uintmax_t
 #include <iosfwd>
-#include <type_traits>
-#include <boost/mpl/if.hpp>
+#include <type_traits> // conditional
 
 #include "utility.hpp"
 #include "safe_base.hpp"

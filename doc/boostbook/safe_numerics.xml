@@ -117,77 +117,88 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand its limitations.
     These components are also interesting in their own right. For all these
-    reasons, they are documented here. </para>
+    reasons, they are documented here.</para>
 
     <para>In general terms, the library works in the following manner:</para>
 
-    <para>The library works by overloading all operations which include safe
-    types with "safe" versions of these operations which are enhanced versions
-    of the standard C/C++ implementations. These overloads are declared and
-    implemented in the files "safe_base.hpp" and
-    "safe_base_operations.hpp".</para>
-
     <itemizedlist>
       <listitem>
-        <para>If both operands are safe types, verify that they have the same
+        <para>The library defines "safe" versions of C++ primitive arithmetic
+        types such as int, unsigned int, etc.</para>
+      </listitem>
+
+      <listitem>
+        <para>Arithmetic operators are defined for these "safe" types. These
+        operators are enhanced versions of the standard C/C++ implementations.
+        These operators are declared and implemented in the files
+        "safe_base.hpp" and "safe_base_operations.hpp".</para>
+      </listitem>
+
+      <listitem>
+        <para>For binary operators, verify that both operands have the same
         promotion and and exception handling policies. If they don't, invoke
         compilation error.</para>
       </listitem>
 
       <listitem>
-        <para>Each operand is converted to a result type, R, in accordance
-        with the promotion policy.</para>
-      </listitem>
-
-      <listitem>
         <para>Retrieve range of values for each operand of type T from
         <code>std::numeric_limits&lt;T&gt;::min()</code> and
-        <code>std::numeric_limits&lt;T&gt;::max()</code>.</para>
+        <code>std::numeric_limits&lt;T&gt;::max()</code>. A range is a pair of
+        values representing a closed interval with a minimum and maximum
+        value.</para>
       </listitem>
 
       <listitem>
-        <para>These ranges are cast to equivalent values in the type R. It's
-        possible that values cannot be cast to the result type. So the result
-        of the cast is returned as a variant type,
-        <code>checked_result&lt;R&gt;</code>, which may hold either a value of
-        type R or a <code>safe_numeric_error</code> value indicating why the
-        cast could not be accomplished. So ranges are represented as a pair of
-        values of the type <code>checked_result&lt;R&gt;</code>.</para>
+        <para>These ranges are cast to equivalent values of the result type,
+        R. It's possible that values cannot be cast to the result type so the
+        result of the cast is returned as a variant type, <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.
+        <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>
+        may hold either a value of type R or a <link
+        linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link>
+        value indicating why the cast could not be accomplished. Ranges are
+        represented as a pair of values of the type <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
       </listitem>
 
       <listitem>
-        <para><code>checked_result&lt;R&gt;</code> can be considered enhanced
-        versions of the underlying type R. Operations which are legal on
-        values of type R such as +, -, ... are also legal on values of
-        <code>checked_result&lt;R&gt;</code>. The difference is that the
-        latter can record operation failures and propagate such failures to
-        subsequent operations.<code> checked_result&lt;R&gt;</code> is
-        implemented in the header file "checked_result.hpp". Operations on
+        <para><link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>
+        can be considered enhanced versions of the underlying type R.
+        Operations which are legal on values of type R such as +, -, ... are
+        also legal on values of <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.
+        The difference is that the latter can record operation failures and
+        propagate such failures to subsequent operations.<link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>
+        is implemented in the header file "checked_result.hpp". Operations on
         such types are implemented in "checked_result_operations.hpp".</para>
       </listitem>
 
       <listitem>
         <para>Given the ranges of the operands, determine the range of the
-        result of the operation using interval arithmetic. Using the
+        result of the operation using compile-time interval arithmetic. The
         <code>constexpr</code> facility of C++14 permits the range of the
         result to be calculated at compile time. Interval arithmetic is
         implemented in the header file "interval.hpp". The range of the result
-        is also represented as a pair of values of the type
-        <code>checked_result&lt;R&gt;</code>.</para>
+        is also represented as a pair of values of the type <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
       </listitem>
 
       <listitem>
-        <para>If the range of the result type, R, includes the range of the
-        result, the operation is guaranteed to produce an arithmetically
+        <para>If the range of the result type includes only arithmetically
+        valid values, the operation is guaranteed to produce an arithmetically
         correct result and no runtime checking is necessary. The operation
         invokes the original built-in C/C++ operation and returns the result
-        value as a safe type of the appropriate range.</para>
+        value.</para>
       </listitem>
 
       <listitem>
         <para>Otherwise, operands are cast to the result type, R, according to
         the selected promotion policy. These "checked" cast operations return
-        values of type <code>checked_result&lt;R&gt;</code>.</para>
+        values of type <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
       </listitem>
 
       <listitem>
@@ -199,23 +210,29 @@
         <para>Otherwise, the operation is performed as another "checked
         operation". These free functions mirror the normal operators +, -, *,
         ... except that rather than returning values of type R, they return
-        values of the type checked_result&lt;R&gt;. They are defined in files
-        "checked_default.hpp", "checked_integer.hpp"
+        values of the type <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.
+        They are defined in files "checked_default.hpp", "checked_integer.hpp"
         ,"checked_float.hpp".</para>
       </listitem>
 
       <listitem>
-        <para>If the result of the above is a valid arithmetic value, that
-        value is returned as a safe&lt;R&gt; type.</para>
+        <para>If the operation is not successful, the designated exception
+        policy function is invoked.</para>
       </listitem>
 
       <listitem>
-        <para>Otherwise, the operation is considered an exception. Such
-        exceptions are handled via the designed exception policy.</para>
+        <para>Otherwise, the result value is returned. </para>
+      </listitem>
+
+      <listitem>
+        <para>In all cases, result values are returned as a
+        <code>safe&lt;R&gt;</code> type with the above calculated result
+        range.</para>
       </listitem>
     </itemizedlist>
 
-    <para>The following components realize the design described here. </para>
+    <para>The following components realize the design described here.</para>
 
     <xi:include href="checked_result.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>

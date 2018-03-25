@@ -130,9 +130,10 @@ error detected!
     content</ulink>. Our solution is by far the simplest: just use the safe
     numerics library as shown in the example above.</para>
 
-    <para>Note that in this particular case, there is absolutely no extra
-    overhead in using the safe integer library. Code generated will either
-    equal or exceed the efficiency of using primitive integer types.</para>
+    <para>Note that in this particular case, usage of the safe types results
+    in no runtime overhead in using the safe integer library. Code generated
+    will either equal or exceed the efficiency of using primitive integer
+    types.</para>
   </section>
 
   <section id="safe_numerics.tutorial.10">

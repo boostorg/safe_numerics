@@ -13,12 +13,10 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_integral, enable_if
+#include <type_traits> // is_integral, enable_if, conditional
 
-#include <boost/mpl/if.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
-#include <boost/mpl/and.hpp>
 
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"

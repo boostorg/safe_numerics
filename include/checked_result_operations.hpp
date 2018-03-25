@@ -27,7 +27,6 @@
 #include <cassert>
 
 #include <boost/logic/tribool.hpp>
-#include <boost/functional/hash.hpp>
 
 #include "checked_result.hpp"
 #include "checked_integer.hpp"

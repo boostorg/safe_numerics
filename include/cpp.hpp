@@ -17,10 +17,9 @@
 // mode which is identical to that in debug mode except for the fact
 // that errors aren't trapped. 
 
-#include <type_traits> // integral constant, remove_cv
+#include <type_traits> // integral constant, remove_cv, conditional
 #include <limits>
 #include <boost/integer.hpp> // integer type selection
-#include <boost/mpl/if.hpp>
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
@@ -52,19 +51,19 @@ public:
 
     template<class T>
     using rank =
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<local_char_type, typename std::make_signed<T>::type>::value,
             std::integral_constant<int, 1>,
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<local_short_type, typename std::make_signed<T>::type>::value,
             std::integral_constant<int, 2>,
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<local_int_type, typename std::make_signed<T>::type>::value,
             std::integral_constant<int, 3>,
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<local_long_type, typename std::make_signed<T>::type>::value,
             std::integral_constant<int, 4>,
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<local_long_long_type, typename std::make_signed<T>::type>::value,
             std::integral_constant<int, 5>,
             std::integral_constant<int, 6> // catch all - never promote integral
@@ -72,7 +71,7 @@ public:
 
     // section 4.5 integral promotions
     template<class T>
-    using integral_promotion = typename boost::mpl::if_c<
+    using integral_promotion = typename std::conditional<
         (rank<T>::value < rank<local_int_type>::value),
         local_int_type,
         T
@@ -80,7 +79,7 @@ public:
 
    // convert smaller of two types to the size of the larger
     template<class T, class U>
-    using higher_ranked_type = typename boost::mpl::if_c<
+    using higher_ranked_type = typename std::conditional<
         (rank<T>::value < rank<U>::value),
         U,
         T
@@ -89,14 +88,14 @@ public:
     // note presumption that T & U don't have he same sign
     // if that's not true, these won't work
     template<class T, class U>
-    using select_signed = typename boost::mpl::if_c<
+    using select_signed = typename std::conditional<
         std::numeric_limits<T>::is_signed,
         T,
         U
     >::type;
 
     template<class T, class U>
-    using select_unsigned = typename boost::mpl::if_c<
+    using select_unsigned = typename std::conditional<
         std::numeric_limits<T>::is_signed,
         U,
         T
@@ -106,26 +105,26 @@ public:
     template<typename T, typename U>
     using usual_arithmetic_conversions =
         // clause 0 - if both operands have the same type
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::is_same<T, U>::value,
             // no further conversion is needed
             T,
         // clause 1 - otherwise if both operands have the same sign
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::numeric_limits<T>::is_signed
             == std::numeric_limits<U>::is_signed,
             // convert to the higher ranked type
             higher_ranked_type<T, U>,
         // clause 2 - otherwise if the rank of he unsigned type exceeds
         // the rank of the of the signed type
-        typename boost::mpl::if_c<
+        typename std::conditional<
             rank< select_unsigned<T, U>>::value
             >= rank< select_signed<T, U>>::value,
             // use unsigned type
             select_unsigned<T, U>,
         // clause 3 - otherwise if the type of the signed integer type can
         // represent all the values of the unsigned type
-        typename boost::mpl::if_c<
+        typename std::conditional<
             std::numeric_limits< select_signed<T, U> >::digits >=
             std::numeric_limits< select_unsigned<T, U> >::digits,
             // use signed type

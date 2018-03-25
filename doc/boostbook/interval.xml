@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
 <section id="safe_numerics.interval">
-  <title>interval&lt;typename R&gt;</title>
+  <title>interval&lt;R&gt;</title>
 
   <?dbhtml stop-chunking?>
 
@@ -10,14 +10,22 @@
     <title>Description</title>
 
     <para>A closed arithmetic interval represented by a pair of elements of
-    type R.</para>
+    type R. In principle, one should be able to use Boost.Interval library for
+    this. But the functions in this library are not <code>constexpr</code>.
+    Also, this Boost.Interval is more complex and does not support certain
+    operations such bit operations. Perhaps some time in the future,
+    Boost.Interval will be used instead of this <code>interval&lt;R&gt;</code>
+    type.</para>
   </section>
 
   <section>
     <title>Template Parameters</title>
 
     <para>R must model the type requirements of <link
-    linkend="safe_numerics.numeric">Numeric</link></para>
+    linkend="safe_numerics.numeric">Numeric</link>. Note this in principle
+    includes any numeric type including floating point numbers and instances
+    of <link
+    linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
   </section>
 
   <section>
@@ -57,6 +65,18 @@
           </row>
 
           <row>
+            <entry><code>r</code></entry>
+
+            <entry>An instance of type R</entry>
+          </row>
+
+          <row>
+            <entry><code>p</code></entry>
+
+            <entry>An instance of std::pair&lt;R, R&gt;</entry>
+          </row>
+
+          <row>
             <entry><code>l, u</code></entry>
 
             <entry>Lowermost and uppermost values in an interval</entry>
@@ -65,7 +85,8 @@
           <row>
             <entry><code>os</code></entry>
 
-            <entry>std::basic_ostream&lt;Char, CharT&gt;</entry>
+            <entry>std::basic_ostream&lt;class CharT, class Traits =
+            std::char_traits&lt;CharT&gt;&gt;</entry>
           </row>
         </tbody>
       </tgroup>
@@ -143,6 +164,27 @@
             </row>
 
             <row>
+              <entry><code>make_interval&lt;R&gt;()</code></entry>
+
+              <entry><code>interval&lt;R&gt;</code></entry>
+
+              <entry>return new interval with
+              std::numric_limits&lt;R&gt;::min() and
+              std::numric_limits&lt;R&gt;::max()</entry>
+            </row>
+
+            <row>
+              <entry><code>make_interval&lt;R&gt;(const R
+              &amp;r)</code></entry>
+
+              <entry><code>interval&lt;R&gt;</code></entry>
+
+              <entry>return new interval with
+              std::numric_limits&lt;R&gt;::min() and
+              std::numric_limits&lt;R&gt;::max()</entry>
+            </row>
+
+            <row>
               <entry><code>i.l</code></entry>
 
               <entry><code>R</code></entry>
@@ -161,7 +203,15 @@
             <row>
               <entry><code>i.includes(j)</code></entry>
 
-              <entry><code>bool</code></entry>
+              <entry><code>boost::logic::tribool</code></entry>
+
+              <entry>return true if interval i includes interval j</entry>
+            </row>
+
+            <row>
+              <entry><code>i.excludes(j)</code></entry>
+
+              <entry><code>boost::logic::tribool</code></entry>
 
               <entry>return true if interval i includes interval j</entry>
             </row>
@@ -175,87 +225,95 @@
             </row>
 
             <row>
-              <entry><code>add&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i.excludes(t)</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>bool</code></entry>
+
+              <entry>return true if interval i includes value t</entry>
+            </row>
+
+            <row>
+              <entry><code>i + j</code></entry>
+
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>add two intervals and return the result</entry>
             </row>
 
             <row>
-              <entry><code>subtract&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i - j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>subtract two intervals and return the result</entry>
             </row>
 
             <row>
-              <entry><code>multiply&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i * j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>multiply two intervals and return the result</entry>
             </row>
 
             <row>
-              <entry><code>divide&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i / j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>divide one interval by another and return the
               result</entry>
             </row>
 
             <row>
-              <entry><code>modulus&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i % j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>calculate modulus of one interval by another and return
               the result</entry>
             </row>
 
             <row>
-              <entry><code>left_shift&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i &lt;&lt; j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
-
-              <entry>calculate the range that would result from shifting one
-              interval by another</entry>
-            </row>
-
-            <row>
-              <entry><code>right_shift&lt;R&gt;(i, j)</code></entry>
-
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>calculate the range that would result from shifting one
               interval by another</entry>
             </row>
 
             <row>
-              <entry><code>bitwise_or&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i &gt;&gt; j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
+
+              <entry>calculate the range that would result from shifting one
+              interval by another</entry>
+            </row>
+
+            <row>
+              <entry><code>i | j</code></entry>
+
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>range of values which can result from applying | to any
               pair of operands from I and j</entry>
             </row>
 
             <row>
-              <entry><code>bitwise_and&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i &amp; j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>range of values which can result from applying &amp; to
               any pair of operands from I and j</entry>
             </row>
 
             <row>
-              <entry><code>bitwise_xor&lt;R&gt;(i, j)</code></entry>
+              <entry><code>i ^ j</code></entry>
 
-              <entry><code>interval&lt;checked_result&lt;R&gt;&gt;</code></entry>
+              <entry><code>interval&lt;R&gt;</code></entry>
 
               <entry>range of values which can result from applying ^ to any
               pair of operands from I and j</entry>

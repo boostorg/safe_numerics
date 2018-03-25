@@ -17,7 +17,7 @@
 
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
-#include <boost/mpl/if.hpp>
+#include <type_traits> // conditional
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"

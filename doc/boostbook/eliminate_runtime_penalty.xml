@@ -88,15 +88,16 @@
           <para>So if this program compiles, it's guaranteed to return a valid
           result.</para>
         </listitem>
-      </itemizedlist>This program produces the following run time
-    output.</para>
+      </itemizedlist>The output uses a custom output manipulator,
+    <code>safe_format</code>, for safe types to display the underlying type
+    and its range as well as current value. This program produces the
+    following run time output.</para>
 
     <screen>example 83:
 x = &lt;signed char&gt;[10,10] = 10
 y = &lt;signed char&gt;[67,67] = 67
-z = &lt;signed char&gt;[-24,82] = 77
-za = &lt;int&gt;[77,77] = 77
-</screen>
+x + y = &lt;int&gt;[77,77] = 77
+z = &lt;signed char&gt;[-24,82] = 77</screen>
 
     <para>Take note of the various variable types:<itemizedlist>
         <listitem>
@@ -106,33 +107,29 @@ za = &lt;int&gt;[77,77] = 77
         </listitem>
 
         <listitem>
-          <para><code>z</code> is the sum of x and y. The type of z is defined
-          so that It can hold only values in the closed range -24,82. We can
-          assign the sum of x and y because it is in the range that
-          <code>z</code> is guaranteed to hold. If the sum or not known at
-          compile time, and it cannot be be guaranteed to fall in the range of
-          <code>z</code>, we would get a compile time error due to the fact we
-          are using the <code>loose_trap_policy</code> exception
-          policy.</para>
+          <para><code>The sum x + y can also be determined at compile
+          time.</code></para>
         </listitem>
 
         <listitem>
-          <para><code>za</code> is sum of <code>x</code> and <code>y</code>
-          both of which are known a compile time. The type of the result is
-          also known at compile which can be seen from the fact that it is an
-          integer value (since it is the result of native C++ promotion rules)
-          in the range 77,77. That is, it is guaranteed to be equal to
-          77.</para>
+          <para>The type of z is defined so that It can hold only values in
+          the closed range -24,82. We can assign the sum of x + y because it
+          is in the range that <code>z</code> is guaranteed to hold. If the
+          sum were not known at compile time, or it could not be be guaranteed
+          to fall in the range of <code>z</code>, we would get a compile time
+          error due to the fact we are using the
+          <code>loose_trap_policy</code> exception policy.</para>
         </listitem>
-      </itemizedlist>All this information regarding the values of variables
-    has been determined at compile time. There is no runtime overhead. The
-    usage of safe types does not alter the calculations or results in anyway.
-    So <code>safe_t</code> and <code>const_safe_t</code> could be redefined to
-    <code>int</code> and <code>const int</code> respectively and the program
-    would operate identically. We could compile the program for another
-    machine - as is common when building embedded systems and know (assuming
-    the target machine architecture was the same as our native one) that no
-    erroneous results would ever be produced.</para>
+      </itemizedlist>All this information regarding the range and values of
+    variables has been determined at compile time. There is no runtime
+    overhead. The usage of safe types does not alter the calculations or
+    results in anyway. So <code>safe_t</code> and <code>const_safe_t</code>
+    could be redefined to <code>int</code> and <code>const int</code>
+    respectively and the program would operate identically - although it might
+    We could compile the program for another machine - as is common when
+    building embedded systems and know (assuming the target machine
+    architecture was the same as our native one) that no erroneous results
+    would ever be produced.</para>
   </section>
 
   <section id="safe_numerics.eliminate_runtime_penalty.1">
@@ -270,7 +267,8 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
       <listitem>
         <para>our program compiles without error - even when using the <link
         linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
-        exception policy</para>
+        exception policy. This is because since a <code>long</code> can always
+        hold the result of the sum of two integers.</para>
       </listitem>
 
       <listitem>
@@ -289,14 +287,12 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
     <para><screen>example 82:
 x = &lt;int&gt;[-2147483648,2147483647] = 2147483647
 y = &lt;int&gt;[-2147483648,2147483647] = 2
-z = &lt;long&gt;[-4294967296,4294967294] = 2147483649
+x + y = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 </screen></para>
 
-    <para>The output uses a custom output manipulator for safe types to
-    display the underlying type and its range as well as current value. Note
-    that if any time in the future we were to change safe&lt;int&gt; to
-    safe&lt;long long&gt; the program could now overflow. But since we're
-    using <link
+    <para>Note that if any time in the future we were to change
+    safe&lt;int&gt; to safe&lt;long long&gt; the program could now overflow.
+    But since we're using <link
     linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
     the modified program would fail to compile. At this point we'd have to
     alter our yet program again to eliminate run time penalty or set aside our

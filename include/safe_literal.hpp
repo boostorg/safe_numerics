@@ -14,8 +14,7 @@
 
 #include <cstdint> // for intmax_t/uintmax_t
 #include <iosfwd>
-#include <type_traits>
-#include <boost/mpl/if.hpp>
+#include <type_traits> // conditional
 
 #include "utility.hpp"
 #include "safe_base.hpp"
@@ -139,11 +138,11 @@ using safe_unsigned_literal = safe_literal_impl<
     E
 >;
 
-#define safe_literal(n)                               \
-    boost::mpl::if_c<                                 \
-        std::numeric_limits<decltype<n>>::is_signed>. \
-        safe_unsigned_literal<n, void, void>,         \
-        safe_signed_literal<n, void, void>            \
+#define safe_literal(n)                                 \
+    conditional<                                        \
+        std::numeric_limits<decltype<n>>::is_signed>.   \
+        safe_unsigned_literal<n, void, void>,           \
+        safe_signed_literal<n, void, void>              \
     >::type
 
 } // numeric

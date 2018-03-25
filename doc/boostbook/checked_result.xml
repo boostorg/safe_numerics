@@ -9,45 +9,49 @@
   <section>
     <title>Description</title>
 
-    <para>checked_result is a wrapper class designed to hold the result of
-    some operation. It can hold either the result of the operation or
-    information on why the operation failed to produce a valid result. Note
-    that this type is an internal feature of the library and is not explicitly
-    exposed to users. But it is important to know about this of one wants to
-    extend the application of the library to other types. It may be useful in
-    other applications.</para>
-  </section>
+    <para>checked_result is a special kind of variant class designed to hold
+    the result of some operation. It can hold either the result of the
+    operation or information on why the operation failed to produce a valid
+    result. It is similar to other types proposed for and/or included to the
+    C++ standard library or Boost such as<code> expected</code>,
+    <code>variant</code>, <code>optional</code> and
+    <code>outcome</code>.</para>
 
-  <section>
-    <title>Template Parameters</title>
+    <para><itemizedlist>
+        <listitem>
+          <para>All instances of checked_result&lt;R&gt; are immutable. That
+          is, once constructed, they cannot be altered.</para>
+        </listitem>
 
-    <para>The sole template parameter is the return type of some
-    operation.</para>
+        <listitem>
+          <para>There is no default constructor.</para>
+        </listitem>
 
-    <informaltable>
-      <tgroup cols="2">
-        <colspec align="left" colwidth="1*"/>
+        <listitem>
+          <para>checked_result&lt;R&gt; is never empty.</para>
+        </listitem>
 
-        <colspec align="left" colwidth="4*"/>
+        <listitem>
+          <para>binary operations can be invoked on a pair of
+          checked_result&lt;R&gt; instances if and only if the underlying type
+          (R) is identical for both instances.</para>
+        </listitem>
 
-        <thead>
-          <row>
-            <entry align="left">Parameter</entry>
+        <listitem>
+          <para>Comparison operations will return a boost::logic::tribool.
+          Other binary operations will a value of the same type as the
+          arguments.</para>
+        </listitem>
 
-            <entry>Description</entry>
-          </row>
-        </thead>
+        <listitem>
+          <para>unary operations can be invoked on checked_result&lt;R&gt;
+          instances. They will return a value of the same type.</para>
+        </listitem>
+      </itemizedlist></para>
 
-        <tbody>
-          <row>
-            <entry><code>R</code></entry>
-
-            <entry>Type of value expected if there is not error to be
-            reported</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
+    <para>Think of checked&lt;R&gt; as an "extended" version of R which can
+    hold all the values that R can hold in addition other "special values".
+    For example, consider checked&lt;int&gt;.</para>
   </section>
 
   <section>
@@ -71,8 +75,7 @@
           <row>
             <entry><code>R</code></entry>
 
-            <entry>Type of value expected if there is not error to be
-            reported</entry>
+            <entry>Underlying type</entry>
           </row>
 
           <row>
@@ -120,13 +123,50 @@
   </section>
 
   <section>
+    <title>Template Parameters</title>
+
+    <para>R must model the type requirements of <link
+    linkend="safe_numerics.numeric">Numeric</link></para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="4*"/>
+
+        <thead>
+          <row>
+            <entry align="left">Parameter</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><code>R</code></entry>
+
+            <entry>Underlying type</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+  </section>
+
+  <section>
     <title>Valid Expressions</title>
 
     <para>All expressions are <code>constexpr</code>.</para>
 
     <para><informaltable>
         <tgroup cols="3">
-          <colspec align="left" colwidth="1*"/>
+          <colspec align="left" colwidth="2*"/>
 
           <colspec align="left" colwidth="1*"/>
 
@@ -178,14 +218,15 @@
             </row>
 
             <row>
-              <entry><code>static_cast&lt;e&gt;(c)</code></entry>
+              <entry><code>static_cast&lt;<code><link
+              linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></code>&gt;(c)</code></entry>
 
               <entry><link
               linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link></entry>
 
-              <entry>extract wrapped value - may return
-              <code>safe_numeric_error::success</code> if there is no
-              error</entry>
+              <entry>extract wrapped value - may return <link
+              linkend="safe_numerics.safe_numerics_error"><code>safe_numerics_error</code></link><code>::success</code>
+              if there is no error</entry>
             </row>
 
             <row>
@@ -193,7 +234,7 @@
 
               <entry><code>const char *</code></entry>
 
-              <entry>returns pointer to error message</entry>
+              <entry>returns pointer to the included error message</entry>
             </row>
 
             <row>
@@ -244,6 +285,10 @@
                   <member>c1 &amp; c2</member>
 
                   <member>c1 ^ c2</member>
+
+                  <member>c1 &lt;&lt; c2</member>
+
+                  <member>c1 &gt;&gt; c2</member>
                 </simplelist></code></entry>
 
               <entry><code>checked_result&lt;R&gt;</code></entry>
@@ -272,18 +317,8 @@
   <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;
-#include &lt;boost/numeric/safe_numerics/checked_result_operations.hpp&gt;
-
-template&lt;class R&gt;
-constexpr checked_result&lt;R&gt; sum(
-    const checked_result&lt;R&gt; &amp; t,
-    const checked_result&lt;R&gt; &amp; u
-) {
-    checked_result&lt;R&gt; r = t + u;
-    std::cout &lt;&lt; r;
-    return r;
-}</programlisting>
+    <programlisting><xi:include href="../../example/example20.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
   </section>
 
   <section>

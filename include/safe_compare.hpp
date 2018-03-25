@@ -15,8 +15,6 @@
 #include <type_traits>
 #include <limits>
 
-#include <boost/mpl/if.hpp>
-
 namespace boost {
 namespace numeric {
 namespace safe_compare {
@@ -25,7 +23,7 @@ namespace safe_compare {
 // safe comparison on primitive integral types
 namespace safe_compare_detail {
     template<typename T>
-    using make_unsigned = typename boost::mpl::if_c<
+    using make_unsigned = typename std::conditional<
         std::is_signed<T>::value,
         std::make_unsigned<T>,
         T

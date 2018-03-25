@@ -30,13 +30,8 @@ int main(int, const char *[]){
     std::cout << "x = " << safe_format(x) << std::endl;
     constexpr const const_safe_t<67> y;
     std::cout << "y = " << safe_format(y) << std::endl;
-
-    constexpr const auto t = x + y;
-    constexpr const safe_t z = t;
-
+    constexpr const safe_t z = x + y;
+    std::cout << "x + y = " << safe_format(x + y) << std::endl;
     std::cout << "z = " << safe_format(z) << std::endl;
-
-    const auto za = x + y;
-    std::cout << "za = " << safe_format(za) << std::endl;
     return 0;
 }

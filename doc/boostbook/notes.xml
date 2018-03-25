@@ -8,7 +8,7 @@
   provided by <ulink url="http://safeint.codeplex.com">David LeBlanc's SafeInt
   Library</ulink>. I found this library to be well done in every way. My main
   usage was to run unit tests for my embedded systems projects on my PC.
-  Still, I had a few issues.</para>
+  Still, from my perspective it had a few issues.</para>
 
   <itemizedlist>
     <listitem>
@@ -39,7 +39,17 @@
     </listitem>
   </itemizedlist>
 
-  <para>This version addresses these issues. It exploits many facilities of
-  C++14 and the <ulink url="http://www.boost.org">Boost libraries</ulink> to
-  reduce the number of lines of source code to approximately 4700.</para>
+  <para>Using later versions of C++ and the its standard library, template
+  metaprogramming and <ulink url="http://www.boost.org">Boost
+  libraries</ulink> I managed to (re)implement similar functionality in under
+  2000 ? lines of code. I promoted this version as a possible submission to
+  the Boost. The feedback I received convinced me that no such library would
+  be considered acceptable to the large majority of C++ programmers. It seems
+  that the desire for maximum performance overrides any requirement that a
+  program be known to be free of bugs. By this time I had a better idea of the
+  opportunities available with the latest version of C++ (C++14) and resolved
+  to address this issue by creating a library which would provide all the
+  facilities of safe numerics at minimal runtime cost. The result is what you
+  see here. The library now consists of 7000 lines of code, approximately 50
+  separate tests and more than 60 pages of documentation and examples.</para>
 </section>

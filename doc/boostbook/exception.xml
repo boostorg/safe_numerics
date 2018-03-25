@@ -74,6 +74,13 @@
             </row>
 
             <row>
+              <entry><code>domain_error</code></entry>
+
+              <entry>the result of an operation is outside the legal range of
+              the result.</entry>
+            </row>
+
+            <row>
               <entry><code>range_error</code></entry>
 
               <entry>an argument to a function or operator is outside the
@@ -92,28 +99,6 @@
 
               <entry>A number is too close to zero to be represented by the
               data type.</entry>
-            </row>
-
-            <row>
-              <entry><code>domain_error</code></entry>
-
-              <entry>the result of an operation is outside the legal range of
-              the result.</entry>
-            </row>
-
-            <row>
-              <entry><code>implementation_defined_behavior</code></entry>
-
-              <entry>operation may or may not return the expected
-              result.</entry>
-            </row>
-
-            <row>
-              <entry><code>undefined_behavior</code></entry>
-
-              <entry>According to the C++ standard, the result is undefined.
-              e.g. 10 &lt;&lt; 80 shifts bits off the left and returns an
-              unexpected result of 0 on most machines.</entry>
             </row>
 
             <row>

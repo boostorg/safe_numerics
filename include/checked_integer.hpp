@@ -18,7 +18,6 @@
 #include <limits>
 #include <type_traits> // is_integral, make_unsigned, enable_if
 #include <algorithm>   // std::max
-#include <boost/utility/enable_if.hpp>
 
 #include "checked_result.hpp"
 #include "checked_default.hpp"
@@ -32,7 +31,7 @@ namespace numeric {
 // utility
 
 template<bool tf>
-using bool_type = typename boost::mpl::if_c<tf, std::true_type, std::false_type>::type;
+using bool_type = typename std::conditional<tf, std::true_type, std::false_type>::type;
 
 ////////////////////////////////////////////////////
 // layer 0 - implement safe operations for intrinsic integers

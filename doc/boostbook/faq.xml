@@ -18,7 +18,9 @@
         feedback I've received makes me thing that it's a widely held view.
         The best answer is to consider the examples in the <link
         linkend="safe_numerics.tutorial">Tutorials and Motivating
-        Examples</link> section of the library documentation.</para>
+        Examples</link> section of the library documentation. I believe the
+        convincingly demonstrate that any program that doesn't use this
+        library is absent of arithmetic errors.</para>
       </answer>
     </qandaentry>
 
@@ -116,7 +118,7 @@
             <listitem>
               <para>type trait <code>is_safe&lt;std::integral_constant&lt;int,
               42&gt;&gt;</code> would have to be defined to return
-              <code>true</code>. </para>
+              <code>true</code>.</para>
             </listitem>
 
             <listitem>
@@ -132,7 +134,7 @@
 
     <qandaentry>
       <question>
-        <para>Why is Boost.Convert not used?&lt;</para>
+        <para>Why is Boost.Convert not used?</para>
       </question>
 
       <answer>
@@ -198,7 +200,7 @@
       <answer>
         <para>As far as is known as of this writing, the library does not
         presume that the underlying hardware is two's complement. However,
-        this has yet to be verified in a rigorous way.</para>
+        this has yet to be verified in any rigorous way.</para>
       </answer>
     </qandaentry>
 

@@ -85,7 +85,7 @@ checked_result&lt;R&gt; constexpr checked::bitwise_xor(const R &amp; t, const R 
     <title>Type requirements</title>
 
     <para>All template parameters of the functions must model <link
-    linkend="safe_numerics.integer">Integer</link> type requirements.</para>
+    linkend="safe_numerics.integer">Numeric</link> type requirements.</para>
   </section>
 
   <section>
@@ -97,7 +97,7 @@ checked_result&lt;R&gt; constexpr checked::bitwise_xor(const R &amp; t, const R 
   <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;boost/numeric/safe_numerics/checked.hpp&gt;
+    <programlisting>#include &lt;boost/numeric/safe_numerics/checked_default.hpp&gt;
 
 checked_result&lt;int&gt; r = checked::multiply&lt;int&gt;(24, 42);
 </programlisting>
@@ -125,13 +125,16 @@ checked_result&lt;int&gt; r = checked::multiply&lt;int&gt;(24, 42);
     <title>Header</title>
 
     <para><ulink url="../../include/checked.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
+    &lt;boost/numeric/safe_numerics/checked_default.hpp&gt;
+    </code></ulink></para>
 
-    <para><ulink url="../../include/checked.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
+    <para><ulink url="../../include/checked_integer.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked_integer.hpp&gt;
+    </code></ulink></para>
 
     <para><ulink url="../../include/checked.hpp"><code/></ulink><ulink
-    url="../../include/checked.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/checked.hpp&gt; </code></ulink></para>
+    url="../../include/checked_float.hpp"><code>#include
+    &lt;boost/numeric/safe_numerics/checked_float.hpp&gt;
+    </code></ulink></para>
   </section>
 </section>

@@ -3,6 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <section id="safe_numerics.bibliography">
   <title>Bibliography</title>
+
   <bibliography>
     <biblioentry id="coker">
       <author>
@@ -35,14 +36,18 @@
         <surname>Kästner</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="https://www.cs.cmu.edu/~ckaestne/pdf/csse14-01.pdf">Integers In C:
-      An Open Invitation To Security Attacks?</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="https://www.cs.cmu.edu/~ckaestne/pdf/csse14-01.pdf">Integers In
+          C: An Open Invitation To Security Attacks?</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 - The C++
-      Standards Committee - ISOCPP</ulink></publishername>
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
+        The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
 
       <date>January 15, 2012</date>
 
@@ -56,14 +61,18 @@
         <surname>Crowl</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
-      Binary Fixed-Point Arithmetic</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
+          Binary Fixed-Point Arithmetic</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 - The C++
-      Standards Committee - ISOCPP</ulink></publishername>
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">JTC1/SC22/WG21 -
+        The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
 
       <date>January 15, 2012</date>
 
@@ -79,14 +88,18 @@
         <surname>Thorsten Ottosen</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1962.html">Proposal
-      to add Contract Programming to C++</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1962.html">Proposal
+          to add Contract Programming to C++</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N1962 and J16/06-0032
-      - The C++ Standards Committee - ISOCPP</ulink></publishername>
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N1962 and
+        J16/06-0032 - The C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
 
       <date>February 25, 2006</date>
 
@@ -110,14 +123,18 @@
         <surname>Vikram Adve</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
-      Integer Overflow in C/C++</ulink></title>
+      <title>
+        <ulink
+        url="http://www.cs.utah.edu/~regehr/papers/overflow12.pdf">Understanding
+        Integer Overflow in C/C++</ulink>
+      </title>
 
-      <publishername><ulink
-      url="http://dl.acm.org/citation.cfm?id=2337223&amp;picked=prox">Proceedings
-      of the 34th International Conference on Software Engineering (ICSE),
-      Zurich, Switzerland</ulink></publishername>
+      <publishername>
+        <ulink
+        url="http://dl.acm.org/citation.cfm?id=2337223&amp;picked=prox">Proceedings
+        of the 34th International Conference on Software Engineering (ICSE),
+        Zurich, Switzerland</ulink>
+      </publishername>
 
       <date>June 2012</date>
 
@@ -129,14 +146,18 @@
         <surname>J. Daniel Garcia</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4293.pdf">C++
-      language support for contract programming</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4293.pdf">C++
+          language support for contract programming</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N4293 - The C++
-      Standards Committee - ISOCPP</ulink></publishername>
+      <publishername>
+        <ulink url="http://www.open-std.org/jtc1/sc22/wg21/">WG21/N4293 - The
+        C++ Standards Committee - ISOCPP</ulink>
+      </publishername>
 
       <date>December 23, 2014</date>
 
@@ -148,13 +169,17 @@
         <surname>Omer Katz</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">SafeInt
-      code proposal</ulink></title>
+      <title>
+        <ulink
+        url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">SafeInt
+        code proposal</ulink>
+      </title>
 
-      <publishername><ulink
-      url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">Boost
-      Developer's List</ulink></publishername>
+      <publishername>
+        <ulink
+        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">Boost
+        Developer's List</ulink>
+      </publishername>
 
       <abbrev>Katz</abbrev>
 
@@ -205,13 +230,18 @@
         </author>
       </authorgroup>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://resources.sei.cmu.edu/asset_files/TechnicalNote/2009_004_001_15074.pdf">As-if
-      Infinitely Ranged Integer Model</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://resources.sei.cmu.edu/asset_files/TechnicalNote/2009_004_001_15074.pdf">As-if
+          Infinitely Ranged Integer Model</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink url="http://www.sei.cmu.edu">Software Engineering
-      Institute</ulink></publishername>
+      <publishername>
+        <ulink url="http://www.sei.cmu.edu">Software Engineering
+        Institute</ulink>
+      </publishername>
 
       <volumenum>CMU/SEI-2009-TN-023</volumenum>
 
@@ -225,12 +255,15 @@
         <surname>David LeBlanc</surname>
       </author>
 
-      <title><ulink
-      url="https://msdn.microsoft.com/en-us/library/ms972705.aspx">Integer
-      Handling with the C++ SafeInt Class</ulink></title>
+      <title>
+        <ulink
+        url="https://msdn.microsoft.com/en-us/library/ms972705.aspx">Integer
+        Handling with the C++ SafeInt Class</ulink>
+      </title>
 
-      <publishername><ulink url="https://www.cert.org">Microsoft Developer
-      Network</ulink></publishername>
+      <publishername>
+        <ulink url="https://www.cert.org">Microsoft Developer Network</ulink>
+      </publishername>
 
       <date>January 7, 2004</date>
 
@@ -242,10 +275,13 @@
         <surname>David LeBlanc</surname>
       </author>
 
-      <title><ulink url="https://safeint.codeplex.com">SafeInt</ulink></title>
+      <title>
+        <ulink url="https://safeint.codeplex.com">SafeInt</ulink>
+      </title>
 
-      <publishername><ulink
-      url="https://www.cert.org">CodePlex</ulink></publishername>
+      <publishername>
+        <ulink url="https://www.cert.org">CodePlex</ulink>
+      </publishername>
 
       <date>Dec 3, 2014</date>
 
@@ -257,12 +293,16 @@
         <surname>Jacques-Louis Lions</surname>
       </author>
 
-      <title><ulink
-      url="https://en.wikisource.org/wiki/Ariane_501_Inquiry_Board_report">Ariane
-      501 Inquiry Board report</ulink></title>
+      <title>
+        <ulink
+        url="https://en.wikisource.org/wiki/Ariane_501_Inquiry_Board_report">Ariane
+        501 Inquiry Board report</ulink>
+      </title>
 
-      <publishername><ulink
-      url="https://en.wikisource.org/wiki/Main_Page">Wikisource</ulink></publishername>
+      <publishername>
+        <ulink
+        url="https://en.wikisource.org/wiki/Main_Page">Wikisource</ulink>
+      </publishername>
 
       <date>July 19, 1996</date>
 
@@ -274,11 +314,14 @@
         <surname>Hubert Matthews</surname>
       </author>
 
-      <title><ulink url="https://accu.org/index.php/journals/324">CheckedInt:
-      A Policy-Based Range-Checked Integer</ulink></title>
+      <title>
+        <ulink url="https://accu.org/index.php/journals/324">CheckedInt: A
+        Policy-Based Range-Checked Integer</ulink>
+      </title>
 
-      <publishername><ulink url="https://accu.org/index.php">Overload Journal
-      #58</ulink></publishername>
+      <publishername>
+        <ulink url="https://accu.org/index.php">Overload Journal #58</ulink>
+      </publishername>
 
       <date>December 2003</date>
 
@@ -290,10 +333,13 @@
         <surname>Jad Mouawad</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://www.nytimes.com/2015/05/01/business/faa-orders-fix-for-possible-power-loss-in-boeing-787.html?_r=0">F.A.A
-      Orders Fix for Possible Power Loss in Boeing 787</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.nytimes.com/2015/05/01/business/faa-orders-fix-for-possible-power-loss-in-boeing-787.html?_r=0">F.A.A
+          Orders Fix for Possible Power Loss in Boeing 787</ulink>
+        </ulink>
+      </title>
 
       <publishername>New York Times</publishername>
 
@@ -312,12 +358,16 @@
         <surname>Daniel Plakosh</surname>
       </author>
 
-      <title><ulink
-      url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
-      Integer Operations</ulink></title>
+      <title>
+        <ulink
+        url="https://buildsecurityin.us-cert.gov/bsi/articles/knowledge/coding/312-BSI.html">Safe
+        Integer Operations</ulink>
+      </title>
 
-      <publishername><ulink url="https://buildsecurityin.us-cert.gov">U.S.
-      Department of Homeland Security</ulink></publishername>
+      <publishername>
+        <ulink url="https://buildsecurityin.us-cert.gov">U.S. Department of
+        Homeland Security</ulink>
+      </publishername>
 
       <date>May 10, 2013</date>
 
@@ -329,9 +379,11 @@
         <surname>Robert C. Seacord</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">Secure
-      Coding in C and C++</ulink></title>
+      <title>
+        <ulink
+        url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">Secure
+        Coding in C and C++</ulink>
+      </title>
 
       <edition>2nd Edition</edition>
 
@@ -349,12 +401,16 @@
         <surname>Robert C. Seacord</surname>
       </author>
 
-      <title><ulink
-      url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT30-C.
-      Ensure that operations on unsigned integers do not wrap</ulink></title>
+      <title>
+        <ulink
+        url="https://www.securecoding.cert.org/confluence/display/seccode/INT32-C.+Ensure+that+operations+on+signed+integers+do+not+result+in+overflow?showComments=false">INT30-C.
+        Ensure that operations on unsigned integers do not wrap</ulink>
+      </title>
 
-      <publishername><ulink url="https://www.cert.org">Software Engineering
-      Institute, Carnegie Mellon University</ulink></publishername>
+      <publishername>
+        <ulink url="https://www.cert.org">Software Engineering Institute,
+        Carnegie Mellon University</ulink>
+      </publishername>
 
       <date>August 17, 2014</date>
 
@@ -366,17 +422,34 @@
         <surname id="INT32-C">Robert C. Seacord</surname>
       </author>
 
-      <title><ulink
-      url="https://www.securecoding.cert.org/confluence/display/c/INT30-C.+Ensure+that+unsigned+integer+operations+do+not+wrap">INT32-C.
-      Ensure that operations on signed integers do not result in
-      overflow</ulink></title>
+      <title>
+        <ulink
+        url="https://www.securecoding.cert.org/confluence/display/c/INT30-C.+Ensure+that+unsigned+integer+operations+do+not+wrap">INT32-C.
+        Ensure that operations on signed integers do not result in
+        overflow</ulink>
+      </title>
 
-      <publishername><ulink url="https://www.cert.org">Software Engineering
-      Institute, Carnegie Mellon University</ulink></publishername>
+      <publishername>
+        <ulink url="https://www.cert.org">Software Engineering Institute,
+        Carnegie Mellon University</ulink>
+      </publishername>
 
       <date>August 17, 2014</date>
 
       <abbrev>INT32-C</abbrev>
+    </biblioentry>
+
+    <biblioentry id="stroustrup">
+      <author>
+        <firstname>David Stone</firstname>
+      </author>
+
+      <title>
+        <ulink url="http://doublewise.net/c++/bounded/">C++ Bounded Integer
+        Library</ulink>
+      </title>
+
+      <abbrev>Stone</abbrev>
     </biblioentry>
 
     <biblioentry id="stroustrup">
@@ -388,8 +461,10 @@
 
       <title>The C++ Programming Language Fourth Edition</title>
 
-      <publishername><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/">Addison-Wesley</ulink></publishername>
+      <publishername>
+        <ulink
+        url="http://www.open-std.org/jtc1/sc22/wg21/">Addison-Wesley</ulink>
+      </publishername>
 
       <copyright>
         <year>2014 by Pearson Education, Inc.</year>
@@ -405,14 +480,19 @@
         <surname>Forum Posts</surname>
       </author>
 
-      <title><ulink
-      url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?"><ulink
-      url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
-      Binary Fixed-Point Arithmetic</ulink></ulink></title>
+      <title>
+        <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
+          <ulink
+          url="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3352.html">C++
+          Binary Fixed-Point Arithmetic</ulink>
+        </ulink>
+      </title>
 
-      <publishername><ulink
-      url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">ISO
-      C++ Standard Future Proposals</ulink></publishername>
+      <publishername>
+        <ulink
+        url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">ISO
+        C++ Standard Future Proposals</ulink>
+      </publishername>
 
       <abbrev>Forum</abbrev>
 
