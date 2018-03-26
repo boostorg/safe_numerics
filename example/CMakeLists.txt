@@ -31,6 +31,7 @@ test_example(example10)
 test_example(example13)
 test_example(example14)
 test_example(example15)
+test_example(example20)
 
 # end examples targets
 ####################

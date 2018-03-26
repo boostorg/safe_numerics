@@ -194,7 +194,7 @@ struct product_value_type {
         greater_than_max,
         indeterminant,
         count,
-        minus_one
+        t_value
     } m_flag;
     constexpr enum flag to_flag(const checked_result<T> & t) const {
         switch(static_cast<safe_numerics_error>(t)){
@@ -431,11 +431,11 @@ constexpr inline operator%(
         // t == less_than_zero,
         {
             // u == ...
-            value_type::indeterminant,      // less_than_min,
+            value_type::t_value,      // less_than_min,
             value_type::greater_than_zero,  // less_than_zero,
             value_type::indeterminant,      // zero,
             value_type::less_than_zero,     // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
+            value_type::t_value,     // greater than max,
             value_type::indeterminant,      // indeterminant,
         },
         // t == zero,
@@ -451,11 +451,11 @@ constexpr inline operator%(
         // t == greater_than_zero,
         {
             // u == ...
-            value_type::indeterminant,      // less_than_min,
+            value_type::t_value,      // less_than_min,
             value_type::less_than_zero,     // less_than_zero,
             value_type::indeterminant,      // zero,
             value_type::greater_than_zero,  // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
+            value_type::t_value,  // greater than max,
             value_type::indeterminant,      // indeterminant,
         },
         // t == greater_than_max
@@ -486,6 +486,8 @@ constexpr inline operator%(
             return checked::modulus<T>(t, u);
         case value_type::indeterminant:
             return safe_numerics_error::range_error;
+        case value_type::t_value:
+            return t;
         case value_type::greater_than_max:
         case value_type::less_than_min:
         default:
@@ -510,6 +512,17 @@ constexpr boost::logic::tribool operator<(
         indeterminant,
     };
 
+    // the question arises about how to order values of type greater_than_min.
+    // that is: what should greater_than_min < greater_than_min return.
+    //
+    // a) return indeterminant because we're talking about the "true" values for
+    //    which greater_than_min is a placholder.
+    //
+    // b) return false because the two values are "equal"
+    //
+    // for our purposes, b) is the better interpretation as it better
+    // models our view that the < operation referes to the place holders
+    // rather than some underlying value.
     constexpr const result_type result[order][order]{
         // t == known_value
         {
@@ -523,7 +536,7 @@ constexpr boost::logic::tribool operator<(
         {
             // u == ...
             result_type::true_value,    // known_value,
-            result_type::indeterminant, // less_than_min,
+            result_type::false_value,   // less_than_min, see above argument
             result_type::true_value,    // greater_than_max,
             result_type::indeterminant, // indeterminant,
         },
@@ -532,7 +545,7 @@ constexpr boost::logic::tribool operator<(
             // u == ...
             result_type::false_value,   // known_value,
             result_type::false_value,   // less_than_min,
-            result_type::indeterminant, // greater_than_max,
+            result_type::false_value,   // greater_than_max, see above argument
             result_type::indeterminant, // indeterminant,
         },
         // t == indeterminant

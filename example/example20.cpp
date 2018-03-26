@@ -1,13 +1,16 @@
-#include <boost/numeric/safe_numerics/checked_result.hpp>
-#include <boost/numeric/safe_numerics/checked_result_operations.hpp>
+#include <exception>
+#include <iostream>
 
-int main(int, char[]){
-    using ext_uint = checked_result<unsigned int>;
+#include "../include/checked_result.hpp"
+#include "../include/checked_result_operations.hpp"
+
+int main(){
+    using ext_uint = boost::numeric::checked_result<unsigned int>;
     const ext_uint x{4};
     const ext_uint y{3};
 
     // operation is a success!
-    std::cout << "success! x - y = " << x - y);
+    std::cout << "success! x - y = " << x - y;
 
     // subtraction would result in -1, and invalid result for an unsigned value
     std::cout << "problem: y - x = " << y - x;

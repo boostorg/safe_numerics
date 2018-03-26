@@ -54,14 +54,14 @@ struct interval {
     constexpr interval();
 
     // return true if this interval contains the given point
-    constexpr bool includes(const R & t) const {
+    constexpr tribool includes(const R & t) const {
         return l <= t && t <= u;
     }
     // if this interval contains every point found in some other inteval t
     //  return true
     // otherwise
     //  return false or indeterminant
-    constexpr boost::logic::tribool includes(const interval<R> & t) const {
+    constexpr tribool includes(const interval<R> & t) const {
         return u >= t.u && l <= t.l;
     }
 
@@ -73,7 +73,7 @@ struct interval {
     //  return true
     // otherwise
     //  return false or indeterminant
-    constexpr boost::logic::tribool excludes(const interval<R> & t) const {
+    constexpr tribool excludes(const interval<R> & t) const {
         return t.u < l || u < t.l;
     }
 
@@ -136,7 +136,7 @@ constexpr interval<T> operator*(const interval<T> & t, const interval<T> & u){
 // note: presumes 0 is not included in the range of the denominator
 template<typename T>
 constexpr interval<T> operator/(const interval<T> & t, const interval<T> & u){
-//    assert(static_cast<bool>(u.excludes(T(0))));
+    assert(static_cast<bool>(u.excludes(T(0))));
     return utility::minmax<T>(
         std::initializer_list<T> {
             t.l / u.l,
@@ -147,54 +147,17 @@ constexpr interval<T> operator/(const interval<T> & t, const interval<T> & u){
     );
 }
 
-// modulus of two intervals.  This will give a new range of for the modulus.  But
-// it doesn't consider the possibility that the radix is zero.  This will
-// have to be considered separately.
+// modulus of two intervals.  This will give a new range of for the modulus.
+// note: presumes 0 is not included in the range of the denominator
 template<typename T>
-constexpr interval<T> operator%(const interval<T> &, const interval<T> & u){
-
-    /* Turns out that getting the exact range is a suprisingly difficult
-     * problem.  But we can get a reasonable guaranteed range with the following
-     * simple formula (due to Skona Brittain):
-     *
-     *  [-m + 1, m - 1] where m is max(|c|, |d|).
-     *
-     * where the operation is [a,b] % [c,d]
-     *
-     * But a naive implementation of this algorithm doesn't work.  We have a
-     * problem with (8 bit integers for illustration) abs(-128) -> -128! So we
-     * can't get the absolute value of the minimum value !
-     *
-     * so we impement the above in a slightly different way.
-     */
-
-    // const T xa = (t.l > 0) ? t.l - 1 : t.l + 1; // a
-    // const T xb = (t.u > 0) ? t.u - 1 : t.u + 1; // b
-    const T xc =
-        (u.l > T(0))
-        ? u.l - T(1)
-        : (u.l < T(0))
-            ? T(0) - (u.l + T(1))
-            : T(0); // c
-    const T xd =
-        (u.u > T(0))
-        ? u.u - T(1)
-        : (u.u < T(0))
-            ? T(0) -(u.u + T(1))
-            : T(0); // d
-
-    // special care to void problem when inverting -128
-
-    const T mxc = T(0) - xc;
-    const T mxd = T(0) - xd;
-
-    return utility::minmax(
+constexpr interval<T> operator%(const interval<T> & t, const interval<T> & u){
+    assert(static_cast<bool>(u.excludes(T(0))));
+    return utility::minmax<T>(
         std::initializer_list<T> {
-            xc,
-            mxc,
-            xd,
-            mxd,
-            0
+            t.l % u.l,
+            t.l % u.u,
+            t.u % u.l,
+            t.u % u.u
         }
     );
 }

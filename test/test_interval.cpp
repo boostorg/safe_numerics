@@ -135,12 +135,10 @@ struct test_type {
 
         using R = checked_result<T>;
         // pointers to operands for types T
-        static const std::array<op<R>, 7> op_table{{
+        static const std::array<op<R>, 5> op_table{{
             {operator+, operator+, "+", false},
             {operator-, operator-, "-", false},
             {operator*, operator*, "*", false},
-            {operator/, operator/, "/", true},
-            {operator%, operator%, "%", true},
             {operator<<, operator<<, "<<", false},
             {operator>>, operator>>, ">>", false},
         }};
