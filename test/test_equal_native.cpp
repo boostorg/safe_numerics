@@ -16,7 +16,7 @@ using safe_t = boost::numeric::safe<T>;
 #include "test.hpp"
 #include "test_values.hpp"
 
-const char *test_less_than_result[VALUE_ARRAY_SIZE] = {
+const char *test_equal_result[VALUE_ARRAY_SIZE] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012
@@ -76,7 +76,7 @@ const char *test_less_than_result[VALUE_ARRAY_SIZE] = {
     TEST_IMPL(                                     \
         BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
         BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_less_than_result[value_index1][value_index2] \
+        test_equal_result[value_index1][value_index2] \
     )
 /**/
 

@@ -15,11 +15,11 @@
 // Implemenation of arithmetic on "extended" integers.
 // extended integers are
 //     a) an interger range
-//     b) extra elements +inf, -inf, indeterminant
+//     b) extra elements +inf, -inf, indeterminate
 //
 // arithmetic operations are closed on the set of extended integers
 // but operations are not associative when they result in the
-// extensions +inf, -inf, and indeterminant
+// extensions +inf, -inf, and indeterminate
 //
 // in this code, the type "checked_result<T>" where T is some
 // integer type is an "extended" integer.
@@ -41,16 +41,16 @@ namespace numeric {
 //////////////////////////////////////////////////////////////////////////
 // implement C++ operators for check_result<T>
 
-template<class T>
 struct sum_value_type {
     // characterization of various values
     const enum flag {
         known_value = 0,
         less_than_min,
         greater_than_max,
-        indeterminant,
+        indeterminate,
         count
     } m_flag;
+    template<class T>
     constexpr enum flag to_flag(const checked_result<T> & t) const {
         switch(static_cast<safe_numerics_error>(t)){
         case safe_numerics_error::success:
@@ -62,9 +62,10 @@ struct sum_value_type {
             // result is above representational maximum
             return greater_than_max;
         default:
-            return indeterminant;
+            return indeterminate;
         }
     }
+    template<class T>
     constexpr sum_value_type(const checked_result<T> & t) :
         m_flag(to_flag(t))
     {}
@@ -83,45 +84,52 @@ constexpr inline operator+(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = sum_value_type<T>;
+    using value_type = sum_value_type;
     constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    constexpr const enum safe_numerics_error result[order][order] = {
+    // note major pain.  Clang constexpr multi-dimensional array is fine.
+    // but gcc doesn't permit a multi-dimensional array to be be constexpr.
+    // so we need to some ugly gymnastics to make our system work for all
+    // all systems.
+    constexpr const enum safe_numerics_error result[order * order] = {
         // t == known_value
-        {
+        //{
             // u == ...
             safe_numerics_error::success,                   // known_value,
             safe_numerics_error::negative_overflow_error,   // less_than_min,
             safe_numerics_error::positive_overflow_error,   // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
         // t == less_than_min,
-        {
+        //{
             // u == ...
             safe_numerics_error::negative_overflow_error,   // known_value,
             safe_numerics_error::negative_overflow_error,   // less_than_min,
             safe_numerics_error::range_error,               // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
         // t == greater_than_max,
-        {
+        //{
             // u == ...
             safe_numerics_error::positive_overflow_error,   // known_value,
             safe_numerics_error::range_error,               // less_than_min,
             safe_numerics_error::positive_overflow_error,   // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
-        // t == indeterminant,
-        {
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
+        // t == indeterminate,
+        //{
             // u == ...
             safe_numerics_error::range_error,      // known_value,
             safe_numerics_error::range_error,      // less_than_min,
             safe_numerics_error::range_error,      // greater_than_max,
-            safe_numerics_error::range_error,      // indeterminant,
-        },
+            safe_numerics_error::range_error,      // indeterminate,
+        //},
     };
 
-    safe_numerics_error e = result[value_type(t)][value_type(u)];
+    const value_type tx(t);
+    const value_type ux(u);
+
+    const safe_numerics_error e = result[tx * order + ux];
     if(safe_numerics_error::success == e)
         return checked::add<T>(t, u);
     return checked_result<T>(e, "addition result");
@@ -137,53 +145,53 @@ constexpr inline operator-(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = sum_value_type<T>;
+    using value_type = sum_value_type;
     constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    constexpr const enum safe_numerics_error result[order][order] = {
+    constexpr const enum safe_numerics_error result[order * order] = {
         // t == known_value
-        {
+        //{
             // u == ...
             safe_numerics_error::success,                   // known_value,
             safe_numerics_error::positive_overflow_error,   // less_than_min,
             safe_numerics_error::negative_overflow_error,   // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
         // t == less_than_min,
-        {
+        //{
             // u == ...
             safe_numerics_error::negative_overflow_error,   // known_value,
             safe_numerics_error::range_error,               // less_than_min,
             safe_numerics_error::negative_overflow_error,   // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
         // t == greater_than_max,
-        {
+        //{
             // u == ...
             safe_numerics_error::positive_overflow_error,   // known_value,
             safe_numerics_error::positive_overflow_error,   // less_than_min,
             safe_numerics_error::range_error,               // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
-        // t == indeterminant,
-        {
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
+        // t == indeterminate,
+        //{
             // u == ...
             safe_numerics_error::range_error,               // known_value,
             safe_numerics_error::range_error,               // less_than_min,
             safe_numerics_error::range_error,               // greater_than_max,
-            safe_numerics_error::range_error,               // indeterminant,
-        },
+            safe_numerics_error::range_error,               // indeterminate,
+        //},
     };
 
-    value_type vt(t);
-    value_type vu(u);
-    safe_numerics_error e = result[vt][vu];
+    const value_type tx(t);
+    const value_type ux(u);
+
+    const safe_numerics_error e = result[tx * order + ux];
     if(safe_numerics_error::success == e)
         return checked::subtract<T>(t, u);
     return checked_result<T>(e, "subtraction result");
 }
 
-template<class T>
 struct product_value_type {
     // characterization of various values
     const enum flag {
@@ -192,10 +200,11 @@ struct product_value_type {
         zero,
         greater_than_zero,
         greater_than_max,
-        indeterminant,
+        indeterminate,
         count,
         t_value
     } m_flag;
+    template<class T>
     constexpr enum flag to_flag(const checked_result<T> & t) const {
         switch(static_cast<safe_numerics_error>(t)){
         case safe_numerics_error::success:
@@ -211,9 +220,10 @@ struct product_value_type {
             // result is above representational maximum
             return greater_than_max;
         default:
-            return indeterminant;
+            return indeterminate;
         }
     }
+    template<class T>
     constexpr product_value_type(const checked_result<T> & t) :
         m_flag(to_flag(t))
     {}
@@ -232,71 +242,74 @@ constexpr inline operator*(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = product_value_type<T>;
+    using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    constexpr const enum value_type::flag result[order][order] = {
+    constexpr const enum value_type::flag result[order * order] = {
         // t == less_than_min
-        {
+        //{
             // u == ...
             value_type::greater_than_max,   // less_than_min,
             value_type::greater_than_max,   // less_than_zero,
             value_type::zero,               // zero,
             value_type::less_than_min,      // greater_than_zero,
             value_type::less_than_min,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == less_than_zero,
-        {
+        //{
             // u == ...
             value_type::greater_than_max,   // less_than_min,
             value_type::greater_than_zero,  // less_than_zero,
             value_type::zero,               // zero,
             value_type::less_than_zero,     // greater_than_zero,
             value_type::less_than_min,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == zero,
-        {
+        //{
             // u == ...
             value_type::zero,               // less_than_min,
             value_type::zero,               // less_than_zero,
             value_type::zero,               // zero,
             value_type::zero,               // greater_than_zero,
             value_type::zero,               // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == greater_than_zero,
-        {
+        //{
             // u == ...
             value_type::less_than_min,      // less_than_min,
             value_type::less_than_zero,     // less_than_zero,
             value_type::zero,               // zero,
             value_type::greater_than_zero,  // greater_than_zero,
             value_type::greater_than_max,   // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             value_type::less_than_min,      // less_than_min,
             value_type::less_than_min,      // less_than_zero,
             value_type::zero,               // zero,
             value_type::greater_than_max,   // greater_than_zero,
             value_type::greater_than_max,   // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
-        // t == indeterminant
-        {
-            value_type::indeterminant,      // less_than_min,
-            value_type::indeterminant,      // less_than_zero,
-            value_type::indeterminant,      // zero,
-            value_type::indeterminant,      // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        }
+            value_type::indeterminate,      // indeterminate,
+        //},
+        // t == indeterminate
+        //{
+            value_type::indeterminate,      // less_than_min,
+            value_type::indeterminate,      // less_than_zero,
+            value_type::indeterminate,      // zero,
+            value_type::indeterminate,      // greater_than_zero,
+            value_type::indeterminate,      // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //}
     };
 
-    switch(result[value_type(t)][value_type(u)]){
+    const value_type tx(t);
+    const value_type ux(u);
+
+    switch(result[tx * order + ux]){
         case value_type::less_than_min:
             return safe_numerics_error::negative_overflow_error;
         case value_type::zero:
@@ -306,7 +319,7 @@ constexpr inline operator*(
         case value_type::less_than_zero:
         case value_type::greater_than_zero:
             return checked::multiply<T>(t, u);
-        case value_type::indeterminant:
+        case value_type::indeterminate:
             return safe_numerics_error::range_error;
         default:
             assert(false);
@@ -323,71 +336,74 @@ constexpr inline operator/(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = product_value_type<T>;
+    using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    constexpr const enum value_type::flag result[order][order] = {
+    constexpr const enum value_type::flag result[order * order] = {
         // t == less_than_min
-        {
+        //{
             // u == ...
-            value_type::indeterminant,   // less_than_min,
+            value_type::indeterminate,   // less_than_min,
             value_type::greater_than_max,   // less_than_zero,
             value_type::less_than_min,      // zero,
             value_type::less_than_min,      // greater_than_zero,
             value_type::less_than_min,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == less_than_zero,
-        {
+        //{
             // u == ...
             value_type::zero,               // less_than_min,
             value_type::greater_than_zero,  // less_than_zero,
             value_type::less_than_min,      // zero,
             value_type::less_than_zero,     // greater_than_zero,
             value_type::zero,               // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == zero,
-        {
+        //{
             // u == ...
             value_type::zero,               // less_than_min,
             value_type::zero,               // less_than_zero,
-            value_type::indeterminant,      // zero,
+            value_type::indeterminate,      // zero,
             value_type::zero,               // greater_than_zero,
             value_type::zero,               // greater than max,
-            value_type::indeterminant,               // indeterminant,
-        },
+            value_type::indeterminate,               // indeterminate,
+        //},
         // t == greater_than_zero,
-        {
+        //{
             // u == ...
             value_type::zero,               // less_than_min,
             value_type::less_than_zero,     // less_than_zero,
             value_type::greater_than_max,   // zero,
             value_type::greater_than_zero,  // greater_than_zero,
             value_type::zero,               // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             value_type::less_than_min,      // less_than_min,
             value_type::less_than_min,      // less_than_zero,
             value_type::greater_than_max,   // zero,
             value_type::greater_than_max,   // greater_than_zero,
-            value_type::indeterminant,   // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
-        // t == indeterminant
-        {
-            value_type::indeterminant,      // less_than_min,
-            value_type::indeterminant,      // less_than_zero,
-            value_type::indeterminant,      // zero,
-            value_type::indeterminant,      // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        }
+            value_type::indeterminate,   // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //},
+        // t == indeterminate
+        //{
+            value_type::indeterminate,      // less_than_min,
+            value_type::indeterminate,      // less_than_zero,
+            value_type::indeterminate,      // zero,
+            value_type::indeterminate,      // greater_than_zero,
+            value_type::indeterminate,      // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //}
     };
 
-    switch(result[value_type(t)][value_type(u)]){
+    const value_type tx(t);
+    const value_type ux(u);
+
+    switch(result[tx * order + ux]){
         case value_type::less_than_min:
             return safe_numerics_error::negative_overflow_error;
         case value_type::zero:
@@ -397,7 +413,7 @@ constexpr inline operator/(
         case value_type::less_than_zero:
         case value_type::greater_than_zero:
             return checked::divide<T>(t, u);
-        case value_type::indeterminant:
+        case value_type::indeterminate:
             return safe_numerics_error::range_error;
         default:
             assert(false);
@@ -414,77 +430,80 @@ constexpr inline operator%(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = product_value_type<T>;
+    using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    constexpr const enum value_type::flag result[order][order] = {
+    constexpr const enum value_type::flag result[order * order] = {
         // t == less_than_min
-        {
+        //{
             // u == ...
-            value_type::indeterminant,      // less_than_min,
-            value_type::indeterminant,      // less_than_zero,
-            value_type::indeterminant,      // zero,
-            value_type::indeterminant,      // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // less_than_min,
+            value_type::indeterminate,      // less_than_zero,
+            value_type::indeterminate,      // zero,
+            value_type::indeterminate,      // greater_than_zero,
+            value_type::indeterminate,      // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == less_than_zero,
-        {
+        //{
             // u == ...
             value_type::t_value,      // less_than_min,
             value_type::greater_than_zero,  // less_than_zero,
-            value_type::indeterminant,      // zero,
+            value_type::indeterminate,      // zero,
             value_type::less_than_zero,     // greater_than_zero,
             value_type::t_value,     // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == zero,
-        {
+        //{
             // u == ...
             value_type::zero,               // less_than_min,
             value_type::zero,               // less_than_zero,
-            value_type::indeterminant,      // zero,
+            value_type::indeterminate,      // zero,
             value_type::zero,               // greater_than_zero,
             value_type::zero,               // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == greater_than_zero,
-        {
+        //{
             // u == ...
-            value_type::t_value,      // less_than_min,
+            value_type::t_value,            // less_than_min,
             value_type::less_than_zero,     // less_than_zero,
-            value_type::indeterminant,      // zero,
+            value_type::indeterminate,      // zero,
             value_type::greater_than_zero,  // greater_than_zero,
-            value_type::t_value,  // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
+            value_type::t_value,            // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //},
         // t == greater_than_max
-        {
-            value_type::indeterminant,      // less_than_min,
-            value_type::indeterminant,      // less_than_zero,
-            value_type::indeterminant,      // zero,
-            value_type::indeterminant,      // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        },
-        // t == indeterminant
-        {
-            value_type::indeterminant,      // less_than_min,
-            value_type::indeterminant,      // less_than_zero,
-            value_type::indeterminant,      // zero,
-            value_type::indeterminant,      // greater_than_zero,
-            value_type::indeterminant,      // greater than max,
-            value_type::indeterminant,      // indeterminant,
-        }
+        //{
+            value_type::indeterminate,      // less_than_min,
+            value_type::indeterminate,      // less_than_zero,
+            value_type::indeterminate,      // zero,
+            value_type::indeterminate,      // greater_than_zero,
+            value_type::indeterminate,      // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //},
+        // t == indeterminate
+        //{
+            value_type::indeterminate,      // less_than_min,
+            value_type::indeterminate,      // less_than_zero,
+            value_type::indeterminate,      // zero,
+            value_type::indeterminate,      // greater_than_zero,
+            value_type::indeterminate,      // greater than max,
+            value_type::indeterminate,      // indeterminate,
+        //}
     };
 
-    switch(result[value_type(t)][value_type(u)]){
+    const value_type tx(t);
+    const value_type ux(u);
+
+    switch(result[tx * order + ux]){
         case value_type::zero:
             return 0;
         case value_type::less_than_zero:
         case value_type::greater_than_zero:
             return checked::modulus<T>(t, u);
-        case value_type::indeterminant:
+        case value_type::indeterminate:
             return safe_numerics_error::range_error;
         case value_type::t_value:
             return t;
@@ -502,20 +521,13 @@ constexpr boost::logic::tribool operator<(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = sum_value_type<T>;
+    using value_type = sum_value_type;
     constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
-
-    enum class result_type : std::uint8_t {
-        runtime,
-        false_value,
-        true_value,
-        indeterminant,
-    };
 
     // the question arises about how to order values of type greater_than_min.
     // that is: what should greater_than_min < greater_than_min return.
     //
-    // a) return indeterminant because we're talking about the "true" values for
+    // a) return indeterminate because we're talking about the "true" values for
     //    which greater_than_min is a placholder.
     //
     // b) return false because the two values are "equal"
@@ -523,51 +535,63 @@ constexpr boost::logic::tribool operator<(
     // for our purposes, b) is the better interpretation as it better
     // models our view that the < operation referes to the place holders
     // rather than some underlying value.
-    constexpr const result_type result[order][order]{
+    enum class result_type : std::uint8_t {
+        runtime,
+        false_value,
+        true_value,
+        indeterminate,
+    };
+    constexpr const result_type resultx[order * order]{
         // t == known_value
-        {
+        //{
             // u == ...
             result_type::runtime,       // known_value,
             result_type::false_value,   // less_than_min,
             result_type::true_value,    // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // indeterminate,
+        //},
         // t == less_than_min
-        {
+        //{
             // u == ...
             result_type::true_value,    // known_value,
             result_type::false_value,   // less_than_min, see above argument
             result_type::true_value,    // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             // u == ...
             result_type::false_value,   // known_value,
             result_type::false_value,   // less_than_min,
             result_type::false_value,   // greater_than_max, see above argument
-            result_type::indeterminant, // indeterminant,
-        },
-        // t == indeterminant
-        {
+            result_type::indeterminate, // indeterminate,
+        //},
+        // t == indeterminate
+        //{
             // u == ...
-            result_type::indeterminant, // known_value,
-            result_type::indeterminant, // less_than_min,
-            result_type::indeterminant, // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // known_value,
+            result_type::indeterminate, // less_than_min,
+            result_type::indeterminate, // greater_than_max,
+            result_type::indeterminate, // indeterminate,
+        //},
     };
 
-    switch(result[value_type(t)][value_type(u)]){
+    const value_type tx(t);
+    const value_type ux(u);
+
+    switch(resultx[tx * order + ux]){
     case result_type::runtime:
         return static_cast<const T &>(t) < static_cast<const T &>(u);
     case result_type::false_value:
         return false;
     case result_type::true_value:
         return true;
-    case result_type::indeterminant:
+    case result_type::indeterminate:
         return boost::logic::indeterminate;
+    default:
+        assert(false);
     }
+    return true;
 }
 
 template<class T>
@@ -603,59 +627,65 @@ operator==(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = sum_value_type<T>;
+    using value_type = sum_value_type;
     constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
     enum class result_type : std::uint8_t {
         runtime,
         false_value,
         true_value,
-        indeterminant,
+        indeterminate,
     };
 
-    constexpr const result_type result[order][order]{
+    constexpr const result_type result[order * order]{
         // t == known_value
-        {
+        //{
             // u == ...
             result_type::runtime,       // known_value,
             result_type::false_value,   // less_than_min,
             result_type::false_value,   // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // indeterminate,
+        //},
         // t == less_than_min
-        {
+        //{
             // u == ...
             result_type::false_value,   // known_value,
-            result_type::indeterminant, // less_than_min,
+            result_type::indeterminate, // less_than_min,
             result_type::false_value,   // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             // u == ...
             result_type::false_value,   // known_value,
             result_type::false_value,   // less_than_min,
-            result_type::indeterminant, // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
-        // t == indeterminant
-        {
+            result_type::indeterminate, // greater_than_max,
+            result_type::indeterminate, // indeterminate,
+        //},
+        // t == indeterminate
+        //{
             // u == ...
-            result_type::indeterminant, // known_value,
-            result_type::indeterminant, // less_than_min,
-            result_type::indeterminant, // greater_than_max,
-            result_type::indeterminant, // indeterminant,
-        },
+            result_type::indeterminate, // known_value,
+            result_type::indeterminate, // less_than_min,
+            result_type::indeterminate, // greater_than_max,
+            result_type::indeterminate, // indeterminate,
+        //},
     };
-    switch(result[value_type(t)][value_type(u)]){
+
+    const value_type tx(t);
+    const value_type ux(u);
+
+    switch(result[tx * order + ux]){
     case result_type::runtime:
         return static_cast<const T &>(t) == static_cast<const T &>(u);
     case result_type::false_value:
         return false;
     case result_type::true_value:
         return true;
-    case result_type::indeterminant:
+    case result_type::indeterminate:
         return boost::logic::indeterminate;
+    default:
+        assert(false);
     }
 }
 
@@ -711,105 +741,123 @@ constexpr inline operator<<(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = product_value_type<T>;
+    using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    const std::uint8_t result[order][order] = {
+    const std::uint8_t result[order * order] = {
         // t == less_than_min
-        {
+        //{
             // u == ...
             1, // -1,                                           // less_than_min,
             2, // safe_numerics_error::negative_overflow_error, // less_than_zero,
             2, // safe_numerics_error::negative_overflow_error, // zero,
             2, // safe_numerics_error::negative_overflow_error, // greater_than_zero,
             2, // safe_numerics_error::negative_overflow_error, // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == less_than_zero,
-        {
+        //{
             // u == ...
             3, // -1,                                           // less_than_min,
             4, // - (-t >> -u),                                 // less_than_zero,
             5, // safe_numerics_error::negative_overflow_error, // zero,
             6, // - (-t << u),                                  // greater_than_zero,
             2, // safe_numerics_error::negative_overflow_error, // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == zero,
-        {
+        //{
             // u == ...
             3, // 0     // less_than_min,
             3, // 0     // less_than_zero,
             3, // 0,    // zero,
             3, // 0,    // greater_than_zero,
             3, // 0,    // greater than max,
-            3, // safe_numerics_error::range_error,    // indeterminant,
-        },
+            3, // safe_numerics_error::range_error,    // indeterminate,
+        //},
         // t == greater_than_zero,
-        {
+        //{
             // u == ...
             3, // 0,                                            // less_than_min,
             7, // t >> -u,                                      // less_than_zero,
             5, // t,                                            // zero,
             8, // t >> u                                        // greater_than_zero,
             9, // safe_numerics_error::positive_overflow_error, // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             // u == ...
             1, // safe_numerics_error::range_error,               // less_than_min,
             9, // safe_numerics_error::positive_overflow_error),  // less_than_zero,
             9, // safe_numerics_error::positive_overflow_error,   // zero,
             9, // safe_numerics_error::positive_overflow_error),  // greater_than_zero,
             9, // safe_numerics_error::positive_overflow_error,   // greater than max,
-            1, // safe_numerics_error::range_error,               // indeterminant,
-         },
-        // t == indeterminant
-        {
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-        }
+            1, // safe_numerics_error::range_error,               // indeterminate,
+        //},
+        // t == indeterminate
+        //{
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+        //}
     };
 
-    const value_type vt(t);
-    const value_type vu(u);
-    switch(result[vt][vu]){
-    case 1:
+    const value_type tx(t);
+    const value_type ux(u);
+    assert(tx * order + ux < order * order);
+
+    // I had a switch(i) statment here - but it results in an ICE
+    // on multiple versions of gcc.  So make the equivalent in
+    // nested if statments - should be the same (more or less)
+    // performancewise.
+    const unsigned int i = result[tx * order + ux];
+    assert(i <= 9);
+    if(1 == i){
         return safe_numerics_error::range_error;
-    case 2:
+    }
+    else
+    if(2 == i){
         return safe_numerics_error::negative_overflow_error;
-    case 3:
-        return 0;
+    }
+    else
+    if(3 == i){
+        return checked_result<T>(0);
     // the following gymnastics are to handle the case where 
     // a value is changed from a negative to a positive number.
     // For example, and 8 bit number t == -128.  Then -t also
     // equals -128 since 128 cannot be held in an 8 bit signed
     // integer.
-    case 4:{ // - (-t >> -u)
+    }
+    else
+    if(4 == i){ // - (-t >> -u)
         assert(t < 0);
         assert(u < 0);
         return t >> -u;
     }
-    case 5:
+    else
+    if(5 == i){
         return t;
-    case 6:{ // - (-t << u)
+    }
+    else
+    if(6 == i){ // - (-t << u)
         assert(t < 0);
         assert(u > 0);
-        const checked_result<T> tx = t * checked_result<T>(2);
-        const checked_result<T> ux = u - checked_result<T>(1);
-        return  - (-tx << ux);
+        const checked_result<T> temp_t = t * checked_result<T>(2);
+        const checked_result<T> temp_u = u - checked_result<T>(1);
+        return  - (-temp_t << temp_u);
     }
-    case 7:{  // t >> -u
+    else
+    if(7 == i){  // t >> -u
         assert(t > 0);
         assert(u < 0);
         return t >> -u;
     }
-    case 8:{ // t << u
+    else
+    if(8 == i){ // t << u
         assert(t > 0);
         assert(u > 0);
         checked_result<T> r = checked::left_shift<T>(t, u);
@@ -817,11 +865,12 @@ constexpr inline operator<<(
         ? checked_result<T>(safe_numerics_error::positive_overflow_error)
         : r;
     }
-    case 9:
+    else
+    if(9 == i){
         return safe_numerics_error::positive_overflow_error;
-    default:
+    }
+    else
         assert(false);
-    };
 }
 
 template<class T>
@@ -833,100 +882,118 @@ constexpr inline operator>>(
     const checked_result<T> & t,
     const checked_result<T> & u
 ){
-    using value_type = product_value_type<T>;
+    using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    const std::uint8_t result[order][order] = {
+    const std::uint8_t result[order * order] = {
         // t == less_than_min
-        {
+        //{
             // u == ...
             2, // safe_numerics_error::negative_overflow_error, // less_than_min,
             2, // safe_numerics_error::negative_overflow_error, // less_than_zero,
             2, // safe_numerics_error::negative_overflow_error, // zero,
             2, // safe_numerics_error::negative_overflow_error, // greater_than_zero,
             1, // safe_numerics_error::range_error,             // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == less_than_zero,
-        {
+        //{
             // u == ...
             2, // safe_numerics_error::negative_overflow_error  // less_than_min,
             4, // - (-t << -u),                                 // less_than_zero,
             5, // safe_numerics_error::negative_overflow_error. // zero,
             6, // - (-t >> u),                                  // greater_than_zero,
             3, // 0, ? or -1                                    // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == zero,
-        {
+        //{
             // u == ...
             3, // 0     // less_than_min,
             3, // 0     // less_than_zero,
             3, // 0,    // zero,
             3, // 0,    // greater_than_zero,
             3, // 0,    // greater than max,
-            3, // safe_numerics_error::range_error,    // indeterminant,
-        },
+            3, // safe_numerics_error::range_error,    // indeterminate,
+        //},
         // t == greater_than_zero,
-        {
+        //{
             // u == ...
             9, // safe_numerics_error::positive_overflow_error  // less_than_min,
             7, // t << -u,                                      // less_than_zero,
             5, // t,                                            // zero,
             8, // t >> u                                        // greater_than_zero,
             3, // 0,                                            // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-        },
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
         // t == greater_than_max
-        {
+        //{
             // u == ...
             9, // safe_numerics_error::positive_overflow_error, // less_than_min,
             9, // safe_numerics_error::positive_overflow_error, // less_than_zero,
             9, // safe_numerics_error::positive_overflow_error, // zero,
             9, // safe_numerics_error::positive_overflow_error, // greater_than_zero,
             1, // safe_numerics_error::range_error,             // greater than max,
-            1, // safe_numerics_error::range_error,             // indeterminant,
-         },
-        // t == indeterminant
-        {
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-            1, // safe_numerics_error::range_error,    // indeterminant,
-        }
+            1, // safe_numerics_error::range_error,             // indeterminate,
+        //},
+        // t == indeterminate
+        //{
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+            1, // safe_numerics_error::range_error,    // indeterminate,
+        //}
     };
 
-    const value_type vt(t);
-    const value_type vu(u);
-    switch(result[vt][vu]){
-    case 1:
+    const value_type tx(t);
+    const value_type ux(u);
+    assert(tx * order + ux < order * order);
+
+    // I had a switch(i) statment here - but it results in an ICE
+    // on multiple versions of gcc.  So make the equivalent in
+    // nested if statments - should be the same (more or less)
+    // performancewise.
+    const unsigned int i = result[tx * order + ux];
+    assert(i <= 9);
+    if(1 == i){
         return safe_numerics_error::range_error;
-    case 2:
+    }
+    else
+    if(2 == i){
         return safe_numerics_error::negative_overflow_error;
-    case 3:
-        return 0;
-    case 4:{ // - (-t << -u)
+    }
+    else
+    if(3 == i){
+        return checked_result<T>(0);
+    }
+    else
+    if(4 == i){ // - (-t << -u)
         assert(t < 0);
         assert(u < 0);
         return t << -u;
     }
-    case 5:
+    else
+    if(5 == i){
         return t;
-    case 6:{ //  - (-t >> u)
+    }
+    else
+    if(6 == i){ //  - (-t >> u)
         assert(t < 0);
         assert(u > 0);
-        const checked_result<T> tx = t / checked_result<T>(2);
-        const checked_result<T> ux = u - checked_result<T>(1);
-        return  - (-tx >> ux);
+        const checked_result<T> temp_t = t / checked_result<T>(2);
+        const checked_result<T> temp_u = u - checked_result<T>(1);
+        return  - (-temp_t >> temp_u);
     }
-    case 7:{ // t << -u,
+    else
+    if(7 == i){  // t << -u,
         assert(t > 0);
         assert(u < 0);
         return t << -u;
     }
-    case 8:{ // t >> u
+    else
+    if(8 == i){ // t >> u
         assert(t > 0);
         assert(u > 0);
         checked_result<T> r = checked::right_shift<T>(t, u);
@@ -934,9 +1001,11 @@ constexpr inline operator>>(
         ? checked_result<T>(0)
         : r;
     }
-    case 9:
+    else
+    if(9 == i){
         return safe_numerics_error::positive_overflow_error;
-    default:
+    }
+    else{
         assert(false);
     };
 }

@@ -275,7 +275,7 @@ struct validate_detail {
     };
 
     static R return_value(const T & t){
-        return boost::mpl::if_c<
+        return std::conditional<
             static_cast<bool>(r_interval.includes(t_interval)),
             exception_not_possible,
             exception_possible
@@ -422,6 +422,7 @@ int main(){
 }
 #endif
 
+#if 0
 using uint8_t = unsigned char;
 
 
@@ -522,6 +523,15 @@ int main(){
 
     constexpr const checked_result<unsigned> k2 = i2 + j2;
     return 0;
+}
+
+#endif
+
+#include "safe_integer.hpp"
+
+int main(int argc, char** argv)
+{
+	return 0;
 }
 
 

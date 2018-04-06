@@ -60,7 +60,7 @@ struct interval {
     // if this interval contains every point found in some other inteval t
     //  return true
     // otherwise
-    //  return false or indeterminant
+    //  return false or indeterminate
     constexpr tribool includes(const interval<R> & t) const {
         return u >= t.u && l <= t.l;
     }
@@ -72,7 +72,7 @@ struct interval {
     // if this interval contains every point found in some other inteval t
     //  return true
     // otherwise
-    //  return false or indeterminant
+    //  return false or indeterminate
     constexpr tribool excludes(const interval<R> & t) const {
         return t.u < l || u < t.l;
     }

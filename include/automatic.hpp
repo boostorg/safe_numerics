@@ -31,29 +31,30 @@ struct automatic {
 private:
     // the following returns the "true" type.  After calculating the new max and min
     // these return the minimum size type which can hold the expected result.
-    template<typename T, T Min, T Max>
     struct defer_stored_signed_lazily {
+        template<std::intmax_t Min, std::intmax_t Max>
         using type = utility::signed_stored_type<Min, Max>;
     };
 
-    template<typename T, T Min, T Max>
     struct defer_stored_unsigned_lazily {
+        template<std::uintmax_t Min, std::uintmax_t Max>
         using type = utility::unsigned_stored_type<Min, Max>;
     };
 
     template<typename T, T Min, T Max>
-    using result_type =
-        typename boost::mpl::if_c<
+    struct result_type {
+        using type = typename boost::mpl::if_c<
             std::numeric_limits<T>::is_signed,
-            defer_stored_signed_lazily<T, Min, Max>,
-            defer_stored_unsigned_lazily<T, Min, Max>
-        >::type;
+            defer_stored_signed_lazily,
+            defer_stored_unsigned_lazily
+        >::type::template type<Min, Max>;
+    };
 
 public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct addition_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             // if both arguments are unsigned
             ! std::numeric_limits<T>::is_signed
             && ! std::numeric_limits<U>::is_signed,
@@ -124,7 +125,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct multiplication_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             // if both arguments are unsigned
             ! std::numeric_limits<T>::is_signed
             && ! std::numeric_limits<U>::is_signed,
@@ -163,7 +164,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct division_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             // if both arguments are unsigned
             ! std::numeric_limits<T>::is_signed
             && ! std::numeric_limits<U>::is_signed,
@@ -220,7 +221,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct modulus_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             // if both arguments are unsigned
             ! std::numeric_limits<T>::is_signed
             && ! std::numeric_limits<U>::is_signed,
@@ -277,7 +278,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct comparison_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             // if both arguments are unsigned
             ! std::numeric_limits<T>::is_signed
             && ! std::numeric_limits<U>::is_signed,
@@ -318,7 +319,7 @@ public:
     // shift operations
     template<typename T, typename U>
     struct left_shift_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             std::numeric_limits<T>::is_signed,
             std::intmax_t,
             std::uintmax_t
@@ -354,7 +355,7 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct right_shift_result {
-        using temp_base_type = typename boost::mpl::if_c<
+        using temp_base_type = typename std::conditional<
             std::numeric_limits<T>::is_signed,
             std::intmax_t,
             std::uintmax_t

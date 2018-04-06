@@ -19,6 +19,7 @@ using safe_t = boost::numeric::safe<
 #include "test_add.hpp"
 #include "test.hpp"
 #include "test_values.hpp"
+#include "check_symmetry.hpp"
 
 // note: same test matrix as used in test_checked.  Here we test all combinations
 // safe and unsafe integers.  in test_checked we test all combinations of
@@ -91,12 +92,7 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /**/
 int main(){
     // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(test_addition_result[i][j] != test_addition_result[j][i]){
-                std::cout << i << ',' << j << std::endl;
-                return 1;
-            }
+    check_symmetry(test_addition_result);
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

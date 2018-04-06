@@ -77,7 +77,7 @@ bool test_type_operator(
                 if(result != safe_numerics_error::range_error
                 && result != safe_numerics_error::domain_error ){
                     // note usage of tribool logic here !!!
-                    // includes returns indeterminant the conditional
+                    // includes returns indeterminate the conditional
                     // returns false in both cases and this is what we want.
                     // This is very subtle, don't skim over this.
                     // if both r1 and r2 are within they're respective bounds
@@ -142,7 +142,6 @@ struct test_type {
             {operator<<, operator<<, "<<", false},
             {operator>>, operator>>, ">>", false},
         }};
-
 
         //for(unsigned int i = 0; i < sizeof(op_table)/sizeof(op) / sizeof(fptr<R>); ++i){
         for(const op<R> & o : op_table){

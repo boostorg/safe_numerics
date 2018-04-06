@@ -19,6 +19,7 @@ using safe_t = boost::numeric::safe<
 #include "test_multiply.hpp"
 #include "test.hpp"
 #include "test_values.hpp"
+#include "check_symmetry.hpp"
 
 // note: These tables presume that the the size of an int is 32 bits.
 // This should be changed for a different architecture or better yet
@@ -90,14 +91,7 @@ const char *test_multiplication_result[VALUE_ARRAY_SIZE] = {
 
 int main(int, char *[]){
     // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(!(test_multiplication_result[i][j]
-            == test_multiplication_result[j][i]))
-                std::cerr << "asymmetry in operations "
-                    << "i == " << i
-                    << " j == " << j
-                    << std::endl;
+    check_symmetry(test_multiplication_result);
     bool rval = true;
     TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;

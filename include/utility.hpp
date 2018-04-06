@@ -166,6 +166,7 @@ constexpr unsigned int bits_value(const T & t){
 // If we use std::max in here we get internal compiler errors
 // with MSVC (tested VC2017) ...
 
+/*
 template <class T>
 constexpr const T & max(
     const T & lhs,
@@ -173,6 +174,7 @@ constexpr const T & max(
 ){
     return lhs > rhs ? lhs : rhs;
 }
+*/
 
 // given a signed range, return type required to hold all the values
 // in the range
@@ -181,7 +183,7 @@ template<
     std::intmax_t Max
 >
 using signed_stored_type = typename boost::int_t<
-    max(
+    std::max(
         significant_bits(Min),
         significant_bits(Max)
     ) + 1
