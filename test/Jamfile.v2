@@ -43,7 +43,11 @@ run test_multiply_automatic.cpp ;
 run test_multiply_native.cpp ;
 run test_or_automatic.cpp ;
 run test_or_native.cpp ;
-run test_performance.cpp : <variant>debug:<build>no ;
+run test_performance.cpp # sources
+    : # args
+    : # input
+    :  <variant>debug:<build>no # requirements
+    ;
 run test_range.cpp ;
 run test_rational.cpp ;
 run test_right_shift_automatic.cpp ;

@@ -42,12 +42,14 @@ struct print_value
     };
 };
 
+/*
 // can be called by constexpr to produce a compile time
 // trap of parameter passed is false.
 // usage constexpr_assert(bool)
 constexpr int constexpr_assert(const bool tf){
     return 1 / tf;
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // return an integral constant equal to the the number of bits
@@ -100,7 +102,7 @@ namespace detail {
     // bit in a 64 bit number. RR
 
     constexpr unsigned int ilog2(const boost::uint_t<8>::exact & t){
-        constexpr const char LogTable256[256] = {
+        const char LogTable256[256] = {
             #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
             -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
             LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
@@ -137,7 +139,7 @@ constexpr unsigned int ilog2(const T & t){
         static_cast<
             typename boost::uint_t<
                 bits_type<T>::value
-            >::exact
+            >::least
         >(t)
     );
 }

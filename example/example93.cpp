@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////
-// example91.cpp
+// example93.cpp
 //
 // Copyright (c) 2015 Robert Ramey
 //
@@ -12,11 +12,9 @@
 #include <boost/integer.hpp>
 
 #include "../include/cpp.hpp"
-#include "../include/automatic.hpp"
-#include "../include/exception.hpp"
 #include "../include/safe_integer.hpp"
-#include "../include/safe_range.hpp"
 #include "../include/safe_literal.hpp"
+#include "../include/safe_range.hpp"
 
 // use same type promotion as used by the pic compiler
 // see the following comment in motor.c
@@ -30,7 +28,7 @@ using pic16_promotion = boost::numeric::cpp<
     32  // long long
 >;
 
-using exception_policy = boost::numeric::trap_exception;
+using exception_policy = boost::numeric::loose_trap_policy;
 
 // define safe types used desktop version of the program.  In conjunction
 // with the promotion policy above, this will permit us to guarantee that
@@ -74,8 +72,6 @@ using c24_t = boost::numeric::safe_signed_range<
     exception_policy
 >;
 
-#define literal(x) boost::numeric::safe_literal<x>{}
-
 #define DESKTOP
 #include "motor3.c"
 
@@ -85,7 +81,7 @@ using c24_t = boost::numeric::safe_signed_range<
 void test(step_t m){
     std::cout << "move motor to " << m << '\n';
     motor_run(m);
-    while(true == run_flg){
+    while(run_flg){
         isr_motor_step();
         std::cout << motor_pos << ' ' << c32 << ' ' << c << '\n';
         std::this_thread::sleep_for(std::chrono::microseconds(ccpr));

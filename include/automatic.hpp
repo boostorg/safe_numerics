@@ -21,6 +21,8 @@
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
+#include "checked_default.hpp"
+#include "checked_integer.hpp"
 #include "interval.hpp"
 #include "utility.hpp"
 
@@ -43,7 +45,7 @@ private:
 
     template<typename T, T Min, T Max>
     struct result_type {
-        using type = typename boost::mpl::if_c<
+        using type = typename std::conditional<
             std::numeric_limits<T>::is_signed,
             defer_stored_signed_lazily,
             defer_stored_unsigned_lazily

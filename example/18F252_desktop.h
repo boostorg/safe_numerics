@@ -1,5 +1,5 @@
-#ifndef PIC18F252_H
-#define PIC18F252_H
+#ifndef PIC18F252_DESKTOP_H
+#define PIC18F252_DESKTOP_H
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -51,7 +51,7 @@ struct bit {
     bit(T & rhs) :
         m_word(rhs)
     {}
-    bit & operator=(const safe_bool_t & b){
+    bit & operator=(const bool & b){
         if(b)
             m_word |= (1 << N);
         else
@@ -74,7 +74,7 @@ struct bit {
 void ftest(){
     unsigned int x;
     bit<unsigned int, 2> ready_bit(x);
-    ready_bit = 0;
+    ready_bit = true;
     ready_bit = boost::numeric::safe_signed_literal<0>();
     if(ready_bit)
         return;
@@ -84,13 +84,13 @@ void ftest(){
 // define a macro for literal types.  This may not be strictly necessary
 // but it provides more information at compile time to the safe numerics
 // library which may result in faster code.
-#define literal(x) boost::numeric::safe_signed_literal<x>{}
+#define literal(x) (boost::numeric::safe_signed_literal<x>())
 //#define literal(x) x
 #endif
 
 // make a 16 bit value from two 8 bit ones
 uint16 inline make16(uint8 h, uint8 l){
-    return (h << literal(8)) | l;
+    return (h << literal(8) ) | l;
 }
 
 #define disable_interrupts(x)

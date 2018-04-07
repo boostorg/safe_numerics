@@ -77,19 +77,19 @@
 
 // Types: int8,int16,int32=8,16,32bit integers, unsigned by default
 ramp_state_t ramp_sts = ramp_idle;
-step_t motor_pos = literal(0); // absolute step number
-step_t pos_inc = literal(0);   // motor_pos increment
-int16 phase = literal(0);      // ccpPhase[phase_ix]
-signed_int8  phase_inc;               // phase_ix increment
-int8  run_flg;                 // true while motor is running
-mod16 ccpr;                    // copy of CCPR1&2
-mod16 c;                       // integer delay count
-step_t step_no;                // progress of move
-step_t step_down;              // start of down-ramp
-step_t move;                   // total steps to move
-step_t midpt;                  // midpoint of move
-c24_t c32;              // 24.8 fixed point delay count
-denom_t denom;            // 4.n+1 in ramp algo
+step_t motor_pos = literal(0);  // absolute step number
+step_t pos_inc = literal(0);    // motor_pos increment
+int16 phase = literal(0);       // ccpPhase[phase_ix]
+signed_int8  phase_inc;         // phase_ix increment
+bool  run_flg;           // true while motor is running
+mod16 ccpr;                     // copy of CCPR1&2
+mod16 c;                        // integer delay count
+step_t step_no;                 // progress of move
+step_t step_down;               // start of down-ramp
+step_t move;                    // total steps to move
+step_t midpt;                   // midpoint of move
+c24_t c32;                      // 24.8 fixed point delay count
+denom_t denom;                  // 4.n+1 in ramp algo
 
 // Config data to make CCP1&2 generate quadrature sequence on PHASE pins
 // Action on CCP match: 8=set+irq; 9=clear+irq

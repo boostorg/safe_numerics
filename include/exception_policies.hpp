@@ -70,64 +70,6 @@ struct throw_exception {
 // emit compile time error if this is invoked.
 struct trap_exception {};
 
-////////////////////////////////////////////////////////////////////////////////
-// pre-made error policy classes
-
-// loose policy
-// - throw on arithmetic errors
-// - ignore other errors.
-// Some applications ignore these issues and still work and we don't
-// want to update them.
-using loose_exception_policy = exception_policy<
-    throw_exception,    // arithmetic error
-    ignore_exception,   // implementation defined behavior
-    ignore_exception,   // undefined behavior
-    ignore_exception    // uninitialized value
->;
-
-// loose trap
-// same as above in that it doesn't check for various undefined behaviors
-// but traps at compile time for hard arithmetic errors.  This policy
-// would be suitable for older embedded systems which depend on
-// bit manipulation operations to work.
-using loose_trap_policy = exception_policy<
-    trap_exception,    // arithmetic error
-    ignore_exception,   // implementation defined behavior
-    ignore_exception,   // undefined behavior
-    ignore_exception    // uninitialized value
->;
-
-// strict exception policy
-// - permit just about anything
-// - throw at runtime on any kind of error
-// recommended for new code.  Check everything at compile time
-// if possible and runtime if necessary.  Trap or Throw as
-// appropriate.  Should guarantee code to be portable across
-// architectures.
-using strict_exception_policy = exception_policy<
-    throw_exception,
-    throw_exception,
-    throw_exception,
-    throw_exception
->;
-
-// strict trap
-// Same as above but requires code to be written in such a way as to
-// make it impossible for errors to occur.  This naturally will require
-// extra coding effort but might be justified for embedded and/or
-// safety critical systems.
-using strict_trap_policy = exception_policy<
-    trap_exception,
-    trap_exception,
-    trap_exception,
-    trap_exception
->;
-
-// default policy
-// One would use this first. After experimentation, one might
-// replace some actions with ignore_exception
-using default_exception_policy = strict_exception_policy;
-
 // given an error code - return the action code which it corresponds to.
 constexpr enum  safe_numerics_actions
 make_safe_numerics_action(const safe_numerics_error & e){
@@ -181,6 +123,71 @@ dispatch(const safe_numerics_error & e, char const * const & msg){
         assert(false);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// pre-made error policy classes
+
+// loose policy
+// - throw on arithmetic errors
+// - ignore other errors.
+// Some applications ignore these issues and still work and we don't
+// want to update them.
+using loose_exception_policy = exception_policy<
+    throw_exception,    // arithmetic error
+    ignore_exception,   // implementation defined behavior
+    ignore_exception,   // undefined behavior
+    ignore_exception    // uninitialized value
+>;
+
+// loose trap
+// same as above in that it doesn't check for various undefined behaviors
+// but traps at compile time for hard arithmetic errors.  This policy
+// would be suitable for older embedded systems which depend on
+// bit manipulation operations to work.
+using loose_trap_policy = exception_policy<
+    trap_exception,    // arithmetic error
+    ignore_exception,   // implementation defined behavior
+    ignore_exception,   // undefined behavior
+    ignore_exception    // uninitialized value
+>;
+
+#if 0
+template<>
+constexpr void
+dispatch<loose_trap_policy>(const safe_numerics_error &, char const * const &){// strict exception policy
+    static_assert(false, "trap");
+}
+#endif
+
+// - permit just about anything
+// - throw at runtime on any kind of error
+// recommended for new code.  Check everything at compile time
+// if possible and runtime if necessary.  Trap or Throw as
+// appropriate.  Should guarantee code to be portable across
+// architectures.
+using strict_exception_policy = exception_policy<
+    throw_exception,
+    throw_exception,
+    throw_exception,
+    throw_exception
+>;
+
+// strict trap
+// Same as above but requires code to be written in such a way as to
+// make it impossible for errors to occur.  This naturally will require
+// extra coding effort but might be justified for embedded and/or
+// safety critical systems.
+using strict_trap_policy = exception_policy<
+    trap_exception,
+    trap_exception,
+    trap_exception,
+    trap_exception
+>;
+
+// default policy
+// One would use this first. After experimentation, one might
+// replace some actions with ignore_exception
+using default_exception_policy = strict_exception_policy;
 
 } // namespace numeric
 } // namespace boost

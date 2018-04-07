@@ -46,7 +46,7 @@ struct bit {
     bit(T & rhs) :
         m_word(rhs)
     {}
-    bit & operator=(const safe_bool_t & b){
+    bit & operator=(const bool & b){
         if(b)
             m_word |= (1 << N);
         else
@@ -61,10 +61,17 @@ struct bit {
         m_word |= (1 << N);
         return *this;
     }
-    operator safe_bool_t () const {
+    operator bool () const {
         return m_word >> N & 1;
     }
 };
+
+#if ! defined(literal)
+// define a macro for literal types.  This may not be strictly necessary
+// but it provides more information at compile time to the safe numerics
+// library which may result in faster code.
+#define literal(x) x
+#endif
 
 // make a 16 bit value from two 8 bit ones
 int16 inline make16(int8 h, int8 l){
