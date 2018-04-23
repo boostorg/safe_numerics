@@ -26,7 +26,7 @@
 // and other user code.
 #include "motor.h"
 
-#if !defined(DESKTOP)
+#if ! defined(DESKTOP)
     // include byte definitions in pic compiler syntax
     #include "picsfr.h"
 #else

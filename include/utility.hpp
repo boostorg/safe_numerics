@@ -53,7 +53,7 @@ constexpr int constexpr_assert(const bool tf){
 
 ///////////////////////////////////////////////////////////////////////////////
 // return an integral constant equal to the the number of bits
-// held by some integer type
+// held by some integer type (including the sign bit)
 
 template<typename T>
 using bits_type = std::integral_constant<
@@ -61,7 +61,6 @@ using bits_type = std::integral_constant<
     std::numeric_limits<T>::digits
     + (std::numeric_limits<T>::is_signed ? 1 : 0)
 >;
-
 
 /*
 From http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
@@ -94,48 +93,48 @@ can be trimmed off by using four tables, with the possible additions incorporate
 Using int table elements may be faster, depending on your architecture.
 */
 
-namespace detail {
+namespace ilog2_detail {
 
     // I've "improved" the above and recast as C++ code which depends upon
     // the optimizer to minimize the operations.  This should result in
     // nine operations to calculate the position of the highest order
     // bit in a 64 bit number. RR
 
-    constexpr unsigned int ilog2(const boost::uint_t<8>::exact & t){
+    constexpr static unsigned int ilog2(const boost::uint_t<8>::exact & t){
+        #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
         const char LogTable256[256] = {
-            #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
             -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
             LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
             LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
         };
         return LogTable256[t];
     }
-    constexpr unsigned int ilog2(const boost::uint_t<16>::exact & t){
+    constexpr static unsigned int ilog2(const boost::uint_t<16>::exact & t){
         const boost::uint_t<8>::exact upper_half = (t >> 8);
         return upper_half == 0
             ? ilog2(static_cast<boost::uint_t<8>::exact>(t))
             : 8 + ilog2(upper_half);
     }
-    constexpr unsigned int ilog2(const boost::uint_t<32>::exact & t){
+    constexpr static unsigned int ilog2(const boost::uint_t<32>::exact & t){
         const boost::uint_t<16>::exact upper_half = (t >> 16);
         return upper_half == 0
             ? ilog2(static_cast<boost::uint_t<16>::exact>(t))
             : 16 + ilog2(upper_half);
     }
-    constexpr unsigned int ilog2(const boost::uint_t<64>::exact & t){
+    constexpr static unsigned int ilog2(const boost::uint_t<64>::exact & t){
         const boost::uint_t<32>::exact upper_half = (t >> 32);
         return upper_half == 0
             ? ilog2(static_cast<boost::uint_t<32>::exact>(t))
             : 32 + ilog2(upper_half);
     }
 
-} // detail
+}; // ilog2_detail
 
 template<typename T>
 constexpr unsigned int ilog2(const T & t){
 //  log not defined for negative numbers
-    assert(t >= 0);
-    return detail::ilog2(
+    //assert(t > 0);
+    return ilog2_detail::ilog2(
         static_cast<
             typename boost::uint_t<
                 bits_type<T>::value
@@ -145,10 +144,10 @@ constexpr unsigned int ilog2(const T & t){
 }
 
 // the number of bits required to render the value in x
-// excluding sign bit
+// including sign bit
 template<typename T>
 constexpr unsigned int significant_bits(const T & t){
-    return 1 + (t < 0 ? ilog2(~t) : ilog2(t));
+    return 1 + ((t < 0) ? ilog2(~t) : ilog2(t));
 }
 
 /*
@@ -168,7 +167,6 @@ constexpr unsigned int bits_value(const T & t){
 // If we use std::max in here we get internal compiler errors
 // with MSVC (tested VC2017) ...
 
-/*
 template <class T>
 constexpr const T & max(
     const T & lhs,
@@ -176,7 +174,6 @@ constexpr const T & max(
 ){
     return lhs > rhs ? lhs : rhs;
 }
-*/
 
 // given a signed range, return type required to hold all the values
 // in the range
@@ -185,7 +182,7 @@ template<
     std::intmax_t Max
 >
 using signed_stored_type = typename boost::int_t<
-    std::max(
+    max(
         significant_bits(Min),
         significant_bits(Max)
     ) + 1
@@ -210,16 +207,16 @@ using unsigned_stored_type = typename boost::uint_t<
 // b) is not guarenteed to handle non-assignable types
 template<typename T>
 constexpr std::pair<T, T>
-minmax(const std::initializer_list<T> & l){
+minmax(const std::initializer_list<T> l){
     assert(l.size() > 0);
     const T * minimum = l.begin();
     const T * maximum = l.begin();
-    for( const T & t : l){
-        if(t < * minimum)
-            minimum = & t;
+    for(const T * i = l.begin(); i != l.end(); ++i){
+        if(*i < * minimum)
+            minimum = i;
         else
-        if(* maximum < t)
-            maximum = & t;
+        if(* maximum < *i)
+            maximum = i;
     }
     return std::pair<T, T>{* minimum, * maximum};
 }

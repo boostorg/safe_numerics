@@ -18,111 +18,110 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
     std::cout
         << "testing constructions to " << t2_name << " from " << t1_name
         << std::endl;
-{
-    /* (1) test construction of safe<T1> from T1 type */
-    try{
-        safe<T1> s1(t1);
-        // should always arrive here!
-    }
-    catch(std::exception){
-        // should never, ever arrive here
-        std::cout
-            << "erroneously detected error in construction "
-            << "safe<" << t1_name << "> (" << t1_name << ")"
-            << std::endl;
+    {
+        /* (1) test construction of safe<T1> from T1 type */
         try{
-            safe<T1> s1(t1); // try again for debugging
+            safe<T1> s1(t1);
+            // should always arrive here!
         }
-        catch(std::exception){}
-        return false;
-    }
-}
-{
-    /* (2) test construction of safe<T2> from T1 type */
-    try{
-        safe<T2> s2(t1);
-        T2 t2 = t1;
-        if(! safe_compare::equal(t1, t2)){
-            std::cout
-                << "failed to detect error in construction "
-                << "safe<" << t2_name << "> (" << t1_name << ")"
-                << std::endl;
-            safe<T2> s2x(t1);
-            return false;
-        }
-    }
-    catch(std::exception){
-        T2 t2 = t1;
-        if(safe_compare::equal(t1, t2)){
+        catch(std::exception){
+            // should never, ever arrive here
             std::cout
                 << "erroneously detected error in construction "
-                << "safe<" << t2_name << "> (" << t1_name << ")"
+                << "safe<" << t1_name << "> (" << t1_name << ")"
                 << std::endl;
             try{
-                safe<T2> s2(t1); // try again for debugging
+                safe<T1> s1(t1); // try again for debugging
             }
             catch(std::exception){}
             return false;
         }
     }
-}
-{
-    /* (3) test construction of safe<T1> from safe<T1> type */
-    safe<T1> s1x(t1);
-    try{
-        safe<T1> s1(s1x);
-        if(! (s1 == s1x)){
+    {
+        /* (2) test construction of safe<T2> from T1 type */
+        T2 t2;
+        try{
+            t2 = safe<T2>(t1);
+            if(! safe_compare::equal(t2 , t1)){
+                std::cout
+                    << "failed to detect error in construction "
+                    << "safe<" << t2_name << "> (" << t1_name << ")"
+                    << std::endl;
+                safe<T2> s2x(t1);
+                return false;
+            }
+        }
+        catch(std::exception){
+            if(safe_compare::equal(t2, t1)){
+                std::cout
+                    << "erroneously detected error in construction "
+                    << "safe<" << t2_name << "> (" << t1_name << ")"
+                    << std::endl;
+                try{
+                    safe<T2> sx2(t1); // try again for debugging
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+    }
+    {
+        /* (3) test construction of safe<T1> from safe<T1> type */
+        safe<T1> s1x(t1);
+        try{
+            safe<T1> s1(s1x);
+            if(! (s1 == s1x)){
+                std::cout
+                    << "copy constructor altered value "
+                    << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << t1 << "))"
+                    << std::endl;
+                //safe<T1> s1(s1x);
+                return false;
+            }
+        }
+        catch(std::exception){
+            // should never arrive here
             std::cout
-                << "copy constructor altered value "
+                << "erroneously detected error in construction "
                 << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << t1 << "))"
                 << std::endl;
-            //safe<T1> s1(s1x);
-            return false;
-        }
-    }
-    catch(std::exception){
-        // should never arrive here
-        std::cout
-            << "erroneously detected error in construction "
-            << "safe<" << t1_name << "> (safe<" << t1_name << ">(" << t1 << "))"
-            << std::endl;
-        try{
-            //safe<T1> s1(s1x);
-        }
-        catch(std::exception){}
-        return false;
-    }
-}
-{
-    /* (4) test construction of safe<T2> from safe<T1> type */
-    T2 t2;
-    try{
-        safe<T1> s1(t1);
-        safe<T2> s2(s1);
-        t2 = static_cast<T2>(s2);
-        if(! (safe_compare::equal(t1, t2))){
-            std::cout
-                << "failed to detect error in construction "
-                << "safe<" << t1_name << "> (safe<" << t2_name << ">(" << t1 << "))"
-                << std::endl;
-            safe<T2> s1x(t1);
-            return false;
-        }
-    }
-    catch(std::exception){
-        if(safe_compare::equal(t1, t2)){
-            std::cout
-                << "erroneously detected error in construction "
-                << "safe<" << t2_name << "> (safe<" << t1_name << ">(" << t1 << "))"
-                << std::endl;
             try{
-                safe<T2> s1(t1);
+                safe<T1> s1(t1);
             }
             catch(std::exception){}
             return false;
         }
     }
-}
+    {
+        /* (4) test construction of safe<T2> from safe<T1> type */
+        T2 t2;
+        try{
+            safe<T1> s1(t1);
+            safe<T2> s2(s1);
+            t2 = static_cast<T2>(s2);
+            if(! (safe_compare::equal(t1, t2))){
+                std::cout
+                    << "failed to detect error in construction "
+                    << "safe<" << t1_name << "> (safe<" << t2_name << ">(" << t1 << "))"
+                    << std::endl;
+                safe<T2> s1x(t1);
+                return false;
+            }
+        }
+        catch(std::exception){
+            if(safe_compare::equal(t1, t2)){
+                std::cout
+                    << "erroneously detected error in construction "
+                    << "safe<" << t2_name << "> (safe<" << t1_name << ">(" << t1 << "))"
+                    << std::endl;
+                try{
+                    safe<T2> s1(t1);
+                }
+                catch(std::exception){}
+                return false;
+            }
+        }
+    }
     return true;
 }
 

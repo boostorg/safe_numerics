@@ -49,7 +49,7 @@ c * d = multiplication overflow: positive overflow error
   in the above example where we demonstrate how to compose the rational
   library with the safe numerics library in order to create what amounts to a
   safe_rational library - all without writing a line of code! Still, things
-  are perfect though. Since the <ulink
+  are not perfect. Since the <ulink
   url="http://www.boost.org/doc/libs/1_64_0/libs/rational/">rational numbers
   library</ulink> implements its own checking for divide by zero by throwing
   an exception, the safe numerics code for handling this - included exception

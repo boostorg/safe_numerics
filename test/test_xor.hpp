@@ -43,12 +43,23 @@ bool test_xor(
                 << make_result_display(result)
                 << std::endl;
             if(expected_result == 'x'){
-                    std::cout
-                        << "failed to detect error in xor operation "
-                        << make_result_display(result)
-                        << " ! = "<< av1 << " ^ " << av2
-                        << std::endl;
+                std::cout
+                    << "failed to detect error in xor operation "
+                    << make_result_display(result)
+                    << " ! = "<< av1 << " ^ " << av2
+                    << std::endl;
                 t1 ^ v2;
+                return false;
+            }
+            else
+            if(result != (v1 ^ v2)){
+                std::cout
+                    << "incorrect result in xor operation "
+                    << make_result_display(result)
+                    << " ! = "<< av1 << " ^ " << av2
+                    << std::endl;
+                t1 ^ v2;
+                safe_compare::equal(base_value(result), (v1 ^ v2));
                 return false;
             }
         }
@@ -89,11 +100,21 @@ bool test_xor(
                 << make_result_display(result)
                 << std::endl;
             if(expected_result == 'x'){
-                    std::cout
-                        << "failed to detect error in and operation "
-                        << make_result_display(result)
-                        << " ! = "<< av1 << " ^ " << av2
-                        << std::endl;
+                std::cout
+                    << "failed to detect error in and operation "
+                    << make_result_display(result)
+                    << " ! = "<< av1 << " ^ " << av2
+                    << std::endl;
+                v1 ^ t2;
+                return false;
+            }
+            else
+            if(result != (v1 ^ v2)){
+                std::cout
+                    << "incorrect result in xor operation "
+                    << make_result_display(result)
+                    << " ! = "<< av1 << " ^ " << av2
+                    << std::endl;
                 v1 ^ t2;
                 return false;
             }
@@ -135,6 +156,16 @@ bool test_xor(
             if(expected_result == 'x'){
                 std::cout
                     << "failed to detect error in and operation "
+                    << make_result_display(result)
+                    << " ! = "<< av1 << " ^ " << av2
+                    << std::endl;
+                t1 ^ t2;
+                return false;
+            }
+            else
+            if(result != (v1 ^ v2)){
+                std::cout
+                    << "incorrect result in xor operation "
                     << make_result_display(result)
                     << " ! = "<< av1 << " ^ " << av2
                     << std::endl;

@@ -13,7 +13,6 @@
 
 #include "../include/cpp.hpp"
 #include "../include/safe_integer.hpp"
-#include "../include/safe_literal.hpp"
 #include "../include/safe_range.hpp"
 
 // use same type promotion as used by the pic compiler

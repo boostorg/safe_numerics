@@ -8,9 +8,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <ostream>
-#include <cxxabi.h>
 #include <typeinfo>
 
+#include <boost/core/demangle.hpp>
 #include "../include/safe_common.hpp"
 
 namespace {
@@ -29,12 +29,9 @@ struct safe_format_impl {
         std::basic_ostream<charT,Traits> & os,
         const safe_format_impl<T> & f
     ){
-        int status;
         return os
             << "<"
-            << abi::__cxa_demangle(
-                typeid(typename boost::numeric::base_type<T>::type).name(),0,0,&status
-            )
+            << boost::core::demangle(typeid(typename boost::numeric::base_type<T>::type).name())
             << ">["
             << std::numeric_limits<T>::min() << ","
             << std::numeric_limits<T>::max() << "] = "

@@ -18,6 +18,7 @@
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
 #include <type_traits> // conditional
+#include <boost/integer.hpp> //
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
@@ -383,9 +384,6 @@ public:
 
         constexpr static const r_interval_type r_interval = t_interval >> u_interval;
 
-        //const utility::print_value<r_interval.l> pv_r_interval_l;
-        //const utility::print_value<r_interval.u> pv_r_interval_u;
-
         using type = typename result_type<
             temp_base_type,
             r_interval.l.exception()
@@ -401,90 +399,108 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct bitwise_and_result {
-        static const std::uintmax_t x = min(
-            std::initializer_list<std::uintmax_t>{
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::max())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                )
+        #if 0
+        static const unsigned bits = std::min(
+            std::initializer_list<unsigned>{
+                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
             }
         );
 
-        using type = typename result_type<
-            std::uintmax_t,
-            0,
-            utility::round_out(x)
+        static const unsigned bitsx = std::min(
+            bits,
+            64u
+        );
+        static_assert(bitsx <= 64, "too many bits");
+        using type = typename std::conditional<
+            std::numeric_limits<
+                decltype(
+                    typename base_type<T>::type()
+                    ^ typename base_type<U>::type()
+                )
+            >::is_signed,
+            // result is signed
+            typename boost::int_t<bitsx>::least,
+            // otherwise result is unsigned
+            typename boost::uint_t<bitsx>::least
         >::type;
+        #endif
+        using type = decltype(
+            typename base_type<T>::type()
+            ^ typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct bitwise_or_result {
-        static const std::uintmax_t x = max(
-            std::initializer_list<std::uintmax_t>{
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::max())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                )
+        #if 0
+        static const unsigned bits = std::max(
+            std::initializer_list<unsigned>{
+                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
             }
         );
 
-        using type = typename result_type<
-            std::uintmax_t,
-            0,
-            utility::round_out(x)
+        static const unsigned bitsx = std::min(
+            bits,
+            64u
+        );
+        static_assert(bitsx <= 64, "too many bits");
+        using type = typename std::conditional<
+            std::numeric_limits<
+                decltype(
+                    typename base_type<T>::type()
+                    ^ typename base_type<U>::type()
+                )
+            >::is_signed,
+            // result is signed
+            typename boost::int_t<bitsx>::least,
+            // otherwise result is unsigned
+            typename boost::uint_t<bitsx>::least
         >::type;
+        #endif
+        using type = decltype(
+            typename base_type<T>::type()
+            ^ typename base_type<U>::type()
+        );
     };
     template<typename T, typename U>
     struct bitwise_xor_result {
-        static const std::uintmax_t x = max(
-            std::initializer_list<std::uintmax_t>{
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::min())
-                    & base_value(std::numeric_limits<U>::max())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                ),
-                static_cast<std::uintmax_t>(
-                    base_value(std::numeric_limits<T>::max())
-                    & base_value(std::numeric_limits<U>::min())
-                )
+        #if 0
+        static const unsigned bits = std::max(
+            std::initializer_list<unsigned>{
+                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
+                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
+                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
             }
         );
 
-        using type = typename result_type<
-            std::uintmax_t,
-            0,
-            utility::round_out(x)
+        static const unsigned bitsx = std::min(
+            bits,
+            64u
+        );
+        static_assert(bitsx <= 64, "too many bits");
+        using type = typename std::conditional<
+            std::numeric_limits<
+                decltype(
+                    typename base_type<T>::type()
+                    ^ typename base_type<U>::type()
+                )
+            >::is_signed,
+            // result is signed
+            typename boost::int_t<bitsx>::least,
+            // otherwise result is unsigned
+            typename boost::uint_t<bitsx>::least
         >::type;
+        #endif
+        using type = decltype(
+            typename base_type<T>::type()
+            ^ typename base_type<U>::type()
+        );
     };
 };
 

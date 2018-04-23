@@ -51,7 +51,7 @@ struct sum_value_type {
         count
     } m_flag;
     template<class T>
-    constexpr enum flag to_flag(const checked_result<T> & t) const {
+    constexpr flag to_flag(const checked_result<T> & t) const {
         switch(static_cast<safe_numerics_error>(t)){
         case safe_numerics_error::success:
             return known_value;
@@ -205,12 +205,12 @@ struct product_value_type {
         t_value
     } m_flag;
     template<class T>
-    constexpr enum flag to_flag(const checked_result<T> & t) const {
+    constexpr flag to_flag(const checked_result<T> & t) const {
         switch(static_cast<safe_numerics_error>(t)){
         case safe_numerics_error::success:
-            return (t < 0)
+            return (t < checked_result<T>(0))
                 ? less_than_zero
-                : (t > 0)
+                : (t > checked_result<T>(0))
                 ? greater_than_zero
                 : zero;
         case safe_numerics_error::negative_overflow_error:
@@ -323,7 +323,8 @@ constexpr inline operator*(
             return safe_numerics_error::range_error;
         default:
             assert(false);
-    }
+        }
+    return checked_result<T>(0); // to suppress msvc warning
 }
 
 // integers division
@@ -418,6 +419,7 @@ constexpr inline operator/(
         default:
             assert(false);
     }
+    return checked_result<T>(0); // to suppress msvc warning
 }
 
 // integers modulus
@@ -512,6 +514,8 @@ constexpr inline operator%(
         default:
             assert(false);
     }
+    // suppress msvc warning
+    return checked_result<T>(0);
 }
 
 // comparison operators
@@ -687,6 +691,8 @@ operator==(
     default:
         assert(false);
     }
+    // suppress msvc warning - not all control paths return a value
+    return false;
 }
 
 template<class T>
@@ -834,8 +840,8 @@ constexpr inline operator<<(
     }
     else
     if(4 == i){ // - (-t >> -u)
-        assert(t < 0);
-        assert(u < 0);
+        assert(static_cast<bool>(t < checked_result<T>(0)));
+        assert(static_cast<bool>(u < checked_result<T>(0)));
         return t >> -u;
     }
     else
@@ -844,22 +850,22 @@ constexpr inline operator<<(
     }
     else
     if(6 == i){ // - (-t << u)
-        assert(t < 0);
-        assert(u > 0);
+        assert(static_cast<bool>(t < checked_result<T>(0)));
+        assert(static_cast<bool>(u > checked_result<T>(0)));
         const checked_result<T> temp_t = t * checked_result<T>(2);
         const checked_result<T> temp_u = u - checked_result<T>(1);
         return  - (-temp_t << temp_u);
     }
     else
     if(7 == i){  // t >> -u
-        assert(t > 0);
-        assert(u < 0);
+        assert(static_cast<bool>(t > checked_result<T>(0)));
+        assert(static_cast<bool>(u < checked_result<T>(0)));
         return t >> -u;
     }
     else
     if(8 == i){ // t << u
-        assert(t > 0);
-        assert(u > 0);
+        assert(static_cast<bool>(t > checked_result<T>(0)));
+        assert(static_cast<bool>(u > checked_result<T>(0)));
         checked_result<T> r = checked::left_shift<T>(t, u);
         return (r.m_e == safe_numerics_error::shift_too_large)
         ? checked_result<T>(safe_numerics_error::positive_overflow_error)
@@ -869,8 +875,10 @@ constexpr inline operator<<(
     if(9 == i){
         return safe_numerics_error::positive_overflow_error;
     }
-    else
+    else{
         assert(false);
+    };
+    return checked_result<T>(0); // to suppress msvc warning
 }
 
 template<class T>
@@ -970,8 +978,8 @@ constexpr inline operator>>(
     }
     else
     if(4 == i){ // - (-t << -u)
-        assert(t < 0);
-        assert(u < 0);
+        assert(static_cast<bool>(t < checked_result<T>(0)));
+        assert(static_cast<bool>(u < checked_result<T>(0)));
         return t << -u;
     }
     else
@@ -980,22 +988,22 @@ constexpr inline operator>>(
     }
     else
     if(6 == i){ //  - (-t >> u)
-        assert(t < 0);
-        assert(u > 0);
+        assert(static_cast<bool>(t < checked_result<T>(0)));
+        assert(static_cast<bool>(u > checked_result<T>(0)));
         const checked_result<T> temp_t = t / checked_result<T>(2);
         const checked_result<T> temp_u = u - checked_result<T>(1);
         return  - (-temp_t >> temp_u);
     }
     else
     if(7 == i){  // t << -u,
-        assert(t > 0);
-        assert(u < 0);
+        assert(static_cast<bool>(t > checked_result<T>(0)));
+        assert(static_cast<bool>(u < checked_result<T>(0)));
         return t << -u;
     }
     else
     if(8 == i){ // t >> u
-        assert(t > 0);
-        assert(u > 0);
+        assert(static_cast<bool>(t > checked_result<T>(0)));
+        assert(static_cast<bool>(u > checked_result<T>(0)));
         checked_result<T> r = checked::right_shift<T>(t, u);
         return (r.m_e == safe_numerics_error::shift_too_large)
         ? checked_result<T>(0)
@@ -1008,6 +1016,7 @@ constexpr inline operator>>(
     else{
         assert(false);
     };
+    return checked_result<T>(0); // to suppress msvc warning
 }
 
 template<class T>

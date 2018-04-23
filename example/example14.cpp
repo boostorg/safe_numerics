@@ -9,7 +9,7 @@ using namespace boost::numeric;
 
 
 template<std::intmax_t N>
-using compile_time_value = safe_signed_literal<N, native, loose_trap_policy>;
+using compile_time_value = safe_unsigned_literal<N, native, loose_trap_policy>;
 
 int main(){
 

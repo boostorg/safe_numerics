@@ -334,11 +334,11 @@ struct checked_binary_operation<R,
         ) noexcept { // INT32-C
             return t == std::numeric_limits<R>::min() ?
                 checked_result<R>(
-                    safe_numerics_error::negative_overflow_error,
+                    safe_numerics_error::positive_overflow_error,
                     "subtraction result overflows result type"
                 )
             :
-                    -t
+                    checked_result<R>(-t)
             ;
         }
 
@@ -528,16 +528,28 @@ struct checked_binary_operation<R,
     ////////////////////////////////
     // safe modulus on unsafe types
 
-    // built-in abs isn't constexpr - so fix this here
-    template<class T>
-    constexpr static std::make_unsigned_t<T>
-    abs(const T & t) noexcept {
-        return (t < 0 && t != std::numeric_limits<T>::min()) ?
-            -t
-        :
-            t
-        ;
-    }
+    struct modulus_impl_detail {
+        constexpr static checked_result<R> modulus(
+            const R & t,
+            const R & u,
+            std::false_type // R is unsigned
+        ) noexcept {
+            return t % u;
+        }
+
+        constexpr static checked_result<R> modulus(
+            const R & t,
+            const R & u,
+            std::true_type // R is signed
+        ) noexcept {
+            if(u >= 0)
+                return t % u;
+            checked_result<R> ux = checked::minus(u);
+            if(ux.exception())
+                return t;
+            return t % static_cast<R>(ux);
+        }
+    }; // modulus_impl_detail
 
     constexpr static checked_result<R> modulus(const R & t, const R & u) noexcept {
         if(0 == u)
@@ -553,7 +565,7 @@ struct checked_binary_operation<R,
         // invokes the operation -128 / -1 -> 128 which overflows a signed type
         // and provokes a hardware exception.  We can fix this using abs()
         // since -128 % -1 = -128 % 1 = 0
-        return t % abs(u);
+        return modulus_impl_detail::modulus(t, u, typename std::is_signed<R>::type());
     }
 
     ///////////////////////////////////

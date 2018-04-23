@@ -116,7 +116,7 @@ public:
     constexpr safe_literal_impl & operator+() const { // unary plus
         return *this;
     }
-    // after much consideration, I've permited the resulting value of a unary
+    // after much consideration, I've permitted the resulting value of a unary
     // - to change the type.  The C++ standard does invoke integral promotions
     // so it's changing the type as well.
 

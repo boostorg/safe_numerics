@@ -48,7 +48,7 @@ struct base_type<safe_literal_impl<T, N, P, E> > {
 
 template<typename T, T N, class P, class E>
 constexpr T base_value(
-    const safe_literal_impl<T, N, P, E>  & st
+    const safe_literal_impl<T, N, P, E>  &
 ) {
     return N;
 }
@@ -56,7 +56,7 @@ constexpr T base_value(
 template<typename CharT, typename Traits, typename T, T N, class P, class E>
 inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const safe_literal_impl<T, N, P, E> & t
+    const safe_literal_impl<T, N, P, E> &
 ){
     return os << (
         (std::is_same<T, signed char>::value
@@ -77,7 +77,7 @@ class safe_literal_impl {
     >
     friend std::basic_ostream<CharT, Traits> & operator<<(
         std::basic_ostream<CharT, Traits> & os,
-        const safe_literal_impl & t
+        const safe_literal_impl &
     ){
         return os << (
             (::std::is_same<T, signed char>::value
@@ -138,12 +138,28 @@ using safe_unsigned_literal = safe_literal_impl<
     E
 >;
 
+/*
 #define safe_literal(n)                                 \
     conditional<                                        \
         std::numeric_limits<decltype<n>>::is_signed>.   \
         safe_unsigned_literal<n, void, void>,           \
         safe_signed_literal<n, void, void>              \
     >::type
+*/
+
+template<class T>
+constexpr auto safe_literal(
+    const T n, typename std::enable_if<std::is_signed<T>::value>::type* = 0
+){
+    return safe_signed_literal<n, void, void>();
+}
+
+template<class T>
+constexpr auto safe_literal(
+    const T n, typename std::enable_if<! std::is_signed<T>::value>::type* = 0
+){
+    return safe_unsigned_literal<(std::uintmax_t)n, void, void>();
+}
 
 } // numeric
 } // boost

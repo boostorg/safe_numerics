@@ -83,11 +83,13 @@ bool test_type_operator(
                     // if both r1 and r2 are within they're respective bounds
                     if(p1.includes(r1) && p2.includes(r2)
                     && ! result_interval.includes(result)){
+                        #if 0
                         const boost::logic::tribool b1 = p1.includes(r1);
                         const boost::logic::tribool b2 = p2.includes(r2);
                         const boost::logic::tribool b3 = result_interval.includes(result);
                         const interval<T> result_intervalx = opi.m_finterval(p1, p2);
                         const T resultx = opi.m_f(r1, r2);
+                        #endif
                         return false;
                     }
                 }
@@ -98,28 +100,31 @@ bool test_type_operator(
 }
 
 // values
+// note: need to explicitly specify number of elements to avoid msvc failure
 template<typename T>
-const boost::numeric::checked_result<T> value[] = {
+const boost::numeric::checked_result<T> value[8] = {
     boost::numeric::safe_numerics_error::negative_overflow_error,
     std::numeric_limits<T>::lowest(),
-    -1,
-    0,
-    1,
+    T(-1),
+    T(0),
+    T(1),
     std::numeric_limits<T>::max(),
     boost::numeric::safe_numerics_error::positive_overflow_error,
     boost::numeric::safe_numerics_error::domain_error
 };
 
+// note: need to explicitly specify number of elements to avoid msvc failure
 template<typename T>
-const boost::numeric::checked_result<T> unsigned_value[] = {
+const boost::numeric::checked_result<T> unsigned_value[6] = {
     boost::numeric::safe_numerics_error::negative_overflow_error,
-    0,
-    1,
+    T(0),
+    T(1),
     std::numeric_limits<T>::max(),
     boost::numeric::safe_numerics_error::positive_overflow_error,
     boost::numeric::safe_numerics_error::domain_error
 };
 
+// invoke for each type
 struct test_type {
     unsigned int m_error_count;
     test_type() :
@@ -152,7 +157,7 @@ struct test_type {
                 }
             }
             else{
-                if(! test_type_operator(value<T>, o)){
+                if(! test_type_operator(unsigned_value<T>, o)){
                     ++m_error_count;
                     return false;
                 }

@@ -52,7 +52,7 @@ int test_auto(const T & t, const U & u){
     return 0;
 }
 
-int test_addition_result(){
+int test_auto_result(){
     using namespace boost::numeric;
     automatic::addition_result<
         safe<std::int8_t, automatic>,
@@ -85,7 +85,7 @@ int main(){
 
     test_log();
     test_auto<std::int8_t, std::int8_t>(1, -128);
-    test_addition_result();
+    test_auto_result();
     test_compare_result();
     return 0;
 }

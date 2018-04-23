@@ -71,7 +71,7 @@ struct throw_exception {
 struct trap_exception {};
 
 // given an error code - return the action code which it corresponds to.
-constexpr enum  safe_numerics_actions
+constexpr safe_numerics_actions
 make_safe_numerics_action(const safe_numerics_error & e){
     // we can't use standard algorithms since we want this to be constexpr
     // this brute force solution is simple and pretty fast anyway

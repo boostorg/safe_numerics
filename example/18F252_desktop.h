@@ -84,7 +84,7 @@ void ftest(){
 // define a macro for literal types.  This may not be strictly necessary
 // but it provides more information at compile time to the safe numerics
 // library which may result in faster code.
-#define literal(x) (boost::numeric::safe_signed_literal<x>())
+#define literal(x) boost::numeric::safe_signed_literal<x>{}
 //#define literal(x) x
 #endif
 

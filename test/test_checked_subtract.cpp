@@ -64,9 +64,9 @@ const boost::numeric::checked_result<T> signed_value[] = {
     boost::numeric::safe_numerics_error::domain_error,
     boost::numeric::safe_numerics_error::positive_overflow_error,
     std::numeric_limits<T>::max(),
-    1,
-    0,
-    -1,
+    boost::numeric::checked_result<T>(1),
+    boost::numeric::checked_result<T>(0),
+    boost::numeric::checked_result<T>(-1),
     std::numeric_limits<T>::lowest(),
     boost::numeric::safe_numerics_error::negative_overflow_error,
 };
@@ -77,8 +77,8 @@ const boost::numeric::checked_result<T> unsigned_value[] = {
     boost::numeric::safe_numerics_error::domain_error,
     boost::numeric::safe_numerics_error::positive_overflow_error,
     std::numeric_limits<T>::max(),
-    1,
-    0,
+    boost::numeric::checked_result<T>(1),
+    boost::numeric::checked_result<T>(0),
     boost::numeric::safe_numerics_error::negative_overflow_error,
 };
 
@@ -90,7 +90,7 @@ const boost::numeric::checked_result<T> unsigned_value[] = {
 // + positive_overflow_error
 // ? range_error
 
-const char * signed_ition_results[] = {
+const char * signed_subtraction_results[] = {
 //      012345678
 /* 0*/ "!!!!!!!!!",
 /* 1*/ "!!!!!!!!!",
@@ -103,7 +103,7 @@ const char * signed_ition_results[] = {
 /* 8*/ "!!-------",
 };
 
-const char * unsigned_ition_results[] = {
+const char * unsigned_subtraction_results[] = {
 //      0123456
 /* 0*/ "!!!!!!!",
 /* 1*/ "!!!!!!!",
@@ -116,6 +116,9 @@ const char * unsigned_ition_results[] = {
 
 // given an array of values of particula
 // test all value pairs of a given collection
+// note: the following can't be used because it can't be made
+// to work with msvc !!! So use he kludgy alternatives below.
+#if 0
 template<typename T, unsigned int N>
 bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
     using namespace boost::numeric;
@@ -128,8 +131,41 @@ bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
     }
     return true;
 }
+#endif
 
-#include <boost/mp11/algorithm.hpp>
+template<typename T, unsigned int N>
+bool test_signed_pairs() {
+    using namespace boost::numeric;
+    // for each pair of values p1, p2 (100)
+    for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++){
+        std::cout << std::dec << i << ',' << j << ',';
+        if(! test_checked_subtract(
+            signed_value<T>[i],
+            signed_value<T>[j],
+            signed_subtraction_results[i][j]
+        ))
+            return false;
+    }
+    return true;
+}
+
+template<typename T, unsigned int N>
+bool test_unsigned_pairs() {
+    using namespace boost::numeric;
+    // for each pair of values p1, p2 (100)
+    for(unsigned int i = 0; i < N; i++)
+    for(unsigned int j = 0; j < N; j++){
+        std::cout << std::dec << i << ',' << j << ',';
+        if(! test_checked_subtract(
+            unsigned_value<T>[i],
+            unsigned_value<T>[j],
+            unsigned_subtraction_results[i][j]
+        ))
+            return false;
+    }
+    return true;
+}
 
 struct t {
     static bool m_error;
@@ -140,12 +176,14 @@ struct t {
             << std::endl;
         m_error &=
             std::numeric_limits<T>::is_signed
-            ? test_pairs(signed_value<T>, signed_ition_results)
-            : test_pairs(unsigned_value<T>, unsigned_ition_results)
+            ? test_signed_pairs<T,9>()
+            : test_unsigned_pairs<T,7>()
         ;
     }
 };
 bool t::m_error = true;
+
+#include <boost/mp11/algorithm.hpp>
 
 bool test_all_types(){
     t rval;

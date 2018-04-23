@@ -132,13 +132,15 @@ constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
 
     // if static values don't overlap, the program can never function
+    #if 0
     constexpr const interval<R> r_interval;
     constexpr const interval<Stored> this_interval(Min, Max);
     static_assert(
         ! r_interval.excludes(this_interval),
         "safe type cannot be constructed with this type"
     );
-
+    #endif
+    
     return validate_detail<
         R,
         std::numeric_limits<R>::min(),
@@ -303,9 +305,9 @@ private:
         return t_interval + u_interval;
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -316,11 +318,12 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
-public:
-    using type = decltype(range());
+            >;
+    };
 
+public:
+    using type = typename range::type;
+    
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type i = r_interval();
 
@@ -415,9 +418,9 @@ private:
         return t_interval - u_interval;
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -428,11 +431,11 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
+            >;
+    };
 
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type i = r_interval();
@@ -527,9 +530,9 @@ private:
         return t_interval * u_interval;
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -540,12 +543,11 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
-
+            >;
+    };
 
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type i = r_interval();
@@ -630,6 +632,7 @@ private:
         if(ux.exception())
             dispatch<exception_policy>(ux);
         const t_type r = (tx / ux);
+        
         if(!r.exception())
             return static_cast<result_base_type>(r);
         // handle error condition
@@ -678,9 +681,9 @@ private:
         );
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -691,10 +694,11 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
+            >;
+    };
+
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type ri = r_interval();
@@ -771,6 +775,7 @@ private:
             typename boost::uint_t<bits>::least
         >::type;
         using t_type = checked_result<temp_base>;
+        
         const t_type tx = checked::cast<temp_base>(base_value(t));
         if(tx.exception())
             dispatch<exception_policy>(tx);
@@ -828,9 +833,9 @@ private:
         );
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -841,18 +846,17 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
+            >;
+    };
+
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type ri = r_interval();
         constexpr const r_interval_type ui = u_interval();
         constexpr const bool exception_possible = static_cast<bool>(
-            ui.includes(r_type(0))
-            || ri.l.exception()
-            || ri.u.exception()
+            ui.includes(r_type(0)) || ri.l.exception() || ri.u.exception()
         );
         return type(
             return_value(
@@ -1102,9 +1106,9 @@ private:
         return (t_interval << u_interval);
     }
     
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -1115,11 +1119,11 @@ private:
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
+            >;
+    };
 
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type i = r_interval();
@@ -1218,9 +1222,9 @@ struct right_shift_result {
         return (t_interval() >> u_interval());
     }
 
-    constexpr static auto range(){
-        constexpr const r_interval_type i = r_interval();
-        return
+    struct range {
+        static constexpr const r_interval_type i = r_interval();
+        using type =
             safe_base<
                 result_base_type,
                 i.l.exception()
@@ -1231,10 +1235,11 @@ struct right_shift_result {
                     : static_cast<result_base_type>(i.u),
                 promotion_policy,
                 exception_policy
-            >();
-    }
+            >;
+    };
+
 public:
-    using type = decltype(range());
+    using type = typename range::type;
 
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type ri = r_interval();
@@ -1304,7 +1309,7 @@ struct bitwise_or_result {
 private:
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_and_result<T, U>::type;
+        typename promotion_policy::template bitwise_or_result<T, U>::type;
 
     // according to the C++ standard, the bitwise operators are executed as if
     // the operands are consider a logical array of bits.  That is, there is no
@@ -1339,7 +1344,7 @@ public:
     constexpr static type return_value(const T & t, const U & u){
         return type(
             static_cast<result_base_type>(base_value(t))
-            & static_cast<result_base_type>(base_value(u)),
+            | static_cast<result_base_type>(base_value(u)),
             typename type::skip_validation()
         );
     }
@@ -1435,7 +1440,9 @@ template<class T, class U>
 struct bitwise_xor_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
-        typename promotion_policy::template bitwise_and_result<T, U>::type;
+        typename promotion_policy::template bitwise_xor_result<T, U>::type;
+
+//    utility::print_type<result_base_type> t;
 
     // according to the C++ standard, the bitwise operators are executed as if
     // the operands are consider a logical array of bits.  That is, there is no
@@ -1470,7 +1477,7 @@ public:
     constexpr static type return_value(const T & t, const U & u){
         return type(
             static_cast<result_base_type>(base_value(t))
-            & static_cast<result_base_type>(base_value(u)),
+            ^ static_cast<result_base_type>(base_value(u)),
             typename type::skip_validation()
         );
     }

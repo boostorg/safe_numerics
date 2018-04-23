@@ -120,7 +120,6 @@ constexpr interval<T> operator-(const interval<T> & t, const interval<T> & u){
 
 template<typename T>
 constexpr interval<T> operator*(const interval<T> & t, const interval<T> & u){
-
     // adapted from https://en.wikipedia.org/wiki/Interval_arithmetic
     return utility::minmax<T>(
         std::initializer_list<T> {

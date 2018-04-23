@@ -203,6 +203,8 @@ public:
     */
     constexpr safe_base() = default;
 
+#if 0
+#endif
     // note: Rule of Five. Supply all or none of the following
     // a) user-defined destructor
     ~safe_base() = default;
@@ -262,6 +264,13 @@ public:
     template<class T>
     constexpr safe_base &
     operator=(const T & rhs){
+        m_t = validated_cast(rhs);
+        return *this;
+    }
+
+    // required to passify VS2017
+    constexpr safe_base &
+    operator=(const Stored & rhs){
         m_t = validated_cast(rhs);
         return *this;
     }
