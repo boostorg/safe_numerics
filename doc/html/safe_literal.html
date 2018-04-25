@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_literal"></a>safe_signed_literal&lt;Value, PP , EP&gt; and
   safe_unsigned_literal&lt;Value, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_literal.html#idm352259041808">Description</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352259040304">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352259033440">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352259015968">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352259012496">Inherited Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352258982176">New Valid Expression</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352264126304">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm352264115040">Header</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779577376">Description</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779575872">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779569008">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779551536">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779548064">Inherited Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779517744">New Valid Expression</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779487680">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm100779474144">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352259041808"></a>Description</h4></div></div></div>
+<a name="idm100779577376"></a>Description</h4></div></div></div>
 <p>A safe type which holds a literal value. This is required to be able
     to initialize other safe types in such a way that an exception code is not
     generated. It is also useful when creating constexpr versions of safe
@@ -42,7 +42,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352259040304"></a>Associated Types</h4></div></div></div>
+<a name="idm100779575872"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -64,7 +64,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352259033440"></a>Template Parameters</h4></div></div></div>
+<a name="idm100779569008"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -98,14 +98,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352259015968"></a>Model of</h4></div></div></div>
+<a name="idm100779551536"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 <p><a href="http://en.cppreference.com/w/cpp/concept/LiteralType" target="_top">LiteralType</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352259012496"></a>Inherited Valid Expressions</h4></div></div></div>
+<a name="idm100779548064"></a>Inherited Valid Expressions</h4></div></div></div>
 <p>safe literal types are immutable. Hence they only inherit those
     valid expressions which don't change the value. This excludes assignment,
     increment, and decrement and all unary operators except unary -, + and ~.
@@ -133,7 +133,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352258982176"></a>New Valid Expression</h4></div></div></div>
+<a name="idm100779517744"></a>New Valid Expression</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -211,7 +211,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264126304"></a>Example of use</h4></div></div></div>
+<a name="idm100779487680"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">constexpr</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">42</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>
@@ -219,7 +219,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264115040"></a>Header</h4></div></div></div>
+<a name="idm100779474144"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_literal.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;</a></p>
 </div>

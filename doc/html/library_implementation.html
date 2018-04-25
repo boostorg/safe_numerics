@@ -23,7 +23,7 @@
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="checked_result.html">checked_result&lt;R&gt;</a></span></dt>
 <dt><span class="section"><a href="checked_arithmetic.html">Checked Arithmetic</a></span></dt>
-<dt><span class="section"><a href="interval.html">interval&lt;typename R&gt;</a></span></dt>
+<dt><span class="section"><a href="interval.html">interval&lt;R&gt;</a></span></dt>
 <dt><span class="section"><a href="checked_integer_arithmetic.html">safe_compare&lt;T, U&gt;</a></span></dt>
 </dl></div>
 <p>This library should compile and run correctly on any conforming
@@ -34,45 +34,68 @@
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand its limitations.
     These components are also interesting in their own right. For all these
-    reasons, they are documented here. In general terms, the library works in
-    the following manner:</p>
+    reasons, they are documented here.</p>
+<p>In general terms, the library works in the following manner:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>All unary/binary expressions where one of the operands is a
-        "safe" type are overloaded. These overloads are declared and defined
-        in the header file "safe_integer.hpp". SFINAE - "Substitution Failure
-        Is Not An Error" and <code class="computeroutput">std::enable_if</code> are key features of
-        C++ used to define these overloads in a correct manner.</p></li>
-<li class="listitem">
-<p>Each overloaded operation implements the following:</p>
-<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
+<li class="listitem"><p>The library defines "safe" versions of C++ primitive arithmetic
+        types such as int, unsigned int, etc.</p></li>
+<li class="listitem"><p>Arithmetic operators are defined for these "safe" types. These
+        operators are enhanced versions of the standard C/C++ implementations.
+        These operators are declared and implemented in the files
+        "safe_base.hpp" and "safe_base_operations.hpp".</p></li>
+<li class="listitem"><p>For binary operators, verify that both operands have the same
+        promotion and and exception handling policies. If they don't, invoke
+        compilation error.</p></li>
 <li class="listitem"><p>Retrieve range of values for each operand of type T from
-              <code class="computeroutput">std::numeric_limits&lt;T&gt;::min()</code> and
-              <code class="computeroutput">std::numeric_limits&lt;T&gt;::max()</code>.</p></li>
-<li class="listitem"><p>Given the ranges of the operands, determine the range of
-              the result of the operation using interval arithmetic. This is
-              implemented in the "interval.hpp" header file using the
-              <code class="computeroutput">constexpr</code> facility of C++14.</p></li>
-<li class="listitem"><p>If the range of the result type includes the range of the
-              result of the operation, no run time checking of the result is
-              necessary. So the operation reduces to the original built-in
-              C/C++ operation.</p></li>
-<li class="listitem"><p>Otherwise, the operation is implemented as a "checked
-              integer operation" at run time. This operation returns a variant
-              which will contain either a correct result or an exception enum
-              indicating why a correct result could not be obtained. The
-              variant object is implemented in the header file
-              "checked_result.hpp" and the checked operations are implemented
-              in "checked.hpp".</p></li>
-<li class="listitem"><p>If a valid result has been obtained, it is passed to the
-              caller.</p></li>
-<li class="listitem"><p>Otherwise, an exception is invoked.</p></li>
+        <code class="computeroutput">std::numeric_limits&lt;T&gt;::min()</code> and
+        <code class="computeroutput">std::numeric_limits&lt;T&gt;::max()</code>. A range is a pair of
+        values representing a closed interval with a minimum and maximum
+        value.</p></li>
+<li class="listitem"><p>These ranges are cast to equivalent values of the result type,
+        R. It's possible that values cannot be cast to the result type so the
+        result of the cast is returned as a variant type, <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.
+        <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>
+        may hold either a value of type R or a <a class="link" href="exception.html#safe_numerics.safe_numerics_error" title="enum class safe_numerics_error"><code class="computeroutput">safe_numerics_error</code></a>
+        value indicating why the cast could not be accomplished. Ranges are
+        represented as a pair of values of the type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p></li>
+<li class="listitem"><p><a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>
+        can be considered enhanced versions of the underlying type R.
+        Operations which are legal on values of type R such as +, -, ... are
+        also legal on values of <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.
+        The difference is that the latter can record operation failures and
+        propagate such failures to subsequent operations.<a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>
+        is implemented in the header file "checked_result.hpp". Operations on
+        such types are implemented in "checked_result_operations.hpp".</p></li>
+<li class="listitem"><p>Given the ranges of the operands, determine the range of the
+        result of the operation using compile-time interval arithmetic. The
+        <code class="computeroutput">constexpr</code> facility of C++14 permits the range of the
+        result to be calculated at compile time. Interval arithmetic is
+        implemented in the header file "interval.hpp". The range of the result
+        is also represented as a pair of values of the type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p></li>
+<li class="listitem"><p>If the range of the result type includes only arithmetically
+        valid values, the operation is guaranteed to produce an arithmetically
+        correct result and no runtime checking is necessary. The operation
+        invokes the original built-in C/C++ operation and returns the result
+        value.</p></li>
+<li class="listitem"><p>Otherwise, operands are cast to the result type, R, according to
+        the selected promotion policy. These "checked" cast operations return
+        values of type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p></li>
+<li class="listitem"><p>If either of the casting operations fails, an exception is
+        handled in accordance with the exception policy.</p></li>
+<li class="listitem"><p>Otherwise, the operation is performed as another "checked
+        operation". These free functions mirror the normal operators +, -, *,
+        ... except that rather than returning values of type R, they return
+        values of the type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.
+        They are defined in files "checked_default.hpp", "checked_integer.hpp"
+        ,"checked_float.hpp".</p></li>
+<li class="listitem"><p>If the operation is not successful, the designated exception
+        policy function is invoked.</p></li>
+<li class="listitem"><p>Otherwise, the result value is returned. </p></li>
+<li class="listitem"><p>In all cases, result values are returned as a
+        <code class="computeroutput">safe&lt;R&gt;</code> type with the above calculated result
+        range.</p></li>
 </ul></div>
-</li>
-</ul></div>
-<p>The following components realize the design described here. Although
-    they have been crafted specifically to support this library, there is no
-    reason that that they cannot be used on their own. In fact, several of
-    them very much lend themselves to such usage.</p>
+<p>The following components realize the design described here.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

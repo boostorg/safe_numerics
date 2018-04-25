@@ -31,7 +31,7 @@
 <span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 3: "</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 4: "</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"implicit conversions change data values"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     
@@ -125,9 +125,10 @@ error detected!
     are ultimately fruitless in spite of, or maybe because of, the <a href="https://twitter.com/robertramey1/status/795742870045016065" target="_top">emotional
     content</a>. Our solution is by far the simplest: just use the safe
     numerics library as shown in the example above.</p>
-<p>Note that in this particular case, there is absolutely no extra
-    overhead in using the safe integer library. Code generated will either
-    equal or exceed the efficiency of using primitive integer types.</p>
+<p>Note that in this particular case, usage of the safe types results
+    in no runtime overhead in using the safe integer library. Code generated
+    will either equal or exceed the efficiency of using primitive integer
+    types.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

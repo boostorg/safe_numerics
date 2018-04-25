@@ -21,15 +21,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.exception"></a>exception</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="exception.html#idm352264112320">Description</a></span></dt>
+<dt><span class="section"><a href="exception.html#idm100779470864">Description</a></span></dt>
 <dt><span class="section"><a href="exception.html#safe_numerics.safe_numerics_error">enum class safe_numerics_error</a></span></dt>
-<dt><span class="section"><a href="exception.html#idm352264084000">enum class safe_numerics_actions</a></span></dt>
-<dt><span class="section"><a href="exception.html#idm352264061856">See Also</a></span></dt>
-<dt><span class="section"><a href="exception.html#idm352264058048">Header</a></span></dt>
+<dt><span class="section"><a href="exception.html#idm100779439920">enum class safe_numerics_actions</a></span></dt>
+<dt><span class="section"><a href="exception.html#idm100779416064">See Also</a></span></dt>
+<dt><span class="section"><a href="exception.html#idm100779412032">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264112320"></a>Description</h4></div></div></div>
+<a name="idm100779470864"></a>Description</h4></div></div></div>
 <p>Here we describe the data types used to refer to exceptional
     conditions which might occur. Note that when we use the word "exception",
     we don't mean the C++ term which refers to a data type, but rather the
@@ -80,9 +80,9 @@
               be represented by the data type.</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">underflow_error</code></td>
-<td align="left">A number is too close to zero to be represented by the
-              data type.</td>
+<td align="left"><code class="computeroutput">domain_error</code></td>
+<td align="left">the result of an operation is outside the legal range of
+              the result.</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">range_error</code></td>
@@ -90,20 +90,14 @@
               legal range - e.g. sqrt(-1).</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">domain_error</code></td>
-<td align="left">the result of an operation is outside the legal range of
-              the result.</td>
+<td align="left"><code class="computeroutput">precision_overflow_error</code></td>
+<td align="left">precision was lost in the course of executing the
+              operation.</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">implementation_defined_behavior</code></td>
-<td align="left">operation may or may not return the expected
-              result.</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">undefined_behavior</code></td>
-<td align="left">According to the C++ standard, the result is undefined.
-              e.g. 10 &lt;&lt; 80 shifts bits off the left and returns an
-              unexpected result of 0 on most machines.</td>
+<td align="left"><code class="computeroutput">underflow_error</code></td>
+<td align="left">A number is too close to zero to be represented by the
+              data type.</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">uninitialized_value</code></td>
@@ -121,7 +115,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264084000"></a>enum class safe_numerics_actions</h4></div></div></div>
+<a name="idm100779439920"></a>enum class safe_numerics_actions</h4></div></div></div>
 <p>The above error codes are classified into groups according to how
     such exceptions should be handled. The following table shows the possible
     actions that an error could be mapped to.</p>
@@ -168,7 +162,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264061856"></a>See Also</h4></div></div></div>
+<a name="idm100779416064"></a>See Also</h4></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p><a href="http://en.cppreference.com/w/cpp/error" target="_top">C++ Standard
         Library version</a> The C++ standard error handling
@@ -180,7 +174,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352264058048"></a>Header</h4></div></div></div>
+<a name="idm100779412032"></a>Header</h4></div></div></div>
 <p><a href="../../include/exception.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/exception.hpp&gt;</code></a></p>
 </div>

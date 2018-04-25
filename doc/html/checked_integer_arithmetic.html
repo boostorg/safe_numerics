@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="library_implementation.html" title="Library Implementation">
-<link rel="prev" href="interval.html" title="interval&lt;typename R&gt;">
+<link rel="prev" href="interval.html" title="interval&lt;R&gt;">
 <link rel="next" href="performance_tests.html" title="Performance Tests">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -21,16 +21,16 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.checked_integer_arithmetic"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257822768">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257738288">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257731968">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257728800">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257727584">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm352257698032">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784714240">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784634656">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784628416">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784625248">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784624096">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm100784594688">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257822768"></a>Synopsis</h4></div></div></div>
+<a name="idm100784714240"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting"><span class="comment">// compare any pair of integers</span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
 <span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">less_than</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
@@ -52,7 +52,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257738288"></a>Description</h4></div></div></div>
+<a name="idm100784634656"></a>Description</h4></div></div></div>
 <p>Compare two primitive integers. These functions will return a
     correct result regardless of the type of the operands. Specifically it is
     guaranteed to return the correct arithmetic result when comparing signed
@@ -66,19 +66,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257731968"></a>Type requirements</h4></div></div></div>
+<a name="idm100784628416"></a>Type requirements</h4></div></div></div>
 <p>All template parameters of the functions must be C/C++ built-in
     integer types, <code class="computeroutput"><code class="computeroutput">char</code></code>,
     <code class="computeroutput"><code class="computeroutput">int</code></code> ....</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257728800"></a>Complexity</h4></div></div></div>
+<a name="idm100784625248"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257727584"></a>Example of use</h4></div></div></div>
+<a name="idm100784624096"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_compare</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
@@ -91,7 +91,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257698032"></a>Header</h4></div></div></div>
+<a name="idm100784594688"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/safe_compare.hpp&gt;
     </code></a></p>

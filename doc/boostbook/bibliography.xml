@@ -439,9 +439,11 @@
       <abbrev>INT32-C</abbrev>
     </biblioentry>
 
-    <biblioentry id="stroustrup">
+    <biblioentry id="stone">
       <author>
-        <firstname>David Stone</firstname>
+        <firstname>David</firstname>
+
+        <surname>Stone</surname>
       </author>
 
       <title>

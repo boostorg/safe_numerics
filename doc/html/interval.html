@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>interval&lt;typename R&gt;</title>
+<title>interval&lt;R&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
@@ -19,30 +19,37 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.interval"></a>interval&lt;typename R&gt;</h3></div></div></div>
+<a name="safe_numerics.interval"></a>interval&lt;R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="interval.html#idm352263257888">Description</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352263256656">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352257995872">Notation</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352257982848">Associated Types</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352257977344">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352257914608">Example of use</a></span></dt>
-<dt><span class="section"><a href="interval.html#idm352257825776">Header</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778559664">Description</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778556688">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778553312">Notation</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778535792">Associated Types</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778530032">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100778450384">Example of use</a></span></dt>
+<dt><span class="section"><a href="interval.html#idm100784716944">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352263257888"></a>Description</h4></div></div></div>
+<a name="idm100778559664"></a>Description</h4></div></div></div>
 <p>A closed arithmetic interval represented by a pair of elements of
-    type R.</p>
+    type R. In principle, one should be able to use Boost.Interval library for
+    this. But the functions in this library are not <code class="computeroutput">constexpr</code>.
+    Also, this Boost.Interval is more complex and does not support certain
+    operations such bit operations. Perhaps some time in the future,
+    Boost.Interval will be used instead of this <code class="computeroutput">interval&lt;R&gt;</code>
+    type.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352263256656"></a>Template Parameters</h4></div></div></div>
-<p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
+<a name="idm100778556688"></a>Template Parameters</h4></div></div></div>
+<p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a>. Note this in principle
+    includes any numeric type including floating point numbers and instances
+    of <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257995872"></a>Notation</h4></div></div></div>
+<a name="idm100778553312"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -66,19 +73,28 @@
 <td align="left">Numeric types which can be used to make an interval</td>
 </tr>
 <tr>
+<td align="left"><code class="computeroutput">r</code></td>
+<td align="left">An instance of type R</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">p</code></td>
+<td align="left">An instance of std::pair&lt;R, R&gt;</td>
+</tr>
+<tr>
 <td align="left"><code class="computeroutput">l, u</code></td>
 <td align="left">Lowermost and uppermost values in an interval</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">os</code></td>
-<td align="left">std::basic_ostream&lt;Char, CharT&gt;</td>
+<td align="left">std::basic_ostream&lt;class CharT, class Traits =
+            std::char_traits&lt;CharT&gt;&gt;</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257982848"></a>Associated Types</h4></div></div></div>
+<a name="idm100778535792"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -93,7 +109,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257977344"></a>Valid Expressions</h4></div></div></div>
+<a name="idm100778530032"></a>Valid Expressions</h4></div></div></div>
 <p>Note that all expressions are constexpr.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -123,6 +139,21 @@
 <td align="left">copy constructor</td>
 </tr>
 <tr>
+<td align="left"><code class="computeroutput">make_interval&lt;R&gt;()</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
+<td align="left">return new interval with
+              std::numric_limits&lt;R&gt;::min() and
+              std::numric_limits&lt;R&gt;::max()</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">make_interval&lt;R&gt;(const R
+              &amp;r)</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
+<td align="left">return new interval with
+              std::numric_limits&lt;R&gt;::min() and
+              std::numric_limits&lt;R&gt;::max()</td>
+</tr>
+<tr>
 <td align="left"><code class="computeroutput">i.l</code></td>
 <td align="left"><code class="computeroutput">R</code></td>
 <td align="left">lowermost value in the interval i</td>
@@ -134,7 +165,12 @@
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">i.includes(j)</code></td>
-<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left"><code class="computeroutput">boost::logic::tribool</code></td>
+<td align="left">return true if interval i includes interval j</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">i.excludes(j)</code></td>
+<td align="left"><code class="computeroutput">boost::logic::tribool</code></td>
 <td align="left">return true if interval i includes interval j</td>
 </tr>
 <tr>
@@ -143,59 +179,64 @@
 <td align="left">return true if interval i includes value t</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">add&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i.excludes(t)</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">return true if interval i includes value t</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">i + j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">add two intervals and return the result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">subtract&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i - j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">subtract two intervals and return the result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">multiply&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i * j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">multiply two intervals and return the result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">divide&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i / j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">divide one interval by another and return the
               result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">modulus&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i % j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">calculate modulus of one interval by another and return
               the result</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">left_shift&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i &lt;&lt; j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">calculate the range that would result from shifting one
               interval by another</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">right_shift&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i &gt;&gt; j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">calculate the range that would result from shifting one
               interval by another</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">bitwise_or&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i | j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">range of values which can result from applying | to any
               pair of operands from I and j</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">bitwise_and&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i &amp; j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">range of values which can result from applying &amp; to
               any pair of operands from I and j</td>
 </tr>
 <tr>
-<td align="left"><code class="computeroutput">bitwise_xor&lt;R&gt;(i, j)</code></td>
-<td align="left"><code class="computeroutput">interval&lt;checked_result&lt;R&gt;&gt;</code></td>
+<td align="left"><code class="computeroutput">i ^ j</code></td>
+<td align="left"><code class="computeroutput">interval&lt;R&gt;</code></td>
 <td align="left">range of values which can result from applying ^ to any
               pair of operands from I and j</td>
 </tr>
@@ -243,7 +284,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257914608"></a>Example of use</h4></div></div></div>
+<a name="idm100778450384"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
@@ -263,7 +304,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm352257825776"></a>Header</h4></div></div></div>
+<a name="idm100784716944"></a>Header</h4></div></div></div>
 <p><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/interval.hpp&gt;</code></p>
 </div>

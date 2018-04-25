@@ -56,19 +56,16 @@
 <span class="comment">// We "know" that C++ type promotion rules will work such that</span>
 <span class="comment">// addition will never overflow. If we change the program to break this,</span>
 <span class="comment">// the usage of the loose_trap_policy promotion policy will prevent compilation.</span>
-<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 83:\n"</span><span class="special">;</span>
 
     <span class="keyword">constexpr</span> <span class="keyword">const</span> <span class="identifier">const_safe_t</span><span class="special">&lt;</span><span class="number">10</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">constexpr</span> <span class="keyword">const</span> <span class="identifier">const_safe_t</span><span class="special">&lt;</span><span class="number">67</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-
     <span class="keyword">constexpr</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x + y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-
-    <span class="keyword">const</span> <span class="keyword">auto</span> <span class="identifier">za</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
-    <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"za = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">za</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
 </pre>
@@ -94,43 +91,40 @@
 <li class="listitem"><p>So if this program compiles, it's guaranteed to return a valid
           result.</p></li>
 </ul></div>
-<p>This program produces the following run time
-    output.</p>
+<p>The output uses a custom output manipulator,
+    <code class="computeroutput">safe_format</code>, for safe types to display the underlying type
+    and its range as well as current value. This program produces the
+    following run time output.</p>
 <pre class="screen">example 83:
 x = &lt;signed char&gt;[10,10] = 10
 y = &lt;signed char&gt;[67,67] = 67
-z = &lt;signed char&gt;[-24,82] = 77
-za = &lt;int&gt;[77,77] = 77
-</pre>
+x + y = &lt;int&gt;[77,77] = 77
+z = &lt;signed char&gt;[-24,82] = 77</pre>
 <p>Take note of the various variable types:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p><code class="computeroutput">x</code> and <code class="computeroutput">y</code> are safe types with fixed
           ranges which encompass one single value. They can hold only that
           value which they have been assigned at compile time.</p></li>
-<li class="listitem"><p><code class="computeroutput">z</code> is the sum of x and y. The type of z is defined
-          so that It can hold only values in the closed range -24,82. We can
-          assign the sum of x and y because it is in the range that
-          <code class="computeroutput">z</code> is guaranteed to hold. If the sum or not known at
-          compile time, and it cannot be be guaranteed to fall in the range of
-          <code class="computeroutput">z</code>, we would get a compile time error due to the fact we
-          are using the <code class="computeroutput">loose_trap_policy</code> exception
-          policy.</p></li>
-<li class="listitem"><p><code class="computeroutput">za</code> is sum of <code class="computeroutput">x</code> and <code class="computeroutput">y</code>
-          both of which are known a compile time. The type of the result is
-          also known at compile which can be seen from the fact that it is an
-          integer value (since it is the result of native C++ promotion rules)
-          in the range 77,77. That is, it is guaranteed to be equal to
-          77.</p></li>
+<li class="listitem"><p><code class="computeroutput">The sum x + y can also be determined at compile
+          time.</code></p></li>
+<li class="listitem"><p>The type of z is defined so that It can hold only values in
+          the closed range -24,82. We can assign the sum of x + y because it
+          is in the range that <code class="computeroutput">z</code> is guaranteed to hold. If the
+          sum were not known at compile time, or it could not be be guaranteed
+          to fall in the range of <code class="computeroutput">z</code>, we would get a compile time
+          error due to the fact we are using the
+          <code class="computeroutput">loose_trap_policy</code> exception policy.</p></li>
 </ul></div>
-<p>All this information regarding the values of variables
-    has been determined at compile time. There is no runtime overhead. The
-    usage of safe types does not alter the calculations or results in anyway.
-    So <code class="computeroutput">safe_t</code> and <code class="computeroutput">const_safe_t</code> could be redefined to
-    <code class="computeroutput">int</code> and <code class="computeroutput">const int</code> respectively and the program
-    would operate identically. We could compile the program for another
-    machine - as is common when building embedded systems and know (assuming
-    the target machine architecture was the same as our native one) that no
-    erroneous results would ever be produced.</p>
+<p>All this information regarding the range and values of
+    variables has been determined at compile time. There is no runtime
+    overhead. The usage of safe types does not alter the calculations or
+    results in anyway. So <code class="computeroutput">safe_t</code> and <code class="computeroutput">const_safe_t</code>
+    could be redefined to <code class="computeroutput">int</code> and <code class="computeroutput">const int</code>
+    respectively and the program would operate identically - although it might
+    We could compile the program for another machine - as is common when
+    building embedded systems and know (assuming the target machine
+    architecture was the same as our native one) that no erroneous results
+    would ever be produced.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
