@@ -1,84 +1,63 @@
-//  Copyright (c) 2012 Robert Ramey
+//  Copyright (c) 2014 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
+//
+// Test constexpr operations on literals
 
-// testing constexpr and safe_literal.
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
 #include "../include/safe_integer_literal.hpp"
 #include "../include/native.hpp"
 #include "../include/exception.hpp"
 
 using namespace boost::numeric;
 
-template<std::intmax_t N>
-//using compile_time_value = safe_signed_literal<N, native, loose_exception_policy>;
-using compile_time_value = safe_signed_literal<N, native, loose_trap_policy>;
-
-template<std::intmax_t N>
-using compile_time_result = safe_base<int, N, N, native, loose_trap_policy>;
+template<std::uintmax_t N>
+using compile_time_value = safe_unsigned_literal<N, native, loose_trap_policy>;
 
 int main(){
 
     constexpr const compile_time_value<1000> x;
-    constexpr const compile_time_value<2> y;
+    constexpr const compile_time_value<1> y;
 
     // should compile and execute without problem
-    std::cout << "x = " << x << '\n';
-    std::cout << "y = " << y << '\n';
+    std::cout << x << '\n';
 
-    constexpr const compile_time_result<1002> x_plus_y = x + y;
-    std::cout << "x + y = " << x_plus_y << '\n';
-    
-    constexpr const compile_time_result<998> x_minus_y = x - y;
-    std::cout << "x - y = " << x_minus_y << '\n';
+    // all the following statements should compile
+    constexpr auto x_plus_y = x + y;
+    static_assert(1001 == x_plus_y, "1001 == x + y");
 
-    constexpr const compile_time_result<2000> x_times_y = x * y;
-    std::cout << "x * y = " << x_times_y << '\n';
+    constexpr auto x_minus_y = x - y;
+    static_assert(999 == x_minus_y, "999 == x - y");
 
-    constexpr const compile_time_result<500> x_divided_by_y = x / y;
-    std::cout << "x / y = " << x_divided_by_y << '\n';
+    constexpr auto x_times_y = x * y;
+    static_assert(1000 == x_times_y, "1000 == x * y");
 
-    constexpr const compile_time_result<250> x_right_shift_y = x >> y;
-    std::cout << "x >> y = " << x_right_shift_y << '\n';
+    constexpr auto x_and_y = x & y;
+    static_assert(0 == x_and_y, "0 == x & y");
 
-    constexpr const auto /*compile_time_result<4000>*/ x_left_shift_y = x << y;
-    std::cout << "x << y = " << x_left_shift_y << '\n';
-#if 0
+    constexpr auto x_or_y = x | y;
+    static_assert(1001 == x_or_y, "1001 == x | y");
 
-    constexpr const compile_time_result<0> x_mod_y = x % y;
-    std::cout << "x % y = " << x_mod_y << '\n';
+    constexpr auto x_xor_y = x ^ y;
+    static_assert(1001 == x_xor_y, "1001 == x ^ y");
 
-    constexpr const compile_time_result<0> x_and_y = x & y;
-    std::cout << "x & y = " << x_and_y << '\n';
-    
-    constexpr const compile_time_result<1002> x_or_y = x | y;
-    std::cout << "x | y = " << x_or_y << '\n';
-#endif
+    constexpr auto x_divided_by_y = x / y;
+    static_assert(1000 == x_divided_by_y, "1000 == x / y");
 
-    constexpr const auto x_xor_y = x ^ y;
-    std::cout << "x ^ y = " << x_xor_y << '\n';
-    /*
-    */
+    constexpr auto x_mod_y = x % y;
+    static_assert(0 == x_mod_y, "0 == x % y");
 
-    // this is a compile only test - but since many build systems
-    // can't handle a compile-only test - make sure it passes trivially.
+    // this should fail compilation since a positive unsigned number
+    // can't be converted to a negative value of the same type
+    constexpr auto minus_x = -x;
 
-    // all the following statements should fail to compile
-    /*
-    y++;
-    y--;
-    ++y;
-    --y;
-    y = 1;
-    y += 1;
-    y -= 1;
-    y *= 1;
-    y /= 1;
-    */
-    return 0;
+    // should compile OK since the negative inverse of a zero is still zero
+    constexpr const compile_time_value<0> x0;
+    constexpr auto minus_x0 = -x0; // should compile OK
+    static_assert(0 == minus_x0, "0 == -x where x == 0");
+
+    constexpr auto not_x = ~x;
 }
-

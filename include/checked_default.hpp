@@ -49,8 +49,8 @@ namespace numeric {
 // it should trap with a static_assert. This occurs at compile time while
 // calculating result interval.  This needs more investigation.
 
-template<typename R, typename T, class Default = void>
-struct checked_unary_operation{
+template<typename R, typename T = void, class Default = void>
+struct checked_operation{
     constexpr static checked_result<R>
     cast(const T & t) /* noexcept */ {
         return static_cast<R>(t);
@@ -59,10 +59,6 @@ struct checked_unary_operation{
     minus(const T & t) noexcept {
         return - t;
     }
-};
-
-template<typename R, class Default = void>
-struct checked_binary_operation{
     constexpr static checked_result<R>
     add(const R & t, const R & u) noexcept {
         return t + u;
@@ -115,6 +111,10 @@ struct checked_binary_operation{
     bitwise_and(const R & t, const R & u) noexcept {
         return t & u;
     }
+    constexpr static checked_result<R>
+    bitwise_not(const R & t) noexcept {
+        return ~t;
+    }
 };
 
 namespace checked {
@@ -124,71 +124,75 @@ namespace checked {
 
 template<typename R, typename T>
 constexpr checked_result<R> cast(const T & t) /* noexcept */ {
-    return checked_unary_operation<R, T>::cast(t);
+    return checked_operation<R, T>::cast(t);
 }
 template<typename R>
 constexpr checked_result<R> minus(const R & t) noexcept {
-    return checked_binary_operation<R>::minus(t);
+    return checked_operation<R>::minus(t);
 }
 template<typename R>
 constexpr checked_result<R> add(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::add(t, u);
+    return checked_operation<R>::add(t, u);
 }
 template<typename R>
 constexpr checked_result<R> subtract(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::subtract(t, u);
+    return checked_operation<R>::subtract(t, u);
 }
 template<typename R>
 constexpr checked_result<R> multiply(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::multiply(t, u);
+    return checked_operation<R>::multiply(t, u);
 }
 template<typename R>
 constexpr checked_result<R> divide(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::divide(t, u);
+    return checked_operation<R>::divide(t, u);
 }
 template<typename R>
 constexpr checked_result<R> modulus(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::modulus(t, u);
+    return checked_operation<R>::modulus(t, u);
 }
 template<typename R>
 constexpr checked_result<bool> less_than(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::less_than(t, u);
+    return checked_operation<R>::less_than(t, u);
 }
 template<typename R>
 constexpr checked_result<bool> greater_than_equal(const R & t, const R & u) noexcept {
-    return ! checked_binary_operation<R>::less_than(t, u);
+    return ! checked_operation<R>::less_than(t, u);
 }
 template<typename R>
 constexpr checked_result<bool> greater_than(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::greater_than(t, u);
+    return checked_operation<R>::greater_than(t, u);
 }
 template<typename R>
 constexpr checked_result<bool> less_than_equal(const R & t, const R & u) noexcept {
-    return ! checked_binary_operation<R>::greater_than(t, u);
+    return ! checked_operation<R>::greater_than(t, u);
 }
 template<typename R>
 constexpr checked_result<bool> equal(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::equal(t, u);
+    return checked_operation<R>::equal(t, u);
 }
 template<typename R>
 constexpr checked_result<R> left_shift(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::left_shift(t, u);
+    return checked_operation<R>::left_shift(t, u);
 }
 template<typename R>
 constexpr checked_result<R> right_shift(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::right_shift(t, u);
+    return checked_operation<R>::right_shift(t, u);
 }
 template<typename R>
 constexpr checked_result<R> bitwise_or(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::bitwise_or(t, u);
+    return checked_operation<R>::bitwise_or(t, u);
 }
 template<typename R>
 constexpr checked_result<R> bitwise_xor(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::bitwise_or(t, u);
+    return checked_operation<R>::bitwise_or(t, u);
 }
 template<typename R>
 constexpr checked_result<R> bitwise_and(const R & t, const R & u) noexcept {
-    return checked_binary_operation<R>::bitwise_and(t, u);
+    return checked_operation<R>::bitwise_and(t, u);
+}
+template<typename R>
+constexpr checked_result<R> bitwise_not(const R & t) noexcept {
+    return checked_operation<R>::bitwise_not(t);
 }
 
 } // checked

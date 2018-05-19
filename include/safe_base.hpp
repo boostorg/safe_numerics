@@ -203,8 +203,6 @@ public:
     */
     constexpr safe_base() = default;
 
-#if 0
-#endif
     // note: Rule of Five. Supply all or none of the following
     // a) user-defined destructor
     ~safe_base() = default;

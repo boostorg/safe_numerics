@@ -192,9 +192,9 @@ constexpr interval<T> operator>>(const interval<T> & t, const interval<T> & u){
 // union of two intervals
 template<typename T>
 constexpr interval<T> operator|(const interval<T> & t, const interval<T> & u){
-    return utility::minmax<T>(
-        std::initializer_list<T> {t.l, u.l, t.u, u.u}
-    );
+    const T & rl = std::min(t.l, u.l);
+    const T & ru = std::max(t.u, u.u);
+    return interval<T>(rl, ru);
 }
 
 // intersection of two intervals

@@ -18,12 +18,13 @@
 #include <limits>
 #include <cstdint>     // (u)intmax_t,
 #include <type_traits> // conditional
-#include <boost/integer.hpp> //
+#include <boost/integer.hpp>
 
 #include "safe_common.hpp"
 #include "checked_result.hpp"
 #include "checked_default.hpp"
 #include "checked_integer.hpp"
+#include "checked_result_operations.hpp"
 #include "interval.hpp"
 #include "utility.hpp"
 

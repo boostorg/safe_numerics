@@ -5,13 +5,20 @@
   <title>Case Study: Safety Critical Embedded Controller</title>
 
   <para>Suppose we are given the task of creating stepper motor driver
-  software to drive a robotic hand to be used in micro surgery. The processor
-  that has been selected by the engineers is the PIC18F252 manufactured by
-  Microchip Corporation. On a processor this small, it's common to use a
-  mixture of 8, 16, and 32 bit data types in order to conserve memory space
-  and minimize memory footprint and runtime penalty.</para>
+  software to drive a robotic hand to be used in robotic micro surgery. The
+  processor that has been selected by the engineers is the <ulink
+  url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+  manufactured by Microchip Corporation. This processor has 32KB of program
+  memory. On a processor this small, it's common to use a mixture of 8, 16,
+  and 32 bit data types in order to conserve memory space and minimize memory
+  footprint and runtime penalty. It's programmed in C.</para>
 
-  <para>Requirements:<itemizedlist>
+  <para>Requirements and Constraints:<itemizedlist>
+      <listitem>
+        <para>A deterministic algorithm for sending pulses to control a
+        stepper motor.</para>
+      </listitem>
+
       <listitem>
         <para>Algorithm must be verifiable.</para>
       </listitem>
@@ -36,13 +43,17 @@
         <para>The system has no i/o other than a few pins to control the
         stepper motor.</para>
       </listitem>
+
+      <listitem>
+        <para>The system cannot be allowed to move the motor to the wrong
+        position.</para>
+      </listitem>
     </itemizedlist></para>
 
-  <para>Actually this is a pretty common scenario. The only difference in this
-  case are the extreme consequences associated with violations of the above
-  requirements. We will start making a basic working prototype. This we will
-  enhance in a stepwise fashion until all the above requirements are
-  met.</para>
+  <para>This is a common scenario. The only difference in this case are the
+  extreme consequences associated with violations of the above requirements.
+  We will start making a basic working prototype. This we will enhance in a
+  stepwise fashion until all the above requirements are met.</para>
 
   <section>
     <title>First Prototype</title>

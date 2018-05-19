@@ -36,9 +36,9 @@ bool test_equal(
             << std::endl;
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in less than "
+                    << "failed to detect error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
-                    << " ! = "<< av1 << " < " << av2
+                    << " ! = "<< av1 << " == " << av2
                     << std::endl;
                 result = (t1 == v2);
                 return false;
@@ -58,9 +58,9 @@ bool test_equal(
             << std::endl;
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in less than "
+                    << "erroneously detected error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
-                    << " == "<< av1 << " < " << av2
+                    << " == "<< av1 << " == " << av2
                     << std::endl;
                 result = (t1 == v2);
                 return false;
@@ -81,7 +81,7 @@ bool test_equal(
             << std::endl;
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in less than "
+                    << "failed to detect error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
                     << std::endl;
@@ -103,7 +103,7 @@ bool test_equal(
             << std::endl;
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in less than "
+                    << "erroneously detected error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " == " << av2
                     << std::endl;
@@ -127,7 +127,7 @@ bool test_equal(
             << std::endl;
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in less than "
+                    << "failed to detect error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
                     << std::endl;
@@ -149,7 +149,7 @@ bool test_equal(
             << std::endl;
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in less than "
+                    << "erroneously detected error in equals "
                     << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " == " << av2
                     << std::endl;

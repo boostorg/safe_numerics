@@ -39,7 +39,7 @@ using bool_type = typename std::conditional<tf, std::true_type, std::false_type>
 
 // convert an integral value to some other integral type
 template<typename R, typename T>
-struct checked_unary_operation<R, T,
+struct checked_operation<R, T,
     typename std::enable_if<
         std::is_integral<R>::value
         && std::is_integral<T>::value
@@ -161,7 +161,7 @@ struct checked_unary_operation<R, T,
 
 // converting floating point value to integral type
 template<typename R, typename T>
-struct checked_unary_operation<R, T,
+struct checked_operation<R, T,
     typename std::enable_if<
         std::is_integral<R>::value
         && std::is_floating_point<T>::value
@@ -177,7 +177,7 @@ struct checked_unary_operation<R, T,
 
 // INT35-C. Use correct integer precisions
 template<typename R, typename T>
-struct checked_unary_operation<R, T,
+struct checked_operation<R, T,
     typename std::enable_if<
         std::is_floating_point<R>::value
         && std::is_integral<T>::value
@@ -198,7 +198,7 @@ struct checked_unary_operation<R, T,
 };
 
 template<typename R>
-struct checked_binary_operation<R,
+struct checked_operation<R,
     typename std::enable_if<
         std::is_integral<R>::value
     >::type
@@ -803,7 +803,19 @@ constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcep
     return t & u;
 }
 
-}; // checked_binary_operation
+constexpr static checked_result<R> bitwise_not(const R & t) noexcept {
+    using namespace boost::numeric::utility;
+
+    if(significant_bits(t) > bits_type<R>::value){
+        return checked_result<R>{
+            safe_numerics_error::positive_overflow_error,
+            "result type too small to hold bitwise and"
+        };
+    }
+    return ~t;
+}
+
+}; // checked_operation
 
 } // numeric
 } // boost

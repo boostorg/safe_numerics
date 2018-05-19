@@ -14,12 +14,11 @@
 
 #include <cstdint> // for intmax_t/uintmax_t
 #include <iosfwd>
-#include <type_traits> // conditional
+#include <type_traits> // conditional, enable_if
 
 #include "utility.hpp"
-#include "safe_base.hpp"
-#include "safe_base_operations.hpp"
-#include "exception_policies.hpp"
+#include "safe_integer.hpp"
+#include "checked_integer.hpp"
 
 namespace boost {
 namespace numeric {
@@ -113,12 +112,12 @@ public:
     }
 
     // non mutating unary operators
-    constexpr safe_literal_impl & operator+() const { // unary plus
-        return *this;
+    constexpr safe_literal_impl<T, N, P, E> operator+() const { // unary plus
+        return safe_literal_impl<T, N, P, E>();
     }
     // after much consideration, I've permitted the resulting value of a unary
-    // - to change the type.  The C++ standard does invoke integral promotions
-    // so it's changing the type as well.
+    // - to change the type in accordance with the promotion policy.
+    // The C++ standard does invoke integral promotions so it's changing the type as well.
 
     /*  section 5.3.1 &8 of the C++ standard
     The operand of the unary - operator shall have arithmetic or unscoped
@@ -128,17 +127,34 @@ public:
     where n is the number of bits in the promoted operand. The type of the
     result is the type of the promoted operand.
     */
-    constexpr safe_literal_impl<T, -N, P, E> operator-() const { // unary minus
-        return 0 - *this;
-        //return safe_literal_impl<T, -N, P, E>();
+    template<
+        typename Tx, Tx Nx, typename = std::enable_if_t<! checked::minus(Nx).exception()>
+    >
+    constexpr auto minus_helper() const {
+        return safe_literal_impl<Tx, -N, P, E>();
     }
+
+    constexpr auto operator-() const { // unary minus
+        return minus_helper<T, N>();
+    }
+
     /*   section 5.3.1 &10 of the C++ standard
     The operand of ~ shall have integral or unscoped enumeration type; 
     the result is the ones’ complement of its operand. Integral promotions 
     are performed. The type of the result is the type of the promoted operand.
+    constexpr safe_literal_impl<T, checked::bitwise_not(N), P, E> operator~() const { // invert bits
+        return safe_literal_impl<T, checked::bitwise_not(N), P, E>();
+    }
     */
-    constexpr safe_literal_impl<T, ~N, P, E> operator~() const { // complement
-        return safe_literal_impl<T, ~N, P, E>();
+    template<
+        typename Tx, Tx Nx, typename = std::enable_if_t<! checked::bitwise_not(Nx).exception()>
+    >
+    constexpr auto not_helper() const {
+        return safe_literal_impl<Tx, ~N, P, E>();
+    }
+
+    constexpr auto operator~() const { // unary minus
+        return not_helper<T, N>();
     }
 };
 

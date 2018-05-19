@@ -527,10 +527,116 @@ int main(){
 
 #endif
 
+#if 0
+//#include "safe_common.hpp"
+//#include "checked_result.hpp"
+//#include "checked_default.hpp"
+#include <cassert>
+#include <boost/logic/tribool.hpp>
+
+#include <iostream>
+
+// note: Don't reorder these.  Code in the file checked_result_operations.hpp
+// depends upon this order !!!
+enum class safe_numerics_error : std::uint8_t {
+    success = 0,
+    positive_overflow_error,    // result is above representational maximum
+    negative_overflow_error,    // result is below representational minimum
+    domain_error,               // one operand is out of valid range
+    range_error,                // result cannot be produced for this operation
+    precision_overflow_error,   // result lost precision
+    underflow_error,            // result is too small to be represented
+    negative_value_shift,       // negative value in shift operator
+    negative_shift,             // shift a negative value
+    shift_too_large,            // l/r shift exceeds variable size
+    uninitialized_value         // l/r shift exceeds variable size
+};
+
+// checked result is an "extended version" of the type R.  That is it's domain is
+// the domain of R U possible other values which might result from arithmetic
+// operations.  An example of such a value would be safe_error::positive_overflow_error.
+template<typename R>
+struct checked_result {
+    const safe_numerics_error m_e;
+    const union {
+        R m_r;
+        char const * m_msg;
+    };
+    
+    constexpr /*explicit*/ checked_result(const R & r) :
+        m_e(safe_numerics_error::success),
+        m_r(r)
+    {}
+    constexpr /*explicit*/ checked_result(
+        safe_numerics_error e,
+        const char * msg = ""
+    ) :
+        m_e(e),
+        m_msg(msg)
+    {
+        assert(m_e != safe_numerics_error::success);
+    }
+    constexpr bool exception() const {
+        return m_e != safe_numerics_error::success;
+    }
+
+    // don't permit construction without initial value;
+    checked_result() = delete;
+
+    // disallow assignment
+    checked_result & operator=(const checked_result &) = delete;
+};
+
+// all arithmetic operations of type T are supported on checked_result<T>.
+// but the results might surprising.  For example
+
+
+constexpr signed int test_constexpr(
+    const checked_result<signed int> & t,
+    const checked_result<signed int> & u
+){
+    const boost::logic::tribool tb2 = t < u;
+    const signed int x = (tb2) ? 2 : 3;
+    return x;
+}
+
+using namespace boost::numeric;
 
 int main()
 {
-	return 0;
+    constexpr const checked_result<signed int> po = safe_numerics_error::positive_overflow_error;
+    constexpr const checked_result<signed int> no = safe_numerics_error::negative_overflow_error;
+    constexpr const boost::logic::tribool tb = no < po;
+    const boost::logic::tribool tb1 = no > po;
+    constexpr const checked_result<signed int> re = safe_numerics_error::range_error;
+    const boost::logic::tribool tb2 = no < re;
+    const checked_result<signed int> x = no < re ? no : re;
+
+    static_assert(test_constexpr(no, re) == 3, "test_constexpr(no, re)");
+
+
+    static_assert(tb, "no < po");
+
+    signed int result;
+    if(tb)
+        result = 0;
+    else
+        result = 1;
+    std::cout << result;
+    return result;
+}
+#endif
+
+#include <boost/logic/tribool.hpp>
+#include <cassert>
+int main(){
+    constexpr const boost::tribool tb_t{true};
+    static_assert(tb_t, "tb_t");
+    assert(static_cast<bool>(tb_t));
+    constexpr boost::tribool tb_f{false};
+    static_assert(! tb_f, "tb_f");
+    assert(! static_cast<bool>(tb_f));
+    return 0;
 }
 
 

@@ -704,9 +704,10 @@ public:
         constexpr const r_interval_type ri = r_interval();
         constexpr const r_interval_type ui = u_interval();
 
-        constexpr bool exception_possible = static_cast<bool>(
-                ui.includes(r_type(0)) || ri.l.exception() || ri.u.exception()
-        );
+        constexpr bool exception_possible =
+            static_cast<bool>(ui.includes(r_type(0)))
+            || ri.l.exception()
+            || ri.u.exception();
 
         return type(
             return_value(
@@ -855,9 +856,12 @@ public:
     constexpr static type return_value(const T & t, const U & u){
         constexpr const r_interval_type ri = r_interval();
         constexpr const r_interval_type ui = u_interval();
-        constexpr const bool exception_possible = static_cast<bool>(
-            ui.includes(r_type(0)) || ri.l.exception() || ri.u.exception()
-        );
+
+        constexpr bool exception_possible =
+            static_cast<bool>(ui.includes(r_type(0)))
+            || ri.l.exception()
+            || ri.u.exception();
+
         return type(
             return_value(
                 t,
@@ -905,11 +909,19 @@ private:
     using r_type = checked_result<result_base_type>;
     using r_interval_type = interval<r_type>;
 
+    // if exception not possible
+    constexpr static bool
+    return_value(const T & t, const U & u, std::false_type){
+        return
+            static_cast<result_base_type>(base_value(t))
+            < static_cast<result_base_type>(base_value(u));
+    }
+
     using exception_policy = typename common_exception_policy<T, U>::type;
 
     // if exception possible
     constexpr static bool
-    return_valuex(const T & t, const U & u){
+    return_value(const T & t, const U & u, std::true_type){
         const r_type tx = checked::cast<result_base_type>(base_value(t));
         if(tx.exception())
             dispatch<exception_policy>(tx);
@@ -925,6 +937,10 @@ private:
         return safe_compare::less_than(base_value(t), base_value(u));
     }
 
+    constexpr static bool interval_open(const r_interval_type & t){
+        return t.l.exception() || t.u.exception();
+    }
+
 public:
     constexpr static bool
     return_value(const T & t, const U & u){
@@ -936,12 +952,20 @@ public:
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
-        return
-            t_interval < u_interval
-            ? true
-            : t_interval > u_interval
-            ? false
-            : return_valuex(t, u);
+
+        if(t_interval < u_interval)
+            return true;
+        if(t_interval > u_interval)
+            return false;
+
+        constexpr bool exception_possible
+            = interval_open(t_interval) || interval_open(u_interval);
+
+        return return_value(
+            t,
+            u,
+            std::integral_constant<bool, exception_possible>()
+        );
     }
 };
 
@@ -991,14 +1015,21 @@ private:
     using result_base_type =
         typename promotion_policy::template comparison_result<T, U>::type;
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
+    // if exception not possible
+    constexpr static bool
+    return_value(const T & t, const U & u, std::false_type){
+        return
+            static_cast<result_base_type>(base_value(t))
+            == static_cast<result_base_type>(base_value(u));
+    }
 
     using exception_policy = typename common_exception_policy<T, U>::type;
 
+    using r_type = checked_result<result_base_type>;
+
     // exception possible
     constexpr static bool
-    return_valuex(const T & t, const U & u){
+    return_value(const T & t, const U & u, std::true_type){
         const r_type tx = checked::cast<result_base_type>(base_value(t));
         if(tx.exception())
             dispatch<exception_policy>(tx);
@@ -1014,6 +1045,12 @@ private:
         return safe_compare::equal(base_value(t), base_value(u));
     }
 
+    using r_interval_type = interval<r_type>;
+
+    constexpr static bool interval_open(const r_interval_type & t){
+        return t.l.exception() || t.u.exception();
+    }
+
 public:
     constexpr static bool
     return_value(const T & t, const U & u){
@@ -1027,12 +1064,17 @@ public:
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        return
-            t_interval < u_interval
-            ? false  // cannot be equal
-            : t_interval > u_interval
-            ? false  // cannot be equal
-            : return_valuex(t, u);
+        if(! intersect(t_interval, u_interval))
+            return false;
+
+        constexpr bool exception_possible
+            = interval_open(t_interval) || interval_open(u_interval);
+
+        return return_value(
+            t,
+            u,
+            std::integral_constant<bool, exception_possible>()
+        );
     }
 };
 
@@ -1441,8 +1483,6 @@ struct bitwise_xor_result {
     using promotion_policy = typename common_promotion_policy<T, U>::type;
     using result_base_type =
         typename promotion_policy::template bitwise_xor_result<T, U>::type;
-
-//    utility::print_type<result_base_type> t;
 
     // according to the C++ standard, the bitwise operators are executed as if
     // the operands are consider a logical array of bits.  That is, there is no
