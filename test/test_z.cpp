@@ -625,7 +625,6 @@ int main()
     std::cout << result;
     return result;
 }
-#endif
 
 #include <boost/logic/tribool.hpp>
 #include <cassert>
@@ -639,4 +638,9 @@ int main(){
     return 0;
 }
 
+#endif
+
+int main(){
+    return 0;
+}
 
