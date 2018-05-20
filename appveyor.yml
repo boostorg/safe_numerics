@@ -38,6 +38,7 @@ install:
   - git submodule init libs/logic
   - git submodule init libs/integer
   - git submodule init libs/core
+  - git submodule init libs/static_assert
 
   - git submodule update
   - xcopy /s /e /q %APPVEYOR_BUILD_FOLDER% libs\safe_numerics\
