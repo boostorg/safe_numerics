@@ -81,7 +81,9 @@
 
     <biblioentry id="crowl2">
       <author>
-        <surname>Lawrence Crowl</surname>
+        <firstname>Lawrence</firstname>
+
+        <surname>Crowl</surname>
       </author>
 
       <author>
@@ -108,19 +110,27 @@
 
     <biblioentry id="dietz">
       <author>
-        <surname>Will Dietz</surname>
+        <firstname>Will</firstname>
+
+        <surname>Dietz</surname>
       </author>
 
       <author>
-        <surname>Peng Li</surname>
+        <firstname>Peng</firstname>
+
+        <surname>Li</surname>
       </author>
 
       <author>
-        <surname>John Regehr</surname>
+        <firstname>John</firstname>
+
+        <surname>Regehr</surname>
       </author>
 
       <author>
-        <surname>Vikram Adve</surname>
+        <firstname>Vikram</firstname>
+
+        <surname>Adve</surname>
       </author>
 
       <title>
@@ -143,7 +153,9 @@
 
     <biblioentry id="garcia">
       <author>
-        <surname>J. Daniel Garcia</surname>
+        <firstname>J. Daniel</firstname>
+
+        <surname>Garcia</surname>
       </author>
 
       <title>
@@ -166,7 +178,9 @@
 
     <biblioentry id="katz">
       <author>
-        <surname>Omer Katz</surname>
+        <firstname>Omer</firstname>
+
+        <surname>Katz</surname>
       </author>
 
       <title>
@@ -252,7 +266,9 @@
 
     <biblioentry id="leblanc1">
       <author>
-        <surname>David LeBlanc</surname>
+        <firstname>David</firstname>
+
+        <surname>LeBlanc</surname>
       </author>
 
       <title>
@@ -272,7 +288,9 @@
 
     <biblioentry id="leblanc2">
       <author>
-        <surname>David LeBlanc</surname>
+        <firstname>David</firstname>
+
+        <surname>LeBlanc</surname>
       </author>
 
       <title>
@@ -290,7 +308,9 @@
 
     <biblioentry id="lions">
       <author>
-        <surname>Jacques-Louis Lions</surname>
+        <firstname>Jacques-Louis</firstname>
+
+        <surname>Lions</surname>
       </author>
 
       <title>
@@ -311,7 +331,9 @@
 
     <biblioentry id="matthews">
       <author>
-        <surname>Hubert Matthews</surname>
+        <firstname>Hubert</firstname>
+
+        <surname>Matthews</surname>
       </author>
 
       <title>
@@ -330,7 +352,9 @@
 
     <biblioentry id="mouawad">
       <author>
-        <surname>Jad Mouawad</surname>
+        <firstname>Jad</firstname>
+
+        <surname>Mouawad</surname>
       </author>
 
       <title>
@@ -355,7 +379,9 @@
 
     <biblioentry id="plakosh">
       <author>
-        <surname>Daniel Plakosh</surname>
+        <firstname>Daniel</firstname>
+
+        <surname>Plakosh</surname>
       </author>
 
       <title>
@@ -376,7 +402,9 @@
 
     <biblioentry id="seacord1">
       <author>
-        <surname>Robert C. Seacord</surname>
+        <firstname>Robert C.</firstname>
+
+        <surname>Seacord</surname>
       </author>
 
       <title>
@@ -398,7 +426,9 @@
 
     <biblioentry id="seacord2">
       <author>
-        <surname>Robert C. Seacord</surname>
+        <firstname>Robert C.</firstname>
+
+        <surname>Seacord</surname>
       </author>
 
       <title>
@@ -419,7 +449,9 @@
 
     <biblioentry id="seacord3">
       <author>
-        <surname id="INT32-C">Robert C. Seacord</surname>
+        <firstname>Robert C.</firstname>
+
+        <surname>Seacord</surname>
       </author>
 
       <title>

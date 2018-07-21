@@ -4,13 +4,13 @@
 <section id="safe_numerics.eliminate_runtime_penalty">
   <title>Eliminating Runtime Penalty</title>
 
-  <para>Up until now, we've focused on detecting when incorrect results are
-  produced and handling these occurrences either by throwing an exception or
-  invoking some designated function. We've achieved our goal of detecting and
-  handling arithmetically incorrect behavior - but at what cost? It is a fact
-  that many C++ programmers will find this trade-off unacceptable. So the
-  question arises as to how we might minimize or eliminate this runtime
-  penalty.</para>
+  <para>Up until now, we've mostly focused on detecting when incorrect results
+  are produced and handling these occurrences either by throwing an exception
+  or invoking some designated function. We've achieved our goal of detecting
+  and handling arithmetically incorrect behavior - but at cost of checking
+  many arithmetic operations at runtime. It is a fact that many C++
+  programmers will find this trade-off unacceptable. So the question arises as
+  to how we might minimize or eliminate this runtime penalty.</para>
 
   <para>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
@@ -28,20 +28,21 @@
   Furthermore, it is <emphasis role="bold">absolutely guaranteed that no
   exception will ever be thrown</emphasis>. This is our original goal.</para>
 
-  <para>Now all we need to do is make the program work. There are a couple of
-  ways to achieve this.</para>
+  <para>Now all we need to do is make the program compile. There are a couple
+  of ways to achieve this.</para>
 
   <section id="safe_numerics.eliminate_runtime_penalty.2">
     <title>Using <link linkend="safe_numerics.safe_range">safe_range</link>
     and <link linkend="safe_numerics.safe_literal">safe_literal</link></title>
 
-    <para>Instead of relying on automatic type promotion, we can just create
-    our own types in such a way that we know they won't overflow. In the
-    example below, we presume we know that the values we want to work with
-    fall in the range [-24,82]. So we "know" the program will always result in
-    a correct result. But since we trust no one, and since the program could
-    change and the expressions be replaced with other ones, we'll still use
-    the <link
+    <para>When trying to avoid arithmetic errors of the above type,
+    programmers will select data types which are wide enough to hold values
+    large enough to be certain that results won't overflow, but are not so
+    large as to make the program needlessly inefficient. In the example below,
+    we presume we know that the values we want to work with fall in the range
+    [-24,82]. So we "know" the program will always result in a correct result.
+    But since we trust no one, and since the program could change and the
+    expressions be replaced with other ones, we'll still use the <link
     linkend="safe_numerics.exception_policies.loose_trap_policy"><code>loose_trap_policy</code></link>
     exception policy to verify at compile time that what we "know" to be true
     is in fact true.</para>
@@ -67,7 +68,7 @@
         <listitem>
           <para>Defining constants with <code>safe_signed_literal</code>
           enables the library to correctly anticipate the correct range of the
-          results of arithmetic expressions.</para>
+          results of arithmetic expressions at compile time.</para>
         </listitem>
 
         <listitem>
@@ -115,10 +116,10 @@ z = &lt;signed char&gt;[-24,82] = 77</screen>
           <para>The type of z is defined so that It can hold only values in
           the closed range -24,82. We can assign the sum of x + y because it
           is in the range that <code>z</code> is guaranteed to hold. If the
-          sum were not known at compile time, or it could not be be guaranteed
-          to fall in the range of <code>z</code>, we would get a compile time
-          error due to the fact we are using the
-          <code>loose_trap_policy</code> exception policy.</para>
+          sum could not be be guaranteed to fall in the range of
+          <code>z</code>, we would get a compile time error due to the fact we
+          are using the <code>loose_trap_policy</code> exception
+          policy.</para>
         </listitem>
       </itemizedlist>All this information regarding the range and values of
     variables has been determined at compile time. There is no runtime
@@ -184,7 +185,8 @@ z = &lt;signed char&gt;[-24,82] = 77</screen>
 safe;
 </programlisting></para>
 
-    <para>The promotion rules implemented in the default <code><link
+    <para>The promotion rules for arithmetic operations are implemented in the
+    default <code><link
     linkend="safe_numerics.promotion_policies.native">native</link></code>
     type promotion policy are consistent with those of standard C++</para>
 
@@ -229,11 +231,11 @@ long z = (long)x + (long)y; // can never overflow</programlisting>
         </listitem>
       </itemizedlist></para>
 
-    <para>Using the <link
+    <para>When using the <link
     linkend="safe_numerics.promotion_policies.automatic"><code>automatic</code></link>
-    type promotion policy, given a binary operation, we silently promote the
-    types of the operands to a wider result type so the result cannot
-    overflow. This is a fundamental departure from the C++ Standard
+    type promotion policy, with a given a binary operation, we silently
+    promote the types of the operands to a wider result type so the result
+    cannot overflow. This is a fundamental departure from the C++ Standard
     behavior.</para>
 
     <para>If the interval of the result cannot be guaranteed to fit in the
@@ -299,6 +301,22 @@ x + y = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     goal of zero run time overhead and change the exception policy to <link
     linkend="safe_numerics.exception_policies.default_exception_policy"><code>default_exception_policy</code></link>
     .</para>
+
+    <para>Note that once we use automatic type promotion, our programming
+    language isn't C/C++ anymore. So don't be tempted to so something like the
+    following:</para>
+
+    <programlisting>// DON'T DO THIS !
+#if defined(NDEBUG)
+using safe_t = boost::numeric::safe&lt;
+    int,
+    boost::numeric::automatic, // note use of "automatic" policy!!!
+    boost::numeric::loose_trap_policy
+&gt;;
+#else
+using safe_t = boost::numeric::safe&lt;int&gt;;
+#endif
+</programlisting>
   </section>
 
   <section id="safe_numerics.eliminate_runtime_penalty.3">
@@ -306,7 +324,7 @@ x + y = &lt;long&gt;[-4294967296,4294967294] = 2147483649
 
     <para>For purposes of exposition, we've divided the discussion of how to
     eliminate runtime penalties by the different approaches available. A
-    realistic program would likely include all techniques mentioned above.
+    realistic program could likely include all techniques mentioned above.
     Consider the following:</para>
 
     <programlisting><xi:include href="../../example/example84.cpp"

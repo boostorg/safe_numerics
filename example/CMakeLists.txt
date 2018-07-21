@@ -27,14 +27,13 @@ test_run_pass_example(example7)
 test_run_pass_example(example82)
 test_run_pass_example(example83)
 # test_run_pass_example(example84) # requires console input
-test_run_pass_example(example91)
-test_run_pass_example(example92)
 test_run_pass_example(example10)
+test_run_pass_example(example11)
 test_run_pass_example(example13)
 test_run_pass_example(example15)
 test_run_pass_example(example20)
-
-test_compile_fail_example(example93)
+test_run_pass_example(example92)
+test_run_pass_example(example93)
 
 # end examples targets
 ####################

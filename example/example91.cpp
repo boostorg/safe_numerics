@@ -16,7 +16,7 @@
 
 // use same type promotion as used by the pic compiler
 // see the following comment in motor.c
-// Types: int8,int16,int32=8,16,32bit integers, unsigned by default
+// Types: int8,int16,int32=8,16,32bit integers
 
 using pic16_promotion = boost::numeric::cpp<
     8,  // char

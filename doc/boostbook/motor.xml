@@ -1,79 +1,612 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section>
-  <title>Case Study: Safety Critical Embedded Controller</title>
+<section id="safe_numerics.safety_critical_embedded_controller">
+  <title>Safety Critical Embedded Controller</title>
+
+  <?dbhtml stop-chunking?>
 
   <para>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
   processor that has been selected by the engineers is the <ulink
   url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
-  manufactured by Microchip Corporation. This processor has 32KB of program
-  memory. On a processor this small, it's common to use a mixture of 8, 16,
-  and 32 bit data types in order to conserve memory space and minimize memory
-  footprint and runtime penalty. It's programmed in C.</para>
+  manufactured by <ulink url="http://www.microchip.com">Microchip
+  Corporation</ulink>. This processor has 32KB of program memory. On a
+  processor this small, it's common to use a mixture of 8, 16, and 32 bit data
+  types in order to minimize memory footprint and program run time. The type
+  <code>int</code> has 16 bits. It's programmed in C.</para>
 
-  <para>Requirements and Constraints:<itemizedlist>
-      <listitem>
-        <para>A deterministic algorithm for sending pulses to control a
-        stepper motor.</para>
-      </listitem>
-
-      <listitem>
-        <para>Algorithm must be verifiable.</para>
-      </listitem>
-
-      <listitem>
-        <para>Code must match the algorithm.</para>
-      </listitem>
-
-      <listitem>
-        <para>No user interface available.</para>
-      </listitem>
-
-      <listitem>
-        <para>No user input available.</para>
-      </listitem>
-
-      <listitem>
-        <para>No exceptional conditions such as interrupts permitted.</para>
-      </listitem>
-
-      <listitem>
-        <para>The system has no i/o other than a few pins to control the
-        stepper motor.</para>
-      </listitem>
-
-      <listitem>
-        <para>The system cannot be allowed to move the motor to the wrong
-        position.</para>
-      </listitem>
-    </itemizedlist></para>
-
-  <para>This is a common scenario. The only difference in this case are the
-  extreme consequences associated with violations of the above requirements.
-  We will start making a basic working prototype. This we will enhance in a
-  stepwise fashion until all the above requirements are met.</para>
+  <para>A stepper motor controller emits a pulse which causes the motor to
+  move one step. It seems simple, but in practice it turns out to be quite
+  intricate to get right as one has to time the pulses individually to
+  smoothly accelerate the rotation of the motor until it reaches the correct
+  velocity. Failure to do this will either limit the stepper motor to very low
+  speed or result in skipped steps when the motor is under load. Already, this
+  is turning it to a more complex project than it first seemed. Searching
+  around the net, we find a popular <ulink
+  url="../../example/stepper-motor.pdf">article</ulink> on the operation of
+  stepper motors using simple micro controllers. The algorithm is very well
+  explained and it includes complete <ulink url="../../example/motor.c">code
+  we can test</ulink>. The engineers are still debugging the prototype boards
+  and hope to have them ready before the product actually ships. But this
+  doesn't have to keep us from working on our code.</para>
 
   <section>
-    <title>First Prototype</title>
+    <title>Updating the Code</title>
 
-    <para>The engineers are still debugging the prototype boards and hope to
-    have them ready before the product actually ships. But this doesn't have
-    to keep us from working on our code. Searching around the net, we find a
-    popular <ulink
-    url="../../examples/Generate%20stepper-motor%20speed%20profiles%20in%20real%20time%20%7C%20Embedded.pdf">article</ulink>
-    on the operation of stepper motors using simple micro controllers. The
-    algorithm is very well explains and it includes a complete <ulink
-    url="../../examples/motor.c">code example we can test</ulink>. Starting
-    with the original code we make the following changes:<itemizedlist>
+    <para>Inspecting this <ulink url="../../example/motor.c">code</ulink>, we
+    find that it is written in a dialect of C rather than C itself. At the
+    time this code was written, conforming versions of the C compiler were not
+    available for PIC processors. We want to compile this code on the <ulink
+    url="http://ww1.microchip.com/downloads/en/DeviceDoc/50002053G.pdf">Microchip
+    XC8 compiler</ulink> which, for the most part, is standards conforming. So
+    we made the following minimal changes:</para>
+
+    <para><itemizedlist>
         <listitem>
-          <para>We create a new file "</para>
+          <para>Factor into <ulink
+          url="../../example/motor1.c">motor1.c</ulink> which contains the
+          motor driving code and <ulink
+          url="../../example/motor_test1.c">motor_test1.c</ulink> which tests
+          that code.</para>
         </listitem>
 
         <listitem>
-          <para/>
+          <para>Include header <code>&lt;xc.h&gt;</code> which contains
+          constants for the <ulink
+          url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+          processor</para>
+        </listitem>
+
+        <listitem>
+          <para>Include header <code>&lt;stdint.h&gt;</code> to include
+          standard Fixed width integer types.</para>
+        </listitem>
+
+        <listitem>
+          <para>Include header <code>&lt;stdbool.h&gt;</code> to include
+          keywords true and false in a C program.</para>
+        </listitem>
+
+        <listitem>
+          <para>The original has some anomalies in the names of types. For
+          example, int16 is assumed to be unsigned. This is an artifact of the
+          original C compiler being used. So type names in the code were
+          altered to standard ones while retaining the intent of the original
+          code.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add in missing <code>make16</code> function.</para>
+        </listitem>
+
+        <listitem>
+          <para>Format code to personal taste.</para>
+        </listitem>
+
+        <listitem>
+          <para>Replaced enable_interrupts and disable_interrupts functions
+          with appropriate PIC commands.</para>
         </listitem>
       </itemizedlist></para>
+
+    <para>The resulting program can be checked to be identical to the original
+    but compiles on with the Microchip XC8 compiler. Given a development
+    board, we could hook it up to a stepper motor, download and boot the code
+    and verify that the motor rotates 5 revolutions in each direction with
+    smooth acceleration and deceleration. We don't have such a board yet, but
+    the engineers have promised a working board real soon now.</para>
+  </section>
+
+  <section>
+    <title>Compiling on the Desktop</title>
+
+    <para>Using the target environment to run tests is often very difficult or
+    impossible due to limited resources. So software unit testing for embedded
+    systems is very problematic and often skipped. The C language on our
+    desktop is the same used by the <ulink
+    url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>.
+    So now we can also run and debug the code on our desktop machine. Once our
+    code passes all our tests, we can download the code to the embedded
+    hardware and run the code natively. Here is a program we use on the
+    desktop to do that:</para>
+
+    <para><programlisting>//////////////////////////////////////////////////////////////////
+// example92.cpp
+//
+// Copyright (c) 2015 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+#include &lt;iostream&gt;
+#include &lt;limits&gt;
+#include &lt;boost/integer.hpp&gt;
+
+// *************************** 
+// 1. include headers to support safe integers
+#include "../include/cpp.hpp"
+#include "../include/exception.hpp"
+#include "../include/safe_integer.hpp"
+
+// *************************** 
+// 2. specify a promotion policy to support proper emulation of 
+// PIC types on the desktop
+using pic16_promotion = boost::numeric::cpp&lt;
+    8,  // char      8 bits
+    16, // short     16 bits
+    16, // int       16 bits
+    16, // long      16 bits
+    32  // long long 32 bits
+&gt;;
+
+// 1st step=50ms; max speed=120rpm (based on 1MHz timer, 1.8deg steps)
+// in 24.8 format
+#define C0    (50000 &lt;&lt; 8)
+#define C_MIN  (2500 &lt;&lt; 8)
+static_assert(C0 &lt; 0xffffff, "Largest step too long");
+static_assert(C_MIN &gt; 0, "Smallest step must be greater than zero");
+static_assert(C_MIN &lt; C0, "Smallest step must be smaller than largest step");
+
+// *************************** 
+// 3. define PIC integer type names to be safe integer types of he same size.
+
+template &lt;typename T&gt; // T is char, int, etc data type
+using safe_t = boost::numeric::safe&lt;
+    T,
+    pic16_promotion
+&gt;;
+
+// alias original program's integer types to corresponding PIC safe types
+// In conjunction with the promotion policy above, this will permit us to 
+// guarantee that the resulting program will be free of arithmetic errors 
+// introduced by C expression syntax and type promotion with no runtime penalty
+
+typedef safe_t&lt;int8_t&gt; int8;
+typedef safe_t&lt;int16_t&gt; int16;
+typedef safe_t&lt;int32_t&gt; int32;
+typedef safe_t&lt;uint8_t&gt; uint8;
+typedef safe_t&lt;uint16_t&gt; uint16;
+typedef safe_t&lt;uint32_t&gt; uint32;
+
+// *************************** 
+// 4. emulate PIC features on the desktop
+
+// suppress special keyword used by XC8 compiler
+#define interrupt
+
+// emulate PIC special registers
+uint8 INTCON;
+uint8 CCP1IE;
+uint8 CCP2IE;
+uint8 PORTC;
+uint8 TRISC;
+uint8 T3CON;
+uint8 T1CON;
+
+uint8 CCPR2H;
+uint8 CCPR2L;
+uint8 CCPR1H;
+uint8 CCPR1L;
+uint8 CCP1CON;
+uint8 CCP2CON;
+uint8 TMR1H;
+uint8 TMR1L;
+
+// create type used to map PIC bit names to
+// correct bit in PIC register
+template&lt;typename T, std::int8_t N&gt;
+struct bit {
+    T &amp; m_word;
+    constexpr explicit bit(T &amp; rhs) :
+        m_word(rhs)
+    {}
+    constexpr bit &amp; operator=(int b){
+        if(b != 0)
+            m_word |= (1 &lt;&lt; N);
+        else
+            m_word &amp;= ~(1 &lt;&lt; N);
+        return *this;
+    }
+    constexpr operator int () const {
+        return m_word &gt;&gt; N &amp; 1;
+    }
+};
+
+// define bits for T1CON register
+struct  {
+    bit&lt;uint8, 7&gt; RD16{T1CON};
+    bit&lt;uint8, 5&gt; T1CKPS1{T1CON};
+    bit&lt;uint8, 4&gt; T1CKPS0{T1CON};
+    bit&lt;uint8, 3&gt; T1OSCEN{T1CON};
+    bit&lt;uint8, 2&gt; T1SYNC{T1CON};
+    bit&lt;uint8, 1&gt; TMR1CS{T1CON};
+    bit&lt;uint8, 0&gt; TMR1ON{T1CON};
+} T1CONbits;
+
+// ***************************
+// 5. include the environment independent code we want to test
+#include "motor2.c"
+
+#include &lt;chrono&gt;
+#include &lt;thread&gt;
+
+// round 24.8 format to microseconds
+int32 to_microseconds(uint32 t){
+    return (t + 128) / 256;
+}
+// move motor to the indicated target position in steps
+void test(int16 m){
+    std::cout &lt;&lt; "move motor to " &lt;&lt; m &lt;&lt; '\n';
+    motor_run(m);
+    std::cout
+    &lt;&lt; "step #" &lt;&lt; ' '
+    &lt;&lt; "delay(us)(24.8)" &lt;&lt; ' '
+    &lt;&lt; "delay(us)" &lt;&lt; ' '
+    &lt;&lt; "CCPR" &lt;&lt; " "
+    &lt;&lt; "motor position" &lt;&lt; '\n';
+    do{
+        std::this_thread::sleep_for(std::chrono::microseconds(to_microseconds(c)));
+        uint32 last_c = c;
+        uint32 last_ccpr = ccpr;
+        isr_motor_step();
+        std::cout
+        &lt;&lt; step_no &lt;&lt; ' '
+        &lt;&lt; last_c &lt;&lt; ' '
+        &lt;&lt; to_microseconds(last_c) &lt;&lt; ' '
+        &lt;&lt; std::hex &lt;&lt; last_ccpr &lt;&lt; std::dec &lt;&lt; ' '
+        &lt;&lt; motor_pos &lt;&lt; '\n';
+    }while(run_flg);
+}
+
+int main(){
+    std::cout &lt;&lt; "start test\n";
+    try{
+        initialize();
+        // move to the left before zero position
+        test(-10);
+        // move motor to position 200
+        test(200);
+        // move motor to position 200 again! Should result in no movement.
+        test(200);
+        // move motor to position 1000
+        test(1000);
+        // move back to position 0
+        test(0);
+    }
+    catch(std::exception &amp; e){
+        std::cout &lt;&lt; e.what() &lt;&lt; '\n';
+        return 1;
+    }
+    catch(...){
+        std::cout &lt;&lt; "test interrupted\n";
+        return 1;
+    }
+    std::cout &lt;&lt; "end test\n";
+    return 0;
+}
+</programlisting></para>
+
+    <para>Here are the essential features of the desktop version of the test
+    program.<orderedlist>
+        <listitem>
+          <para>Include headers required to support safe integers.</para>
+        </listitem>
+
+        <listitem>
+          <para>Specify a <link
+          linkend="safe_numerics.promotion_policy">promotion policy</link> to
+          support proper emulation of PIC types on the desktop.</para>
+
+          <para>The C language standard doesn't specify sizes for primitive
+          data types like <code>int</code>. They can and do differ between
+          environments. Hence, the characterization of C/C++ as "portable"
+          languages is not strictly true. Here we choose aliases for data
+          types so that they can be defined to be the same in both
+          environments. But this is not enough to emulate the <ulink
+          url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+          on the desktop. The problem is that compilers implicitly convert
+          arguments of C expressions to some common type before performing
+          arithmetic operations. Often, this common type is the native
+          <code>int</code> and the size of this native type is different in
+          the desktop and embedded environment. Thus, many arithmetic results
+          would be different in the two environments.</para>
+
+          <para>But now we can specify our own implicit promotion rules for
+          test programs on the development platform that are identical to
+          those on the target environment! So unit testing executed in the
+          development environment can now provide results relevant to the
+          target environment.</para>
+        </listitem>
+
+        <listitem>
+          <para>Define PIC integer type aliases to be safe integer types of he
+          same size.</para>
+
+          <para>Code tested in the development environment will use safe
+          numerics to detect errors. We need these aliases to permit the code
+          in <ulink url="../../example/motor2.c">motor2.c</ulink> to be tested
+          in the desktop environment. The same code run in the target system
+          without change.</para>
+        </listitem>
+
+        <listitem>
+          <para>Emulate PIC features on the desktop.</para>
+
+          <para>The PIC processor, in common with most micro controllers these
+          days, includes a myriad of special purpose peripherals to handle
+          things like interrupts, USB, timers, SPI bus, I^2C bus, etc.. These
+          peripherals are configured using special 8 bit words in reserved
+          memory locations. Configuration consists of setting particular bits
+          in these words. To facilitate configuration operations, the XC8
+          compiler includes a special syntax for setting and accessing bits in
+          these locations. One of our goals is to permit the testing of the
+          identical code with our desktop C++ compiler as will run on the
+          micro controller. To realize this goal, we create some C++ code
+          which implements the XC8 C syntax for setting bits in particular
+          memory locations.</para>
+        </listitem>
+
+        <listitem>
+          <para>include <ulink
+          url="../../example/motor1.c">motor1.c</ulink></para>
+        </listitem>
+      </orderedlist></para>
+
+    <para>Our first attempt to run this program fails by throwing an exception
+    from <ulink url="../../example/motor1.c">motor1.c</ulink> indicating that
+    the code attempts to left shift a negative number at the
+    statements:</para>
+
+    <programlisting>denom = ((step_no - move) &lt;&lt; 2) + 1;</programlisting>
+
+    <para>According to the C/C++ standards this is implementation defined
+    behavior. But in practice with all modern platforms (as far as I know),
+    this will be equivalent to a multiplication by 4. Clearly the intent of
+    the original author is to "micro optimize" the operation by substituting a
+    cheap left shift for a potentially expensive integer multiplication. But
+    on all modern compilers, this substitution will be performed automatically
+    by the compiler's optimizer. So we have two alternatives here:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Just ignore the issue.</para>
+
+        <para>This will work when the code is run on the PIC. But, in order to
+        permit testing on the desktop, we need to inhibit the error detection
+        in that environment. With safe numerics, error handling is determined
+        by specifying an <link
+        linkend="safe_numerics.exception_policy">exception policy</link>. In
+        this example, we've used the default exception policy which traps
+        implementation defined behavior. To ignore this kind of behavior we
+        could define our own custom <link
+        linkend="safe_numerics.exception_policy">exception
+        policy</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>change the <code>&lt;&lt; 2</code> to <code>* 4</code>. This
+        will produce the intended result in an unambiguous, portable way. For
+        all known compilers, this change should not affect runtime performance
+        in any way. It will result in unambiguously portable code.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Of these alternatives, the second seems simplest and more definitive
+    fix so we'll choose that one. We also decide to make a couple of minor
+    changes to simplify the code and make mapping of the algorithm in the
+    article to the code more transparent. With these changes, our test program
+    runs to the end with no errors or exceptions. In addition, I made a minor
+    change which simplifies the handling of floating point values in format of
+    24.8. This results in <ulink url="../../example/motor2.c">motor2.c</ulink>
+    which makes the above changes. It should be easy to see that these two
+    versions are otherwise identical.</para>
+  </section>
+
+  <section>
+    <title>Trapping Errors at Compile Time</title>
+
+    <para>We can test the same code we're going to load into our target system
+    on the desktop. We could build and execute a complete unit test suite. We
+    could capture the output and graph it. We have the ability to make are
+    code much more likely to be bug free. But:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>This system detects errors and exceptions on the test machine -
+        but it fails to address and detect such problems on the target system.
+        Since the target system is compiles only C code, we can't use the
+        exception/error facilities of this library at runtime.</para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="https://en.wikiquote.org/wiki/Edsger_W._Dijkstra">Testing shows
+        the presence, not the absence of bugs</ulink>. Can we not prove that
+        all integer arithmetic is correct?</para>
+      </listitem>
+
+      <listitem>
+        <para>For at least some operations on safe integers there is runtime
+        cost in checking for errors. In this example, this is not really a
+        problem as the safe integer code is not included when the code is run
+        on the target - it's only a C compiler after all. But more generally,
+        using safe integers might incur an undesired runtime cost.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Can we catch all potential problems at compiler time and therefore
+    eliminate all runtime cost?</para>
+
+    <para>Our first attempt consists of simply changing default exception
+    policy from the default runtime checking to the compile time trapping one.
+    Then we redefine the aliases for the types used by the PIC to use this
+    exception policy.</para>
+
+    <programlisting>// generate compile time errors if operation could fail 
+using trap_policy = boost::numeric::loose_trap_policy;
+...
+typedef safe_t&lt;int8_t, trap_policy&gt; int8;
+...
+</programlisting>
+
+    <para>When we compile now, any expressions which could possibly fail will
+    be flagged as syntax errors. This occurs 11 times when compiling the
+    <ulink url="../../example/motor2.c">motor2.c</ulink> program. This is
+    fewer than one might expect. To understand why, consider the following
+    example:</para>
+
+    <para><programlisting>safe&lt;std::int8_t&gt; x, y;
+...
+safe&lt;std::int16_t&gt; z = x + y;
+</programlisting>C promotion rules and arithmetic are such that the z will
+    always contain an arithmetically correct result regardless of what values
+    are assigned to x and y. Hence there is no need for any kind of checking
+    of the arithmetic or result. The Safe Numerics library uses compile time
+    range arithmetic, C++ template multiprogramming and other techniques to
+    restrict invocation of checking code to only those operations which could
+    possible fail. So the above code incurs no runtime overhead.</para>
+
+    <para>Now we have 11 cases to consider. Our goal is to modify the program
+    so that this number of cases is reduced - hopefully to zero. Initially I
+    wanted to just make a few tweaks in the versions of example92.c, motor2.c
+    and motor_test2.c above without actually having to understand the code. It
+    turns out that one needs to carefully consider what various types and
+    variables are used for. This can be a good thing or a bad thing depending
+    on one's circumstances, goals and personality. The programs above evolved
+    into <ulink url="../../example/example93.c">example93.c</ulink>, <ulink
+    url="../../example/motor3.c">motor3.c</ulink> and <ulink
+    url="../../example/motor_test3.c">motor_test3.c</ulink>. First we'll look
+    at example93.c:</para>
+
+    <programlisting><xi:include href="../../example/example93.cpp"
+        parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
+
+    <para>Here are the changes we've made int the desktop test
+    program<orderedlist>
+        <listitem>
+          <para>Specify exception policies so we will generate a compile time
+          error whenever an operation MIGHT fail. When creating safe types,
+          we'll now specify which type of checking, compile time or runtime,
+          we want done.</para>
+        </listitem>
+
+        <listitem>
+          <para>Create a macro named "literal" an integral value that can be
+          evaluated at compile time.</para>
+
+          <para>"literal" values are instances of safe numeric types which are
+          determined at compile time. They are <code>constexpr</code> values.
+          When used along with other instances of safe numeric types, the
+          compiler can calculate the range of the result and verify whether or
+          not it can be contained in the result type. To create "literal"
+          types we use the macro <code><link
+          linkend="safe_numerics.safe_literal.make_safe_literal">make_safe_literal</link>(n,
+          p, e)</code> where n is the value, p is the <link
+          linkend="safe_numerics.promotion_policy">promotion policy</link> and
+          e is the <link linkend="safe_numerics.exception_policy">exception
+          policy</link>.</para>
+
+          <para>When all the values in an expression are safe numeric values,
+          the compiler can calculate the narrowest range of the result. If all
+          the values in this range can be represented by the result type, then
+          it can be guaranteed that an invalid result cannot be produced at
+          runtime and no runtime checking is required.</para>
+
+          <para>Make sure that all literal values are x are replaced with the
+          macro invocation "literal(x)".</para>
+        </listitem>
+
+        <listitem>
+          <para>Create special ranged types for the motor program. These will
+          guarantee that values are in the expected ranges and permit compile
+          time determination of when exceptional conditions might occur. In
+          this example we create a special type c_t to the width of the pulse
+          applied to the motor. Engineering constraints (motor load inertia)
+          limit this value to the range of C0 to C_MIN. So we create a type
+          with those limits. By using limits no larger than necessary, we
+          supply enough information for the compiler to determine that the
+          result of a calculation cannot fall outside the range of the result
+          type. So less runtime checking is required. In addition, we get
+          extra verification at compile time that values are in reasonable
+          ranges for the quantity being modeled.</para>
+
+          <para>We call these types "strong types".</para>
+        </listitem>
+      </orderedlist></para>
+
+    <para>And we've made changes consistent with the above to <ulink
+    url="../../example/motor3.c">motor3.c</ulink> as well<programlisting><xi:include
+          href="../../example/motor3.c" parse="text"
+          xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><orderedlist>
+        <listitem>
+          <para>Define variables using strong types</para>
+        </listitem>
+
+        <listitem>
+          <para>Surround all literal values with the "literal" keyword</para>
+        </listitem>
+
+        <listitem>
+          <para>Re-factor code to make it easier to understand and compare
+          with the algorithm as described in the original <ulink
+          url="../../example/stepper-motor.pdf">article</ulink>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Rewrite interrupt handler in a way which mirrors the original
+          description of the algorithm and minimizes usage of state variable,
+          accumulated values, etc.</para>
+        </listitem>
+
+        <listitem>
+          <para>Distinguish all the statements which might invoke a runtime
+          exception with a comment. There are 12 such instances.</para>
+        </listitem>
+      </orderedlist></para>
+
+    <para>Finally we make a couple minor changes in <ulink
+    url="../../example/motor_test3.c">motor_test3.c</ulink> to verify that we
+    can compile the exact same version of motor3.c on the PIC as well as on
+    the desktop.</para>
+  </section>
+
+  <section>
+    <title>Summary</title>
+
+    <para>The intent of this case study is to show that the Safe Numerics
+    Library can be an essential tool in validating the correctness of C/C++
+    programs in all environments - including the most restricted.<itemizedlist>
+        <listitem>
+          <para>We started with a program written for a tiny micro controller
+          for controlling the acceleration and deceleration of a stepper
+          motor. The algorithm for doing this is very non-trivial and
+          difficult prove that it is correct.</para>
+        </listitem>
+
+        <listitem>
+          <para>We used the type promotion policies of the Safe Numerics
+          Library to test and validate this algorithm on the desk top. The
+          tested code is also compiled for the target micro controller.</para>
+        </listitem>
+
+        <listitem>
+          <para>We used <emphasis>strong typing</emphasis> features of Safe
+          Numerics to check that all types hold the values expected and invoke
+          no invalid implicit conversions. Again the tested code is compiled
+          for the target processor.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>What we failed to do is to create a version of the program which
+    uses the type system to prove that no results can be invalid. I turns out
+    that states such as</para>
+
+    <programlisting>++i;
+c = f(c);</programlisting>
+
+    <para>can't be proved not to overflow with this system. So we're left with
+    having to depend upon exhaustive testing.</para>
   </section>
 </section>

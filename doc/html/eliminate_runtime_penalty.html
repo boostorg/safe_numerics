@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
-<link rel="up" href="index.html" title="Case Studies">
-<link rel="prev" href="index.html" title="Case Studies">
+<link rel="up" href="index.html" title="Safe Numerics">
+<link rel="prev" href="tutorial/8.html" title="Programming by Contract is Too Slow">
 <link rel="next" href="eliminate_runtime_penalty/2.html" title="Using safe_range and safe_literal">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,24 +15,24 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="tutorial/8.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="safe_numerics.eliminate_runtime_penalty"></a>Eliminating Runtime Penalty</h3></div></div></div>
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="safe_numerics.eliminate_runtime_penalty"></a>Eliminating Runtime Penalty</h2></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="eliminate_runtime_penalty/2.html">Using safe_range
     and safe_literal</a></span></dt>
 <dt><span class="section"><a href="eliminate_runtime_penalty/1.html">Using Automatic Type Promotion</a></span></dt>
 <dt><span class="section"><a href="eliminate_runtime_penalty/3.html">Mixing Approaches</a></span></dt>
 </dl></div>
-<p>Up until now, we've focused on detecting when incorrect results are
-  produced and handling these occurrences either by throwing an exception or
-  invoking some designated function. We've achieved our goal of detecting and
-  handling arithmetically incorrect behavior - but at what cost? It is a fact
-  that many C++ programmers will find this trade-off unacceptable. So the
-  question arises as to how we might minimize or eliminate this runtime
-  penalty.</p>
+<p>Up until now, we've mostly focused on detecting when incorrect results
+  are produced and handling these occurrences either by throwing an exception
+  or invoking some designated function. We've achieved our goal of detecting
+  and handling arithmetically incorrect behavior - but at cost of checking
+  many arithmetic operations at runtime. It is a fact that many C++
+  programmers will find this trade-off unacceptable. So the question arises as
+  to how we might minimize or eliminate this runtime penalty.</p>
 <p>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
   special exception policy: <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>.</p>
@@ -62,18 +62,18 @@
   arithmetic expression</strong></span> will yield incorrect results</strong></span>.
   Furthermore, it is <span class="bold"><strong>absolutely guaranteed that no
   exception will ever be thrown</strong></span>. This is our original goal.</p>
-<p>Now all we need to do is make the program work. There are a couple of
-  ways to achieve this.</p>
+<p>Now all we need to do is make the program compile. There are a couple
+  of ways to achieve this.</p>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="index.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="tutorial/8.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

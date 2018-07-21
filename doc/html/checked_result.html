@@ -21,18 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safenumerics.checked_result"></a>checked_result&lt;R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_result.html#idm100778992208">Description</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778980336">Notation</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778959616">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778951488">Model of</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778949776">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778901568">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778843536">See Also</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm100778841824">Header</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322731552">Description</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322719680">Notation</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322698992">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322690864">Model of</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322689152">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322640944">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322582912">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm427322581200">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778992208"></a>Description</h4></div></div></div>
+<a name="idm427322731552"></a>Description</h4></div></div></div>
 <p>checked_result is a special kind of variant class designed to hold
     the result of some operation. It can hold either the result of the
     operation or information on why the operation failed to produce a valid
@@ -60,7 +60,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778980336"></a>Notation</h4></div></div></div>
+<a name="idm427322719680"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -108,7 +108,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778959616"></a>Template Parameters</h4></div></div></div>
+<a name="idm427322698992"></a>Template Parameters</h4></div></div></div>
 <p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -127,12 +127,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778951488"></a>Model of</h4></div></div></div>
+<a name="idm427322690864"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778949776"></a>Valid Expressions</h4></div></div></div>
+<a name="idm427322689152"></a>Valid Expressions</h4></div></div></div>
 <p>All expressions are <code class="computeroutput">constexpr</code>.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -230,7 +230,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778901568"></a>Example of use</h4></div></div></div>
+<a name="idm427322640944"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
@@ -259,12 +259,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778843536"></a>See Also</h4></div></div></div>
+<a name="idm427322582912"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm100778841824"></a>Header</h4></div></div></div>
+<a name="idm427322581200"></a>Header</h4></div></div></div>
 <p><a href="../include/checked_result.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;</code></a></p>
 <p><a href="../include/checked_result_operations.hpp" target="_top"><code class="computeroutput">#include
@@ -274,7 +274,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

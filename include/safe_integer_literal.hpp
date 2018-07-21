@@ -1,5 +1,5 @@
-#ifndef BOOST_NUMERIC_SAFE_LITERAL_HPP
-#define BOOST_NUMERIC_SAFE_LITERAL_HPP
+#ifndef BOOST_NUMERIC_SAFE_INTEGER_LITERAL_HPP
+#define BOOST_NUMERIC_SAFE_INTEGER_LITERAL_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -15,6 +15,7 @@
 #include <cstdint> // for intmax_t/uintmax_t
 #include <iosfwd>
 #include <type_traits> // conditional, enable_if
+#include <boost/mp11/utility.hpp>
 
 #include "utility.hpp"
 #include "safe_integer.hpp"
@@ -182,29 +183,39 @@ using safe_unsigned_literal = safe_literal_impl<
     E
 >;
 
-#if 0
-// the following is what I'd like to do to deal with the
-// annoying signed/unsigned selection.  Unfortunately, for now
-// the parameter N is not known to be constexpr so one gets
-// a syntax error when trying to use this.  Leave this in as
-// a reminder that I spent a lot of time and failed to
-// find a solution
 template<
-    typename T,
+    class T,
+    T N,
     class P = void,
-    class E = void
->
-auto constexpr make_safe_literal(T N){
-    return boost::mpl::eval_if_c<
+    class E = void,
+    typename std::enable_if<
         std::is_signed<T>::value,
-        safe_signed_literal<N, P, E>,
-        safe_signed_literal<N, P, E>
-    >::type();
+        int
+    >::type = 0
+>
+constexpr auto make_safe_literal_impl() {
+    return boost::numeric::safe_signed_literal<N, P, E>();
 }
-#endif
+
+template<
+    class T,
+    T N,
+    class P = void,
+    class E = void,
+    typename std::enable_if<
+        ! std::is_signed<T>::value,
+        int
+    >::type = 0
+>
+constexpr auto make_safe_literal_impl() {
+    return boost::numeric::safe_unsigned_literal<N, P, E>();
+}
 
 } // numeric
 } // boost
+
+#define make_safe_literal(n, P, E)  \
+    boost::numeric::make_safe_literal_impl<decltype(n), n, P, E>()
 
 /////////////////////////////////////////////////////////////////
 // numeric limits for safe_literal etc.
@@ -237,4 +248,4 @@ public:
 
 } // std
 
-#endif // BOOST_NUMERIC_SAFE_LITERAL_HPP
+#endif // BOOST_NUMERIC_SAFE_INTEGER_LITERAL_HPP

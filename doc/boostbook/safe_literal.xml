@@ -18,6 +18,20 @@
   </section>
 
   <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+
+    <para><link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+
+    <para>This type inherits all the notation, associated types and template
+    parameters and valid expressions of <link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> types. The
+    following specify additional features of this type.</para>
+  </section>
+
+  <section>
     <title>Associated Types</title>
 
     <informaltable>
@@ -100,30 +114,19 @@
   </section>
 
   <section>
-    <title>Model of</title>
-
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
-
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
-
-    <para><ulink
-    url="http://en.cppreference.com/w/cpp/concept/LiteralType">LiteralType</ulink></para>
-  </section>
-
-  <section>
     <title>Inherited Valid Expressions</title>
 
     <para>safe literal types are immutable. Hence they only inherit those
     valid expressions which don't change the value. This excludes assignment,
     increment, and decrement and all unary operators except unary -, + and ~.
-    Other than that, they can be used anywhere a SafeNumeric type can be used.
-    Note that the default promotion and exception policies are void. This is
-    usually convenient since when a safe literal is used in a binary
+    Other than that, they can be used anywhere a <link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type can
+    be used. Note that the default promotion and exception policies are void.
+    This is usually convenient since when a safe literal is used in a binary
     operation, this will inherit the policies of the other type. On the other
     hand, this can be inconvenient when operands of a binary expression are
     both safe literals. This will fail to compile since there are no
-    designated promotion and exception policies. They way to address this to
+    designated promotion and exception policies. The way to address this to
     assign specific policies as in this example.</para>
 
     <para><programlisting>template&lt;typename T&gt;
@@ -136,13 +139,14 @@ constexpr compile_time_value&lt;0&gt; y;
     
 std::cout &lt;&lt; x &lt;&lt; '\n';
 
-// all the following statements should fail to compile
+// all the following statements should fail to compile because there are 
+// no promotion and exception policies specified.
 constexpr safe&lt;int&gt; z = x / y;
 </programlisting></para>
   </section>
 
   <section>
-    <title>New Valid Expression</title>
+    <title>Valid Expression</title>
 
     <para><informaltable>
         <tgroup cols="3">
@@ -259,6 +263,14 @@ constexpr safe&lt;int&gt; z = x / y;
 
 constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
 </programlisting>
+  </section>
+
+  <section id="safe_numerics.safe_literal.make_safe_literal">
+    <title><code>make_safe_literal(n, PP, EP) </code></title>
+
+    <para>This is a macro which returns an instance of a safe literal type.
+    This instance will hold the value n. The type of the value returned will
+    be the smallest safe type which can hold the value <code>n</code>.</para>
   </section>
 
   <section>

@@ -785,9 +785,9 @@ constexpr inline operator<<(
         //{
             // u == ...
             3, // 0,                                            // less_than_min,
-            7, // t >> -u,                                      // less_than_zero,
+            7, // t << -u,                                      // less_than_zero,
             5, // t,                                            // zero,
-            8, // t >> u                                        // greater_than_zero,
+            8, // t << u                                        // greater_than_zero,
             9, // safe_numerics_error::positive_overflow_error, // greater than max,
             1, // safe_numerics_error::range_error,             // indeterminate,
         //},

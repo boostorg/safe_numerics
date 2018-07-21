@@ -15,6 +15,20 @@
   </section>
 
   <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+
+    <para><link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+
+    <para>This type inherits all the notation, associated types and template
+    parameters and valid expressions of <link
+    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> types. The
+    following specify additional features of this type. </para>
+  </section>
+
+  <section>
     <title>Notation</title>
 
     <informaltable>
@@ -128,15 +142,6 @@
     </informaltable>
 
     <para>See examples below.</para>
-  </section>
-
-  <section>
-    <title>Model of</title>
-
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
-
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
   </section>
 
   <section>

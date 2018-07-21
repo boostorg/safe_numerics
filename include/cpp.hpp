@@ -70,12 +70,6 @@ public:
         >::type >::type >::type >::type >::type;
 
     // section 4.5 integral promotions
-    template<class T>
-    using integral_promotion = typename std::conditional<
-        (rank<T>::value < rank<local_int_type>::value),
-        local_int_type,
-        T
-    >::type;
 
    // convert smaller of two types to the size of the larger
     template<class T, class U>
@@ -84,6 +78,19 @@ public:
         U,
         T
     >::type;
+
+    template<class T, class U>
+    using copy_sign = typename std::conditional<
+        std::is_signed<U>::value,
+        typename std::make_signed<T>::type,
+        typename std::make_unsigned<T>::type
+    >::type;
+
+    template<class T>
+    using integral_promotion = copy_sign<
+        higher_ranked_type<local_int_type, T>,
+        T
+    >;
 
     // note presumption that T & U don't have he same sign
     // if that's not true, these won't work
@@ -118,26 +125,27 @@ public:
         // clause 2 - otherwise if the rank of he unsigned type exceeds
         // the rank of the of the signed type
         typename std::conditional<
-            rank< select_unsigned<T, U>>::value
+            rank<select_unsigned<T, U>>::value
             >= rank< select_signed<T, U>>::value,
             // use unsigned type
             select_unsigned<T, U>,
         // clause 3 - otherwise if the type of the signed integer type can
         // represent all the values of the unsigned type
         typename std::conditional<
-            std::numeric_limits< select_signed<T, U> >::digits >=
-            std::numeric_limits< select_unsigned<T, U> >::digits,
+            std::numeric_limits< select_signed<T, U>>::digits >=
+            std::numeric_limits< select_unsigned<T, U>>::digits,
             // use signed type
             select_signed<T, U>,
         // clause 4 - otherwise use unsigned version of the signed type
-            typename std::make_signed< select_signed<T, U> >
-        >::type >::type >::type >::type;
+            std::make_signed< select_signed<T, U>>
+        >::type >::type >::type
+    >;
 
     template<typename T, typename U>
-    using result_type = usual_arithmetic_conversions<
+    using result_type = typename usual_arithmetic_conversions<
         integral_promotion<typename base_type<T>::type>,
         integral_promotion<typename base_type<U>::type>
-    >;
+    >::type;
 public:
     template<typename T, typename U>
     struct addition_result {

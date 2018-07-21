@@ -400,104 +400,20 @@ public:
     ///////////////////////////////////////////////////////////////////////
     template<typename T, typename U>
     struct bitwise_and_result {
-        #if 0
-        static const unsigned bits = std::min(
-            std::initializer_list<unsigned>{
-                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
-            }
-        );
-
-        static const unsigned bitsx = std::min(
-            bits,
-            64u
-        );
-        static_assert(bitsx <= 64, "too many bits");
-        using type = typename std::conditional<
-            std::numeric_limits<
-                decltype(
-                    typename base_type<T>::type()
-                    ^ typename base_type<U>::type()
-                )
-            >::is_signed,
-            // result is signed
-            typename boost::int_t<bitsx>::least,
-            // otherwise result is unsigned
-            typename boost::uint_t<bitsx>::least
-        >::type;
-        #endif
         using type = decltype(
             typename base_type<T>::type()
-            ^ typename base_type<U>::type()
+            & typename base_type<U>::type()
         );
     };
     template<typename T, typename U>
     struct bitwise_or_result {
-        #if 0
-        static const unsigned bits = std::max(
-            std::initializer_list<unsigned>{
-                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
-            }
-        );
-
-        static const unsigned bitsx = std::min(
-            bits,
-            64u
-        );
-        static_assert(bitsx <= 64, "too many bits");
-        using type = typename std::conditional<
-            std::numeric_limits<
-                decltype(
-                    typename base_type<T>::type()
-                    ^ typename base_type<U>::type()
-                )
-            >::is_signed,
-            // result is signed
-            typename boost::int_t<bitsx>::least,
-            // otherwise result is unsigned
-            typename boost::uint_t<bitsx>::least
-        >::type;
-        #endif
         using type = decltype(
             typename base_type<T>::type()
-            ^ typename base_type<U>::type()
+            | typename base_type<U>::type()
         );
     };
     template<typename T, typename U>
     struct bitwise_xor_result {
-        #if 0
-        static const unsigned bits = std::max(
-            std::initializer_list<unsigned>{
-                    utility::significant_bits(base_value(std::numeric_limits<T>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::min())),
-                    utility::significant_bits(base_value(std::numeric_limits<T>::max())),
-                    utility::significant_bits(base_value(std::numeric_limits<U>::max()))
-            }
-        );
-
-        static const unsigned bitsx = std::min(
-            bits,
-            64u
-        );
-        static_assert(bitsx <= 64, "too many bits");
-        using type = typename std::conditional<
-            std::numeric_limits<
-                decltype(
-                    typename base_type<T>::type()
-                    ^ typename base_type<U>::type()
-                )
-            >::is_signed,
-            // result is signed
-            typename boost::int_t<bitsx>::least,
-            // otherwise result is unsigned
-            typename boost::uint_t<bitsx>::least
-        >::type;
-        #endif
         using type = decltype(
             typename base_type<T>::type()
             ^ typename base_type<U>::type()

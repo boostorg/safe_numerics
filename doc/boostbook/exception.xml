@@ -15,15 +15,15 @@
     colloquial sense of a anomaly, irregularity, deviation, special case,
     isolated example, peculiarity, abnormality, oddity; misfit, aberration or
     out of the ordinary occurrence. This concept of "exception" is more
-    complex that one would thing and hence is not manifested by a single
+    complex that one would think and hence is not manifested by a single
     simple type. A small number of types work together to implement this
     concept within the library.</para>
 
     <para>We've leveraged on the <ulink
     url="http://en.cppreference.com/w/cpp/error/error_code">std::error_code</ulink>
     which is part of the standard library. We don't use all the facilities
-    that it offers but it's not an exact match, but it's useful for our
-    purposes.</para>
+    that it offers so it's not an exact match, but it's useful and works for
+    our purposes.</para>
   </section>
 
   <section id="safe_numerics.safe_numerics_error">

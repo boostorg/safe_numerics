@@ -18,7 +18,6 @@ template<std::uintmax_t N>
 using compile_time_value = safe_unsigned_literal<N, native, loose_trap_policy>;
 
 int main(){
-
     constexpr const compile_time_value<1000> x;
     constexpr const compile_time_value<1> y;
 
@@ -60,4 +59,6 @@ int main(){
     static_assert(0 == minus_x0, "0 == -x where x == 0");
 
     constexpr auto not_x = ~x;
+
+    return 0;
 }

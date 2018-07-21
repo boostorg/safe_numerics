@@ -152,8 +152,7 @@ dispatch&lt;boost::numeric::loose_exception_policy&gt;(
 
     <itemizedlist>
       <listitem>
-        <para><code
-        id="safe_numerics.exception_policies.loose_exception_policy">boost::numeric::loose_exception_policy</code></para>
+        <para><code id="">boost::numeric::loose_exception_policy</code></para>
 
         <para>Throw on arithmetic errors, ignore other errors. Some
         applications ignore these issues and still work and we don't want to

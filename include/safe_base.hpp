@@ -291,7 +291,7 @@ public:
         return old_t;
     }
     // non mutating unary operators
-    constexpr safe_base & operator+() const { // unary plus
+    constexpr auto operator+() const { // unary plus
         return *this;
     }
     // after much consideration, I've permited the resulting value of a unary

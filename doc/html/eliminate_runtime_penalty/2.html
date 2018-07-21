@@ -18,17 +18,18 @@
 <a accesskey="p" href="../eliminate_runtime_penalty.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="1.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
-<div class="titlepage"><div><div><h4 class="title">
+<div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.eliminate_runtime_penalty.2"></a>Using <a class="link" href="safe_range.html" title="safe_signed_range&lt;MIN, MAX, PP, EP&gt; and safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;">safe_range</a>
     and <a class="link" href="safe_literal.html" title="safe_signed_literal&lt;Value, PP , EP&gt; and safe_unsigned_literal&lt;Value, PP, EP&gt;">safe_literal</a>
-</h4></div></div></div>
-<p>Instead of relying on automatic type promotion, we can just create
-    our own types in such a way that we know they won't overflow. In the
-    example below, we presume we know that the values we want to work with
-    fall in the range [-24,82]. So we "know" the program will always result in
-    a correct result. But since we trust no one, and since the program could
-    change and the expressions be replaced with other ones, we'll still use
-    the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
+</h3></div></div></div>
+<p>When trying to avoid arithmetic errors of the above type,
+    programmers will select data types which are wide enough to hold values
+    large enough to be certain that results won't overflow, but are not so
+    large as to make the program needlessly inefficient. In the example below,
+    we presume we know that the values we want to work with fall in the range
+    [-24,82]. So we "know" the program will always result in a correct result.
+    But since we trust no one, and since the program could change and the
+    expressions be replaced with other ones, we'll still use the <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>
     exception policy to verify at compile time that what we "know" to be true
     is in fact true.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
@@ -63,7 +64,7 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">constexpr</span> <span class="keyword">const</span> <span class="identifier">const_safe_t</span><span class="special">&lt;</span><span class="number">67</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-    <span class="keyword">constexpr</span> <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
+    <span class="keyword">const</span> <span class="identifier">safe_t</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"x + y = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"z = "</span> <span class="special">&lt;&lt;</span> <span class="identifier">safe_format</span><span class="special">(</span><span class="identifier">z</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
@@ -80,7 +81,7 @@
           does.</p></li>
 <li class="listitem"><p>Defining constants with <code class="computeroutput">safe_signed_literal</code>
           enables the library to correctly anticipate the correct range of the
-          results of arithmetic expressions.</p></li>
+          results of arithmetic expressions at compile time.</p></li>
 <li class="listitem"><p>The usage of <code class="computeroutput"><a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a></code>
           will mean that any assignment to z which could be outside its legal
           range will result in a compile time error.</p></li>
@@ -110,10 +111,10 @@ z = &lt;signed char&gt;[-24,82] = 77</pre>
 <li class="listitem"><p>The type of z is defined so that It can hold only values in
           the closed range -24,82. We can assign the sum of x + y because it
           is in the range that <code class="computeroutput">z</code> is guaranteed to hold. If the
-          sum were not known at compile time, or it could not be be guaranteed
-          to fall in the range of <code class="computeroutput">z</code>, we would get a compile time
-          error due to the fact we are using the
-          <code class="computeroutput">loose_trap_policy</code> exception policy.</p></li>
+          sum could not be be guaranteed to fall in the range of
+          <code class="computeroutput">z</code>, we would get a compile time error due to the fact we
+          are using the <code class="computeroutput">loose_trap_policy</code> exception
+          policy.</p></li>
 </ul></div>
 <p>All this information regarding the range and values of
     variables has been determined at compile time. There is no runtime
@@ -128,7 +129,7 @@ z = &lt;signed char&gt;[-24,82] = 77</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

@@ -2,7 +2,7 @@
 #include <limits>
 
 #include <boost/rational.hpp>
-#include <safe_integer.hpp>
+#include "../include/safe_integer.hpp"
 
 int main(int, const char *[]){
     // simple demo of rational library

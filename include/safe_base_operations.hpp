@@ -31,7 +31,6 @@
 
 #include "interval.hpp"
 #include "utility.hpp"
-#include "safe_integer_literal.hpp"
 
 namespace boost {
 namespace numeric {
@@ -1117,6 +1116,8 @@ private:
 
     // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
+    
+    using r_type = checked_result<result_base_type>;
 
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
@@ -1132,7 +1133,6 @@ private:
         return r;
     }
 
-    using r_type = checked_result<result_base_type>;
     using r_interval_type = interval<r_type>;
 
     constexpr static r_interval_type r_interval(){
@@ -1147,7 +1147,7 @@ private:
         };
         return (t_interval << u_interval);
     }
-    
+
     struct range {
         static constexpr const r_interval_type i = r_interval();
         using type =

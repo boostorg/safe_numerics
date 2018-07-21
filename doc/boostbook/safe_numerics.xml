@@ -13,7 +13,7 @@
     </author>
 
     <copyright>
-      <year>2012</year>
+      <year>2012-2018</year>
 
       <holder>Robert Ramey</holder>
     </copyright>
@@ -34,13 +34,16 @@
   <xi:include href="tutorial.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <section>
-    <title>Case Studies</title>
+  <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="eliminate_runtime_penalty.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <section>
+    <title id="safe_numerics.case_studies">Case Studies</title>
 
     <xi:include href="rational.xml" xpointer="element(/1)"
+                xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <xi:include href="motor.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
   </section>
 
@@ -222,7 +225,7 @@
       </listitem>
 
       <listitem>
-        <para>Otherwise, the result value is returned. </para>
+        <para>Otherwise, the result value is returned.</para>
       </listitem>
 
       <listitem>

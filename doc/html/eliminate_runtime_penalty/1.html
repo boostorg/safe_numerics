@@ -18,8 +18,8 @@
 <a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../eliminate_runtime_penalty.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="3.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="safe_numerics.eliminate_runtime_penalty.1"></a>Using Automatic Type Promotion</h4></div></div></div>
+<div class="titlepage"><div><div><h3 class="title">
+<a name="safe_numerics.eliminate_runtime_penalty.1"></a>Using Automatic Type Promotion</h3></div></div></div>
 <p>The C++ standard describes how binary operations on different
     integer types are handled. Here is a simplified version of the
     rules:</p>
@@ -52,7 +52,8 @@
 <span class="special">&gt;</span>
 <span class="identifier">safe</span><span class="special">;</span>
 </pre>
-<p>The promotion rules implemented in the default <code class="computeroutput"><a class="link" href="promotion_policies/native.html" title="native">native</a></code>
+<p>The promotion rules for arithmetic operations are implemented in the
+    default <code class="computeroutput"><a class="link" href="promotion_policies/native.html" title="native">native</a></code>
     type promotion policy are consistent with those of standard C++</p>
 <p>Up until now, we've focused on detecting when an arithmetic error
     occurs and invoking an exception or other kind of error handler.</p>
@@ -81,10 +82,10 @@
           these problems.</p>
 </li>
 </ul></div>
-<p>Using the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
-    type promotion policy, given a binary operation, we silently promote the
-    types of the operands to a wider result type so the result cannot
-    overflow. This is a fundamental departure from the C++ Standard
+<p>When using the <a class="link" href="promotion_policies/automatic.html" title="automatic"><code class="computeroutput">automatic</code></a>
+    type promotion policy, with a given a binary operation, we silently
+    promote the types of the operands to a wider result type so the result
+    cannot overflow. This is a fundamental departure from the C++ Standard
     behavior.</p>
 <p>If the interval of the result cannot be guaranteed to fit in the
     largest type that the machine can handle (usually 64 bits these days), the
@@ -147,10 +148,24 @@ x + y = &lt;long&gt;[-4294967296,4294967294] = 2147483649
     alter our yet program again to eliminate run time penalty or set aside our
     goal of zero run time overhead and change the exception policy to <a class="link" href="exception_policies.html#safe_numerics.exception_policies.default_exception_policy"><code class="computeroutput">default_exception_policy</code></a>
     .</p>
+<p>Note that once we use automatic type promotion, our programming
+    language isn't C/C++ anymore. So don't be tempted to so something like the
+    following:</p>
+<pre class="programlisting"><span class="comment">// DON'T DO THIS !</span>
+<span class="preprocessor">#if</span> <span class="identifier">defined</span><span class="special">(</span><span class="identifier">NDEBUG</span><span class="special">)</span>
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+    <span class="keyword">int</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">automatic</span><span class="special">,</span> <span class="comment">// note use of "automatic" policy!!!</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">loose_trap_policy</span>
+<span class="special">&gt;</span><span class="special">;</span>
+<span class="preprocessor">#else</span>
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span><span class="special">;</span>
+<span class="preprocessor">#endif</span>
+</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

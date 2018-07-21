@@ -133,7 +133,9 @@ namespace ilog2_detail {
 template<typename T>
 constexpr unsigned int ilog2(const T & t){
 //  log not defined for negative numbers
-    //assert(t > 0);
+//    assert(t > 0);
+    if(t == 0)
+        return 0;
     return ilog2_detail::ilog2(
         static_cast<
             typename boost::uint_t<
@@ -167,8 +169,15 @@ constexpr unsigned int bits_value(const T & t){
 // If we use std::max in here we get internal compiler errors
 // with MSVC (tested VC2017) ...
 
+// Notes from https://en.cppreference.com/w/cpp/algorithm/max
+// Capturing the result of std::max by reference if one of the parameters
+// is rvalue produces a dangling reference if that parameter is returned.
+
 template <class T>
-constexpr const T & max(
+// turns out this problem crashes all versions of gcc compilers.  So
+// make sure we return by value
+//constexpr const T & max(
+constexpr T max(
     const T & lhs,
     const T & rhs
 ){

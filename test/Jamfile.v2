@@ -26,7 +26,6 @@ run test_checked_or.cpp ;
 run test_checked_right_shift.cpp ;
 run test_checked_subtract.cpp ;
 run test_checked_xor.cpp ;
-run test_constexpr.cpp ;
 run test_construction.cpp ;
 run test_cpp.cpp ;
 run test_divide_automatic.cpp ;
