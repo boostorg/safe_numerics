@@ -26,6 +26,9 @@ max_jobs: 1
 #    environment configuration    #
 #---------------------------------#
 
+# Build worker image (VM template)
+image: Visual Studio 2015
+
 install:
   - cd ..
   - git clone -b %APPVEYOR_REPO_BRANCH% https://github.com/boostorg/boost.git boost-root
@@ -34,6 +37,7 @@ install:
   - git submodule init libs/config
   - git submodule init libs/concept_check
   - git submodule init libs/mpl
+  - git submodule init libs/mp11
   - git submodule init libs/preprocessor
   - git submodule init libs/logic
   - git submodule init libs/integer
@@ -48,4 +52,4 @@ install:
 build: off
 
 test_script:
-  - b2 libs/safe_numerics/test toolset=msvc-14.1
+  - b2 libs/safe_numerics/test toolset=msvc-14.0
