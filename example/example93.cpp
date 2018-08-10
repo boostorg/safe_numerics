@@ -43,9 +43,14 @@ using exception_policy = boost::numeric::default_exception_policy;
 // that can be evaluated at compile time.
 #define literal(n) make_safe_literal(n, void, void)
 
-// 1st step=10ms; max speed=300rpm (based on 1MHz timer, 1.8deg steps)
-#define C_MIN  literal((2500 << 8))
-#define C0    literal((50000 << 8))
+// For min speed of 2 mm / sec (24.8 format)
+// sec / step = sec / 2 mm * 2 mm / rotation * rotation / 200 steps
+#define C0    (5000 << 8)
+
+// For max speed of 400 mm / sec
+// sec / step = sec / 400 mm * 2 mm / rotation * rotation / 200 steps
+#define C_MIN  (25 << 8)
+
 static_assert(
     boost::numeric::base_value(C0) < 0xffffff,
     "Largest step too long"
@@ -74,6 +79,14 @@ using pic_register_t = boost::numeric::safe<
 // number of steps
 using step_t = boost::numeric::safe<
     std::int32_t,
+    pic16_promotion,
+    exception_policy
+>;
+
+// position
+using position_t = boost::numeric::safe_unsigned_range<
+    0,
+    50000, // 500 mm / 2 mm/rotation * 200 steps/rotation
     pic16_promotion,
     exception_policy
 >;
@@ -130,10 +143,14 @@ using microseconds = boost::numeric::safe<
 // *************************** 
 // emulate PIC features on the desktop
 
-// suppress special keyword used by XC8 compiler
-#define interrupt
+// filter out special keyword used only by XC8 compiler
+#define __interrupt
+// filter out XC8 enable/disable global interrupts
+#define ei()
+#define di()
 
 // emulate PIC special registers
+pic_register_t RCON;
 pic_register_t INTCON;
 pic_register_t CCP1IE;
 pic_register_t CCP2IE;
@@ -194,61 +211,84 @@ struct  {
     bit<pic_register_t, 0> TMR1ON{T1CON};
 } T1CONbits;
 
+// define bits for T1CON register
+struct  {
+    bit<pic_register_t, 7> GEI{INTCON};
+    bit<pic_register_t, 5> PEIE{INTCON};
+    bit<pic_register_t, 4> TMR0IE{INTCON};
+    bit<pic_register_t, 3> RBIE{INTCON};
+    bit<pic_register_t, 2> TMR0IF{INTCON};
+    bit<pic_register_t, 1> INT0IF{INTCON};
+    bit<pic_register_t, 0> RBIF{INTCON};
+} INTCONbits;
+
 #include "motor3.c"
 
 #include <chrono>
 #include <thread>
 
+// round 24.8 format to microseconds
 microseconds to_microseconds(ccpr_t t){
     return (t + literal(128)) / literal(256);
 }
 
+using result_t = uint8_t;
+const result_t success = 1;
+const result_t fail = 0;
+
 // move motor to the indicated target position in steps
-void test(step_t m){
-    std::cout << "move motor to " << m << '\n';
-    motor_run(m);
-    std::cout
-    << "step #" << ' '
-    << "delay(us)(24.8)" << ' '
-    << "delay(us)" << ' '
-    << "CCPR" << ' '
-    << "motor position" << '\n';
-    while(busy()){
-        std::this_thread::sleep_for(std::chrono::microseconds(to_microseconds(c)));
-        c_t last_c = c;
-        ccpr_t last_ccpr = ccpr;
-        isr_motor_step();
-        std::cout << i << ' '
-        << last_c << ' '
-        << to_microseconds(last_c) << ' '
-        << std::hex << last_ccpr << std::dec << ' '
-        << motor_position << '\n';
-    };
+result_t test(position_t m){
+    try {
+        std::cout << "move motor to " << m << '\n';
+        motor_run(m);
+        std::cout
+        << "step #" << ' '
+        << "delay(us)(24.8)" << ' '
+        << "delay(us)" << ' '
+        << "CCPR" << ' '
+        << "motor position" << '\n';
+        while(busy()){
+            std::this_thread::sleep_for(std::chrono::microseconds(to_microseconds(c)));
+            c_t last_c = c;
+            ccpr_t last_ccpr = ccpr;
+            isr_motor_step();
+            std::cout << i << ' '
+            << last_c << ' '
+            << to_microseconds(last_c) << ' '
+            << std::hex << last_ccpr << std::dec << ' '
+            << motor_position << '\n';
+        };
+    }
+    catch(std::exception & e){
+        std::cout << e.what() << '\n';
+        return fail;
+    }
+    return success;
 }
 
 int main(){
     std::cout << "start test\n";
-    try{
+    result_t result = success;
+    try {
         initialize();
-        // move to the left before zero position
-        test(literal(-10));
-        // move motor to position 200
-        test(literal(200));
-        // move motor to position 200 again! Should result in no movement.
-        test(literal(200));
         // move motor to position 1000
-        test(literal(1000));
-        // move back to position 0
-        test(literal(0));
-    }
-    catch(std::exception & e){
-        std::cout << e.what() << '\n';
-        return 1;
+        result &= test(1000);
+        // move to the left before zero position
+        // fails to compile !
+        // result &= ! test(-10);
+        // move motor to position 200
+        result &= test(200);
+        // move motor to position 200 again! Should result in no movement.
+        result &= test(200);
+        // move motor to position 50000.
+        result &= test(50000);
+        // move motor back to position 0.
+        result &= test(0);
     }
     catch(...){
         std::cout << "test interrupted\n";
-        return 1;
+        return EXIT_FAILURE;
     }
     std::cout << "end test\n";
-    return 0;
+    return result == success ? EXIT_SUCCESS : EXIT_FAILURE;
 } 

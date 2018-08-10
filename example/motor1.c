@@ -51,7 +51,7 @@ uint16 make16(uint8 l, uint8 r) {
 
 // compiler-specific ISR declaration
 
-void interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
+void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
     ccpr += c; // next comparator value
     switch (ramp_sts) {
         case ramp_up: // accel
@@ -134,17 +134,19 @@ void motor_run(int16 pos_new) { // set up to drive motor to pos_new (absolute st
     CCP1CON = phase & 0xff; // sets action on match
     CCP2CON = phase >> 8;
     current_on(); // current in motor windings
-    CCP1IE = 1; // enable_interrupts(INT_CCP1); 
+    CCP1IE = 1; // enable_interrupts(INT_CCP1);
     T1CONbits.TMR1ON = 1; // restart timer1;
 } // motor_run()
 
 void initialize() {
-    INTCON = 0; // disable_interrupts(GLOBAL);
-    CCP1IE = 0; // disable_interrupts(INT_CCP1);
-    CCP2IE = 0; // disable_interrupts(INT_CCP2);
-    PORTC = 0; // output_c(0);
-    TRISC = 0; // set_tris_c(0);
+    di();         // disable_interrupts(GLOBAL);
+    CCP1IE = 0;   // disable_interrupts(INT_CCP1);
+    CCP2IE = 0;   // disable_interrupts(INT_CCP2);
+    PORTC = 0;    // output_c(0);
+    TRISC = 0;    // set_tris_c(0);
     T3CON = 0;
     T1CON = 0x35;
-    INTCON = 0xff; // enable_interrupts(GLOBAL);
+    INTCONbits.PEIE = 1;
+    INTCONbits.RBIF = 0;
+    ei();         // enable_interrupts(GLOBAL);
 } // initialize()

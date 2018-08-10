@@ -9,7 +9,7 @@
   <para>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
   processor that has been selected by the engineers is the <ulink
-  url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+  url="http://www.microchip.com/wwwproducts/en/PIC18F2520">PIC18F2520</ulink>
   manufactured by <ulink url="http://www.microchip.com">Microchip
   Corporation</ulink>. This processor has 32KB of program memory. On a
   processor this small, it's common to use a mixture of 8, 16, and 32 bit data
@@ -19,11 +19,12 @@
   <para>A stepper motor controller emits a pulse which causes the motor to
   move one step. It seems simple, but in practice it turns out to be quite
   intricate to get right as one has to time the pulses individually to
-  smoothly accelerate the rotation of the motor until it reaches the correct
-  velocity. Failure to do this will either limit the stepper motor to very low
-  speed or result in skipped steps when the motor is under load. Already, this
-  is turning it to a more complex project than it first seemed. Searching
-  around the net, we find a popular <ulink
+  smoothly accelerate the rotation of the motor from a standing start until it
+  reaches the some maximum velocity. Failure to do this will either limit the
+  stepper motor to very low speed or result in skipped steps when the motor is
+  under load. Similarly, a loaded motor must be slowly decelerated down to a
+  stop. Already, this is turning it to a more complex project than it first
+  seemed. Searching around the net, we find a popular <ulink
   url="../../example/stepper-motor.pdf">article</ulink> on the operation of
   stepper motors using simple micro controllers. The algorithm is very well
   explained and it includes complete <ulink url="../../example/motor.c">code
@@ -54,7 +55,7 @@
         <listitem>
           <para>Include header <code>&lt;xc.h&gt;</code> which contains
           constants for the <ulink
-          url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+          url="http://www.microchip.com/wwwproducts/en/PIC18F2520">PIC18F2520</ulink>
           processor</para>
         </listitem>
 
@@ -105,7 +106,7 @@
     impossible due to limited resources. So software unit testing for embedded
     systems is very problematic and often skipped. The C language on our
     desktop is the same used by the <ulink
-    url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>.
+    url="http://www.microchip.com/wwwproducts/en/PIC18F2520">PIC18F2520</ulink>.
     So now we can also run and debug the code on our desktop machine. Once our
     code passes all our tests, we can download the code to the embedded
     hardware and run the code natively. Here is a program we use on the
@@ -305,7 +306,7 @@ int main(){
           languages is not strictly true. Here we choose aliases for data
           types so that they can be defined to be the same in both
           environments. But this is not enough to emulate the <ulink
-          url="http://www.microchip.com/wwwproducts/en/PIC18F252">PIC18F252</ulink>
+          url="http://www.microchip.com/wwwproducts/en/PIC18F2520">PIC18F2520</ulink>
           on the desktop. The problem is that compilers implicitly convert
           arguments of C expressions to some common type before performing
           arithmetic operations. Often, this common type is the native
@@ -351,6 +352,13 @@ int main(){
         <listitem>
           <para>include <ulink
           url="../../example/motor1.c">motor1.c</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Add test to verify that the motor will be able to keep track
+          of a position from 0 to 50000 steps. This will be needed to maintain
+          the position of out linear stage across a range from 0 to 500
+          mm.</para>
         </listitem>
       </orderedlist></para>
 
@@ -402,6 +410,11 @@ int main(){
     24.8. This results in <ulink url="../../example/motor2.c">motor2.c</ulink>
     which makes the above changes. It should be easy to see that these two
     versions are otherwise identical.</para>
+
+    <para>Finally our range test fails. In order to handle the full range we
+    need, we'll have to change some data types used for holding step count and
+    position. We won't do that here as it would make our example too complex.
+    We'll deal with this on the next version.</para>
   </section>
 
   <section>
@@ -470,15 +483,18 @@ safe&lt;std::int16_t&gt; z = x + y;
 
     <para>Now we have 11 cases to consider. Our goal is to modify the program
     so that this number of cases is reduced - hopefully to zero. Initially I
-    wanted to just make a few tweaks in the versions of example92.c, motor2.c
-    and motor_test2.c above without actually having to understand the code. It
-    turns out that one needs to carefully consider what various types and
-    variables are used for. This can be a good thing or a bad thing depending
-    on one's circumstances, goals and personality. The programs above evolved
-    into <ulink url="../../example/example93.c">example93.c</ulink>, <ulink
-    url="../../example/motor3.c">motor3.c</ulink> and <ulink
-    url="../../example/motor_test3.c">motor_test3.c</ulink>. First we'll look
-    at example93.c:</para>
+    wanted to just make a few tweaks in the versions of
+    <code>example92.c</code>, <code>motor2.c</code> and
+    <code>motor_test2.c</code> above without actually having to understand the
+    code. It turns out that one needs to carefully consider what various types
+    and variables are used for. This can be a good thing or a bad thing
+    depending on one's circumstances, goals and personality. The programs
+    above evolved into <ulink
+    url="../../example/example93.c"><code>example93.c</code></ulink>,
+    <code><ulink url="../../example/motor3.c">motor3.c</ulink></code> and
+    <ulink
+    url="../../example/motor_test3.c"><code>motor_test3.c</code></ulink>.
+    First we'll look at <code>example93.c</code>:</para>
 
     <programlisting><xi:include href="../../example/example93.cpp"
         parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
@@ -486,10 +502,13 @@ safe&lt;std::int16_t&gt; z = x + y;
     <para>Here are the changes we've made int the desktop test
     program<orderedlist>
         <listitem>
-          <para>Specify exception policies so we will generate a compile time
-          error whenever an operation MIGHT fail. When creating safe types,
-          we'll now specify which type of checking, compile time or runtime,
-          we want done.</para>
+          <para>Specify exception policies so we can generate a compile time
+          error whenever an operation MIGHT fail. We've aliased this policy
+          with the name <code>trap_policy</code>. The default policy of which
+          throws a runtime exception when an error is countered is aliased as
+          <code>exception_policy</code>. When creating safe types, we'll now
+          specify which type of checking, compile time or runtime, we want
+          done.</para>
         </listitem>
 
         <listitem>
@@ -516,10 +535,15 @@ safe&lt;std::int16_t&gt; z = x + y;
 
           <para>Make sure that all literal values are x are replaced with the
           macro invocation "literal(x)".</para>
+
+          <para>It's unfortunate that the "literal" macro is required as it
+          clutters the code. The good news is that is some future version of
+          C++, expansion of <code>constexpr</code> facilities may result in
+          elimination of this requirement.</para>
         </listitem>
 
         <listitem>
-          <para>Create special ranged types for the motor program. These will
+          <para>Create special types for the motor program. These will
           guarantee that values are in the expected ranges and permit compile
           time determination of when exceptional conditions might occur. In
           this example we create a special type c_t to the width of the pulse
@@ -607,6 +631,7 @@ safe&lt;std::int16_t&gt; z = x + y;
 c = f(c);</programlisting>
 
     <para>can't be proved not to overflow with this system. So we're left with
-    having to depend upon exhaustive testing.</para>
+    having to depend upon exhaustive testing. It's not what we hoped, but it's
+    the best we can do.</para>
   </section>
 </section>

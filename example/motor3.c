@@ -28,9 +28,9 @@ enum ramp_state {
 
 // initial setup
 enum ramp_state ramp_sts;
-step_t motor_position;
-step_t m;               // target position
-step_t m2;               // midpoint or point where acceleration changes
+position_t motor_position;
+position_t m;               // target position
+position_t m2;              // midpoint or point where acceleration changes
 direction_t d;          // direction of traval -1 or +1
 
 // curent state along travel
@@ -79,11 +79,15 @@ void update(ccpr_t ccpr, phase_ix_t phase_ix){
 // 4. Rewrite interrupt handler in a way which mirrors the orginal
 // description of the algorithm and minimizes usage of state variable,
 // accumulated values, etc.
-void interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
+void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
     // *** possible exception
     ++i;
     // *** possible exception
-    motor_position += d;
+    //motor_position += d;
+    if(d < 0)
+        --motor_position;
+    else
+        ++motor_position;
     // calculate next difference in time
     for(;;){
         switch (ramp_sts) {
@@ -123,6 +127,9 @@ void interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                     c = C0;
                 }
                 break;
+            default:
+                // should never arrive here!
+                assert(false);
         } // switch (ramp_sts)
         break;
     }
@@ -135,7 +142,7 @@ void interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
 } // isr_motor_step()
 
 // set up to drive motor to pos_new (absolute step#)
-void motor_run(step_t new_position) {
+void motor_run(position_t new_position) {
     if(new_position > motor_position){
         d = literal(1);
         // *** possible exception
@@ -178,13 +185,15 @@ void motor_run(step_t new_position) {
 } // motor_run()
 
 void initialize() {
+    di();                // disable_interrupts(GLOBAL);
     motor_position = literal(0);
-    INTCON = literal(0); // disable_interrupts(GLOBAL);
     CCP1IE = literal(0); // disable_interrupts(INT_CCP1);
     CCP2IE = literal(0); // disable_interrupts(INT_CCP2);
-    PORTC = literal(0); // output_c(0);
-    TRISC = literal(0); // set_tris_c(0);
+    PORTC = literal(0);  // output_c(0);
+    TRISC = literal(0);  // set_tris_c(0);
     T3CON = literal(0);
     T1CON = literal(0x35);
-    INTCON = literal(0xff); // enable_interrupts(GLOBAL);
+    INTCONbits.PEIE = literal(1);
+    INTCONbits.RBIF = literal(0);
+    ei();                // enable_interrupts(GLOBAL);
 } // initialize()

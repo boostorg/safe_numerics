@@ -30,6 +30,7 @@
 
 // ***************************
 // map strong types to appropriate underlying types.
+typedef uint16_t position_t;
 typedef int16_t step_t;
 typedef uint32_t ccpr_t;
 typedef int32_t c_t;

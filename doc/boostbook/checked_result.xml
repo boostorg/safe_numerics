@@ -19,8 +19,8 @@
 
     <para><itemizedlist>
         <listitem>
-          <para>All instances of checked_result&lt;R&gt; are immutable. That
-          is, once constructed, they cannot be altered.</para>
+          <para>All instances of <code>checked_result&lt;R&gt;</code> are
+          immutable. That is, once constructed, they cannot be altered.</para>
         </listitem>
 
         <listitem>
@@ -28,30 +28,36 @@
         </listitem>
 
         <listitem>
-          <para>checked_result&lt;R&gt; is never empty.</para>
+          <para><code>checked_result&lt;R&gt;</code> is never empty.</para>
         </listitem>
 
         <listitem>
-          <para>binary operations can be invoked on a pair of
-          checked_result&lt;R&gt; instances if and only if the underlying type
-          (R) is identical for both instances.</para>
+          <para>Binary operations can be invoked on a pair of
+          <code>checked_result&lt;R&gt;</code> instances if and only if the
+          underlying type (R) is identical for both instances.</para>
         </listitem>
 
         <listitem>
-          <para>Comparison operations will return a boost::logic::tribool.
-          Other binary operations will a value of the same type as the
-          arguments.</para>
+          <para>Binary operations supported by type R are guaranteed to be
+          supported by checked_result&lt;R&gt;.</para>
         </listitem>
 
         <listitem>
-          <para>unary operations can be invoked on checked_result&lt;R&gt;
-          instances. They will return a value of the same type.</para>
+          <para>Comparison operations will return a
+          <code>boost::logic::tribool</code>. Other binary operations will a
+          value of the same type as the arguments.</para>
+        </listitem>
+
+        <listitem>
+          <para>Unary operations can be invoked on
+          <code>checked_result&lt;R&gt;</code> instances. They will return a
+          value of the same type.</para>
         </listitem>
       </itemizedlist></para>
 
-    <para>Think of checked&lt;R&gt; as an "extended" version of R which can
-    hold all the values that R can hold in addition other "special values".
-    For example, consider checked&lt;int&gt;.</para>
+    <para>Think of <code>checked&lt;R&gt;</code> as an "extended" version of R
+    which can hold all the values that R can hold in addition other "special
+    values". For example, consider checked&lt;int&gt;.</para>
   </section>
 
   <section>

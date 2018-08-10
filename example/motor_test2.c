@@ -42,5 +42,7 @@ void main() {
         while (run_flg);
         motor_run(0);
         while (run_flg);
+        motor_run(50000);
+        while (run_flg);
     }
 } // main()
