@@ -22,11 +22,11 @@
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="numeric.html#safe_numerics.numeric.description">Description</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm122121448832">Notation</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm122121439040">Associated Types</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm122121433968">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm122121362144">Models</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm122121360368">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm194815457904">Notation</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm194815450720">Associated Types</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm194815445392">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm194822271968">Models</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm194822270320">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -45,7 +45,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121448832"></a>Notation</h4></div></div></div>
+<a name="idm194815457904"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -60,20 +60,12 @@
 <td align="left"><code class="computeroutput">t, u</code></td>
 <td align="left">An object of a type modeling Numeric</td>
 </tr>
-<tr>
-<td align="left"><code class="computeroutput">os</code></td>
-<td align="left">An object of type std::base_ostream</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">is</code></td>
-<td align="left">An object of type std::base_istream</td>
-</tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121439040"></a>Associated Types</h4></div></div></div>
+<a name="idm194815450720"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -90,55 +82,59 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121433968"></a>Valid Expressions</h4></div></div></div>
+<a name="idm194815445392"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid. Any operations which result in
     integers which cannot be represented as some Numeric type will throw an
     exception.</p>
 <div class="table">
-<a name="idm122121432288"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
+<a name="idm194815443600"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
+<col align="left">
 <col align="left">
 <col align="left">
 </colgroup>
 <thead><tr>
 <th align="left">Expression</th>
+<th align="left">Return Type</th>
 <th align="left">Return Value</th>
 </tr></thead>
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_bounded
               </code></td>
-<td align="left">true or false</td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> or <code class="computeroutput">false</code>
+</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_integer</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> or <code class="computeroutput">false</code>
+</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_signed</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> or <code class="computeroutput">false</code>
+</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_specialized
               </code></td>
-<td align="left">true or false</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_integer</code></td>
-<td align="left">true or false</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">std::numeric_limits&lt;T&gt;::is_signed</code></td>
-<td align="left">true or false</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">os &lt;&lt; t</code></td>
-<td align="left">os &amp;</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">is &gt;&gt; t</code></td>
-<td align="left">is &amp;</td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left"><code class="computeroutput">true</code></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="idm122121417712"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
+<a name="idm194815423088"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -153,39 +149,39 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">-t</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">Invert sign</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">+t</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">unary plus - a no op</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t--</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">post decrement</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t++</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">post increment</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">--t</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">pre decrement</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">++t</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">pre increment</td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="idm122121400816"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
+<a name="idm194815402400"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -200,83 +196,94 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">t - u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">subtract u from t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t + u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">add u to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t * u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">multiply t by u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t / u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">divide t by u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t % u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">t modulus u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &lt; u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t less than u, false otherwise</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">t &lt;= u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t less than or equal to u, false otherwise</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">t &gt; u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t greater than u, false otherwise</td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">t &gt;= u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t greater than or equal to u, false
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t less than u, <code class="computeroutput">false</code>
             otherwise</td>
 </tr>
 <tr>
+<td align="left"><code class="computeroutput">t &lt;= u</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t less than or equal to u,
+            <code class="computeroutput">false</code> otherwise</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">t &gt; u</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t greater than u, <code class="computeroutput">false</code>
+            otherwise</td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">t &gt;= u</code></td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t greater than or equal to u,
+            <code class="computeroutput">false</code> otherwise</td>
+</tr>
+<tr>
 <td align="left"><code class="computeroutput">t == u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t equal to u, false otherwise</td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t equal to u, <code class="computeroutput">false</code>
+            otherwise</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t != u</code></td>
-<td align="left">bool</td>
-<td align="left">true if t not equal to u, false otherwise</td>
+<td align="left"><code class="computeroutput">bool</code></td>
+<td align="left">
+<code class="computeroutput">true</code> if t not equal to u, <code class="computeroutput">false</code>
+            otherwise</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t = u</code></td>
-<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><code class="computeroutput"><code class="computeroutput">T</code></code></td>
 <td align="left">assign value of u to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t += u</code></td>
-<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><code class="computeroutput"><code class="computeroutput">T</code></code></td>
 <td align="left">add u to t and assign to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t -= u</code></td>
-<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><code class="computeroutput"><code class="computeroutput">T</code></code></td>
 <td align="left">subtract u from t and assign to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t *= u</code></td>
-<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><code class="computeroutput"><code class="computeroutput">T</code></code></td>
 <td align="left">multiply t by u and assign to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t /= u</code></td>
-<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><code class="computeroutput"><code class="computeroutput">T</code></code></td>
 <td align="left">divide t by u and assign to t</td>
 </tr>
 </tbody>
@@ -286,13 +293,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121362144"></a>Models</h4></div></div></div>
+<a name="idm194822271968"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, float, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, etc.</code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121360368"></a>Header</h4></div></div></div>
+<a name="idm194822270320"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/numeric.hpp&gt;
     </code></a></p>

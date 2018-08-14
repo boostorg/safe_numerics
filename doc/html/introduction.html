@@ -102,7 +102,7 @@
     program which will never fail. The Safe Numerics Library addresses all of
     these conditions, at least as far as integer operations are
     concerned.</p>
-<p>Since the problems and their solution are similar, We'll confine the
+<p>Since the problems and their solution are similar, we'll confine the
     current discussion to just the one example shown above.</p>
 </div>
 <div class="section">
@@ -111,9 +111,10 @@
 <p>This library implements special versions of <code class="computeroutput">int</code>,
     <code class="computeroutput">unsigned</code>, etc. which behave exactly like the original ones
     <span class="bold"><strong>except</strong></span> that the results of these
-    operations are guaranteed to be either arithmetically correct or invoke an
-    error. Using this library, the above example would be rendered as:</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numeric</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+    operations are guaranteed to be either to be arithmetically correct or
+    invoke an error. Using this library, the above example would be rendered
+    as:</p>
+<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
 <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">f</span><span class="special">(</span><span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
   <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// throw exception if correct result cannot be returned</span>

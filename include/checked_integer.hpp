@@ -809,7 +809,7 @@ constexpr static checked_result<R> bitwise_not(const R & t) noexcept {
     if(significant_bits(t) > bits_type<R>::value){
         return checked_result<R>{
             safe_numerics_error::positive_overflow_error,
-            "result type too small to hold bitwise and"
+            "result type too small to hold bitwise inverse"
         };
     }
     return ~t;

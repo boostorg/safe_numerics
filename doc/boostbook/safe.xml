@@ -25,7 +25,7 @@
     <para>This type inherits all the notation, associated types and template
     parameters and valid expressions of <link
     linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> types. The
-    following specify additional features of this type. </para>
+    following specify additional features of this type.</para>
   </section>
 
   <section>
@@ -196,7 +196,7 @@
 
       <para>The following program will throw an exception and emit an error
       message at runtime if any of several events result in an incorrect
-      arithmetic type. Behavior of this program could vary according to the
+      arithmetic result. Behavior of this program could vary according to the
       machine architecture in question.</para>
 
       <para><programlisting>#include &lt;exception&gt;
@@ -287,11 +287,10 @@ void f(){
       arithmetic wouldn't exist if the result types were larger. So we can
       avoid these problems by replacing the C++ type promotion rules for
       expressions with our own rules. This can be done by specifying a
-      non-default type promotion policy <code>automatic</code>. The policy
-      stores the result of an expression in the smallest size that can
-      accommodate the largest value that an expression can yield. All the work
-      is done at compile time - no checking for exceptions is necessary (input
-      is of course an exception). The following example illustrates
+      promotion policy <code><code>automatic</code></code>. The policy stores
+      the result of an expression in the smallest size type that can
+      accommodate the largest value that an expression can yield. No checking
+      for exceptions is necessary. The following example illustrates
       this.</para>
 
       <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;

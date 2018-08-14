@@ -44,18 +44,6 @@
 
             <entry>An object of a type modeling Numeric</entry>
           </row>
-
-          <row>
-            <entry><code>os</code></entry>
-
-            <entry>An object of type std::base_ostream</entry>
-          </row>
-
-          <row>
-            <entry><code>is</code></entry>
-
-            <entry>An object of type std::base_istream</entry>
-          </row>
         </tbody>
       </tgroup>
     </informaltable>
@@ -94,14 +82,18 @@
     exception.<table>
         <title>General</title>
 
-        <tgroup cols="2">
-          <colspec align="left" colwidth="406*"/>
+        <tgroup cols="3">
+          <colspec align="left" colwidth="2*"/>
 
-          <colspec align="left" colwidth="594*"/>
+          <colspec align="left" colwidth="1*"/>
+
+          <colspec align="left" colwidth="2*"/>
 
           <thead>
             <row>
               <entry align="left">Expression</entry>
+
+              <entry>Return Type</entry>
 
               <entry>Return Value</entry>
             </row>
@@ -112,38 +104,34 @@
               <entry><code>std::numeric_limits&lt;T&gt;::is_bounded
               </code></entry>
 
-              <entry>true or false</entry>
+              <entry><code>bool</code></entry>
+
+              <entry><code>true</code> or <code>false</code></entry>
+            </row>
+
+            <row>
+              <entry><code>std::numeric_limits&lt;T&gt;::is_integer</code></entry>
+
+              <entry><code>bool</code></entry>
+
+              <entry><code>true</code> or <code>false</code></entry>
+            </row>
+
+            <row>
+              <entry><code>std::numeric_limits&lt;T&gt;::is_signed</code></entry>
+
+              <entry><code>bool</code></entry>
+
+              <entry><code>true</code> or <code>false</code></entry>
             </row>
 
             <row>
               <entry><code>std::numeric_limits&lt;T&gt;::is_specialized
               </code></entry>
 
-              <entry>true or false</entry>
-            </row>
+              <entry><code>bool</code></entry>
 
-            <row>
-              <entry><code>std::numeric_limits&lt;T&gt;::is_integer</code></entry>
-
-              <entry>true or false</entry>
-            </row>
-
-            <row>
-              <entry><code>std::numeric_limits&lt;T&gt;::is_signed</code></entry>
-
-              <entry>true or false</entry>
-            </row>
-
-            <row>
-              <entry><code>os &lt;&lt; t</code></entry>
-
-              <entry>os &amp;</entry>
-            </row>
-
-            <row>
-              <entry><code>is &gt;&gt; t</code></entry>
-
-              <entry>is &amp;</entry>
+              <entry><code>true</code></entry>
             </row>
           </tbody>
         </tgroup>
@@ -173,7 +161,7 @@
           <row>
             <entry><code>-t</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>Invert sign</entry>
           </row>
@@ -181,7 +169,7 @@
           <row>
             <entry><code>+t</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>unary plus - a no op</entry>
           </row>
@@ -189,7 +177,7 @@
           <row>
             <entry><code>t--</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>post decrement</entry>
           </row>
@@ -197,7 +185,7 @@
           <row>
             <entry><code>t++</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>post increment</entry>
           </row>
@@ -205,7 +193,7 @@
           <row>
             <entry><code>--t</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>pre decrement</entry>
           </row>
@@ -213,7 +201,7 @@
           <row>
             <entry><code>++t</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>pre increment</entry>
           </row>
@@ -245,7 +233,7 @@
           <row>
             <entry><code>t - u</code></entry>
 
-            <entry>V</entry>
+            <entry><code>V</code></entry>
 
             <entry>subtract u from t</entry>
           </row>
@@ -253,7 +241,7 @@
           <row>
             <entry><code>t + u</code></entry>
 
-            <entry>V</entry>
+            <entry><code>V</code></entry>
 
             <entry>add u to t</entry>
           </row>
@@ -261,7 +249,7 @@
           <row>
             <entry><code>t * u</code></entry>
 
-            <entry>V</entry>
+            <entry><code>V</code></entry>
 
             <entry>multiply t by u</entry>
           </row>
@@ -269,7 +257,7 @@
           <row>
             <entry><code>t / u</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>divide t by u</entry>
           </row>
@@ -277,7 +265,7 @@
           <row>
             <entry><code>t % u</code></entry>
 
-            <entry>T</entry>
+            <entry><code>T</code></entry>
 
             <entry>t modulus u</entry>
           </row>
@@ -285,56 +273,61 @@
           <row>
             <entry><code>t &lt; u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t less than u, false otherwise</entry>
+            <entry><code>true</code> if t less than u, <code>false</code>
+            otherwise</entry>
           </row>
 
           <row>
             <entry><code>t &lt;= u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t less than or equal to u, false otherwise</entry>
+            <entry><code>true</code> if t less than or equal to u,
+            <code>false</code> otherwise</entry>
           </row>
 
           <row>
             <entry><code>t &gt; u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t greater than u, false otherwise</entry>
+            <entry><code>true</code> if t greater than u, <code>false</code>
+            otherwise</entry>
           </row>
 
           <row>
             <entry><code>t &gt;= u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t greater than or equal to u, false
-            otherwise</entry>
+            <entry><code>true</code> if t greater than or equal to u,
+            <code>false</code> otherwise</entry>
           </row>
 
           <row>
             <entry><code>t == u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t equal to u, false otherwise</entry>
+            <entry><code>true</code> if t equal to u, <code>false</code>
+            otherwise</entry>
           </row>
 
           <row>
             <entry><code>t != u</code></entry>
 
-            <entry>bool</entry>
+            <entry><code>bool</code></entry>
 
-            <entry>true if t not equal to u, false otherwise</entry>
+            <entry><code>true</code> if t not equal to u, <code>false</code>
+            otherwise</entry>
           </row>
 
           <row>
             <entry><code>t = u</code></entry>
 
-            <entry><code>T</code></entry>
+            <entry><code><code>T</code></code></entry>
 
             <entry>assign value of u to t</entry>
           </row>
@@ -342,7 +335,7 @@
           <row>
             <entry><code>t += u</code></entry>
 
-            <entry><code>T</code></entry>
+            <entry><code><code>T</code></code></entry>
 
             <entry>add u to t and assign to t</entry>
           </row>
@@ -350,7 +343,7 @@
           <row>
             <entry><code>t -= u</code></entry>
 
-            <entry><code>T</code></entry>
+            <entry><code><code>T</code></code></entry>
 
             <entry>subtract u from t and assign to t</entry>
           </row>
@@ -358,7 +351,7 @@
           <row>
             <entry><code>t *= u</code></entry>
 
-            <entry><code>T</code></entry>
+            <entry><code><code>T</code></code></entry>
 
             <entry>multiply t by u and assign to t</entry>
           </row>
@@ -366,7 +359,7 @@
           <row>
             <entry><code>t /= u</code></entry>
 
-            <entry><code>T</code></entry>
+            <entry><code><code>T</code></code></entry>
 
             <entry>divide t by u and assign to t</entry>
           </row>

@@ -21,18 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safenumerics.checked_result"></a>checked_result&lt;R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_result.html#idm122116779136">Description</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116762784">Notation</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116742032">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116733904">Model of</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116732192">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116683984">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116625952">See Also</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm122116624240">Header</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814607776">Description</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814591424">Notation</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814569040">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814560912">Model of</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814559200">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814510992">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814452960">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm194814451248">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116779136"></a>Description</h4></div></div></div>
+<a name="idm194814607776"></a>Description</h4></div></div></div>
 <p>checked_result is a special kind of variant class designed to hold
     the result of some operation. It can hold either the result of the
     operation or information on why the operation failed to produce a valid
@@ -63,7 +63,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116762784"></a>Notation</h4></div></div></div>
+<a name="idm194814591424"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -97,6 +97,10 @@
 </td>
 </tr>
 <tr>
+<td align="left"><code class="computeroutput">msg</code></td>
+<td align="left">An instance of type const char *</td>
+</tr>
+<tr>
 <td align="left"><code class="computeroutput">OS</code></td>
 <td align="left">A type convertible to <a class="link" href="exception.html#safe_numerics.safe_numerics_error" title="enum class safe_numerics_error"><code class="computeroutput">std::basic_ostream</code></a>
 </td>
@@ -111,7 +115,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116742032"></a>Template Parameters</h4></div></div></div>
+<a name="idm194814569040"></a>Template Parameters</h4></div></div></div>
 <p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -130,12 +134,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116733904"></a>Model of</h4></div></div></div>
+<a name="idm194814560912"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116732192"></a>Valid Expressions</h4></div></div></div>
+<a name="idm194814559200"></a>Valid Expressions</h4></div></div></div>
 <p>All expressions are <code class="computeroutput">constexpr</code>.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -233,7 +237,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116683984"></a>Example of use</h4></div></div></div>
+<a name="idm194814510992"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
@@ -262,12 +266,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116625952"></a>See Also</h4></div></div></div>
+<a name="idm194814452960"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122116624240"></a>Header</h4></div></div></div>
+<a name="idm194814451248"></a>Header</h4></div></div></div>
 <p><a href="../include/checked_result.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;</code></a></p>
 <p><a href="../include/checked_result_operations.hpp" target="_top"><code class="computeroutput">#include

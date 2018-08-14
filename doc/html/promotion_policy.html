@@ -21,15 +21,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="promotion_policy.html#idm122121199216">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm122121188624">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm122121179440">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm122121154480">Models</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm122121089664">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm194822112656">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm194822102064">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm194822092912">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm194822067952">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm194821973056">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121199216"></a>Description</h4></div></div></div>
+<a name="idm194822112656"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
@@ -44,7 +44,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121188624"></a>Notation</h4></div></div></div>
+<a name="idm194822102064"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -70,7 +70,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121179440"></a>Valid Expressions</h4></div></div></div>
+<a name="idm194822092912"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.These expressions return a
     type which can be used as the basis create a SafeNumeric type.</p>
@@ -143,7 +143,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121154480"></a>Models</h4></div></div></div>
+<a name="idm194822067952"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -192,11 +192,38 @@
 <p>This policy is documented in <a class="link" href="promotion_policies/automatic.html" title="automatic">Promotion
         Policies - automatic</a></p>
 </li>
+<li class="listitem">
+<p>boost::numeric::cpp</p>
+<p>Use expression type promotion rules to emulate another
+        processor. When this policy is used, C++ type for safe integers
+        follows the rules that a compiler on the target processor would use.
+        This permits one to test code destined for a one processor on the
+        another one. One situation there this can be very, very useful is when
+        testing code destined for a micro controller which doesn't have the
+        logging, debugging, input/output facilities of a
+        desktop.</p>
+<pre class="programlisting"><span class="comment">// specify a promotion policy to support proper emulation of </span>
+<span class="comment">// PIC 18f2520 types on the desktop</span>
+<span class="keyword">using</span> <span class="identifier">pic16_promotion</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">cpp</span><span class="special">&lt;</span>
+    <span class="number">8</span><span class="special">,</span>  <span class="comment">// char      8 bits</span>
+    <span class="number">16</span><span class="special">,</span> <span class="comment">// short     16 bits</span>
+    <span class="number">16</span><span class="special">,</span> <span class="comment">// int       16 bits</span>
+    <span class="number">16</span><span class="special">,</span> <span class="comment">// long      16 bits</span>
+    <span class="number">32</span>  <span class="comment">// long long 32 bits</span>
+<span class="special">&gt;</span><span class="special">;</span>
+<span class="special">...</span>
+<span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">uint16_t</span><span class="special">,</span> <span class="identifier">pic16_promotion</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">y</span><span class="special">;</span>
+<span class="special">...</span>
+
+<span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// detect possible overflow on the pic.</span></pre>
+<p>For a complete example see <a class="link" href="safety_critical_embedded_controller.html" title="Safety Critical Embedded Controller">Safety
+        Critical Embedded Controller</a>.</p>
+</li>
 </ul></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121089664"></a>Header</h4></div></div></div>
+<a name="idm194821973056"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
     </code></a></p>

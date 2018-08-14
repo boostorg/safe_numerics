@@ -39,8 +39,9 @@ bool constexpr safe_compare::not_equal(const T &amp; lhs, const U &amp; rhs);</p
     procedure of converting the operands to some common type then doing the
     compare. So it is not equivalent to the C/C++ binary operations
     <code>&lt;</code>, <code>&gt;</code>, <code><code>&gt;</code>=</code>,
-    <code>&lt;=</code>, <code>==</code>, <code>!=</code>. The functions are
-    free functions defined inside the namespace
+    <code>&lt;=</code>, <code>==</code>, <code>!=</code> and shouldn't be used
+    by user programs which should be portable to standard C/C++ integer
+    arithmetic. The functions are free functions defined inside the namespace
     <code>boost::numeric::safe_compare</code>.</para>
   </section>
 

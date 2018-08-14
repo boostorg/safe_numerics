@@ -98,7 +98,7 @@
     these conditions, at least as far as integer operations are
     concerned.</para>
 
-    <para>Since the problems and their solution are similar, We'll confine the
+    <para>Since the problems and their solution are similar, we'll confine the
     current discussion to just the one example shown above.</para>
   </section>
 
@@ -108,10 +108,11 @@
     <para>This library implements special versions of <code>int</code>,
     <code>unsigned</code>, etc. which behave exactly like the original ones
     <emphasis role="bold">except</emphasis> that the results of these
-    operations are guaranteed to be either arithmetically correct or invoke an
-    error. Using this library, the above example would be rendered as:</para>
+    operations are guaranteed to be either to be arithmetically correct or
+    invoke an error. Using this library, the above example would be rendered
+    as:</para>
 
-    <programlisting>#include &lt;boost/safe_numeric/safe_integer.hpp&gt;
+    <programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt;
 using namespace boost::numeric;
 safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   return x + y; // throw exception if correct result cannot be returned

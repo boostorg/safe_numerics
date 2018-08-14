@@ -52,4 +52,5 @@ install:
 build: off
 
 test_script:
-  - b2 libs/safe_numerics/test toolset=msvc
+  - b2 libs/safe_numerics/test toolset=msvc-14.1
+  - b2 libs/safe_numerics/example toolset=msvc-14.1

@@ -14,7 +14,7 @@
 
     <para>More specifically, a type T is Integer if there exists a
     specialization of <code>std::numeric_limits&lt;T&gt; for which
-    std::numeric_limits&lt;T&gt;.is_integer</code> is equal to
+    std::numeric_limits&lt;T&gt;::is_integer</code> is equal to
     <code>true</code>. See the documentation for standard library class
     <code>numeric_limits</code>. The standard library includes such
     specializations for all built-in numeric types. Note that this concept is
@@ -36,9 +36,9 @@
 
     <informaltable>
       <tgroup cols="2" colsep="1" rowsep="1">
-        <colspec align="left"/>
+        <colspec align="left" colwidth="2*"/>
 
-        <colspec align="left" colwidth="3*"/>
+        <colspec align="left" colwidth="4*"/>
 
         <tbody>
           <row>
@@ -108,7 +108,7 @@
             <row>
               <entry><code>~t</code></entry>
 
-              <entry>T</entry>
+              <entry><code><classname>T</classname></code></entry>
 
               <entry>bitwise complement</entry>
             </row>
@@ -116,7 +116,7 @@
             <row>
               <entry><code>t &lt;&lt; u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>shift t left u bits</entry>
             </row>
@@ -124,7 +124,7 @@
             <row>
               <entry><code>t &gt;&gt; u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>shift t right by u bits</entry>
             </row>
@@ -132,7 +132,7 @@
             <row>
               <entry><code>t &amp; u</code></entry>
 
-              <entry>V</entry>
+              <entry><code>V</code></entry>
 
               <entry>and of t and u padded out to max # bits in t, u</entry>
             </row>
@@ -140,7 +140,7 @@
             <row>
               <entry><code>t | u</code></entry>
 
-              <entry>V</entry>
+              <entry><code>V</code></entry>
 
               <entry>or of t and u padded out to max # bits in t, u</entry>
             </row>
@@ -148,7 +148,7 @@
             <row>
               <entry><code>t ^ u</code></entry>
 
-              <entry>V</entry>
+              <entry><code>V</code></entry>
 
               <entry>exclusive or of t and u padded out to max # bits in t,
               u</entry>
@@ -157,7 +157,7 @@
             <row>
               <entry><code>t &lt;&lt;= u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>left shift the value of t by u bits</entry>
             </row>
@@ -165,7 +165,7 @@
             <row>
               <entry><code>t &gt;&gt;= u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>right shift the value of t by u bits</entry>
             </row>
@@ -173,7 +173,7 @@
             <row>
               <entry><code>t &amp;= u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>and the value of t with u and assign to t</entry>
             </row>
@@ -181,7 +181,7 @@
             <row>
               <entry><code>t |= u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>or the value of t with u and assign to t</entry>
             </row>
@@ -189,7 +189,7 @@
             <row>
               <entry><code>t ^= u</code></entry>
 
-              <entry>T</entry>
+              <entry><code>T</code></entry>
 
               <entry>exclusive or the value of t with u and assign to
               t</entry>

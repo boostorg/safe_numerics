@@ -21,7 +21,7 @@
 
     <para>Note that this policy is only applicable to safe types whose base
     type is a type fulfilling the type requirements of <link
-    linkend="safe_numerics.integer">Integer</link>. </para>
+    linkend="safe_numerics.integer">Integer</link>.</para>
   </section>
 
   <section>
@@ -121,66 +121,10 @@
     as that in the target environment. Also in our target environment, we can
     trap any overflows or other errors. So we can write and test our code on
     our desktop system and download the code to the target knowing that it
-    just has to work. This is a huge time saver and confidence builder. The
-    following code is taken from a real project which has used this
-    method.</para>
-
-    <programlisting>#include "../include/safe_integer.hpp"
-#include "../include/cpp.hpp"
-
-//////////////////////////////////////////////////////////////
-// Stepper Motor Control
-
-// emululate evironment for pic162550
-// data widths used by the CCS compiler for pic 16xxx series
-
-using pic16_promotion = boost::numeric::cpp&lt;
-    8,  // char
-    8,  // short - not used by pic 16xxxx
-    8,  // int
-    16, // long
-    32  // long long
-&gt;;
-
-template &lt;typename T&gt; // T is char, int, etc data type
-using safe_t = boost::numeric::safe&lt;
-    T,
-    pic16_promotion,
-    boost::numeric::loose_trap_policy // use for compiling and running tests
-&gt;;
-
-using int8 = safe_t&lt;std::int8_t&gt;;
-using int16 = safe_t&lt;std::int16_t&gt;;
-using int32 = safe_t&lt;std::int32_t&gt;;
-using uint8 = safe_t&lt;std::uint8_t&gt;;
-using uint16 = safe_t&lt;std::uint16_t&gt;;
-using uint32 = safe_t&lt;std::uint32_t&gt;;
-
-////////////////////////////////////////////////////////////////
-// Mock defines, functions etc which are in the "real application"
-
-...
-
-// return value in steps
-/*
-Use the formula:
-    stopping dist = v **2 / a / 2
-*/
-uint16 get_stopping_distance(LEMPARAMETER velocity){
-    int32 d;
-    d = velocity;
-    d *= velocity;
-    d /= lem.acceleration;
-    d /= 2;
-    return d;
-}
-
-...</programlisting>
-
-    <para>Note the usage of the compile time trap policy in order to detect at
-    compile time any possible error conditions. As I write this, this is still
-    being refined. Hopefully this will be available by the time you read
-    this.</para>
+    just has to work. This is a huge time saver and confidence builder. For an
+    extended example on how this is done, look at <link
+    linkend="safe_numerics.safety_critical_embedded_controller">Safety
+    Critical Embedded Controller</link> .</para>
   </section>
 
   <section>

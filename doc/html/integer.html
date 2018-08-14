@@ -21,21 +21,21 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.integer"></a>Integer&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="integer.html#idm122121356896">Description</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm122121350032">Refinement of</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm122121348480">Notation</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm122121341504">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm122121305952">Models</a></span></dt>
-<dt><span class="section"><a href="integer.html#idm122121304304">Header</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822266944">Description</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822260560">Refinement of</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822259056">Notation</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822252048">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822213680">Models</a></span></dt>
+<dt><span class="section"><a href="integer.html#idm194822212080">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121356896"></a>Description</h4></div></div></div>
+<a name="idm194822266944"></a>Description</h4></div></div></div>
 <p>A type fulfills the requirements of an Integer if it has the
     properties of a integer.</p>
 <p>More specifically, a type T is Integer if there exists a
     specialization of <code class="computeroutput">std::numeric_limits&lt;T&gt; for which
-    std::numeric_limits&lt;T&gt;.is_integer</code> is equal to
+    std::numeric_limits&lt;T&gt;::is_integer</code> is equal to
     <code class="computeroutput">true</code>. See the documentation for standard library class
     <code class="computeroutput">numeric_limits</code>. The standard library includes such
     specializations for all built-in numeric types. Note that this concept is
@@ -47,12 +47,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121350032"></a>Refinement of</h4></div></div></div>
+<a name="idm194822260560"></a>Refinement of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121348480"></a>Notation</h4></div></div></div>
+<a name="idm194822259056"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -72,11 +72,11 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121341504"></a>Valid Expressions</h4></div></div></div>
+<a name="idm194822252048"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> the following expressions
     must be valid. </p>
 <div class="table">
-<a name="idm122121339856"></a><p class="title"><b>Table&#160;4.&#160;General</b></p>
+<a name="idm194822250544"></a><p class="title"><b>Table&#160;4.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -107,58 +107,58 @@
 <tbody>
 <tr>
 <td align="left"><code class="computeroutput">~t</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">bitwise complement</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &lt;&lt; u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">shift t left u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &gt;&gt; u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">shift t right by u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &amp; u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">and of t and u padded out to max # bits in t, u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t | u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">or of t and u padded out to max # bits in t, u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t ^ u</code></td>
-<td align="left">V</td>
+<td align="left"><code class="computeroutput">V</code></td>
 <td align="left">exclusive or of t and u padded out to max # bits in t,
               u</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &lt;&lt;= u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">left shift the value of t by u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &gt;&gt;= u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">right shift the value of t by u bits</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t &amp;= u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">and the value of t with u and assign to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t |= u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">or the value of t with u and assign to t</td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">t ^= u</code></td>
-<td align="left">T</td>
+<td align="left"><code class="computeroutput">T</code></td>
 <td align="left">exclusive or the value of t with u and assign to
               t</td>
 </tr>
@@ -167,13 +167,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121305952"></a>Models</h4></div></div></div>
+<a name="idm194822213680"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, safe&lt;int&gt;, safe_unsigned_range&lt;0, 11&gt;,
     etc.</code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121304304"></a>Header</h4></div></div></div>
+<a name="idm194822212080"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/integer.hpp&gt;
     </code></a></p>

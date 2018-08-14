@@ -218,6 +218,36 @@ auto c = a + b; // c will be a safe type with a range [3,8] and cannot overflow
         linkend="safe_numerics.promotion_policies.automatic">Promotion
         Policies - automatic</link></para>
       </listitem>
+
+      <listitem>
+        <para>boost::numeric::cpp</para>
+
+        <para>Use expression type promotion rules to emulate another
+        processor. When this policy is used, C++ type for safe integers
+        follows the rules that a compiler on the target processor would use.
+        This permits one to test code destined for a one processor on the
+        another one. One situation there this can be very, very useful is when
+        testing code destined for a micro controller which doesn't have the
+        logging, debugging, input/output facilities of a
+        desktop.<programlisting>// specify a promotion policy to support proper emulation of 
+// PIC 18f2520 types on the desktop
+using pic16_promotion = boost::numeric::cpp&lt;
+    8,  // char      8 bits
+    16, // short     16 bits
+    16, // int       16 bits
+    16, // long      16 bits
+    32  // long long 32 bits
+&gt;;
+...
+safe&lt;std::uint16_t, pic16_promotion&gt; x, y;
+...
+
+x + y; // detect possible overflow on the pic.</programlisting></para>
+
+        <para>For a complete example see <link
+        linkend="safe_numerics.safety_critical_embedded_controller">Safety
+        Critical Embedded Controller</link>.</para>
+      </listitem>
     </itemizedlist>
   </section>
 

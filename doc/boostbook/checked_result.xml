@@ -111,6 +111,12 @@
           </row>
 
           <row>
+            <entry><code>msg</code></entry>
+
+            <entry>An instance of type const char *</entry>
+          </row>
+
+          <row>
             <entry><code>OS</code></entry>
 
             <entry>A type convertible to <link

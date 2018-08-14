@@ -52,4 +52,31 @@
   facilities of safe numerics at minimal runtime cost. The result is what you
   see here. The library now consists of 7000 lines of code, approximately 50
   separate tests and more than 60 pages of documentation and examples.</para>
+
+  <para>Since I wrote the above, I've been contacted by David LeBlanc. He's
+  been updating his package and informs me that the latest
+  version:<itemizedlist>
+      <listitem>
+        <para>SafeInt does not require porting for different compilers, is
+        fully supported on gcc, clang, and Visual Studio.</para>
+      </listitem>
+
+      <listitem>
+        <para>The license has been changed from MS-PL to MIT license.</para>
+      </listitem>
+
+      <listitem>
+        <para>The library has had a test suite since before it was public, and
+        is now located here:</para>
+      </listitem>
+
+      <listitem>
+        <para>SafeInt also has no external dependencies other than standard
+        library files, and doesn't need anything else installed to
+        work.</para>
+      </listitem>
+    </itemizedlist></para>
+
+  <para>His current package can now be found at in <ulink
+  url="https://github.com/dcleblanc/SafeInt">github</ulink>.</para>
 </section>

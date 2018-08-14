@@ -638,8 +638,6 @@ int main(){
     return 0;
 }
 
-#endif
-
 
 #include <boost/integer.hpp>
 #include "../include/utility.hpp"
@@ -669,5 +667,76 @@ struct test {
 test<std::uint16_t, std::uint8_t, std::uint8_t> t1;
 
 int main(){
+    return 0;
+}
+
+#include <string>
+#include <unordered_map>
+#include "safe_integer.hpp"
+
+#include <functional> // hash
+
+template<typename T>
+struct safe_hash {
+    size_t operator()(boost::numeric::safe<T> const& t) const  {
+        return std::hash<T>()(t);
+    }
+};
+
+int main(){
+    auto foo = std::unordered_map<
+        boost::numeric::safe<int>,
+        std::string,
+        safe_hash<int>
+    >{};
+    foo[boost::numeric::safe<int>(42)] = "hello, world!";
+    foo[42] = "hello, world!";
+}
+
+
+#include <string>
+#include <unordered_map>
+#include "safe_integer.hpp"
+
+#include <functional> // hash
+
+template<typename T>
+struct safe_hash {
+    size_t operator()(boost::numeric::safe<T> const& t) const  {
+        return std::hash<T>()(t);
+    }
+};
+
+int main(){
+    auto foo = std::unordered_map<int, std::string>{};
+    foo[boost::numeric::safe<int>(42)] = "hello, world!";
+}
+
+#endif
+
+#include <iostream>
+#include "safe_integer.hpp"
+#include "automatic.hpp"
+
+using namespace boost::numeric;
+
+int main(){
+    using safe_int = safe<
+        int,
+        automatic,
+        loose_trap_policy
+    >; 
+    safe_int i;
+    std::cin >> i; // might throw exception
+    auto j = i * i;
+        // won't ever trap
+        // result type can hold the maximum value of i * i
+    static_assert(is_safe<decltype(j)>::value, "result is a safe type");
+    static_assert(
+        std::numeric_limits<decltype(i * i)>::max() >=
+        std::numeric_limits<safe_int>::max() * std::numeric_limits<safe_int>::max(),
+        "result can never overflow"
+    ); // always true
+
     return 0;
 }

@@ -26,6 +26,8 @@ test_run_pass_example(example10)
 test_run_pass_example(example11)
 test_run_pass_example(example13)
 test_run_pass_example(example15)
+test_run_pass_example(example18)
+test_run_pass_example(example19)
 test_run_pass_example(example20)
 # test_run_pass_example(example81) # requires console input
 test_run_pass_example(example82)

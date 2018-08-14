@@ -20,28 +20,120 @@
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.pending_issues"></a>Pending Issues</h2></div></div></div>
+<div class="toc"><dl class="toc">
+<dt><span class="section"><a href="pending_issues.html#idm194813680832">Library Design</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm194813672320"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm194813636240"><code class="computeroutput">std::common_type</code> Specialization Missing</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm194813634176">Other Pending Issues</a></span></dt>
+</dl></div>
 <p>The library is under development. There are a number of issues still
     pending.</p>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm194813680832"></a>Library Design</h3></div></div></div>
+<p>The following is paraphrased from an issue raised by Andrzej
+      Krzemie&#324;ski as a <a href="https://github.com/robertramey/safe_numerics/issues/46" target="_top">github
+      issue</a>. It touches upon fundamental ideas behind the library and
+      how these ideas as the implementation of the library collided with
+      reality.</p>
+<p><span class="quote">&#8220;<span class="quote">In the current implementation safe&lt;T&gt; will only work
+      with T being a C++ scalar type. Therefore making a general type
+      requirements that say what operations are allowed is superfluous, and
+      confusing (because it implies that safe&lt;&gt; is more
+      generic.</span>&#8221;</span></p>
+<p>When I started out, It became clear that I wanted "safe" types to
+      look like "numeric" types. It also became clear pretty soon that there
+      was going to be significant template meta-programming in the
+      implementation. Normal type traits like std::is_integer are defined in
+      the std namespace and one is discouraged from extending it. Also I
+      needed some compile time "max" and "lowest" values. This lead me to base
+      the design on std::numeric_limits. But std::numeric limits is inherently
+      extendable to any "numeric" type. For example, money is a numeric type
+      but not an intrinsic types. So it seemed that I needed to define a
+      "numeric" concept which required that there be an implementation of
+      std::numeric_limits for any type T - such as money in this case. When
+      I'm doubt - I tend to think big.</p>
+<p><span class="quote">&#8220;<span class="quote">You do not need a concept to constrain anything with it, in
+      your library. Or is the purpose of the Type requirements to show in
+      detail what it means that safe&lt;T&gt; is a 'drop-in replacement for
+      T?</span>&#8221;</span></p>
+<p>Right - currently I don't use the concept to constrain anything.
+      They are currently a purely "conceptual" tool to keep the design from
+      getting off track. This is common with other libraries such as the C++
+      standard library where the concepts are defined but not enforced by
+      compile time predicates. Hopefully in future that might change - see
+      below</p>
+<p><span class="quote">&#8220;<span class="quote">If you want to extend safe&lt;T&gt; for other integer
+      types, Type requirement still need to be fixed:</span>&#8221;</span></p>
+<p>Hmmmm - I'm not quite sure that this is true. One thing that IS
+      true is the the interface and implementation of the library will need to
+      be enhanced to permit "safe" to be applied to user defined types. This
+      is apparent now, but as my brain can only comprehend the library one
+      piece at a time, this design feature was lost during the implementation.
+      In implementing co-existence of floats with safe integers, I did
+      refactor the implementation in a way which I believe my eventually
+      permit the application to any user supplied T which implements all the
+      required operations of Numeric types. So as it is now this is pending.
+      If the library were to become widely used, there might be motivation to
+      do this. Time will tell. So for now I'm leaving these in the
+      documentation and code, even though they are not actually used.</p>
+<p><span class="quote">&#8220;<span class="quote">In implementation you use literals -1, 0, 1
+      directly."</span>&#8221;</span></p>
+<p>I think this is currently true only in the implementation of
+      checked_integer operations. So if one were going to implement floating
+      or other types a "safe" types, current code should not be
+      effected.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm194813672320"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
+<p>For now though I'm not going to address it. For what it's worth,
+      my preference would be to do something like: </p>
+<pre class="programlisting"><span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">typename</span> <span class="identifier">T</span><span class="special">&gt;</span>
+<span class="keyword">struct</span> <span class="identifier">range</span> <span class="special">{</span>
+    <span class="identifier">T</span> <span class="identifier">m_lowest</span><span class="special">;</span>
+    <span class="identifier">T</span> <span class="identifier">m_highest</span><span class="special">;</span>
+    <span class="comment">// default implementation</span>
+    <span class="identifier">range</span><span class="special">(</span>
+        <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">T</span> <span class="identifier">t_min</span><span class="special">,</span> 
+        <span class="keyword">const</span> <span class="special">&amp;</span> <span class="identifier">T</span> <span class="identifier">t_max</span>
+    <span class="special">)</span> <span class="special">:</span>
+        <span class="identifier">m_lowest</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">lowest</span><span class="special">(</span><span class="identifier">t_min</span><span class="special">)</span><span class="special">,</span>
+        <span class="identifier">m_highest</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="identifier">t_max</span><span class="special">)</span>
+    <span class="special">{</span><span class="special">}</span>
+<span class="special">}</span><span class="special">;</span></pre>
+<p>Then redeclare <code class="computeroutput">safe_base</code>, etc. accordingly.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm194813636240"></a><code class="computeroutput">std::common_type</code> Specialization Missing</h3></div></div></div>
+<p>std::common_type is used in a variety of generic libraries,
+      including std::chrono. Without a specialization for safe&lt;T&gt;s one
+      cannot use the safe wrappers e.g. as a representation for
+      std::chrono::duration.</p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h3 class="title">
+<a name="idm194813634176"></a>Other Pending Issues</h3></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>The library is currently limited to integers.</p></li>
-<li class="listitem"><p>Conversions to safe integer types from floating point types is
-        not explicitly addressed.</p></li>
-<li class="listitem"><p>Note that standard library stream conversion functions such as
-        <code class="computeroutput">strtoi</code> etc. DO check for valid input and throw the
-        exception <code class="computeroutput">std::out_of_range</code> if the string cannot be
-        converted to the specified integer type. In other words,
-        <code class="computeroutput">strtoi</code> already contains some of the functionality that
-        <code class="computeroutput">safe&lt;int&gt;</code> provides.</p></li>
-<li class="listitem"><p>Although care has been taken to make the library portable, it's
-        likely that at least some parts of the implementation - particularly
-        <code class="computeroutput">checked</code> arithmetic - depend upon two's complement
-        representation of integers. Hence the library is probably not
-        currently portable to all other possible C++ architectures.</p></li>
+<li class="listitem"><p>The library is currently limited to integers. If there is
+            interest, it could be extended to floats and possible to user
+            defined types.</p></li>
+<li class="listitem"><p>Although care has been taken to make the library portable,
+            at least some parts of the implementation - particularly
+            <code class="computeroutput">checked</code> integer arithmetic - depend upon two's
+            complement representation of integers. Hence the library is
+            probably not currently portable to all other possible C++
+            architectures. These days, this is unlikely to be a limitation in
+            practice.</p></li>
 <li class="listitem"><p>Currently the library permits a <code class="computeroutput">safe&lt;int&gt;</code>
-        value to be uninitialized. This supports the goal of "drop-in"
-        replacement of C++/C built-in types with safe counter parts. On the
-        other hand, this breaks the "always valid" guarantee.</p></li>
+            value to be uninitialized. This supports the goal of "drop-in"
+            replacement of C++/C built-in types with safe counter parts. On
+            the other hand, this breaks the "always valid" guarantee. The
+            recent improvements in the exception policy implementation will
+            permit a user to specify how this is to be handled.</p></li>
 </ul></div>
+</div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

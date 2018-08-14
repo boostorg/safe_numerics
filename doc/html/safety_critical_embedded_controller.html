@@ -21,10 +21,10 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safety_critical_embedded_controller"></a>Safety Critical Embedded Controller</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm122119798048">Updating the Code</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm122119781776">Compiling on the Desktop</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm122119355296">Trapping Errors at Compile Time</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm122121478944">Summary</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816952112">Updating the Code</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816936896">Compiling on the Desktop</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816545472">Trapping Errors at Compile Time</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194815495488">Summary</a></span></dt>
 </dl></div>
 <p>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
@@ -50,7 +50,7 @@
   doesn't have to keep us from working on our code.</p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122119798048"></a>Updating the Code</h4></div></div></div>
+<a name="idm194816952112"></a>Updating the Code</h4></div></div></div>
 <p>Inspecting this <a href="../../example/motor.c" target="_top">code</a>, we
     find that it is written in a dialect of C rather than C itself. At the
     time this code was written, conforming versions of the C compiler were not
@@ -87,7 +87,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122119781776"></a>Compiling on the Desktop</h4></div></div></div>
+<a name="idm194816936896"></a>Compiling on the Desktop</h4></div></div></div>
 <p>Using the target environment to run tests is often very difficult or
     impossible due to limited resources. So software unit testing for embedded
     systems is very problematic and often skipped. The C language on our
@@ -372,7 +372,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122119355296"></a>Trapping Errors at Compile Time</h4></div></div></div>
+<a name="idm194816545472"></a>Trapping Errors at Compile Time</h4></div></div></div>
 <p>We can test the same code we're going to load into our target system
     on the desktop. We could build and execute a complete unit test suite. We
     could capture the output and graph it. We have the ability to make are
@@ -994,7 +994,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm122121478944"></a>Summary</h4></div></div></div>
+<a name="idm194815495488"></a>Summary</h4></div></div></div>
 <p>The intent of this case study is to show that the Safe Numerics
     Library can be an essential tool in validating the correctness of C/C++
     programs in all environments - including the most restricted.</p>
