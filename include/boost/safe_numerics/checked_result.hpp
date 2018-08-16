@@ -19,7 +19,7 @@
 #include "exception.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<typename R>
 struct checked_result {
@@ -91,7 +91,7 @@ struct checked_result {
     checked_result & operator=(const checked_result &) = delete;
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif  // BOOST_NUMERIC_CHECKED_RESULT

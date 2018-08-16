@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
-#include "../include/exception_policies.hpp"
-#include "../include/automatic.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/exception_policies.hpp>
+#include <boost/safe_numerics/automatic.hpp>
 #include "safe_format.hpp" // prints out range and value of any type
 
-using safe_t = boost::numeric::safe<
+using safe_t = boost::safe_numerics::safe<
     int,
-    boost::numeric::automatic, // note use of "automatic" policy!!!
-    boost::numeric::loose_trap_policy
+    boost::safe_numerics::automatic, // note use of "automatic" policy!!!
+    boost::safe_numerics::loose_trap_policy
 >;
 
 int main(int, const char *[]){

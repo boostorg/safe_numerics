@@ -8,11 +8,11 @@
 
 #include <iostream>
 
-#include "../include/safe_integer_literal.hpp"
-#include "../include/native.hpp"
-#include "../include/exception.hpp"
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+#include <boost/safe_numerics/native.hpp>
+#include <boost/safe_numerics/exception.hpp>
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 template<std::uintmax_t N>
 using compile_time_value = safe_unsigned_literal<N, native, loose_trap_policy>;

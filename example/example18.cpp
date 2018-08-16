@@ -1,7 +1,8 @@
 #include <limits>
-#include <safe_integer.hpp>
-#include <safe_literal.hpp>
-using namespace boost::numeric;
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+
+using namespace boost::safe_numerics;
 
 int f(int i){
     return i;

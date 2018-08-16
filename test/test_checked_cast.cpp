@@ -8,7 +8,7 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "../include/checked_integer.hpp"
+#include <boost/safe_numerics/checked_integer.hpp>
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>
@@ -22,14 +22,14 @@ bool test_cast(
         << "testing static_cast<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
 
-    boost::numeric::checked_result<T2> r2 = boost::numeric::checked::cast<T2>(v1);
+    boost::safe_numerics::checked_result<T2> r2 = boost::safe_numerics::checked::cast<T2>(v1);
 
     if(expected_result == 'x' && ! r2.exception()){
         std::cout
             << "failed to detect error in construction "
             << t2_name << "<-" << t1_name
             << std::endl;
-        boost::numeric::checked::cast<T2>(v1);
+        boost::safe_numerics::checked::cast<T2>(v1);
         return false;
     }
     if(expected_result == '.' && r2.exception()){
@@ -37,7 +37,7 @@ bool test_cast(
             << "erroneously emitted error "
             << t2_name << "<-" << t1_name
             << std::endl;
-        boost::numeric::checked::cast<T2>(v1);
+        boost::safe_numerics::checked::cast<T2>(v1);
         return false;
     }
     return true; // passed test

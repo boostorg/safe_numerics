@@ -10,7 +10,7 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 template<class T1, class T2>
 bool test_left_shift(
@@ -28,7 +28,7 @@ bool test_left_shift(
         safe_t<T1> t1 = v1;
         using result_type = decltype(t1 << v2);
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;
@@ -66,7 +66,7 @@ bool test_left_shift(
         safe_t<T2> t2 = v2;
         using result_type = decltype(v1 << t2);
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;
@@ -104,7 +104,7 @@ bool test_left_shift(
         safe_t<T2> t2 = v2;
         using result_type = decltype(t1 << t2);
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;

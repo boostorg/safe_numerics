@@ -1,10 +1,10 @@
 #include <iostream>
 #include <cstdint>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 using namespace std;
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 void f(const unsigned int & x, const int8_t & y){
     cout << x * y << endl;

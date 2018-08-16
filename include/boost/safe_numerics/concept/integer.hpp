@@ -15,7 +15,7 @@
 #include "numeric.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template <class T>
 class Integer : public Numeric<T> {
@@ -26,7 +26,7 @@ class Integer : public Numeric<T> {
     );
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_INTEGER_HPP

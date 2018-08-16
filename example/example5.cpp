@@ -2,7 +2,7 @@
 #include <iostream>
 #include <array>
 
-#include "../include/safe_integer_range.hpp"
+#include <boost/safe_numerics/safe_integer_range.hpp>
 
 void detected_msg(bool detected){
     std::cout << (detected ? "error detected!" : "error NOT detected! ") << std::endl;
@@ -24,7 +24,7 @@ int main(int, const char *[]){
     // solution: replace unsigned array index with safe_unsigned_range
     std::cout << "Using safe numerics" << std::endl;
     try{
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         using i_index_t = safe_unsigned_range<0, i_array.size() - 1>;
         i_index_t i_index;
         i_index = 36; // this works fine

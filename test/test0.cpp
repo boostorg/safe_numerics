@@ -6,12 +6,12 @@
 
 #include <iostream>
 
-#include "../include/safe_integer_range.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 
 bool test1(){
     std::cout << "test1" << std::endl;
-    boost::numeric::safe_signed_range<-64, 63> x, y, z;
+    boost::safe_numerics::safe_signed_range<-64, 63> x, y, z;
     x = 1;
     y = 2;
     z = 3;
@@ -33,7 +33,7 @@ bool test1(){
 
 bool test2(){
     std::cout << "test2" << std::endl;
-    boost::numeric::safe_unsigned_range<0, 64> x, y, z;
+    boost::safe_numerics::safe_unsigned_range<0, 64> x, y, z;
     x = 1;
     y = 2;
     z = 3;
@@ -61,7 +61,7 @@ bool test2(){
 }
 
 bool test3(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     std::cout << "test3" << std::endl;
     safe<int> x, y, z;
     x = 1;
@@ -84,7 +84,7 @@ bool test3(){
 
 bool test4(){
     std::cout << "test4" << std::endl;
-    boost::numeric::safe<unsigned int> x, y, z;
+    boost::safe_numerics::safe<unsigned int> x, y, z;
     x = 1;
     y = 2;
     z = 3;
@@ -110,7 +110,7 @@ bool test4(){
 
 bool test5(){
     std::cout << "test5" << std::endl;
-    boost::numeric::safe<boost::uint64_t> x, y, z;
+    boost::safe_numerics::safe<boost::uint64_t> x, y, z;
     x = 1;
     y = 2;
     z = 3;

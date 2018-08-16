@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstdint>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(int, const char *[]){
     std::cout << "example 1:";
@@ -24,7 +24,7 @@ int main(int, const char *[]){
     // solution: replace int with safe<int>
     std::cout << "Using safe numerics" << std::endl;
     try{
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         safe<int> x = INT_MAX;
         safe<int> y = 2;
         safe<int> z;

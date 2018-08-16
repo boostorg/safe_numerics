@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "../include/safe_integer_range.hpp"
-#include "../include/safe_integer_literal.hpp"
-#include "../include/exception.hpp"
-#include "../include/native.hpp"
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+#include <boost/safe_numerics/exception.hpp>
+#include <boost/safe_numerics/native.hpp>
 #include "safe_format.hpp" // prints out range and value of any type
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 // create a type for holding small integers in a specific range
 using safe_t = safe_signed_range<

@@ -7,13 +7,13 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_integer.hpp"
-#include "../include/automatic.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/automatic.hpp>
 
 template <class T>
-using safe_t = boost::numeric::safe<
+using safe_t = boost::safe_numerics::safe<
     T,
-    boost::numeric::automatic
+    boost::safe_numerics::automatic
 >;
 
 #include "test_multiply.hpp"

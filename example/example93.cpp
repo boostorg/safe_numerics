@@ -12,15 +12,15 @@
 #include <boost/integer.hpp>
 
 // include headers to support safe integers
-#include "../include/cpp.hpp"
-#include "../include/exception.hpp"
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_range.hpp"
-#include "../include/safe_integer_literal.hpp"
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/exception.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
 
 // use same type promotion as used by the pic compiler
 // target compiler XC8 supports:
-using pic16_promotion = boost::numeric::cpp<
+using pic16_promotion = boost::safe_numerics::cpp<
     8,  // char      8 bits
     16, // short     16 bits
     16, // int       16 bits
@@ -34,9 +34,9 @@ using pic16_promotion = boost::numeric::cpp<
 
 // ***************************
 // generate compile time errors if operation could fail 
-using trap_policy = boost::numeric::loose_trap_policy;
+using trap_policy = boost::safe_numerics::loose_trap_policy;
 // generate runtime errors if operation could fail
-using exception_policy = boost::numeric::default_exception_policy;
+using exception_policy = boost::safe_numerics::default_exception_policy;
 
 // ***************************
 // 2. Create a macro named literal an integral value
@@ -52,15 +52,15 @@ using exception_policy = boost::numeric::default_exception_policy;
 #define C_MIN  (25 << 8)
 
 static_assert(
-    boost::numeric::base_value(C0) < 0xffffff,
+    boost::safe_numerics::base_value(C0) < 0xffffff,
     "Largest step too long"
 );
 static_assert(
-    boost::numeric::base_value(C_MIN) > 0,
+    boost::safe_numerics::base_value(C_MIN) > 0,
     "Smallest step must be greater than zero"
 );
 static_assert(
-    boost::numeric::base_value(C_MIN) < boost::numeric::base_value(C0),
+    boost::safe_numerics::base_value(C_MIN) < boost::safe_numerics::base_value(C0),
     "Smallest step must be smaller than largest step"
 );
 
@@ -70,21 +70,21 @@ static_assert(
 // ranges and permit compile time determination of when
 // exceptional conditions might occur.
 
-using pic_register_t = boost::numeric::safe<
+using pic_register_t = boost::safe_numerics::safe<
     uint8_t,
     pic16_promotion,
     trap_policy // use for compiling and running tests
 >;
 
 // number of steps
-using step_t = boost::numeric::safe<
+using step_t = boost::safe_numerics::safe<
     std::int32_t,
     pic16_promotion,
     exception_policy
 >;
 
 // position
-using position_t = boost::numeric::safe_unsigned_range<
+using position_t = boost::safe_numerics::safe_unsigned_range<
     0,
     50000, // 500 mm / 2 mm/rotation * 200 steps/rotation
     pic16_promotion,
@@ -93,7 +93,7 @@ using position_t = boost::numeric::safe_unsigned_range<
 
 // next end of step timer value in format 24.8
 // where the .8 is the number of bits in the fractional part.
-using ccpr_t = boost::numeric::safe<
+using ccpr_t = boost::safe_numerics::safe<
     uint32_t,
     pic16_promotion,
     exception_policy
@@ -103,7 +103,7 @@ using ccpr_t = boost::numeric::safe<
 // note: this value is constrainted to be a positive value. But
 // we still need to make it a signed type. We get an arithmetic
 // error when moving to a negative step number.
-using c_t = boost::numeric::safe_signed_range<
+using c_t = boost::safe_numerics::safe_signed_range<
     C_MIN,
     C0,
     pic16_promotion,
@@ -111,7 +111,7 @@ using c_t = boost::numeric::safe_signed_range<
 >;
 
 // index into phase table
-using phase_ix_t = boost::numeric::safe_signed_range<
+using phase_ix_t = boost::safe_numerics::safe_signed_range<
     0,
     3,
     pic16_promotion,
@@ -119,14 +119,14 @@ using phase_ix_t = boost::numeric::safe_signed_range<
 >;
 
 // settings for control value output
-using phase_t = boost::numeric::safe<
+using phase_t = boost::safe_numerics::safe<
     uint16_t,
     pic16_promotion,
     trap_policy
 >;
 
 // direction of rotation
-using direction_t = boost::numeric::safe_signed_range<
+using direction_t = boost::safe_numerics::safe_signed_range<
     -1,
     +1,
     pic16_promotion,
@@ -134,7 +134,7 @@ using direction_t = boost::numeric::safe_signed_range<
 >;
 
 // some number of microseconds
-using microseconds = boost::numeric::safe<
+using microseconds = boost::safe_numerics::safe<
     uint32_t,
     pic16_promotion,
     trap_policy
@@ -170,7 +170,7 @@ pic_register_t TMR1L;
 
 // ***************************
 // special checked type for bits - values restricted to 0 or 1
-using safe_bit_t = boost::numeric::safe_unsigned_range<
+using safe_bit_t = boost::safe_numerics::safe_unsigned_range<
     0,
     1,
     pic16_promotion,

@@ -9,12 +9,12 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_compare.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_compare.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 
 template<class T2, class T1>
 bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     std::cout
         << "testing constructions to " << t2_name << " from " << t1_name
         << std::endl;

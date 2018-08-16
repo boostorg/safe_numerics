@@ -25,7 +25,7 @@
 #include "checked_result.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // in C++ the following rules govern integer arithmetic
 
@@ -196,7 +196,7 @@ public:
     };
 };
 
-}   // numeric
-}   // boost
+} // safe_numerics
+} // boost
 
 #endif // BOOST_NUMERIC_cpp_HPP

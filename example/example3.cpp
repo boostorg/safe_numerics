@@ -2,7 +2,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(int, const char *[]){
     std::cout << "example 3:";
@@ -29,7 +29,7 @@ int main(int, const char *[]){
     // solution: replace unsigned int with safe<unsigned int>
     std::cout << "Using safe numerics" << std::endl;
     try{
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         safe<unsigned int> x = 0;
         // decrement unsigned to less than zero throws exception
         --x;

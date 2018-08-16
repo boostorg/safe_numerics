@@ -22,7 +22,7 @@
 #include <boost/integer.hpp> // (u)int_t<>::least, exact
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 namespace utility {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ constexpr T round_out(const T & t){
 }
 
 } // utility
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif  // BOOST_NUMERIC_UTILITY_HPP

@@ -1,11 +1,11 @@
 #include <exception>
 #include <iostream>
 
-#include "../include/checked_result.hpp"
-#include "../include/checked_result_operations.hpp"
+#include <boost/safe_numerics/checked_result.hpp>
+#include <boost/safe_numerics/checked_result_operations.hpp>
 
 int main(){
-    using ext_uint = boost::numeric::checked_result<unsigned int>;
+    using ext_uint = boost::safe_numerics::checked_result<unsigned int>;
     const ext_uint x{4};
     const ext_uint y{3};
 

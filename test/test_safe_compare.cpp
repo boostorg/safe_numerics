@@ -9,7 +9,7 @@
 #include <typeinfo>
 #include <boost/core/demangle.hpp>
 
-#include "../include/safe_compare.hpp"
+#include <boost/safe_numerics/safe_compare.hpp>
 
 template<class T1, class T2>
 void print_argument_types(
@@ -24,7 +24,7 @@ void print_argument_types(
         << boost::core::demangle(ti2.name());
 }
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 template<class T1, class T2>
 bool test_safe_compare_impl(

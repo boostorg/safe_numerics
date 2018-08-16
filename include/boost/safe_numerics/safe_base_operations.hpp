@@ -33,7 +33,7 @@
 #include "utility.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // invoke error handling
 template<class EP, typename R>
@@ -123,7 +123,7 @@ template< class Stored, Stored Min, Stored Max, class P, class E>
 template<
     class R,
     typename std::enable_if<
-        ! boost::numeric::is_safe<R>::value,
+        ! boost::safe_numerics::is_safe<R>::value,
         int
     >::type
 >
@@ -1597,14 +1597,14 @@ void safe_base<T, Min, Max, P, E>::input(
         validated_cast(m_t);
     }
     if(is.fail()){
-        boost::numeric::dispatch<E>(
-            boost::numeric::safe_numerics_error::domain_error,
+        boost::safe_numerics::dispatch<E>(
+            boost::safe_numerics::safe_numerics_error::domain_error,
             "error in file input"
         );
     }
 }
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_SAFE_BASE_OPERATIONS_HPP

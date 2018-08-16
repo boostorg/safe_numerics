@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(){
     std::cout << "example 4: ";
@@ -30,7 +30,7 @@ int main(){
     // solution: replace int with safe<int> and unsigned int with safe<unsigned int>
     std::cout << "Using safe numerics" << std::endl;
     try{
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         safe<signed int>   a{-1};
         safe<unsigned int> b{1};
         std::cout << "a is " << a << " b is " << b << '\n';

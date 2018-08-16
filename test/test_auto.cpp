@@ -2,13 +2,13 @@
 #include <cassert>
 #include <boost/core/demangle.hpp>
 
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_range.hpp"
-#include "../include/automatic.hpp"
-#include "../include/utility.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/automatic.hpp>
+#include <boost/safe_numerics/utility.hpp>
 
 int test_log(){
-    using namespace boost::numeric::utility;
+    using namespace boost::safe_numerics::utility;
     assert(ilog2(127u) == 6);
     assert(ilog2(128u) == 7);
     assert(ilog2(129u) == 7);
@@ -32,7 +32,7 @@ void print_argument_type(const T & t){
 
 template<typename T, typename U>
 int test_auto(const T & t, const U & u){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
 
     try{
         safe<T, automatic>(t) + u;
@@ -53,7 +53,7 @@ int test_auto(const T & t, const U & u){
 }
 
 int test_auto_result(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     automatic::addition_result<
         safe<std::int8_t, automatic>,
         safe<std::uint16_t, automatic>
@@ -69,7 +69,7 @@ int test_auto_result(){
 }
 
 int test_compare_result(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
 
     automatic::comparison_result<
         safe<std::int8_t, automatic>,
@@ -81,7 +81,7 @@ int test_compare_result(){
 }
 
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
 
     test_log();
     test_auto<std::int8_t, std::int8_t>(1, -128);

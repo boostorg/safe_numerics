@@ -9,7 +9,7 @@
 // this is a compile only test - but since many build systems
 // can't handle a compile-only test - make sure it passes trivially.
 #include <cassert>
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 template<typename T, typename U>
 void test(){
@@ -25,7 +25,7 @@ void test(){
     // the operators below are restricted to integral types
 }
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     /*
     test<safe<std::int8_t>, float>();
     test<safe<std::int16_t>,float>();

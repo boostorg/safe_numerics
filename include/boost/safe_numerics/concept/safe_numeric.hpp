@@ -18,7 +18,7 @@
 #include "concept/numeric.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<class T>
 struct SafeNumeric : public Numeric<T> {
@@ -33,7 +33,7 @@ struct SafeNumeric : public Numeric<T> {
     }
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_SAFE_NUMERIC_HPP

@@ -13,8 +13,8 @@
 
 #include <boost/core/demangle.hpp>
 
-#include "../include/safe_integer.hpp"
-#include "../include/range_value.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 template<class T1, class T2>
 bool test_assignment(
@@ -31,7 +31,7 @@ bool test_assignment(
         safe_t<T2> s2(t2);
 
         static_assert(
-            boost::numeric::is_safe<safe_t<T1> >::value,
+            boost::safe_numerics::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"
         );
         try{

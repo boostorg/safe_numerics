@@ -26,7 +26,7 @@
 #include "exception.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // utility
 
@@ -58,7 +58,7 @@ struct checked_operation<R, T,
             // INT32-C Ensure that operations on signed
             // integers do not overflow
             return
-            boost::numeric::safe_compare::greater_than(
+            boost::safe_numerics::safe_compare::greater_than(
                 t,
                 std::numeric_limits<R>::max()
             ) ?
@@ -67,7 +67,7 @@ struct checked_operation<R, T,
                     "converted signed value too large"
                 )
             :
-            boost::numeric::safe_compare::less_than(
+            boost::safe_numerics::safe_compare::less_than(
                 t,
                 std::numeric_limits<R>::min()
             ) ?
@@ -88,7 +88,7 @@ struct checked_operation<R, T,
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
             return
-            boost::numeric::safe_compare::greater_than(
+            boost::safe_numerics::safe_compare::greater_than(
                 t,
                 std::numeric_limits<R>::max()
             ) ?
@@ -109,7 +109,7 @@ struct checked_operation<R, T,
             // INT32-C Ensure that operations on unsigned
             // integers do not overflow
             return
-            boost::numeric::safe_compare::greater_than(
+            boost::safe_numerics::safe_compare::greater_than(
                 t,
                 std::numeric_limits<R>::max()
             ) ?
@@ -128,13 +128,13 @@ struct checked_operation<R, T,
             std::true_type   // T is signed
         ) noexcept {
             return
-            boost::numeric::safe_compare::less_than(t, 0) ?
+            boost::safe_numerics::safe_compare::less_than(t, 0) ?
                 checked_result<R>(
                     safe_numerics_error::domain_error,
                     "converted negative value to unsigned"
                 )
             :
-            boost::numeric::safe_compare::greater_than(
+            boost::safe_numerics::safe_compare::greater_than(
                 t,
                 std::numeric_limits<R>::max()
             ) ?
@@ -762,7 +762,7 @@ constexpr static checked_result<R> right_shift(
 // integer operands.
 
 constexpr static checked_result<R> bitwise_or(const R & t, const R & u) noexcept {
-    using namespace boost::numeric::utility;
+    using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
@@ -776,7 +776,7 @@ constexpr static checked_result<R> bitwise_or(const R & t, const R & u) noexcept
 }
 
 constexpr static checked_result<R> bitwise_xor(const R & t, const R & u) noexcept {
-    using namespace boost::numeric::utility;
+    using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
@@ -790,7 +790,7 @@ constexpr static checked_result<R> bitwise_xor(const R & t, const R & u) noexcep
 }
 
 constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcept {
-    using namespace boost::numeric::utility;
+    using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));
 
@@ -804,7 +804,7 @@ constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcep
 }
 
 constexpr static checked_result<R> bitwise_not(const R & t) noexcept {
-    using namespace boost::numeric::utility;
+    using namespace boost::safe_numerics::utility;
 
     if(significant_bits(t) > bits_type<R>::value){
         return checked_result<R>{
@@ -816,8 +816,7 @@ constexpr static checked_result<R> bitwise_not(const R & t) noexcept {
 }
 
 }; // checked_operation
-
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CHECKED_INTEGER_HPP

@@ -7,10 +7,10 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 template <class T>
-using safe_t = boost::numeric::safe<T>;
+using safe_t = boost::safe_numerics::safe<T>;
 
 #include "test_divide.hpp"
 #include "test.hpp"

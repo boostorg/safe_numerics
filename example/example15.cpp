@@ -2,7 +2,7 @@
 #include <limits>
 
 #include <boost/rational.hpp>
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(int, const char *[]){
     // simple demo of rational library
@@ -23,7 +23,7 @@ int main(int, const char *[]){
 
     // solution: use safe integer in rational definition
     using safe_rational = boost::rational<
-        boost::numeric::safe<int>
+        boost::safe_numerics::safe<int>
     >;
 
     // use rationals created with safe_t

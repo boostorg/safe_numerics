@@ -7,31 +7,31 @@ auto val()
 
 #include <stdexcept>
 #include <iostream>
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_literal.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
 
 void val0(){
-    const boost::numeric::safe<unsigned int> x{0};
+    const boost::safe_numerics::safe<unsigned int> x{0};
     std::cout << x << std::endl;
     std::cout << -x << std::endl;
     auto y = -x;
     std::cout << y << std::endl;
 }
 
-constexpr boost::numeric::safe<unsigned int> val1()
+constexpr boost::safe_numerics::safe<unsigned int> val1()
 {
-    constexpr boost::numeric::safe<unsigned int> x = 0xFFFFFFFF;
+    constexpr boost::safe_numerics::safe<unsigned int> x = 0xFFFFFFFF;
     return -x;
 }
-constexpr boost::numeric::safe<unsigned int> val2()
+constexpr boost::safe_numerics::safe<unsigned int> val2()
 {
-    boost::numeric::safe<unsigned int> x = - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+    boost::safe_numerics::safe<unsigned int> x = - boost::safe_numerics::safe_unsigned_literal<0xFFFFFFFF>();
     return x;
 }
 
-constexpr boost::numeric::safe<unsigned int> val3()
+constexpr boost::safe_numerics::safe<unsigned int> val3()
 {
-    return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+    return - boost::safe_numerics::safe_unsigned_literal<0xFFFFFFFF>();
 }
 
 int main(){
@@ -43,10 +43,10 @@ int main(){
 }
 
 // test utility
-#include "../include/utility.hpp"
+#include <boost/safe_numerics/utility.hpp>
 
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     using x = unsigned_stored_type<0, 42>;
     print_type<x> p1;
 
@@ -54,14 +54,14 @@ int main(){
 }
 
 // test automatic type promotion
-#include "../include/automatic.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/automatic.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 #include <type_traits>
 #include <cstdint>
 #include <iostream>
 
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     using ar = automatic::addition_result<std::uint8_t, std::uint8_t>;
     static_assert(
         std::is_same<ar::type, std::uint16_t>::value,
@@ -72,16 +72,16 @@ int main(){
 
 
 // test automatic type promotion
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_range.hpp"
-#include "../include/safe_integer_literal.hpp"
-#include "../include/automatic.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+#include <boost/safe_numerics/automatic.hpp>
 #include <type_traits>
 #include <cstdint>
 #include <iostream>
 
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     unsigned char t1 = 1;
     constexpr const safe_unsigned_literal<42, automatic, default_exception_policy> v2;
     using result_type = decltype(t1 + v2);
@@ -96,45 +96,45 @@ int main(){
     return 0;
 }
 void f1(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     constexpr safe<int> j = 0;
     constexpr safe<int> k = 3;
     constexpr safe<int> l = j + k; // compile error
 }
 
 void f2(){
-    using namespace boost::numeric;
-    constexpr safe<int> j = boost::numeric::safe_signed_literal<0>();
-    constexpr safe<int> k = boost::numeric::safe_signed_literal<3>();
+    using namespace boost::safe_numerics;
+    constexpr safe<int> j = boost::safe_numerics::safe_signed_literal<0>();
+    constexpr safe<int> k = boost::safe_numerics::safe_signed_literal<3>();
     constexpr safe<int> l = j + k; // compile error
 }
 
 void f3(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     constexpr auto j = safe_signed_literal<0, native, loose_trap_policy>();
     constexpr auto k = safe_signed_literal<3>();
     constexpr const safe<int> l = j + k;
 }
 
 void f4(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     safe_signed_literal<0, native, loose_trap_policy> j;
     safe_signed_literal<3> k;
     constexpr auto l = safe_signed_literal<3>();
     constexpr const safe<int> l2 = j + k;
 }
 
-#include "../include/interval.hpp"
+#include <boost/safe_numerics/interval.hpp>
 
 int main(){
     return 0;
 }
 
-#include "../include/utility.hpp"
-#include "../include/cpp.hpp"
-#include "../include/safe_common.hpp"
+#include <boost/safe_numerics/utility.hpp>
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/safe_common.hpp>
 
-using pic16_promotion = boost::numeric::cpp<
+using pic16_promotion = boost::safe_numerics::cpp<
     8,  // char
     8,  // short
     8,  // int
@@ -143,12 +143,12 @@ using pic16_promotion = boost::numeric::cpp<
 >;
 
 #include <type_traits>
-#include "../include/safe_integer.hpp"
-#include "../include/range_value.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 #include <iostream>
 
 int main(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     static_assert(
         std::is_literal_type<safe<int>>::value,
         "safe type is a literal type"
@@ -181,28 +181,28 @@ auto val()
 
 #include <stdexcept>
 #include <iostream>
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_literal.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
 
 void val0(){
-    const boost::numeric::safe<unsigned int> x{0};
+    const boost::safe_numerics::safe<unsigned int> x{0};
     std::cout << x << std::endl;
     std::cout << -x << std::endl;
     auto y = -x;
     std::cout << y << std::endl;
 }
 
-constexpr boost::numeric::safe<unsigned int> val1(){
-    constexpr boost::numeric::safe<unsigned int> x = 0xFFFFFFFF;
+constexpr boost::safe_numerics::safe<unsigned int> val1(){
+    constexpr boost::safe_numerics::safe<unsigned int> x = 0xFFFFFFFF;
     return -x;
 }
-constexpr boost::numeric::safe<unsigned int> val2(){
-    const boost::numeric::safe<unsigned int> x
-        = -boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+constexpr boost::safe_numerics::safe<unsigned int> val2(){
+    const boost::safe_numerics::safe<unsigned int> x
+        = -boost::safe_numerics::safe_unsigned_literal<0xFFFFFFFF>();
     return x;
 }
-constexpr boost::numeric::safe<unsigned int> val3(){
-    return - boost::numeric::safe_unsigned_literal<0xFFFFFFFF>();
+constexpr boost::safe_numerics::safe<unsigned int> val3(){
+    return - boost::safe_numerics::safe_unsigned_literal<0xFFFFFFFF>();
 }
 
 int main(){
@@ -214,13 +214,13 @@ int main(){
 }
 
 #include <boost/logic/tribool.hpp>
-#include "checked_integer.hpp"
-#include "checked_result.hpp"
-#include "checked_result_operations.hpp"
-#include "interval.hpp"
+#include "checked_integer.hpp>
+#include "checked_result.hpp>
+#include "checked_result_operations.hpp>
+#include "interval.hpp>
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<class EP, typename R>
 constexpr void
@@ -306,14 +306,14 @@ bool test1(const T & t){
 }
 
 
-} // numeric
+} // safe_numerics
 } // boost
 
 int main(){
-    unsigned int x1 = boost::numeric::test1<
+    unsigned int x1 = boost::safe_numerics::test1<
         unsigned int, 0, 100, signed char
     >(-1);
-    bool x2 = boost::numeric::validate_detail<
+    bool x2 = boost::safe_numerics::validate_detail<
         unsigned int, 0, 100, signed char, void
     >::return_value(-1);
     return 0;
@@ -528,9 +528,9 @@ int main(){
 #endif
 
 #if 0
-//#include "safe_common.hpp"
-//#include "checked_result.hpp"
-//#include "checked_default.hpp"
+//#include "safe_common.hpp>
+//#include "checked_result.hpp>
+//#include "checked_default.hpp>
 #include <cassert>
 #include <boost/logic/tribool.hpp>
 
@@ -600,7 +600,7 @@ constexpr signed int test_constexpr(
     return x;
 }
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 int main()
 {
@@ -626,6 +626,10 @@ int main()
     return result;
 }
 
+#endif
+
+#if 0
+
 #include <boost/logic/tribool.hpp>
 #include <cassert>
 int main(){
@@ -637,16 +641,17 @@ int main(){
     assert(! static_cast<bool>(tb_f));
     return 0;
 }
+#endif
 
-
+#if 0
 #include <boost/integer.hpp>
-#include "../include/utility.hpp"
+#include <boost/safe_numerics/utility.hpp>
 
 // include headers to support safe integers
-#include "../include/cpp.hpp"
-//#include "../include/exception.hpp"
+#include <boost/safe_numerics/cpp.hpp>
+//#include <boost/safe_numerics/exception.hpp>
 
-using promotion_policy = boost::numeric::cpp<
+using promotion_policy = boost::safe_numerics::cpp<
     8,  // char      8 bits
     16, // short     16 bits
     16, // int       16 bits
@@ -657,7 +662,7 @@ using promotion_policy = boost::numeric::cpp<
 template<typename R, typename T, typename U>
 struct test {
     using ResultType = promotion_policy::result_type<T,U>;
-    //boost::numeric::utility::print_type<ResultType> pt;
+    //boost::safe_numerics::utility::print_type<ResultType> pt;
     static_assert(
         std::is_same<R, ResultType>::value,
         "is_same<R, ResultType>"
@@ -670,55 +675,63 @@ int main(){
     return 0;
 }
 
+#endif
+
+#if 0
 #include <string>
 #include <unordered_map>
-#include "safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 #include <functional> // hash
 
 template<typename T>
 struct safe_hash {
-    size_t operator()(boost::numeric::safe<T> const& t) const  {
+    size_t operator()(boost::safe_numerics::safe<T> const& t) const  {
         return std::hash<T>()(t);
     }
 };
 
 int main(){
     auto foo = std::unordered_map<
-        boost::numeric::safe<int>,
+        boost::safe_numerics::safe<int>,
         std::string,
         safe_hash<int>
     >{};
-    foo[boost::numeric::safe<int>(42)] = "hello, world!";
+    foo[boost::safe_numerics::safe<int>(42)] = "hello, world!";
     foo[42] = "hello, world!";
 }
 
+#endif
+
+#if 0
 
 #include <string>
 #include <unordered_map>
-#include "safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 #include <functional> // hash
 
 template<typename T>
 struct safe_hash {
-    size_t operator()(boost::numeric::safe<T> const& t) const  {
+    size_t operator()(boost::safe_numerics::safe<T> const& t) const  {
         return std::hash<T>()(t);
     }
 };
 
 int main(){
     auto foo = std::unordered_map<int, std::string>{};
-    foo[boost::numeric::safe<int>(42)] = "hello, world!";
+    foo[boost::safe_numerics::safe<int>(42)] = "hello, world!";
 }
 
 #endif
 
-#include <iostream>
-#include "safe_integer.hpp"
-#include "automatic.hpp"
+#if 0
 
-using namespace boost::numeric;
+#include <iostream>
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/automatic.hpp>
+
+using namespace boost::safe_numerics;
 
 int main(){
     using safe_int = safe<
@@ -740,3 +753,6 @@ int main(){
 
     return 0;
 }
+#endif
+
+int main(){}

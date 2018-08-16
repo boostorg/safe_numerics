@@ -27,7 +27,7 @@
 #include "boost/concept/assert.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 /////////////////////////////////////////////////////////////////
 // forward declarations to support friend function declarations
@@ -249,7 +249,7 @@ public:
     template<
         class R,
         typename std::enable_if<
-            ! boost::numeric::is_safe<R>::value,
+            ! boost::safe_numerics::is_safe<R>::value,
             int
         >::type = 0
     >
@@ -324,7 +324,7 @@ public:
     }
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 /////////////////////////////////////////////////////////////////
@@ -341,10 +341,10 @@ template<
     class P,
     class E
 >
-class numeric_limits<boost::numeric::safe_base<T, Min, Max, P, E> >
+class numeric_limits<boost::safe_numerics::safe_base<T, Min, Max, P, E> >
     : public std::numeric_limits<T>
 {
-    using SB = boost::numeric::safe_base<T, Min, Max, P, E>;
+    using SB = boost::safe_numerics::safe_base<T, Min, Max, P, E>;
 public:
     constexpr static SB lowest() noexcept {
         return SB(Min, typename SB::skip_validation());

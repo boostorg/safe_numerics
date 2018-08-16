@@ -13,14 +13,14 @@
 
 // *************************** 
 // 1. include headers to support safe integers
-#include "../include/cpp.hpp"
-#include "../include/exception.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/exception.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 
 // *************************** 
 // 2. specify a promotion policy to support proper emulation of 
 // PIC types on the desktop
-using pic16_promotion = boost::numeric::cpp<
+using pic16_promotion = boost::safe_numerics::cpp<
     8,  // char      8 bits
     16, // short     16 bits
     16, // int       16 bits
@@ -40,7 +40,7 @@ static_assert(C_MIN < C0, "Smallest step must be smaller than largest step");
 // 3. define PIC integer type names to be safe integer types of he same size.
 
 template <typename T> // T is char, int, etc data type
-using safe_t = boost::numeric::safe<
+using safe_t = boost::safe_numerics::safe<
     T,
     pic16_promotion
 >;

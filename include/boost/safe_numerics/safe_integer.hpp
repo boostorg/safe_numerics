@@ -24,7 +24,7 @@
 
 // specialization for meta functions with safe<T> argument
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template <
     class T,
@@ -39,7 +39,7 @@ using safe = safe_base<
     E
 >;
 
-} // numeric
+} // safe_numerics
 } // boost
 
 

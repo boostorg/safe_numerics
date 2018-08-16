@@ -8,10 +8,10 @@
 #include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
-#include "../include/safe_compare.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_compare.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 // test conversion to T2 from different literal types
 template<class T2, class T1>

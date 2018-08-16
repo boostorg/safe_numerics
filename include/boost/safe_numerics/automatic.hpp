@@ -29,7 +29,7 @@
 #include "utility.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 struct automatic {
 private:
@@ -421,7 +421,7 @@ public:
     };
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_AUTOMATIC_HPP

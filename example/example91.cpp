@@ -10,15 +10,15 @@
 #include <iostream>
 #include <limits>
 
-#include "../include/cpp.hpp"
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_range.hpp"
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics//safe_integer_range.hpp>
 
 // use same type promotion as used by the pic compiler
 // see the following comment in motor.c
 // Types: int8,int16,int32=8,16,32bit integers
 
-using pic16_promotion = boost::numeric::cpp<
+using pic16_promotion = boost::safe_numerics::cpp<
     8,  // char
     8,  // short
     8,  // int
@@ -31,16 +31,16 @@ using pic16_promotion = boost::numeric::cpp<
 // the resulting program will be free of arithmetic errors introduced by
 // C expression syntax and type promotion with no runtime penalty
 template <typename T> // T is char, int, etc data type
-using safe_t = boost::numeric::safe<
+using safe_t = boost::safe_numerics::safe<
     T,
     pic16_promotion,
-    boost::numeric::default_exception_policy // use for compiling and running tests
+    boost::safe_numerics::default_exception_policy // use for compiling and running tests
 >;
-using safe_bool_t = boost::numeric::safe_unsigned_range<
+using safe_bool_t = boost::safe_numerics::safe_unsigned_range<
     0,
     1,
     pic16_promotion,
-    boost::numeric::default_exception_policy // use for compiling and running tests
+    boost::safe_numerics::default_exception_policy // use for compiling and running tests
 >;
 
 #define DESKTOP

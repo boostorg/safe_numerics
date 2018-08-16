@@ -27,7 +27,7 @@
 // "Giving context-specific meaning to generic error codes"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // errors codes for safe numerics
 
@@ -56,17 +56,17 @@ const std::uint8_t safe_numerics_casting_error_count =
 const std::uint8_t safe_numerics_error_count =
     static_cast<std::uint8_t>(safe_numerics_error::uninitialized_value) + 1;
 
-} // numeric
+} // safe_numerics
 } // boost
 
 namespace std {
     template <>
-    struct is_error_code_enum<boost::numeric::safe_numerics_error>
+    struct is_error_code_enum<boost::safe_numerics::safe_numerics_error>
         : public true_type {};
 };
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 const class : public std::error_category {
 public:
@@ -119,17 +119,17 @@ enum class safe_numerics_actions {
     undefined_behavior
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 namespace std {
     template <>
-    struct is_error_condition_enum<boost::numeric::safe_numerics_actions>
+    struct is_error_condition_enum<boost::safe_numerics::safe_numerics_actions>
         : public true_type {};
 };
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 const class : public std::error_category {
 public:
@@ -181,7 +181,7 @@ std::error_condition make_error_condition(safe_numerics_error e) {
     );
 }
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CHECKED_RESULT

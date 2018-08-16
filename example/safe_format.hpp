@@ -11,7 +11,7 @@
 #include <typeinfo>
 
 #include <boost/core/demangle.hpp>
-#include "../include/safe_common.hpp"
+#include <boost/safe_numerics/safe_common.hpp>
 
 namespace {
 
@@ -31,7 +31,10 @@ struct safe_format_impl {
     ){
         return os
             << "<"
-            << boost::core::demangle(typeid(typename boost::numeric::base_type<T>::type).name())
+            << boost::core::demangle(typeid(
+                typename boost::safe_numerics::base_type<T>::type
+                ).name()
+            )
             << ">["
             << std::numeric_limits<T>::min() << ","
             << std::numeric_limits<T>::max() << "] = "

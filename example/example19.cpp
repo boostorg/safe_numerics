@@ -1,10 +1,10 @@
 #include <type_traits>
-#include <../include/safe_integer.hpp>
-#include <../include/safe_range.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
 
-#include <../include/utility.hpp>
+#include <boost/safe_numerics/utility.hpp>
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 void f(){
     safe_unsigned_range<7, 24> i;
@@ -28,3 +28,5 @@ void f(){
         "k is a safe range of [7,279]"
     );
 }
+
+int main(){}

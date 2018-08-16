@@ -33,12 +33,12 @@
 #include <exception>
 #include <boost/rational.hpp>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 using std::cout;
 using std::endl;
 using boost::rational;
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 using int_type = safe<int>;
 
@@ -54,7 +54,7 @@ int main ()
 //    assert(boost::rational_cast<double>(half) == 0.5);
 
     static_assert(
-        ! boost::numeric::is_safe<rational<int_type>>::value,
+        ! boost::safe_numerics::is_safe<rational<int_type>>::value,
         "rational<int_type> is safe"
     );
 

@@ -16,7 +16,7 @@
 #include <limits>
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 namespace safe_compare {
 
 ////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ constexpr bool not_equal(const T & lhs, const U & rhs) {
 }
 
 } // safe_compare
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_SAFE_COMPARE_HPP

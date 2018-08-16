@@ -26,7 +26,7 @@
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<typename R>
 struct interval {
@@ -274,7 +274,7 @@ constexpr boost::logic::tribool operator>=(
     return ! (t < u);
 }
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #include <iosfwd>
@@ -285,7 +285,7 @@ template<typename CharT, typename Traits, typename T>
 inline std::basic_ostream<CharT, Traits> &
 operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::interval<T> & i
+    const boost::safe_numerics::interval<T> & i
 ){
     return os << '[' << i.l << ',' << i.u << ']';
 }
@@ -293,7 +293,7 @@ template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> &
 operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::interval<unsigned char> & i
+    const boost::safe_numerics::interval<unsigned char> & i
 ){
     os << "[" << (unsigned)i.l << "," << (unsigned)i.u << "]";
     return os;
@@ -303,7 +303,7 @@ template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> &
 operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::interval<signed char> & i
+    const boost::safe_numerics::interval<signed char> & i
 ){
     os << "[" << (int)i.l << "," << (int)i.u << "]";
     return os;

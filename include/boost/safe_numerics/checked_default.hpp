@@ -38,7 +38,7 @@
 #include "checked_result.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // main function object which contains functions which handle
 // primitives which haven't been overriden.  For now, these
@@ -196,7 +196,7 @@ constexpr checked_result<R> bitwise_not(const R & t) noexcept {
 }
 
 } // checked
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CHECKED_DEFAULT_HPP

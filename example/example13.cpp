@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(int, const char *[]){
     // problem: cannot recover from arithmetic errors
@@ -24,7 +24,7 @@ int main(int, const char *[]){
     // solution: replace int with safe<int>
     std::cout << "Using safe numerics" << std::endl;
     try{
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         safe<int> x = 1;
         safe<int> y = 0;
         std::cout << x / y;

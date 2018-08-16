@@ -23,7 +23,7 @@
 // higher level types implemented in terms of safe_base
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 /////////////////////////////////////////////////////////////////
 // safe_signed_range
@@ -59,7 +59,7 @@ using safe_unsigned_range = safe_base<
     E
 >;
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_SAFE_RANGE_HPP

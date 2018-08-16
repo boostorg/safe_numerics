@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<class EP>
 struct ExceptionPolicy {
@@ -28,7 +28,7 @@ struct ExceptionPolicy {
     */
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_EXCEPTION_POLICY_HPP

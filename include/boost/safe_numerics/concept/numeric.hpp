@@ -15,7 +15,7 @@
 #include <limits>
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<class T>
 struct Numeric {
@@ -28,7 +28,7 @@ struct Numeric {
     );
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_NUMERIC_HPP

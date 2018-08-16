@@ -13,7 +13,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<class PP>
 struct PromotionPolicy {
@@ -32,7 +32,7 @@ struct PromotionPolicy {
     using bxw_type = typename PP::template bitwise_xor_result<T, U>;
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CONCEPT_EXCEPTION_POLICY_HPP

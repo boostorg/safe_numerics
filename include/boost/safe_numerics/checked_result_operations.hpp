@@ -36,7 +36,7 @@
 // defined by checked_result arithmetic.
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 //////////////////////////////////////////////////////////////////////////
 // implement C++ operators for check_result<T>
@@ -1072,7 +1072,7 @@ constexpr inline operator&(
         );
 }
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #include <iosfwd>
@@ -1082,7 +1082,7 @@ namespace std {
 template<typename CharT, typename Traits, typename R>
 inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::checked_result<R> & r
+    const boost::safe_numerics::checked_result<R> & r
 ){
     if(!r.exception())
         os << static_cast<R>(r);
@@ -1094,7 +1094,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
 template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::checked_result<signed char> & r
+    const boost::safe_numerics::checked_result<signed char> & r
 ){
     if(! r.exception())
         os << static_cast<std::int16_t>(r);
@@ -1106,7 +1106,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
 template<typename CharT, typename Traits>
 inline std::basic_ostream<CharT, Traits> & operator<<(
     std::basic_ostream<CharT, Traits> & os,
-    const boost::numeric::checked_result<unsigned char> & r
+    const boost::safe_numerics::checked_result<unsigned char> & r
 ){
     if(! r.exception())
         os << static_cast<std::uint16_t>(r);
@@ -1118,7 +1118,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
 template<typename CharT, typename Traits, typename R>
 inline std::basic_istream<CharT, Traits> & operator>>(
     std::basic_istream<CharT, Traits> & is,
-    boost::numeric::checked_result<R> & r
+    boost::safe_numerics::checked_result<R> & r
 ){
     is >> r.m_r;
     return is;
@@ -1127,7 +1127,7 @@ inline std::basic_istream<CharT, Traits> & operator>>(
 template<typename CharT, typename Traits, typename R>
 inline std::basic_istream<CharT, Traits> & operator>>(
     std::basic_istream<CharT, Traits> & is, 
-    boost::numeric::checked_result<signed char> & r
+    boost::safe_numerics::checked_result<signed char> & r
 ){
     std::int16_t i;
     is >> i;
@@ -1138,7 +1138,7 @@ inline std::basic_istream<CharT, Traits> & operator>>(
 template<typename CharT, typename Traits, typename R>
 inline std::basic_istream<CharT, Traits> & operator>>(
     std::basic_istream<CharT, Traits> & is,
-    boost::numeric::checked_result<unsigned char> & r
+    boost::safe_numerics::checked_result<unsigned char> & r
 ){
     std::uint16_t i;
     is >> i;
@@ -1156,10 +1156,10 @@ inline std::basic_istream<CharT, Traits> & operator>>(
 namespace std {
 
 template<class R>
-class numeric_limits<boost::numeric::checked_result<R> >
+class numeric_limits<boost::safe_numerics::checked_result<R> >
     : public std::numeric_limits<R>
 {
-    using this_type = boost::numeric::checked_result<R>;
+    using this_type = boost::safe_numerics::checked_result<R>;
 public:
     constexpr static this_type min() noexcept {
         return this_type(std::numeric_limits<R>::min());

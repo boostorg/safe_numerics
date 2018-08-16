@@ -1,6 +1,6 @@
 #include <limits>
 #include <safe_integer.hpp>
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 int f(int i){
     return i;

@@ -1,14 +1,14 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
-#include "../include/safe_integer_range.hpp"
-#include "../include/automatic.hpp"
-#include "../include/exception.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/automatic.hpp>
+#include <boost/safe_numerics/exception.hpp>
 
 #include "safe_format.hpp" // prints out range and value of any type
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 
 using safe_t = safe_signed_range<
     -24,

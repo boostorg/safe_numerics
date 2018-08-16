@@ -8,21 +8,21 @@
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/multiprecision/integer.hpp>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
-typedef boost::numeric::safe<unsigned> safe_type;
+typedef boost::safe_numerics::safe<unsigned> safe_type;
 
 namespace boost {
 namespace multiprecision {
 
     template <class Integer, class I2>
-    typename enable_if_c<boost::numeric::is_safe<Integer>::value, Integer&>::type
+    typename enable_if_c<boost::safe_numerics::is_safe<Integer>::value, Integer&>::type
     multiply(Integer& result, const I2& a, const I2& b){
         return result = static_cast<Integer>(a) * static_cast<Integer>(b);
     }
 
     template <class Integer>
-    typename enable_if_c<boost::numeric::is_safe<Integer>::value, bool>::type
+    typename enable_if_c<boost::safe_numerics::is_safe<Integer>::value, bool>::type
     bit_test(const Integer& val, unsigned index){
         Integer mask = 1;
         if (index >= sizeof(Integer) * CHAR_BIT)
@@ -33,7 +33,7 @@ namespace multiprecision {
     }
 
     template <class I1, class I2>
-    typename enable_if_c<boost::numeric::is_safe<I1>::value, I2>::type
+    typename enable_if_c<boost::safe_numerics::is_safe<I1>::value, I2>::type
     integer_modulus(const I1& x, I2 val){
         return x % val;
     }
@@ -43,12 +43,12 @@ namespace multiprecision {
 
         template <>
         struct double_integer<safe_type>{
-            using type = boost::numeric::safe<std::uint64_t>;
+            using type = boost::safe_numerics::safe<std::uint64_t>;
         };
     }
 
     template <class I1, class I2, class I3>
-    typename enable_if_c<boost::numeric::is_safe<I1>::value, I1>::type
+    typename enable_if_c<boost::safe_numerics::is_safe<I1>::value, I1>::type
     powm(const I1& a, I2 b, I3 c){
         typedef typename detail::double_integer<I1>::type double_type;
 
@@ -69,7 +69,7 @@ namespace multiprecision {
 
     template <class T, class PP, class EP>
     inline unsigned
-    lsb(const boost::numeric::safe<T, PP, EP>& x){
+    lsb(const boost::safe_numerics::safe<T, PP, EP>& x){
         return lsb(static_cast<T>(x));
     }
 
@@ -106,7 +106,7 @@ void test(const char * msg){
 int main()
 {
     test<unsigned>("Testing type unsigned");
-    test<boost::numeric::safe<unsigned>>("Testing type safe<unsigned>");
+    test<boost::safe_numerics::safe<unsigned>>("Testing type safe<unsigned>");
     return 0;
 }
 

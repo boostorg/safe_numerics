@@ -15,7 +15,7 @@
 #include <type_traits>
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 // default implementations for required meta-functions
 template<typename T>
@@ -43,7 +43,7 @@ struct get_exception_policy {
 };
 
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_SAFE_COMMON_HPP

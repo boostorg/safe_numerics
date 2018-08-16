@@ -17,7 +17,7 @@
 #include "exception.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<
     typename AE,
@@ -189,7 +189,7 @@ using strict_trap_policy = exception_policy<
 // replace some actions with ignore_exception
 using default_exception_policy = strict_exception_policy;
 
-} // namespace numeric
+} // namespace safe_numerics
 } // namespace boost
 
 #endif // BOOST_NUMERIC_EXCEPTION_POLICIES_HPP

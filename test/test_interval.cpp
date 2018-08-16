@@ -12,14 +12,14 @@
 #include <array>
 #include <boost/core/demangle.hpp>
 
-#include "../include/checked_result.hpp"
-#include "../include/checked_result_operations.hpp"
-#include "../include/interval.hpp"
+#include <boost/safe_numerics/checked_result.hpp>
+#include <boost/safe_numerics/checked_result_operations.hpp>
+#include <boost/safe_numerics/interval.hpp>
 
 template<typename T>
 using fptr = T (*)(const T &, const T &);
 template<typename T>
-using fptr_interval = fptr<boost::numeric::interval<T>>;
+using fptr_interval = fptr<boost::safe_numerics::interval<T>>;
 
 template<typename T>
 struct op {
@@ -37,7 +37,7 @@ bool test_type_operator(
     const T (&value)[N],
     const op<T> & opi
 ){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
 
     // for each pair of values p1, p2 (100)
     for(const T & l1 : value)
@@ -102,26 +102,26 @@ bool test_type_operator(
 // values
 // note: need to explicitly specify number of elements to avoid msvc failure
 template<typename T>
-const boost::numeric::checked_result<T> value[8] = {
-    boost::numeric::safe_numerics_error::negative_overflow_error,
+const boost::safe_numerics::checked_result<T> value[8] = {
+    boost::safe_numerics::safe_numerics_error::negative_overflow_error,
     std::numeric_limits<T>::lowest(),
     T(-1),
     T(0),
     T(1),
     std::numeric_limits<T>::max(),
-    boost::numeric::safe_numerics_error::positive_overflow_error,
-    boost::numeric::safe_numerics_error::domain_error
+    boost::safe_numerics::safe_numerics_error::positive_overflow_error,
+    boost::safe_numerics::safe_numerics_error::domain_error
 };
 
 // note: need to explicitly specify number of elements to avoid msvc failure
 template<typename T>
-const boost::numeric::checked_result<T> unsigned_value[6] = {
-    boost::numeric::safe_numerics_error::negative_overflow_error,
+const boost::safe_numerics::checked_result<T> unsigned_value[6] = {
+    boost::safe_numerics::safe_numerics_error::negative_overflow_error,
     T(0),
     T(1),
     std::numeric_limits<T>::max(),
-    boost::numeric::safe_numerics_error::positive_overflow_error,
-    boost::numeric::safe_numerics_error::domain_error
+    boost::safe_numerics::safe_numerics_error::positive_overflow_error,
+    boost::safe_numerics::safe_numerics_error::domain_error
 };
 
 // invoke for each type
@@ -132,7 +132,7 @@ struct test_type {
     {}
     template<typename T>
     bool operator()(const T &){
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         std::cout
             << "** testing "
             << boost::core::demangle(typeid(T).name())

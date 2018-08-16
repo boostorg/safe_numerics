@@ -2,18 +2,18 @@
 #include <cassert>
 #include <limits>
 
-#include "../include/utility.hpp"
-#include "../include/safe_integer_range.hpp"
+#include <boost/safe_numerics/utility.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
 
 template<typename T>
 void display_log(T Max){
     std::cout
         << "ilog2(" << Max << ") = "
-        << boost::numeric::utility::ilog2(Max) << std::endl;
+        << boost::safe_numerics::utility::ilog2(Max) << std::endl;
 }
 
 bool test_significant_bits(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     assert(utility::significant_bits(127u) == 7); // 7 bits
     assert(utility::significant_bits(127u) == 7); // 7 bits
     assert(utility::significant_bits(128u) == 8); // 8 bits
@@ -24,7 +24,7 @@ bool test_significant_bits(){
 }
 
 bool test1(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
 
     safe_signed_range<-128, 127> s1(1);
     safe_signed_range<-256, 254> s2(2);
@@ -38,17 +38,17 @@ bool test1(){
     return true;
 }
 
-#include "../include/automatic.hpp"
+#include <boost/safe_numerics/automatic.hpp>
 
 template <
     std::intmax_t Min,
     std::intmax_t Max
 >
-using safe_t = boost::numeric::safe_signed_range<
+using safe_t = boost::safe_numerics::safe_signed_range<
     Min,
     Max,
-    boost::numeric::automatic,
-    boost::numeric::default_exception_policy
+    boost::safe_numerics::automatic,
+    boost::safe_numerics::default_exception_policy
 >;
 
 bool test2(){
@@ -84,7 +84,7 @@ bool test2(){
 }
 
 int main(){
-    //using namespace boost::numeric;
+    //using namespace boost::safe_numerics;
     //safe_signed_literal2<100> one_hundred;
     //one_hundred = 200;
 

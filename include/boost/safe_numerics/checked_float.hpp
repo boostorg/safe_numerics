@@ -20,7 +20,7 @@
 #include <type_traits> // std::is_floating_point, make_unsigned
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 namespace checked {
 
 ////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ constexpr checked_result<R> bitwise_and(const T & t, const U & u) noexcept {
 }
 
 } // checked
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_CHECKED_DEFAULT_HPP

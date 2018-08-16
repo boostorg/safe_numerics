@@ -19,7 +19,7 @@
 // When used in conjunction with a desired exception policy, traps errors but
 // does not otherwise alter the results produced by the program using it.
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 struct native {
 public:
@@ -109,7 +109,7 @@ public:
     };
 };
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #endif // BOOST_NUMERIC_NATIVE_HPP

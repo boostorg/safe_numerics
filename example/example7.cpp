@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../include/safe_integer_range.hpp"
+#include <boost/safe_numerics/safe_integer_range.hpp>
 
 // NOT using safe numerics - enforce program contract explicitly
 // return total number of minutes
@@ -22,11 +22,11 @@ unsigned int contract_convert(
     return hours * 60 + minutes;
 }
 
-// Use safe numeric to enforce program contract automatically
+// Use safe numerics to enforce program contract automatically
 // define convenient typenames for hours and minutes hh:mm
-using hours_t = boost::numeric::safe_unsigned_range<0, 23>;
-using minutes_t = boost::numeric::safe_unsigned_range<0, 59>;
-using minutes_total_t = boost::numeric::safe_unsigned_range<0, 59>;
+using hours_t = boost::safe_numerics::safe_unsigned_range<0, 23>;
+using minutes_t = boost::safe_numerics::safe_unsigned_range<0, 59>;
+using minutes_total_t = boost::safe_numerics::safe_unsigned_range<0, 59>;
 
 // return total number of minutes
 // type returned is safe_unsigned_range<0, 24*60 - 1>

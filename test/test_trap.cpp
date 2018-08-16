@@ -9,10 +9,10 @@
 // this is a compile only test - but since many build systems
 // can't handle a compile-only test - make sure it passes trivially.
 
-#include "../include/exception_policies.hpp"
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/exception_policies.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
 
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 template <typename T> // T is char, int, etc data type
 using safe_t = safe<
     T,

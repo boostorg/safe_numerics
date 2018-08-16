@@ -10,7 +10,7 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 template<class T1, class T2>
 bool test_equal(
@@ -25,7 +25,7 @@ bool test_equal(
         safe_t<T1> t1 = v1;
         std::cout << "safe<" << av1 << "> == " << av2 << " -> ";
         static_assert(
-            boost::numeric::is_safe<safe_t<T1> >::value,
+            boost::safe_numerics::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"
         );
         bool result;
@@ -71,7 +71,7 @@ bool test_equal(
         safe_t<T2> t2 = v2;
         std::cout << av1 << " == " << "safe<" << av2 << "> -> ";
         static_assert(
-            boost::numeric::is_safe<safe_t<T2> >::value,
+            boost::safe_numerics::is_safe<safe_t<T2> >::value,
             "safe_t not safe!"
         );
         bool result;

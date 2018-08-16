@@ -2,7 +2,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../include/safe_integer.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
 
 int main(int, const char *[]){
     // problem: checking of externally produced value can be overlooked
@@ -25,7 +25,7 @@ int main(int, const char *[]){
     // solution: assign externally retrieved values to safe equivalents
     std::cout << "Using safe numerics" << std::endl;
     {
-        using namespace boost::numeric;
+        using namespace boost::safe_numerics;
         safe<int> x, y;
         is.seekg(0);
         try{

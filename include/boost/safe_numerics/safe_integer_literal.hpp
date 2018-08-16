@@ -22,7 +22,7 @@
 #include "checked_integer.hpp"
 
 namespace boost {
-namespace numeric {
+namespace safe_numerics {
 
 template<typename T, T N, class P, class E>
 class safe_literal_impl;
@@ -104,7 +104,7 @@ public:
     template<
         class R,
         typename std::enable_if<
-            ! boost::numeric::is_safe<R>::value,
+            ! boost::safe_numerics::is_safe<R>::value,
             int
         >::type = 0
     >
@@ -194,7 +194,7 @@ template<
     >::type = 0
 >
 constexpr auto make_safe_literal_impl() {
-    return boost::numeric::safe_signed_literal<N, P, E>();
+    return boost::safe_numerics::safe_signed_literal<N, P, E>();
 }
 
 template<
@@ -208,14 +208,14 @@ template<
     >::type = 0
 >
 constexpr auto make_safe_literal_impl() {
-    return boost::numeric::safe_unsigned_literal<N, P, E>();
+    return boost::safe_numerics::safe_unsigned_literal<N, P, E>();
 }
 
-} // numeric
+} // safe_numerics
 } // boost
 
 #define make_safe_literal(n, P, E)  \
-    boost::numeric::make_safe_literal_impl<decltype(n), n, P, E>()
+    boost::safe_numerics::make_safe_literal_impl<decltype(n), n, P, E>()
 
 /////////////////////////////////////////////////////////////////
 // numeric limits for safe_literal etc.
@@ -230,10 +230,10 @@ template<
     class P,
     class E
 >
-class numeric_limits<boost::numeric::safe_literal_impl<T, N, P, E> >
+class numeric_limits<boost::safe_numerics::safe_literal_impl<T, N, P, E> >
     : public std::numeric_limits<T>
 {
-    using SL = boost::numeric::safe_literal_impl<T, N, P, E>;
+    using SL = boost::safe_numerics::safe_literal_impl<T, N, P, E>;
 public:
     constexpr static SL lowest() noexcept {
         return SL();

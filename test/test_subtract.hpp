@@ -10,8 +10,8 @@
 #include <iostream>
 #include <exception>
 
-#include "../include/safe_integer.hpp"
-#include "../include/range_value.hpp"
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 template<class T1, class T2>
 bool test_subtract(
@@ -27,11 +27,11 @@ bool test_subtract(
         using result_type = decltype(t1 - v2);
         std::cout << "safe<" << av1 << "> - " << av2 << " -> ";
         static_assert(
-            boost::numeric::is_safe<safe_t<T1> >::value,
+            boost::safe_numerics::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"
         );
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;
@@ -42,7 +42,7 @@ bool test_subtract(
             std::cout << std::hex << result << "(" << std::dec << result << ")"
             << std::endl;
             static_assert(
-                boost::numeric::is_safe<decltype(t1 - v2)>::value,
+                boost::safe_numerics::is_safe<decltype(t1 - v2)>::value,
                 "Expression failed to return safe type"
             );
             */
@@ -81,11 +81,11 @@ bool test_subtract(
         using result_type = decltype(v1 - t2);
         std::cout << av1 << " - " << "safe<" << av2 << "> -> ";
         static_assert(
-            boost::numeric::is_safe<safe_t<T2> >::value,
+            boost::safe_numerics::is_safe<safe_t<T2> >::value,
             "safe_t not safe!"
         );
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;
@@ -128,7 +128,7 @@ bool test_subtract(
         using result_type = decltype(t1 - t2);
         std::cout << "safe<" << av1 << "> - " << "safe<" << av2 << "> -> ";
         static_assert(
-            boost::numeric::is_safe<result_type>::value,
+            boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
         result_type result;

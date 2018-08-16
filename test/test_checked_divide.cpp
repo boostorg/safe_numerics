@@ -11,17 +11,17 @@
 #include <typeinfo>
 #include <boost/core/demangle.hpp>
 
-#include "../include/checked_result.hpp"
-#include "../include/checked_result_operations.hpp"
-#include "../include/checked_integer.hpp"
+#include <boost/safe_numerics/checked_result.hpp>
+#include <boost/safe_numerics/checked_result_operations.hpp>
+#include <boost/safe_numerics/checked_integer.hpp>
 
 template<class T>
 bool test_checked_divide(
-    boost::numeric::checked_result<T> v1,
-    boost::numeric::checked_result<T> v2,
+    boost::safe_numerics::checked_result<T> v1,
+    boost::safe_numerics::checked_result<T> v2,
     char expected_result
 ){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     const checked_result<T> result = v1 / v2;
     std::cout
         << "testing  "
@@ -69,27 +69,27 @@ bool test_checked_divide(
 
 // values
 template<typename T>
-const boost::numeric::checked_result<T> signed_value[] = {
-    boost::numeric::safe_numerics_error::range_error,
-    boost::numeric::safe_numerics_error::domain_error,
-    boost::numeric::safe_numerics_error::positive_overflow_error,
+const boost::safe_numerics::checked_result<T> signed_value[] = {
+    boost::safe_numerics::safe_numerics_error::range_error,
+    boost::safe_numerics::safe_numerics_error::domain_error,
+    boost::safe_numerics::safe_numerics_error::positive_overflow_error,
     std::numeric_limits<T>::max(),
     T(1),
     T(0),
     T(-1),
     std::numeric_limits<T>::lowest(),
-    boost::numeric::safe_numerics_error::negative_overflow_error,
+    boost::safe_numerics::safe_numerics_error::negative_overflow_error,
 };
 
 template<typename T>
-const boost::numeric::checked_result<T> unsigned_value[] = {
-    boost::numeric::safe_numerics_error::range_error,
-    boost::numeric::safe_numerics_error::domain_error,
-    boost::numeric::safe_numerics_error::positive_overflow_error,
+const boost::safe_numerics::checked_result<T> unsigned_value[] = {
+    boost::safe_numerics::safe_numerics_error::range_error,
+    boost::safe_numerics::safe_numerics_error::domain_error,
+    boost::safe_numerics::safe_numerics_error::positive_overflow_error,
     std::numeric_limits<T>::max(),
     T(1),
     T(0),
-    boost::numeric::safe_numerics_error::negative_overflow_error,
+    boost::safe_numerics::safe_numerics_error::negative_overflow_error,
 };
 
 // test result matrices
@@ -131,7 +131,7 @@ const char * unsigned_division_results[] = {
 #if 0
 template<typename T, unsigned int N>
 bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     // for each pair of values p1, p2 (100)
     for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++){
@@ -145,7 +145,7 @@ bool test_pairs(const T (&value)[N], const char * (&results)[N]) {
 
 template<typename T, unsigned int N>
 bool test_signed_pairs() {
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     // for each pair of values p1, p2 (100)
     for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++){
@@ -162,7 +162,7 @@ bool test_signed_pairs() {
 
 template<typename T, unsigned int N>
 bool test_unsigned_pairs() {
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     // for each pair of values p1, p2 (100)
     for(unsigned int i = 0; i < N; i++)
     for(unsigned int j = 0; j < N; j++){
