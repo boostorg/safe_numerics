@@ -31,11 +31,11 @@ uint8  phase_inc;       // phase_ix increment
 uint8  run_flg;         // true while motor is running
 uint16 ccpr;            // copy of CCPR1&2
 uint16 c;               // integer delay count
-int16 step_no;          // progress of move
+uint16 step_no;          // progress of move
 uint16 step_down;       // start of down-ramp
-int16 move;             // total steps to move
+uint16 move;             // total steps to move
 uint16 midpt;           // midpoint of move
-int32 c32;              // 24.8 fixed point delay count
+uint32 c32;              // 24.8 fixed point delay count
 int16 denom;            // 4.n+1 in ramp algo
 
 // Config data to make CCP1&2 generate quadrature sequence on PHASE pins

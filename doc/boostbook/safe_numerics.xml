@@ -119,10 +119,12 @@
     know about these components to use the library. This information has been
     included to help those who want to understand how the library works so
     they can extend it, correct bugs in it, or understand its limitations.
-    These components are also interesting in their own right. For all these
-    reasons, they are documented here.</para>
+    These components are also interesting and likely useful in their own
+    right. For all these reasons, they are documented here.</para>
 
     <para>In general terms, the library works in the following manner:</para>
+
+    <para>At compile time:</para>
 
     <itemizedlist>
       <listitem>
@@ -133,8 +135,10 @@
       <listitem>
         <para>Arithmetic operators are defined for these "safe" types. These
         operators are enhanced versions of the standard C/C++ implementations.
-        These operators are declared and implemented in the files
-        "safe_base.hpp" and "safe_base_operations.hpp".</para>
+        These operators are declared and implemented in the files "<ulink
+        url="../../include/boost/safe_numerics/safe_base.hpp">safe_base.hpp</ulink>"
+        and "<ulink
+        url="../../include/boost/safe_numerics/safe_base_operations.hpp">safe_base_operations.hpp</ulink>".</para>
       </listitem>
 
       <listitem>
@@ -144,7 +148,12 @@
       </listitem>
 
       <listitem>
-        <para>Retrieve range of values for each operand of type T from
+        <para>Invoke the promotion policy to determine the result type R of
+        the operation.</para>
+      </listitem>
+
+      <listitem>
+        <para>For each operand of type T retrieve the range of values from
         <code>std::numeric_limits&lt;T&gt;::min()</code> and
         <code>std::numeric_limits&lt;T&gt;::max()</code>. A range is a pair of
         values representing a closed interval with a minimum and maximum
@@ -175,8 +184,10 @@
         The difference is that the latter can record operation failures and
         propagate such failures to subsequent operations.<link
         linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>
-        is implemented in the header file "checked_result.hpp". Operations on
-        such types are implemented in "checked_result_operations.hpp".</para>
+        is implemented in the header file "<ulink
+        url="../../include/boost/safe_numerics/checked_result.hpp">checked_result.hpp</ulink>".
+        Operations on such types are implemented in "<ulink
+        url="../../include/boost/safe_numerics/checked_result_operations.hpp">checked_result_operations.hpp</ulink>".</para>
       </listitem>
 
       <listitem>
@@ -184,11 +195,17 @@
         result of the operation using compile-time interval arithmetic. The
         <code>constexpr</code> facility of C++14 permits the range of the
         result to be calculated at compile time. Interval arithmetic is
-        implemented in the header file "interval.hpp". The range of the result
-        is also represented as a pair of values of the type <link
+        implemented in the header file "<ulink
+        url="../../include/boost/safe_numerics/interval.hpp">interval.hpp</ulink>".
+        The range of the result is also represented as a pair of values of the
+        type <link
         linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
       </listitem>
+    </itemizedlist>
 
+    <para>At run time:</para>
+
+    <itemizedlist>
       <listitem>
         <para>If the range of the result type includes only arithmetically
         valid values, the operation is guaranteed to produce an arithmetically
@@ -215,8 +232,12 @@
         ... except that rather than returning values of type R, they return
         values of the type <link
         linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.
-        They are defined in files "checked_default.hpp", "checked_integer.hpp"
-        ,"checked_float.hpp".</para>
+        They are defined in files "<ulink
+        url="../../include/boost/safe_numerics/checked_default.hpp">checked_default.hpp</ulink>",
+        "<ulink
+        url="../../include/boost/safe_numerics/checked_integer.hpp">checked_integer.hpp</ulink>"
+        ,"<ulink
+        url="../../include/boost/safe_numerics/checked_float.hpp">checked_float.hpp</ulink>".</para>
       </listitem>
 
       <listitem>
@@ -225,11 +246,7 @@
       </listitem>
 
       <listitem>
-        <para>Otherwise, the result value is returned.</para>
-      </listitem>
-
-      <listitem>
-        <para>In all cases, result values are returned as a
+        <para>Otherwise, the result value is returned as a
         <code>safe&lt;R&gt;</code> type with the above calculated result
         range.</para>
       </listitem>
@@ -290,141 +307,8 @@ count = 1857858
   <xi:include href="faq.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-  <section id="safe_numerics.pending_issues">
-    <title>Pending Issues</title>
-
-    <?dbhtml stop-chunking?>
-
-    <para>The library is under development. There are a number of issues still
-    pending.</para>
-
-    <section>
-      <title>Library Design</title>
-
-      <para>The following is paraphrased from an issue raised by Andrzej
-      Krzemieński as a <ulink
-      url="https://github.com/robertramey/safe_numerics/issues/46">github
-      issue</ulink>. It touches upon fundamental ideas behind the library and
-      how these ideas as the implementation of the library collided with
-      reality.</para>
-
-      <para><quote>In the current implementation safe&lt;T&gt; will only work
-      with T being a C++ scalar type. Therefore making a general type
-      requirements that say what operations are allowed is superfluous, and
-      confusing (because it implies that safe&lt;&gt; is more
-      generic.</quote></para>
-
-      <para>When I started out, It became clear that I wanted "safe" types to
-      look like "numeric" types. It also became clear pretty soon that there
-      was going to be significant template meta-programming in the
-      implementation. Normal type traits like std::is_integer are defined in
-      the std namespace and one is discouraged from extending it. Also I
-      needed some compile time "max" and "lowest" values. This lead me to base
-      the design on std::numeric_limits. But std::numeric limits is inherently
-      extendable to any "numeric" type. For example, money is a numeric type
-      but not an intrinsic types. So it seemed that I needed to define a
-      "numeric" concept which required that there be an implementation of
-      std::numeric_limits for any type T - such as money in this case. When
-      I'm doubt - I tend to think big.</para>
-
-      <para><quote>You do not need a concept to constrain anything with it, in
-      your library. Or is the purpose of the Type requirements to show in
-      detail what it means that safe&lt;T&gt; is a 'drop-in replacement for
-      T?</quote></para>
-
-      <para>Right - currently I don't use the concept to constrain anything.
-      They are currently a purely "conceptual" tool to keep the design from
-      getting off track. This is common with other libraries such as the C++
-      standard library where the concepts are defined but not enforced by
-      compile time predicates. Hopefully in future that might change - see
-      below</para>
-
-      <para><quote>If you want to extend safe&lt;T&gt; for other integer
-      types, Type requirement still need to be fixed:</quote></para>
-
-      <para>Hmmmm - I'm not quite sure that this is true. One thing that IS
-      true is the the interface and implementation of the library will need to
-      be enhanced to permit "safe" to be applied to user defined types. This
-      is apparent now, but as my brain can only comprehend the library one
-      piece at a time, this design feature was lost during the implementation.
-      In implementing co-existence of floats with safe integers, I did
-      refactor the implementation in a way which I believe my eventually
-      permit the application to any user supplied T which implements all the
-      required operations of Numeric types. So as it is now this is pending.
-      If the library were to become widely used, there might be motivation to
-      do this. Time will tell. So for now I'm leaving these in the
-      documentation and code, even though they are not actually used.</para>
-
-      <para><quote>In implementation you use literals -1, 0, 1
-      directly."</quote></para>
-
-      <para>I think this is currently true only in the implementation of
-      checked_integer operations. So if one were going to implement floating
-      or other types a "safe" types, current code should not be
-      effected.</para>
-    </section>
-
-    <section>
-      <title><code>safe_base</code> Only Works for Scalar Types</title>
-
-      <para>For now though I'm not going to address it. For what it's worth,
-      my preference would be to do something like: <programlisting>template&lt;typename T&gt;
-struct range {
-    T m_lowest;
-    T m_highest;
-    // default implementation
-    range(
-        const &amp; T t_min, 
-        const &amp; T t_max
-    ) :
-        m_lowest(std::numeric_limits&lt;T&gt;::lowest(t_min),
-        m_highest(std::numeric_limits&lt;T&gt;::max(t_max)
-    {}
-};</programlisting></para>
-
-      <para>Then redeclare <code>safe_base</code>, etc. accordingly.</para>
-    </section>
-
-    <section>
-      <title><code>std::common_type</code> Specialization Missing</title>
-
-      <para>std::common_type is used in a variety of generic libraries,
-      including std::chrono. Without a specialization for safe&lt;T&gt;s one
-      cannot use the safe wrappers e.g. as a representation for
-      std::chrono::duration.</para>
-    </section>
-
-    <section>
-      <title>Other Pending Issues</title>
-
-      <para><itemizedlist>
-          <listitem>
-            <para>The library is currently limited to integers. If there is
-            interest, it could be extended to floats and possible to user
-            defined types.</para>
-          </listitem>
-
-          <listitem>
-            <para>Although care has been taken to make the library portable,
-            at least some parts of the implementation - particularly
-            <code>checked</code> integer arithmetic - depend upon two's
-            complement representation of integers. Hence the library is
-            probably not currently portable to all other possible C++
-            architectures. These days, this is unlikely to be a limitation in
-            practice.</para>
-          </listitem>
-
-          <listitem>
-            <para>Currently the library permits a <code>safe&lt;int&gt;</code>
-            value to be uninitialized. This supports the goal of "drop-in"
-            replacement of C++/C built-in types with safe counter parts. On
-            the other hand, this breaks the "always valid" guarantee. The
-            recent improvements in the exception policy implementation will
-            permit a user to specify how this is to be handled.</para>
-          </listitem>
-        </itemizedlist></para>
-    </section>
-  </section>
+  <xi:include href="pending.xml" xpointer="element(/1)"
+              xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
   <xi:include href="acknowledgements.xml" xpointer="element(/1)"
               xmlns:xi="http://www.w3.org/2001/XInclude"/>

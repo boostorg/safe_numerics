@@ -10,13 +10,13 @@ int main(int, const char *[]){
     std::cout << "undetected erroneous expression evaluation" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
     try{
-        int x = INT_MAX;
-        int y = 2;
-        int z;
+        std::int8_t x = 127;
+        std::int8_t y = 2;
+        std::int8_t z;
         // this produces an invalid result !
         z = x + y;
-        std::cout << z << " != " << x << " + " << y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
+        std::cout << (int)z << " != " << (int)x << " + " << (int)y << std::endl;
     }
     catch(std::exception){
         std::cout << "error detected!" << std::endl;
@@ -25,9 +25,9 @@ int main(int, const char *[]){
     std::cout << "Using safe numerics" << std::endl;
     try{
         using namespace boost::safe_numerics;
-        safe<int> x = INT_MAX;
-        safe<int> y = 2;
-        safe<int> z;
+        safe<std::int8_t> x = INT_MAX;
+        safe<std::int8_t> y = 2;
+        safe<std::int8_t> z;
         // rather than producing an invalid result an exception is thrown
         z = x + y;
     }

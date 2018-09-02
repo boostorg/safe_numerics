@@ -9,7 +9,6 @@
 
 #include <iostream>
 #include <limits>
-#include <boost/integer.hpp>
 
 // *************************** 
 // 1. include headers to support safe integers

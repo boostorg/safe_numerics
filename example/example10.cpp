@@ -21,7 +21,7 @@ int main(){
     cout << "mixing types produces surprising results" << endl;
     try {
         std::cout << "Not using safe numerics" << std::endl;
-        // problem: arithmetic operations can yield incorrect results.
+        // problem: mixing types produces surprising results.
         f(100, 100);  // works as expected
         f(100, -100); // wrong result - unnoticed
         cout << "error NOT detected!" << endl;;

@@ -14,8 +14,8 @@
     operation or information on why the operation failed to produce a valid
     result. It is similar to other types proposed for and/or included to the
     C++ standard library or Boost such as<code> expected</code>,
-    <code>variant</code>, <code>optional</code> and
-    <code>outcome</code>.</para>
+    <code>variant</code>, <code>optional</code> and <code>outcome</code>. In
+    some circumstances it may be referred to as a "monad".</para>
 
     <para><itemizedlist>
         <listitem>
@@ -32,26 +32,27 @@
         </listitem>
 
         <listitem>
-          <para>Binary operations can be invoked on a pair of
-          <code>checked_result&lt;R&gt;</code> instances if and only if the
-          underlying type (R) is identical for both instances.</para>
+          <para>Binary operations supported by type R are guaranteed to be
+          supported by checked_result&lt;R&gt;.</para>
         </listitem>
 
         <listitem>
-          <para>Binary operations supported by type R are guaranteed to be
-          supported by checked_result&lt;R&gt;.</para>
+          <para>Binary operations can be invoked on a pair of
+          <code>checked_result&lt;R&gt;</code> instances if and only if the
+          underlying type (R) is identical for both instances. They will
+          return a value of type <code>checked_result&lt;R&gt;</code>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Unary operations can be invoked on
+          <code>checked_result&lt;R&gt;</code> instances. They will return a
+          value of type <code>checked_result&lt;R&gt;</code>.</para>
         </listitem>
 
         <listitem>
           <para>Comparison operations will return a
           <code>boost::logic::tribool</code>. Other binary operations will a
           value of the same type as the arguments.</para>
-        </listitem>
-
-        <listitem>
-          <para>Unary operations can be invoked on
-          <code>checked_result&lt;R&gt;</code> instances. They will return a
-          value of the same type.</para>
         </listitem>
       </itemizedlist></para>
 

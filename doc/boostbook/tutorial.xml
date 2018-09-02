@@ -20,19 +20,18 @@
     responsibility to ensure such undefined behavior is avoided.</para>
 
     <para>This program demonstrates this problem. The solution is to replace
-    instances of <code>int</code> type with <code>safe&lt;int&gt;</code>
-    type.</para>
+    instances of built in integer types with corresponding safe types.</para>
 
     <programlisting><xi:include href="../../example/example1.cpp" parse="text"
         xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting>
 
     <screen>example 1:undetected erroneous expression evaluation
 Not using safe numerics
--2147483647 != 2147483647 + 2
 error NOT detected!
+-127 != 127 + 2
 Using safe numerics
-error detected:addition result too large: positive overflow error
-</screen>
+error detected:converted signed value too large: positive overflow error
+Program ended with exit code: 0</screen>
   </section>
 
   <section id="safe_numerics.tutorial.2">

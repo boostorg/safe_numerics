@@ -32,10 +32,10 @@ uint8  run_flg;         // true while motor is running
 // ***************************
 // keep track of total delay count
 uint32 ccpr;            // 24.8 fixed point delay count
-int32 c;                // 24.8 fixed point delay count increment
-int16 step_no;          // progress of move
+uint32 c;                // 24.8 fixed point delay count increment
+uint16 step_no;          // progress of move
 uint16 step_down;       // start of down-ramp
-int16 move;             // total steps to move
+uint16 move;             // total steps to move
 uint16 midpt;           // midpoint of move
 int16 denom;            // 4.n+1 in ramp algo
 
