@@ -103,7 +103,7 @@ using ccpr_t = boost::safe_numerics::safe<
 // note: this value is constrainted to be a positive value. But
 // we still need to make it a signed type. We get an arithmetic
 // error when moving to a negative step number.
-using c_t = boost::safe_numerics::safe_signed_range<
+using c_t = boost::safe_numerics::safe_unsigned_range<
     C_MIN,
     C0,
     pic16_promotion,

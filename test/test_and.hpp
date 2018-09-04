@@ -34,31 +34,25 @@ bool test_and(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
         try{
-            result = t1 & v2;
-            std::cout
-                << make_result_display(result)
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = t1 & v2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                     std::cout
-                        << "failed to detect error in and operation "
-                        << make_result_display(result)
                         << " ! = "<< av1 << " & " << av2
+                        << " failed to detect error in and operation "
                         << std::endl;
                 t1 & v2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout
-                << make_result_display(result)
-                << std::endl;
             if(expected_result == '.'){
                     std::cout
-                        << "erroneously detected error in and operation "
-                        << make_result_display(result)
                         << " == "<< av1 << " & " << av2
+                        << " erroneously detected error in and operation "
                         << std::endl;
                 try{
                     t1 & v2;
@@ -80,32 +74,26 @@ bool test_and(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
 
         try{
-            result = v1 & t2;
-            std::cout
-                << make_result_display(result)
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = v1 & t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                     std::cout
-                        << "failed to detect error in and operation "
-                        << make_result_display(result)
                         << " ! = "<< av1 << " & " << av2
+                        << " failed to detect error in and operation "
                         << std::endl;
                 v1 & t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout
-                << make_result_display(result)
-                << std::endl;
             if(expected_result == '.'){
                     std::cout
-                        << "erroneously detected error in and operation "
-                        << make_result_display(result)
                         << " == "<< av1 << " & " << av2
+                        << " erroneously detected error in and operation "
                         << std::endl;
                 try{
                     v1 & t2;
@@ -124,32 +112,26 @@ bool test_and(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
-        
+
         try{
-            result = t1 & t2;
-            std::cout
-                << make_result_display(result)
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = t1 & t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in and operation "
-                    << make_result_display(result)
                     << " != "<< av1 << " & " << av2
+                    << " failed to detect error in and operation"
                     << std::endl;
                 t1 & t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout
-                << make_result_display(result)
-                << std::endl;
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in and operation "
-                    << make_result_display(result)
                     << " == "<< av1 << " & " << av2
+                    << " erroneously detected error in and operation"
                     << std::endl;
                 try{
                     t1 & t2;

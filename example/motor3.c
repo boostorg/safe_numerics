@@ -122,7 +122,7 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                 }
                 // *** possible exception
                 // equation 14
-                c -= literal(2) * c / (literal(4) * (i - m) + literal(1));
+                c += literal(2) * c / (literal(4) * (m - i) + literal(1));
                 if(c > C0){
                     c = C0;
                 }

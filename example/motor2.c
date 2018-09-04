@@ -59,9 +59,13 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
             if (step_no == midpt) { // midpoint: decel
                 ramp_sts = ramp_down;
                 // ***************************
-                // convert shift to divide
                 // denom = ((step_no - move) << 2) + 1;
-                denom = ((step_no - move) * 4) + 1;
+                // address problems created by mixing unsigned and signed values
+                // convert shift to divide
+                if(step_no > move)
+                    denom = ((step_no - move) * 4) + 1;
+                else
+                    denom = ((move - step_no) * 4) - 1;
                 if (!(move & 1)) { // even move: repeat last delay before decel
                     denom += 4;
                     break;
@@ -75,8 +79,14 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
             }
             denom += 4;
             // ***************************
+            // c -= (c << 1) / denom; // ramp algorithm
+            // address problems created by mixing unsigned and signed values
             // calculate increment/decrement in delay count
-            c -= (c << 1) / denom; // ramp algorithm
+            if(denom > 0)
+                c -= (c << 1) / denom;
+            else
+                c += (c << 1) / -denom;
+
             if (c <= C_MIN) { // go to constant speed
                 ramp_sts = ramp_max;
                 step_down = move - step_no;
@@ -88,9 +98,10 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
             if (step_no == step_down) { // start decel
                 ramp_sts = ramp_down;
                 // *************************** 
+                // denom = ((step_no - move) << 2) + 5;
+                // avoid negative result of unsigned subtraction
                 // convert shift to divide
-                //denom = ((step_no - move) << 2) + 5;
-                denom = ((step_no - move) * 4) + 5;
+                denom = 5 - ((move - step_no) * 4);
             }
             break;
         default: // last step: cleanup

@@ -11,6 +11,7 @@
 #include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 template<class T1, class T2>
 bool test_equal(
@@ -28,44 +29,38 @@ bool test_equal(
             boost::safe_numerics::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"
         );
-        bool result;
-
         try{
-            result = (t1 == v2);
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = (t1 == v2);
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " failed to detect error in equals"
                     << std::endl;
-                result = (t1 == v2);
+                t1 == v2;
                 return false;
             }
             if(result != (expected_result == '=')){
                 std::cout
-                    << "produced the wrong answer "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " produced the wrong answer"
                     << std::endl;
-                result = (t1 == v2);
+                t1 == v2;
                 return false;
             }
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " == " << av2
+                    << " erroneously detected error in equals"
                     << std::endl;
-                result = (t1 == v2);
+                t1 == v2;
                 return false;
             }
         }
+        std::cout << std::endl;
     }
     {
         safe_t<T2> t2 = v2;
@@ -74,41 +69,36 @@ bool test_equal(
             boost::safe_numerics::is_safe<safe_t<T2> >::value,
             "safe_t not safe!"
         );
-        bool result;
         try{
-            result = (v1 == t2);
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = (v1 == t2);
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " failed to detect error in equals "
                     << std::endl;
-                result = (v1 == t2);
+                v1 == t2;
                 return false;
             }
             if(result != (expected_result == '=')){
                 std::cout
-                    << "produced the wrong answer "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " produced the wrong answer "
                     << std::endl;
-                result = (v1 == t2);
+                v1 == t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
             if(expected_result != 'x'){
                 std::cout
-                    << "erroneously detected error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " == " << av2
+                    << " erroneously detected error in equals"
                     << std::endl;
                 try{
-                    result = (v1 == t2);
+                    v1 == t2;
                 }
                 catch(std::exception){}
                 return false;
@@ -119,42 +109,35 @@ bool test_equal(
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
         std::cout << "safe<" << av1 << "> < " << "safe<" << av2 << "> -> ";
-        bool result;
 
         try{
-            result = (t1 == t2);
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
+            auto result = (t1 == t2);
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " failed to detect error in equals"
                     << std::endl;
-                result = (t1 == t2);
+                t1 == t2;
                 return false;
             }
             if(result != (expected_result == '=')){
                 std::cout
-                    << "produced the wrong answer "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " == " << av2
+                    << " produced the wrong answer"
                     << std::endl;
-                result = (v1 == t2);
+                t1 == t2;
                 return false;
             }
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-            << std::endl;
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in equals "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " == " << av2
+                    << " erroneously detected error in equals"
                     << std::endl;
                 try{
-                    result = (t1 == t2);
+                    t1 == t2;
                 }
                 catch(std::exception){}
                 return false;

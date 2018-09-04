@@ -31,7 +31,7 @@
     Normal type traits like std::is_integer are defined in the std namespace
     and one is discouraged from extending it. Also I needed some compile time
     "max" and "lowest" values. This lead me to base the design on
-    std::numeric_limits. But std::numeric limits is inherently extendable to
+    std::numeric_limits. But std::numeric limits is inherently extensible to
     any "numeric" type. For example, money is a numeric type but not an
     intrinsic types. So it seemed that I needed to define a "numeric" concept
     which required that there be an implementation of std::numeric_limits for
@@ -94,6 +94,17 @@ struct range {
   </section>
 
   <section>
+    <title> <code>Safe</code> values Can Be Uninitialized</title>
+
+    <para>Currently the library permits a <code>safe&lt;int&gt;</code> value
+    to be uninitialized. This supports the goal of "drop-in" replacement of
+    C++/C built-in types with safe counter parts. On the other hand, this
+    breaks the "always valid" guarantee. The recent improvements in the
+    exception policy implementation will permit a user to specify how this is
+    to be handled.</para>
+  </section>
+
+  <section>
     <title>Other Pending Issues</title>
 
     <para><itemizedlist>
@@ -113,19 +124,26 @@ struct range {
         </listitem>
 
         <listitem>
-          <para>Currently the library permits a <code>safe&lt;int&gt;</code>
-          value to be uninitialized. This supports the goal of "drop-in"
-          replacement of C++/C built-in types with safe counter parts. On the
-          other hand, this breaks the "always valid" guarantee. The recent
-          improvements in the exception policy implementation will permit a
-          user to specify how this is to be handled.</para>
-        </listitem>
-
-        <listitem>
           <para><code>std::common_type</code> is used in a variety of generic
           libraries, including std::chrono. Without a specialization for
           <code>safe&lt;T&gt;</code>s one cannot use the safe wrappers e.g. as
           a representation for <code>std::chrono::duration</code>.</para>
+        </listitem>
+
+        <listitem>
+          <para>For many meta programming tasks, the library uses the classic
+          Boost.MPL library as well as the more current Boost.MP11 library. In
+          the interests of conserving brain surface area required to
+          understand and maintain the library, the remaining instances of
+          usage of Boost.MPL should be replaces with code based on Boost.MP11.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>For testing the library, we rely on Boost.Preprocessor to
+          generate test cases. In later tests, we've depended on boost mp11.
+          Again, in order to diminish the dependencies, we plan to replace
+          usages of Boost.Preprocessor with Boost.MP11.</para>
         </listitem>
       </itemizedlist></para>
   </section>

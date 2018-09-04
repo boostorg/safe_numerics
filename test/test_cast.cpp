@@ -10,6 +10,7 @@
 
 #include <boost/safe_numerics/safe_compare.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 using namespace boost::safe_numerics;
 
@@ -20,31 +21,29 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
         << std::endl;
 {
-
     /* test conversion constructor to safe<T2> from v1 */
-    safe<T2> s2;
     try{
-        s2 = static_cast<safe<T2>>(v1);
-        if(! safe_compare::equal(base_value(s2), v1)){
+        // use auto to avoid checking assignment.
+        auto result = static_cast<safe<T2>>(v1);
+        std::cout << make_result_display(result);
+        if(! safe_compare::equal(base_value(result), v1)){
             std::cout
-                << "failed to detect error in construction "
-                << t2_name << "<-" << t1_name
+                << ' ' << t2_name << "<-" << t1_name
+                << " failed to detect error in construction"
                 << std::endl;
-            try{
-                s2 = static_cast<safe<T2> >(v1);
-            }
-            catch(std::exception){}
+            static_cast<safe<T2> >(v1);
             return false;
         }
+        std::cout << std::endl;
     }
     catch(std::exception){
-        if( safe_compare::equal(base_value(s2), v1)){
+        if( safe_compare::equal(static_cast<T2>(v1), v1)){
             std::cout
-                << "erroneously emitted error "
-                << t1_name << "<-" << t2_name
+                << ' ' << t1_name << "<-" << t2_name
+                << " erroneously emitted error "
                 << std::endl;
             try{
-                s2 = static_cast<safe<T2> >(v1);
+                static_cast<safe<T2> >(v1);
             }
             catch(std::exception){}
             return false;
@@ -54,29 +53,26 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
 {
     /* test conversion to T1 from safe<T2>(v2) */
     safe<T1> s1(v1);
-    T2 t2;
     try{
-        t2 = static_cast<T2>(s1);
-        if(! safe_compare::equal(t2, v1)){
+        auto result = static_cast<T2>(s1);
+        std::cout << make_result_display(result);
+        if(! safe_compare::equal(result, v1)){
             std::cout
-                << "failed to detect error in construction "
-                << t2_name << "<-" << t1_name
+                << ' ' << t2_name << "<-" << t1_name
+                << " failed to detect error in construction"
                 << std::endl;
-            try{
-                t2 = static_cast<T2>(s1);
-            }
-            catch(std::exception){}
+            static_cast<T2>(s1);
             return false;
         }
     }
     catch(std::exception){
-        if(safe_compare::equal(t2, v1)){
+        if(safe_compare::equal(static_cast<T2>(v1), v1)){
             std::cout
-                << "erroneously emitted error "
-                << t1_name << "<-" << t2_name
+                << ' ' << t1_name << "<-" << t2_name
+                << " erroneously emitted error"
                 << std::endl;
             try{
-                t2 = static_cast<T2>(s1);
+                static_cast<T2>(s1);
             }
             catch(std::exception){}
             return false;

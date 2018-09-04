@@ -11,6 +11,7 @@
 #include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 template<class T1, class T2>
 bool test_left_shift(
@@ -31,16 +32,15 @@ bool test_left_shift(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
 
         try{
-            result = t1 << v2;
-            
+            // use auto to avoid checking assignment.
+            auto result = t1 << v2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect arithmetic error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " << " << av2
+                    << " failed to detect arithmetic error in left shift"
                     << std::endl;
                 t1 << v2;
                 return false;
@@ -49,15 +49,14 @@ bool test_left_shift(
         catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected arithmetic error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
+                    << "erroneously detected arithmetic error in left shift"
                     << " == "<< av1 << " << " << av2
                     << ' ' << e.what()
                     << std::endl;
                 try{
                     t1 << v2;
                 }
-                catch(...){}
+                catch(std::exception){}
                 return false;
             }
         }
@@ -69,15 +68,15 @@ bool test_left_shift(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
 
         try{
-            result = v1 << t2;
+            // use auto to avoid checking assignment.
+            auto result = v1 << t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " << " << av2
+                    << " failed to detect error in left shift"
                     << std::endl;
                 v1 << t2;
                 return false;
@@ -86,9 +85,8 @@ bool test_left_shift(
         catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " << " << av2
+                    << "erroneously detected error in left shift "
                     << ' ' << e.what()
                     << std::endl;
                 try{
@@ -107,26 +105,26 @@ bool test_left_shift(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
-        
+
         try{
-            result = t1 << t2;
+            // use auto to avoid checking assignment.
+            auto result = t1 << t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
-                    << "failed to detect error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " ! = "<< av1 << " << " << av2
+                    << " failed to detect error in left shift"
                     << std::endl;
                 t1 << t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
-                    << "erroneously detected error in left shift "
-                    << std::hex << result << "(" << std::dec << result << ")"
                     << " == "<< av1 << " << " << av2
+                    << " erroneously detected error in left shift"
                     << ' ' << e.what()
                     << std::endl;
                 try{

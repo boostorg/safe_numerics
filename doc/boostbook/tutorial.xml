@@ -56,6 +56,35 @@ error detected!</screen>
     type. This is a common problem which is generally never detected.</para>
   </section>
 
+  <section id="safe_numerics.tutorial.1">
+    <title>Arithmetic on Unsigned Integers Can Yield Incorrect Results</title>
+
+    <para>Subtracting two unsigned values of the same size will result in an
+    unsigned value. If the first operand is less than the second the result
+    will be arithmetically in correct. But if the size of the unsigned types
+    is less than that of an <code>unsigned int</code>, C/C++ will promote the
+    types to <code>signed int</code> before subtracting resulting in an
+    correct result. In either case, there is no indication of an error.
+    Somehow, the programmer is expected to avoid this behavior. Advice usually
+    takes the form of "Don't use unsigned integers for arithmetic". This is
+    well and good, but often not practical. C/C++ itself uses unsigned for
+    <code>sizeof(T)</code> which is then used by users in arithmetic.</para>
+
+    <para>This program demonstrates this problem. The solution is to replace
+    instances of built in integer types with corresponding safe types.</para>
+
+    <programlisting><para><xi:include href="../../example/example8.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></para></programlisting>
+
+    <screen>example 8:undetected erroneous expression evaluation
+Not using safe numerics
+error NOT detected!
+4294967171 != 2 - 127
+Using safe numerics
+error detected:subtraction result cannot be negative: negative overflow error
+Program ended with exit code: 0</screen>
+  </section>
+
   <section id="safe_numerics.tutorial.4">
     <title>Implicit Conversions Can Lead to Erroneous Results</title>
 

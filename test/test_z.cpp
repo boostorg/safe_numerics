@@ -214,10 +214,10 @@ int main(){
 }
 
 #include <boost/logic/tribool.hpp>
-#include "checked_integer.hpp>
-#include "checked_result.hpp>
-#include "checked_result_operations.hpp>
-#include "interval.hpp>
+#include <boost/safe_integer/checked_integer.hpp>
+#include <boost/safe_integer/checked_result.hpp>
+#include <boost/safe_integer/checked_result_operations.hpp>
+#include <boost/safe_integer/interval.hpp>
 
 namespace boost {
 namespace safe_numerics {

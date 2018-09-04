@@ -12,6 +12,7 @@
 #include <boost/core/demangle.hpp>
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/range_value.hpp>
 
 template<class T1, class T2>
 bool test_divide(
@@ -36,27 +37,24 @@ bool test_divide(
             "Expression failed to return safe type"
         );
 
-        result_type result;
         try{
-            result = t1 / v2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = t1 / v2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
-                std::cout << "*** failed to detect error in division " << std::endl;
+                std::cout << " *** failed to detect error in division" << std::endl;
                 t1 / v2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
-                std::cout << "*** erroneously detected error in division " << std::endl;
+                std::cout << " *** erroneously detected error in division" << std::endl;
                 try{
                     t1 / v2;
                 }
                 catch(std::exception){}
-                //assert(result == unsafe_result);
                 return false;
             }
         }
@@ -76,20 +74,18 @@ bool test_divide(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
-        result_type result;
         try{
-            result = v1 / t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = v1 / t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
-                std::cout << "*** failed to detect error in division " << std::endl;
+                std::cout << " *** failed to detect error in division " << std::endl;
                 v1 / t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
                 std::cout << "*** erroneously detected error in division " << std::endl;
                 try{
@@ -109,33 +105,29 @@ bool test_divide(
             << "testing  safe<" << av1 << "> / safe<" << av2 << "> -> "
             << boost::core::demangle(typeid(result_type).name()) << '\n';
 
-        result_type result;
-
         static_assert(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
         );
 
         try{
-            result = t1 / t2;
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
+            // use auto to avoid checking assignment.
+            auto result = t1 / t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
-                std::cout << "*** failed to detect error in division " << std::endl;
+                std::cout << " *** failed to detect error in division" << std::endl;
                 t1 / t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(std::exception){
-            std::cout << std::hex << result << "(" << std::dec << result << ")"
-                << std::endl;
             if(expected_result == '.'){
-                std::cout << "*** erroneously detected error in division " << std::endl;
+                std::cout << " *** erroneously detected error in division \\" << std::endl;
                 try{
                     t1 / t2;
                 }
                 catch(std::exception){}
-                // assert(result == unsafe_result);
                 return false;
             }
         }

@@ -16,6 +16,7 @@ run example4.cpp ;
 run example5.cpp ;
 run example6.cpp ;
 run example7.cpp ;
+run example8.cpp ;
 compile-fail example81.cpp ;
 # run example81.cpp ; # requires console input
 run example82.cpp ;

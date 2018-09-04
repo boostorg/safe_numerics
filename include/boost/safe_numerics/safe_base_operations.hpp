@@ -289,52 +289,61 @@ private:
     }
 
     using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static r_interval_type r_interval(){
-        constexpr const r_interval_type t_interval{
+    constexpr static r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
         return t_interval + u_interval;
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
+    constexpr static bool exception_possible(){
+        if(r_type_interval.l.exception())
+            return true;
+        if(r_type_interval.u.exception())
+            return true;
+        if(! return_interval.includes(r_type_interval))
+            return true;
+        return false;
+    }
+
 public:
-    using type = typename range::type;
-    
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type i = r_interval();
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
 
-        constexpr bool exception_possible = i.l.exception() || i.u.exception();
-
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -379,6 +388,8 @@ private:
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
+    using r_type = checked_result<result_base_type>;
+
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         const r_type tx = checked::cast<result_base_type>(base_value(t));
@@ -399,17 +410,15 @@ private:
             static_cast<result_base_type>(tx)
             - static_cast<result_base_type>(ux);
     }
+    using r_type_interval_t = interval<r_type>;
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
-
-    constexpr static r_interval_type r_interval(){
-        constexpr const r_interval_type t_interval{
+    constexpr static r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
@@ -417,37 +426,46 @@ private:
         return t_interval - u_interval;
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
+    constexpr static bool exception_possible(){
+        if(r_type_interval.l.exception())
+            return true;
+        if(r_type_interval.u.exception())
+            return true;
+        if(! return_interval.includes(r_type_interval))
+            return true;
+        return false;
+    }
+
 public:
-    using type = typename range::type;
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
 
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type i = r_interval();
-
-        constexpr bool exception_possible = i.l.exception() || i.u.exception();
-
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -491,6 +509,8 @@ private:
 
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
+
+    using r_type = checked_result<result_base_type>;
     
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
@@ -511,17 +531,15 @@ private:
             static_cast<result_base_type>(tx)
             * static_cast<result_base_type>(ux);
     }
+    using r_type_interval_t = interval<r_type>;
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<checked_result<result_base_type>>;
-    
-    constexpr static r_interval_type r_interval(){
-        constexpr const r_interval_type t_interval{
+    constexpr static r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
@@ -529,37 +547,46 @@ private:
         return t_interval * u_interval;
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
+    constexpr static bool exception_possible(){
+        if(r_type_interval.l.exception())
+            return true;
+        if(r_type_interval.u.exception())
+            return true;
+        if(! return_interval.includes(r_type_interval))
+            return true;
+        return false;
+    }
+
 public:
-    using type = typename range::type;
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
 
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type i = r_interval();
-
-        constexpr bool exception_possible = i.l.exception() || i.u.exception();
-
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -615,6 +642,8 @@ private:
         }) + (std::numeric_limits<result_base_type>::is_signed ? 1 : 0)
     );
 
+    using r_type = checked_result<result_base_type>;
+
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         using temp_base = typename std::conditional<
@@ -642,27 +671,25 @@ private:
             static_cast<result_base_type>(tx)
             / static_cast<result_base_type>(ux);
     }
+    using r_type_interval_t = interval<r_type>;
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
-
-    constexpr static const r_interval_type t_interval(){
-        return r_interval_type{
+    constexpr static r_type_interval_t t_interval(){
+        return r_type_interval_t{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
     };
 
-    constexpr static const r_interval_type u_interval(){
-        return r_interval_type{
+    constexpr static r_type_interval_t u_interval(){
+        return r_type_interval_t{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
     };
 
-    constexpr static const r_interval_type r_interval(){
-        constexpr const r_interval_type t = t_interval();
-        constexpr const r_interval_type u = u_interval();
+    constexpr static r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t = t_interval();
+        constexpr const r_type_interval_t u = u_interval();
 
         if(u.u < r_type(0) || u.l > r_type(0))
             return t / u;
@@ -680,41 +707,47 @@ private:
         );
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
-public:
-    using type = typename range::type;
+    constexpr static bool exception_possible(){
+        constexpr const r_type_interval_t ri = get_r_type_interval();
+        constexpr const r_type_interval_t ui = u_interval();
 
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type ri = r_interval();
-        constexpr const r_interval_type ui = u_interval();
-
-        constexpr bool exception_possible =
+        return
             static_cast<bool>(ui.includes(r_type(0)))
             || ri.l.exception()
             || ri.u.exception();
+    }
 
-        return type(
+public:
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -767,6 +800,8 @@ private:
         }) + (std::numeric_limits<result_base_type>::is_signed ? 1 : 0)
     );
 
+    using r_type = checked_result<result_base_type>;
+
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         using temp_base = typename std::conditional<
@@ -795,26 +830,25 @@ private:
             % static_cast<result_base_type>(ux);
     }
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static const r_interval_type t_interval(){
-        return r_interval_type{
+    constexpr static const r_type_interval_t t_interval(){
+        return r_type_interval_t{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
     };
 
-    constexpr static const r_interval_type u_interval(){
-        return r_interval_type{
+    constexpr static const r_type_interval_t u_interval(){
+        return r_type_interval_t{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
     };
 
-    constexpr static const r_interval_type r_interval(){
-        constexpr const r_interval_type t = t_interval();
-        constexpr const r_interval_type u = u_interval();
+    constexpr static const r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t = t_interval();
+        constexpr const r_type_interval_t u = u_interval();
 
         if(u.u < r_type(0)
         || u.l > r_type(0))
@@ -833,41 +867,46 @@ private:
         );
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
-public:
-    using type = typename range::type;
+    constexpr static bool exception_possible(){
+        constexpr const r_type_interval_t ri = get_r_type_interval();
+        constexpr const r_type_interval_t ui = u_interval();
 
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type ri = r_interval();
-        constexpr const r_interval_type ui = u_interval();
-
-        constexpr bool exception_possible =
+        return
             static_cast<bool>(ui.includes(r_type(0)))
             || ri.l.exception()
             || ri.u.exception();
+    }
 
-        return type(
+public:
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -905,9 +944,6 @@ private:
     using result_base_type =
         typename promotion_policy::template comparison_result<T, U>::type;
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
-
     // if exception not possible
     constexpr static bool
     return_value(const T & t, const U & u, std::false_type){
@@ -917,6 +953,8 @@ private:
     }
 
     using exception_policy = typename common_exception_policy<T, U>::type;
+
+    using r_type = checked_result<result_base_type>;
 
     // if exception possible
     constexpr static bool
@@ -936,18 +974,20 @@ private:
         return safe_compare::less_than(base_value(t), base_value(u));
     }
 
-    constexpr static bool interval_open(const r_interval_type & t){
+    using r_type_interval_t = interval<r_type>;
+
+    constexpr static bool interval_open(const r_type_interval_t & t){
         return t.l.exception() || t.u.exception();
     }
 
 public:
     constexpr static bool
     return_value(const T & t, const U & u){
-        constexpr const r_interval_type t_interval{
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
@@ -1044,21 +1084,21 @@ private:
         return safe_compare::equal(base_value(t), base_value(u));
     }
 
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static bool interval_open(const r_interval_type & t){
+    constexpr static bool interval_open(const r_type_interval_t & t){
         return t.l.exception() || t.u.exception();
     }
 
 public:
     constexpr static bool
     return_value(const T & t, const U & u){
-        constexpr const r_interval_type t_interval{
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
@@ -1128,56 +1168,70 @@ private:
         if(ux.exception())
             dispatch<exception_policy>(ux);
         const r_type r = checked::left_shift(tx.m_r, ux.m_r);
-        if(r.exception())
-            dispatch<exception_policy>(r);
-        return r;
+        if(!r.exception())
+            return static_cast<result_base_type>(r);
+        // handle error condition
+        dispatch<exception_policy>(r);
+        // if we get here, the error has been ignored
+        // just get the result the old fashioned way
+        return t << u;
     }
 
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static r_interval_type r_interval(){
-        constexpr const r_interval_type t_interval{
+    constexpr static r_type_interval_t get_r_type_interval(){
+        constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_interval_type u_interval{
+        constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
         return (t_interval << u_interval);
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
+    constexpr static bool exception_possible(){
+        if(r_type_interval.l.exception())
+            return true;
+        if(r_type_interval.u.exception())
+            return true;
+        if(! return_interval.includes(r_type_interval))
+            return true;
+        return false;
+    }
+
 public:
-    using type = typename range::type;
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
 
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type i = r_interval();
-
-        constexpr bool exception_possible = i.l.exception() || i.u.exception();
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -1230,6 +1284,8 @@ struct right_shift_result {
     // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
+    using r_type = checked_result<result_base_type>;
+
     constexpr static result_base_type
     return_value(const T & t, const U & u, std::true_type){
         const r_type tx = checked::cast<result_base_type>(base_value(t));
@@ -1239,62 +1295,52 @@ struct right_shift_result {
         if(ux.exception())
             dispatch<exception_policy>(ux);
         const r_type r = checked::right_shift(tx.m_r, ux.m_r);
-        if(r.exception())
-            dispatch<exception_policy>(r);
-        return r;
+        if(!r.exception())
+            return static_cast<result_base_type>(r);
+        // handle error condition
+        dispatch<exception_policy>(r);
+        // if we get here, the error has been ignored
+        // just get the result the old fashioned way
+        return t >> u;
     }
 
-    using r_type = checked_result<result_base_type>;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static r_interval_type t_interval(){
-        return r_interval_type(
+    constexpr static r_type_interval_t t_interval(){
+        return r_type_interval_t(
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         );
     };
 
-    constexpr static r_interval_type u_interval(){
-        return r_interval_type(
+    constexpr static r_type_interval_t u_interval(){
+        return r_type_interval_t(
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         );
     }
-    constexpr static r_interval_type r_interval(){;
+    constexpr static r_type_interval_t get_r_type_interval(){;
         return (t_interval() >> u_interval());
     }
 
-    struct range {
-        static constexpr const r_interval_type i = r_interval();
-        using type =
-            safe_base<
-                result_base_type,
-                i.l.exception()
-                    ? std::numeric_limits<result_base_type>::min()
-                    : static_cast<result_base_type>(i.l),
-                i.u.exception()
-                    ? std::numeric_limits<result_base_type>::max()
-                    : static_cast<result_base_type>(i.u),
-                promotion_policy,
-                exception_policy
-            >;
+    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+
+    using return_interval_t = interval<result_base_type>;
+
+    constexpr static return_interval_t return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
 
-public:
-    using type = typename range::type;
-
-    constexpr static type return_value(const T & t, const U & u){
-        constexpr const r_interval_type ri = r_interval();
-        constexpr const r_interval_type ti = t_interval();
-        constexpr const r_interval_type ui = u_interval();
-        /*
-        static_assert(t_interval.u >= 0, "negative values can't be shifted");
-        static_assert(u_interval.l <= 0, "shift count can't be negative");
-        static_assert(u_interval.l <= std::numeric_limits<T>::digits,
-            "shift count can't exceed argument size"
-        );
-        */
-        constexpr const bool exception_possible = static_cast<bool>(
+    constexpr static bool exception_possible(){
+        constexpr const r_type_interval_t ri = r_type_interval;
+        constexpr const r_type_interval_t ti = t_interval();
+        constexpr const r_type_interval_t ui = u_interval();
+        return static_cast<bool>(
             // note undesirable coupling with checked::shift right here !
             ui.u > checked_result<result_base_type>(
                 std::numeric_limits<result_base_type>::digits
@@ -1304,13 +1350,26 @@ public:
             || ri.l.exception()
             || ri.u.exception()
         );
-        return type(
+    }
+
+public:
+    using return_type =
+        safe_base<
+            result_base_type,
+            return_interval.l,
+            return_interval.u,
+            promotion_policy,
+            exception_policy
+        >;
+
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             return_value(
                 t,
                 u,
-                std::integral_constant<bool, exception_possible>()
+                std::integral_constant<bool, exception_possible()>()
             ),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -1358,9 +1417,9 @@ private:
     // sense that these are signed numbers.
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static const r_interval_type r_interval{
+    constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
             std::max(
@@ -1370,12 +1429,11 @@ private:
         )
     };
 
-    // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
     // lazy_enable_if_c depends on this
-    using type = safe_base<
+    using return_type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1383,11 +1441,11 @@ public:
         exception_policy
     >;
 
-    constexpr static type return_value(const T & t, const U & u){
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             static_cast<result_base_type>(base_value(t))
             | static_cast<result_base_type>(base_value(u)),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -1424,9 +1482,9 @@ private:
     // sense that these are signed numbers.
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static const r_interval_type r_interval{
+    constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
             std::min(
@@ -1436,12 +1494,11 @@ private:
         )
     };
 
-    // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
     // lazy_enable_if_c depends on this
-    using type = safe_base<
+    using return_type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1449,11 +1506,11 @@ public:
         exception_policy
     >;
     
-    constexpr static type return_value(const T & t, const U & u){
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             static_cast<result_base_type>(base_value(t))
             & static_cast<result_base_type>(base_value(u)),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
@@ -1489,9 +1546,9 @@ struct bitwise_xor_result {
     // sense that these are signed numbers.
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
-    using r_interval_type = interval<r_type>;
+    using r_type_interval_t = interval<r_type>;
 
-    constexpr static const r_interval_type r_interval{
+    constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
             std::max(
@@ -1501,12 +1558,11 @@ struct bitwise_xor_result {
         )
     };
 
-    // exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
     // lazy_enable_if_c depends on this
-    using type = safe_base<
+    using return_type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1514,11 +1570,11 @@ public:
         exception_policy
     >;
 
-    constexpr static type return_value(const T & t, const U & u){
-        return type(
+    constexpr static return_type return_value(const T & t, const U & u){
+        return return_type(
             static_cast<result_base_type>(base_value(t))
             ^ static_cast<result_base_type>(base_value(u)),
-            typename type::skip_validation()
+            typename return_type::skip_validation()
         );
     }
 };
