@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="index.html" title="Safe Numerics">
-<link rel="prev" href="tutorial/8.html" title="Programming by Contract is Too Slow">
+<link rel="prev" href="tutorial/9.html" title="Programming by Contract is Too Slow">
 <link rel="next" href="eliminate_runtime_penalty/2.html" title="Using safe_range and safe_literal">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,7 +15,7 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="tutorial/8.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="tutorial/9.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
@@ -38,13 +38,13 @@
   special exception policy: <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/exception_policies.hpp"</span> <span class="comment">// include exception policies</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">exception_policies</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span> <span class="comment">// include exception policies</span>
 
-<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">safe_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="keyword">int</span><span class="special">,</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">native</span><span class="special">,</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">loose_trap_policy</span>  <span class="comment">// note use of "loose_trap_exception" policy!</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">native</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">loose_trap_policy</span>  <span class="comment">// note use of "loose_trap_exception" policy!</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">argc</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span> <span class="identifier">argv</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
@@ -73,7 +73,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="tutorial/8.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="tutorial/9.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="eliminate_runtime_penalty/2.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

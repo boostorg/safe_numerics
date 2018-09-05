@@ -38,7 +38,7 @@
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
   <section id="safe_numerics.case_studies">
-    <title id="safe_numerics.case_studies">Case Studies</title>
+    <title>Case Studies</title>
 
     <xi:include href="rational.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>

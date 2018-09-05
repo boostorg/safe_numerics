@@ -56,7 +56,7 @@ error detected!</screen>
     type. This is a common problem which is generally never detected.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.1">
+  <section id="safe_numerics.tutorial.3">
     <title>Arithmetic on Unsigned Integers Can Yield Incorrect Results</title>
 
     <para>Subtracting two unsigned values of the same size will result in an
@@ -164,7 +164,7 @@ error detected!
     types.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.10">
+  <section id="safe_numerics.tutorial.5">
     <title>Mixing Data Types Can Create Subtle Errors</title>
 
     <para>C++ contains signed and unsigned integer types. In spite of their
@@ -189,7 +189,7 @@ error detected!converted negative value to unsigned: domain error
     with <code>safe&lt;int&gt;</code>.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.5">
+  <section id="safe_numerics.tutorial.6">
     <title>Array Index Value Can Exceed Array Limits</title>
 
     <para>Using an intrinsic C++ array, it's very easy to exceed array limits.
@@ -213,7 +213,7 @@ error detected:Value out of range for this safe type: domain error
     a value outside of the specified range.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.6">
+  <section id="safe_numerics.tutorial.7">
     <title>Checking of Input Values Can Be Easily Overlooked</title>
 
     <para>It's way too easy to overlook the checking of parameters received
@@ -231,7 +231,7 @@ error detected:error in file input: domain error
     occur with any externally produced input.</para>
   </section>
 
-  <section id="safe_numerics.tutorial.7">
+  <section id="safe_numerics.tutorial.8">
     <title>Cannot Recover From Arithmetic Errors</title>
 
     <para>If a divide by zero error occurs in a program, it's detected by
@@ -269,7 +269,7 @@ error detected:divide by zero: domain error
 </screen></para>
   </section>
 
-  <section id="safe_numerics.tutorial.8">
+  <section id="safe_numerics.tutorial.9">
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has

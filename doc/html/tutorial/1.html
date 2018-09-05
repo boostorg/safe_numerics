@@ -32,27 +32,26 @@
     with no indication that the results are wrong. It is the programmer's
     responsibility to ensure such undefined behavior is avoided.</p>
 <p>This program demonstrates this problem. The solution is to replace
-    instances of <code class="computeroutput">int</code> type with <code class="computeroutput">safe&lt;int&gt;</code>
-    type.</p>
+    instances of built in integer types with corresponding safe types.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="keyword">int</span><span class="special">,</span> <span class="keyword">const</span> <span class="keyword">char</span> <span class="special">*</span><span class="special">[</span><span class="special">]</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 1:"</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"undetected erroneous expression evaluation"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
-        <span class="keyword">int</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
-        <span class="keyword">int</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">127</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span> <span class="identifier">z</span><span class="special">;</span>
         <span class="comment">// this produces an invalid result !</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
-        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">z</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="string">" + "</span> <span class="special">&lt;&lt;</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="identifier">z</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="string">" + "</span> <span class="special">&lt;&lt;</span> <span class="special">(</span><span class="keyword">int</span><span class="special">)</span><span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
@@ -60,10 +59,10 @@
     <span class="comment">// solution: replace int with safe&lt;int&gt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
-        <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">INT_MAX</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">2</span><span class="special">;</span>
+        <span class="identifier">safe</span><span class="special">&lt;</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">int8_t</span><span class="special">&gt;</span> <span class="identifier">z</span><span class="special">;</span>
         <span class="comment">// rather than producing an invalid result an exception is thrown</span>
         <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span>
     <span class="special">}</span>
@@ -76,11 +75,11 @@
 </pre>
 <pre class="screen">example 1:undetected erroneous expression evaluation
 Not using safe numerics
--2147483647 != 2147483647 + 2
 error NOT detected!
+-127 != 127 + 2
 Using safe numerics
-error detected:addition result too large: positive overflow error
-</pre>
+error detected:converted signed value too large: positive overflow error
+Program ended with exit code: 0</pre>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>

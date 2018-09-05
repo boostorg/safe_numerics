@@ -6,8 +6,8 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
-<link rel="prev" href="2.html" title="Arithmetic Operations Can Overflow Silently">
-<link rel="next" href="10.html" title="Mixing Data Types Can Create Subtle Errors">
+<link rel="prev" href="3.html" title="Arithmetic on Unsigned Integers Can Yield Incorrect Results">
+<link rel="next" href="5.html" title="Mixing Data Types Can Create Subtle Errors">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -15,7 +15,7 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="10.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="3.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
@@ -28,7 +28,7 @@
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"example 4: "</span><span class="special">;</span>
@@ -57,7 +57,7 @@
     <span class="comment">// solution: replace int with safe&lt;int&gt; and unsigned int with safe&lt;unsigned int&gt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">signed</span> <span class="keyword">int</span><span class="special">&gt;</span>   <span class="identifier">a</span><span class="special">{</span><span class="special">-</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
         <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">{</span><span class="number">1</span><span class="special">}</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"a is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">a</span> <span class="special">&lt;&lt;</span> <span class="string">" b is "</span> <span class="special">&lt;&lt;</span> <span class="identifier">b</span> <span class="special">&lt;&lt;</span> <span class="char">'\n'</span><span class="special">;</span>
@@ -138,7 +138,7 @@ error detected!
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="2.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="10.html"><img src="../images/next.png" alt="Next"></a>
+<a accesskey="p" href="3.html"><img src="../images/prev.png" alt="Prev"></a><a accesskey="u" href="../tutorial.html"><img src="../images/up.png" alt="Up"></a><a accesskey="h" href="../index.html"><img src="../images/home.png" alt="Home"></a><a accesskey="n" href="5.html"><img src="../images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

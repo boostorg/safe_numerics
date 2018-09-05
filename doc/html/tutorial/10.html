@@ -30,10 +30,10 @@
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">std</span><span class="special">;</span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 
 <span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">const</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="special">&amp;</span> <span class="identifier">x</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">int8_t</span> <span class="special">&amp;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">*</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
@@ -50,7 +50,7 @@
     <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"mixing types produces surprising results"</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span>
     <span class="keyword">try</span> <span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
-        <span class="comment">// problem: arithmetic operations can yield incorrect results.</span>
+        <span class="comment">// problem: mixing types produces surprising results.</span>
         <span class="identifier">f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="number">100</span><span class="special">)</span><span class="special">;</span>  <span class="comment">// works as expected</span>
         <span class="identifier">f</span><span class="special">(</span><span class="number">100</span><span class="special">,</span> <span class="special">-</span><span class="number">100</span><span class="special">)</span><span class="special">;</span> <span class="comment">// wrong result - unnoticed</span>
         <span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">endl</span><span class="special">;</span><span class="special">;</span>

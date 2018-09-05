@@ -21,41 +21,42 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safenumerics.checked_result"></a>checked_result&lt;R&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_result.html#idm194814607776">Description</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814591424">Notation</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814569040">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814560912">Model of</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814559200">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814510992">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814452960">See Also</a></span></dt>
-<dt><span class="section"><a href="checked_result.html#idm194814451248">Header</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225602368">Description</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225584416">Notation</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225562000">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225553872">Model of</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225552160">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225503984">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225437920">See Also</a></span></dt>
+<dt><span class="section"><a href="checked_result.html#idm516225436208">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814607776"></a>Description</h4></div></div></div>
+<a name="idm516225602368"></a>Description</h4></div></div></div>
 <p>checked_result is a special kind of variant class designed to hold
     the result of some operation. It can hold either the result of the
     operation or information on why the operation failed to produce a valid
     result. It is similar to other types proposed for and/or included to the
     C++ standard library or Boost such as<code class="computeroutput"> expected</code>,
-    <code class="computeroutput">variant</code>, <code class="computeroutput">optional</code> and
-    <code class="computeroutput">outcome</code>.</p>
+    <code class="computeroutput">variant</code>, <code class="computeroutput">optional</code> and <code class="computeroutput">outcome</code>. In
+    some circumstances it may be referred to as a "monad".</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>All instances of <code class="computeroutput">checked_result&lt;R&gt;</code> are
           immutable. That is, once constructed, they cannot be altered.</p></li>
 <li class="listitem"><p>There is no default constructor.</p></li>
 <li class="listitem"><p><code class="computeroutput">checked_result&lt;R&gt;</code> is never empty.</p></li>
-<li class="listitem"><p>Binary operations can be invoked on a pair of
-          <code class="computeroutput">checked_result&lt;R&gt;</code> instances if and only if the
-          underlying type (R) is identical for both instances.</p></li>
 <li class="listitem"><p>Binary operations supported by type R are guaranteed to be
           supported by checked_result&lt;R&gt;.</p></li>
+<li class="listitem"><p>Binary operations can be invoked on a pair of
+          <code class="computeroutput">checked_result&lt;R&gt;</code> instances if and only if the
+          underlying type (R) is identical for both instances. They will
+          return a value of type <code class="computeroutput">checked_result&lt;R&gt;</code>.</p></li>
+<li class="listitem"><p>Unary operations can be invoked on
+          <code class="computeroutput">checked_result&lt;R&gt;</code> instances. They will return a
+          value of type <code class="computeroutput">checked_result&lt;R&gt;</code>.</p></li>
 <li class="listitem"><p>Comparison operations will return a
           <code class="computeroutput">boost::logic::tribool</code>. Other binary operations will a
           value of the same type as the arguments.</p></li>
-<li class="listitem"><p>Unary operations can be invoked on
-          <code class="computeroutput">checked_result&lt;R&gt;</code> instances. They will return a
-          value of the same type.</p></li>
 </ul></div>
 <p>Think of <code class="computeroutput">checked&lt;R&gt;</code> as an "extended" version of R
     which can hold all the values that R can hold in addition other "special
@@ -63,7 +64,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814591424"></a>Notation</h4></div></div></div>
+<a name="idm516225584416"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -115,7 +116,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814569040"></a>Template Parameters</h4></div></div></div>
+<a name="idm516225562000"></a>Template Parameters</h4></div></div></div>
 <p>R must model the type requirements of <a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -134,12 +135,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814560912"></a>Model of</h4></div></div></div>
+<a name="idm516225553872"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814559200"></a>Valid Expressions</h4></div></div></div>
+<a name="idm516225552160"></a>Valid Expressions</h4></div></div></div>
 <p>All expressions are <code class="computeroutput">constexpr</code>.</p>
 <div class="informaltable"><table class="table">
 <colgroup>
@@ -237,15 +238,15 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814510992"></a>Example of use</h4></div></div></div>
+<a name="idm516225503984"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
-<span class="preprocessor">#include</span> <span class="string">"../include/checked_result.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/checked_result_operations.hpp"</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">checked_result</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">checked_result_operations</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
-    <span class="keyword">using</span> <span class="identifier">ext_uint</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">checked_result</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span><span class="special">;</span>
+    <span class="keyword">using</span> <span class="identifier">ext_uint</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">checked_result</span><span class="special">&lt;</span><span class="keyword">unsigned</span> <span class="keyword">int</span><span class="special">&gt;</span><span class="special">;</span>
     <span class="keyword">const</span> <span class="identifier">ext_uint</span> <span class="identifier">x</span><span class="special">{</span><span class="number">4</span><span class="special">}</span><span class="special">;</span>
     <span class="keyword">const</span> <span class="identifier">ext_uint</span> <span class="identifier">y</span><span class="special">{</span><span class="number">3</span><span class="special">}</span><span class="special">;</span>
 
@@ -266,12 +267,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814452960"></a>See Also</h4></div></div></div>
+<a name="idm516225437920"></a>See Also</h4></div></div></div>
 <p><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">ExceptionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194814451248"></a>Header</h4></div></div></div>
+<a name="idm516225436208"></a>Header</h4></div></div></div>
 <p><a href="../include/checked_result.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/checked_result.hpp&gt;</code></a></p>
 <p><a href="../include/checked_result_operations.hpp" target="_top"><code class="computeroutput">#include

@@ -108,7 +108,7 @@
             <row>
               <entry><code>~t</code></entry>
 
-              <entry><code><classname>T</classname></code></entry>
+              <entry><code>T</code></entry>
 
               <entry>bitwise complement</entry>
             </row>
@@ -209,8 +209,8 @@
   <section>
     <title>Header</title>
 
-    <para><ulink url="../../include/concept/numeric.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/concepts/integer.hpp&gt;
-    </code></ulink></para>
+    <para><ulink
+    url="../../include/boost/safe_numerics/concept/numeric.hpp"><code>#include
+    &lt;boost/safe_numerics/concepts/integer.hpp&gt; </code></ulink></para>
   </section>
 </section>

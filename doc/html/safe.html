@@ -21,25 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe.html#idm194821895984">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821893984">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821889952">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821882656">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821875616">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821857184">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821851232">Examples of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm194821580400">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226611984">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226609984">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226605952">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226598656">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226591616">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226573216">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226567264">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm516226292368">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821895984"></a>Description</h4></div></div></div>
+<a name="idm516226611984"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or to trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821893984"></a>Model of</h4></div></div></div>
+<a name="idm516226609984"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 <p>This type inherits all the notation, associated types and template
@@ -48,7 +48,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821889952"></a>Notation</h4></div></div></div>
+<a name="idm516226605952"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -67,7 +67,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821882656"></a>Associated Types</h4></div></div></div>
+<a name="idm516226598656"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -89,7 +89,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821875616"></a>Template Parameters</h4></div></div></div>
+<a name="idm516226591616"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -125,7 +125,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821857184"></a>Valid Expressions</h4></div></div></div>
+<a name="idm516226573216"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a>&lt;T&gt;
     type requirements. Note that all these expressions are
@@ -145,7 +145,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821851232"></a>Examples of use</h4></div></div></div>
+<a name="idm516226567264"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -192,7 +192,7 @@
       safe integers as they do for built-in integers. </p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
     <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
@@ -218,7 +218,7 @@
       any conversion might invoke a runtime exception.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
     <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
@@ -252,9 +252,10 @@
       will permit the above example to run with zero runtime overhead while
       guaranteeing that no error can ever occur.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">limits</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 
 <span class="keyword">int</span> <span class="identifier">f</span><span class="special">(</span><span class="keyword">int</span> <span class="identifier">i</span><span class="special">)</span><span class="special">{</span>
     <span class="keyword">return</span> <span class="identifier">i</span><span class="special">;</span>
@@ -283,7 +284,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm194821653376"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm516226365344"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic.</p>
 <p>Stepping back, we can see that many of the cases of invalid
@@ -318,7 +319,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194821580400"></a>Header</h4></div></div></div>
+<a name="idm516226292368"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>

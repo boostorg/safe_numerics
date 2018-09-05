@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
-<link rel="up" href="index.html" title="Case Studies">
+<link rel="up" href="case_studies.html" title="Case Studies">
 <link rel="prev" href="composition_with_other_libraries.html" title="Composition with Other Libraries">
 <link rel="next" href="notes.html" title="Background">
 </head>
@@ -15,16 +15,16 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="composition_with_other_libraries.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="composition_with_other_libraries.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="case_studies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safety_critical_embedded_controller"></a>Safety Critical Embedded Controller</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816952112">Updating the Code</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816936896">Compiling on the Desktop</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194816545472">Trapping Errors at Compile Time</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm194815495488">Summary</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm516228710304">Updating the Code</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm516228694032">Compiling on the Desktop</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm516228283584">Trapping Errors at Compile Time</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm516227166560">Summary</a></span></dt>
 </dl></div>
 <p>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
@@ -50,7 +50,7 @@
   doesn't have to keep us from working on our code.</p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194816952112"></a>Updating the Code</h4></div></div></div>
+<a name="idm516228710304"></a>Updating the Code</h4></div></div></div>
 <p>Inspecting this <a href="../../example/motor.c" target="_top">code</a>, we
     find that it is written in a dialect of C rather than C itself. At the
     time this code was written, conforming versions of the C compiler were not
@@ -87,7 +87,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194816936896"></a>Compiling on the Desktop</h4></div></div></div>
+<a name="idm516228694032"></a>Compiling on the Desktop</h4></div></div></div>
 <p>Using the target environment to run tests is often very difficult or
     impossible due to limited resources. So software unit testing for embedded
     systems is very problematic and often skipped. The C language on our
@@ -372,7 +372,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194816545472"></a>Trapping Errors at Compile Time</h4></div></div></div>
+<a name="idm516228283584"></a>Trapping Errors at Compile Time</h4></div></div></div>
 <p>We can test the same code we're going to load into our target system
     on the desktop. We could build and execute a complete unit test suite. We
     could capture the output and graph it. We have the ability to make are
@@ -445,15 +445,15 @@
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="comment">// include headers to support safe integers</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/cpp.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/exception.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer_range.hpp"</span>
-<span class="preprocessor">#include</span> <span class="string">"../include/safe_integer_literal.hpp"</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">cpp</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">exception</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_range</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="comment">// use same type promotion as used by the pic compiler</span>
 <span class="comment">// target compiler XC8 supports:</span>
-<span class="keyword">using</span> <span class="identifier">pic16_promotion</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">cpp</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">pic16_promotion</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">cpp</span><span class="special">&lt;</span>
     <span class="number">8</span><span class="special">,</span>  <span class="comment">// char      8 bits</span>
     <span class="number">16</span><span class="special">,</span> <span class="comment">// short     16 bits</span>
     <span class="number">16</span><span class="special">,</span> <span class="comment">// int       16 bits</span>
@@ -467,9 +467,9 @@
 
 <span class="comment">// ***************************</span>
 <span class="comment">// generate compile time errors if operation could fail </span>
-<span class="keyword">using</span> <span class="identifier">trap_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">loose_trap_policy</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="identifier">trap_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">loose_trap_policy</span><span class="special">;</span>
 <span class="comment">// generate runtime errors if operation could fail</span>
-<span class="keyword">using</span> <span class="identifier">exception_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">default_exception_policy</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="identifier">exception_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">default_exception_policy</span><span class="special">;</span>
 
 <span class="comment">// ***************************</span>
 <span class="comment">// 2. Create a macro named literal an integral value</span>
@@ -485,15 +485,15 @@
 <span class="preprocessor">#define</span> <span class="identifier">C_MIN</span>  <span class="special">(</span><span class="number">25</span> <span class="special">&lt;&lt;</span> <span class="number">8</span><span class="special">)</span>
 
 <span class="identifier">static_assert</span><span class="special">(</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C0</span><span class="special">)</span> <span class="special">&lt;</span> <span class="number">0xffffff</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C0</span><span class="special">)</span> <span class="special">&lt;</span> <span class="number">0xffffff</span><span class="special">,</span>
     <span class="string">"Largest step too long"</span>
 <span class="special">)</span><span class="special">;</span>
 <span class="identifier">static_assert</span><span class="special">(</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C_MIN</span><span class="special">)</span> <span class="special">&gt;</span> <span class="number">0</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C_MIN</span><span class="special">)</span> <span class="special">&gt;</span> <span class="number">0</span><span class="special">,</span>
     <span class="string">"Smallest step must be greater than zero"</span>
 <span class="special">)</span><span class="special">;</span>
 <span class="identifier">static_assert</span><span class="special">(</span>
-    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C_MIN</span><span class="special">)</span> <span class="special">&lt;</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C0</span><span class="special">)</span><span class="special">,</span>
+    <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C_MIN</span><span class="special">)</span> <span class="special">&lt;</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">base_value</span><span class="special">(</span><span class="identifier">C0</span><span class="special">)</span><span class="special">,</span>
     <span class="string">"Smallest step must be smaller than largest step"</span>
 <span class="special">)</span><span class="special">;</span>
 
@@ -503,21 +503,21 @@
 <span class="comment">// ranges and permit compile time determination of when</span>
 <span class="comment">// exceptional conditions might occur.</span>
 
-<span class="keyword">using</span> <span class="identifier">pic_register_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">pic_register_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">uint8_t</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">trap_policy</span> <span class="comment">// use for compiling and running tests</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// number of steps</span>
-<span class="keyword">using</span> <span class="identifier">step_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">step_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">int32_t</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">exception_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// position</span>
-<span class="keyword">using</span> <span class="identifier">position_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">position_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
     <span class="number">0</span><span class="special">,</span>
     <span class="number">50000</span><span class="special">,</span> <span class="comment">// 500 mm / 2 mm/rotation * 200 steps/rotation</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
@@ -526,7 +526,7 @@
 
 <span class="comment">// next end of step timer value in format 24.8</span>
 <span class="comment">// where the .8 is the number of bits in the fractional part.</span>
-<span class="keyword">using</span> <span class="identifier">ccpr_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">ccpr_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">uint32_t</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">exception_policy</span>
@@ -536,7 +536,7 @@
 <span class="comment">// note: this value is constrainted to be a positive value. But</span>
 <span class="comment">// we still need to make it a signed type. We get an arithmetic</span>
 <span class="comment">// error when moving to a negative step number.</span>
-<span class="keyword">using</span> <span class="identifier">c_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">c_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
     <span class="identifier">C_MIN</span><span class="special">,</span>
     <span class="identifier">C0</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
@@ -544,7 +544,7 @@
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// index into phase table</span>
-<span class="keyword">using</span> <span class="identifier">phase_ix_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">phase_ix_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="number">0</span><span class="special">,</span>
     <span class="number">3</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
@@ -552,14 +552,14 @@
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// settings for control value output</span>
-<span class="keyword">using</span> <span class="identifier">phase_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">phase_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">uint16_t</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">trap_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// direction of rotation</span>
-<span class="keyword">using</span> <span class="identifier">direction_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">direction_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_signed_range</span><span class="special">&lt;</span>
     <span class="special">-</span><span class="number">1</span><span class="special">,</span>
     <span class="special">+</span><span class="number">1</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
@@ -567,7 +567,7 @@
 <span class="special">&gt;</span><span class="special">;</span>
 
 <span class="comment">// some number of microseconds</span>
-<span class="keyword">using</span> <span class="identifier">microseconds</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">microseconds</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe</span><span class="special">&lt;</span>
     <span class="identifier">uint32_t</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">trap_policy</span>
@@ -603,7 +603,7 @@
 
 <span class="comment">// ***************************</span>
 <span class="comment">// special checked type for bits - values restricted to 0 or 1</span>
-<span class="keyword">using</span> <span class="identifier">safe_bit_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
+<span class="keyword">using</span> <span class="identifier">safe_bit_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
     <span class="number">0</span><span class="special">,</span>
     <span class="number">1</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
@@ -901,7 +901,7 @@
                 <span class="special">}</span>
                 <span class="comment">// *** possible exception</span>
                 <span class="comment">// equation 14</span>
-                <span class="identifier">c</span> <span class="special">-=</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">2</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">c</span> <span class="special">/</span> <span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">4</span><span class="special">)</span> <span class="special">*</span> <span class="special">(</span><span class="identifier">i</span> <span class="special">-</span> <span class="identifier">m</span><span class="special">)</span> <span class="special">+</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">1</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+                <span class="identifier">c</span> <span class="special">+=</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">2</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">c</span> <span class="special">/</span> <span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">4</span><span class="special">)</span> <span class="special">*</span> <span class="special">(</span><span class="identifier">m</span> <span class="special">-</span> <span class="identifier">i</span><span class="special">)</span> <span class="special">+</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">1</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
                 <span class="keyword">if</span><span class="special">(</span><span class="identifier">c</span> <span class="special">&gt;</span> <span class="identifier">C0</span><span class="special">)</span><span class="special">{</span>
                     <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">C0</span><span class="special">;</span>
                 <span class="special">}</span>
@@ -994,7 +994,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm194815495488"></a>Summary</h4></div></div></div>
+<a name="idm516227166560"></a>Summary</h4></div></div></div>
 <p>The intent of this case study is to show that the Safe Numerics
     Library can be an essential tool in validating the correctness of C/C++
     programs in all environments - including the most restricted.</p>
@@ -1029,7 +1029,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="composition_with_other_libraries.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="index.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="composition_with_other_libraries.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="case_studies.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="notes.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>
