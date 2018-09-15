@@ -29,8 +29,8 @@ enum ramp_state {
 // initial setup
 enum ramp_state ramp_sts;
 position_t motor_position;
-position_t m;               // target position
-position_t m2;              // midpoint or point where acceleration changes
+position_t m;           // target position
+position_t m2;          // midpoint or point where acceleration changes
 direction_t d;          // direction of traval -1 or +1
 
 // curent state along travel
@@ -64,14 +64,13 @@ bool busy(){
 
 // set outputs to energize motor coils
 void update(ccpr_t ccpr, phase_ix_t phase_ix){
-    phase_t phase;           // ccpPhase[phase_ix]
     // energize correct windings
-    phase = ccpPhase[phase_ix];
+    const phase_t phase = ccpPhase[phase_ix];
     CCP1CON = phase & literal(0xff); // set CCP action on next match
     CCP2CON = phase >> literal(8);
     // timer value at next CCP match
-    CCPR2H = CCPR1H = literal(0xff) & (ccpr >> literal(8));
-    CCPR2L = CCPR1L = literal(0xff) & ccpr;
+    CCPR1H = literal(0xff) & (ccpr >> literal(8));
+    CCPR1L = literal(0xff) & ccpr;
 }
 
 // compiler-specific ISR declaration
@@ -81,13 +80,14 @@ void update(ccpr_t ccpr, phase_ix_t phase_ix){
 // accumulated values, etc.
 void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
     // *** possible exception
-    ++i;
-    // *** possible exception
-    //motor_position += d;
+    // motor_position += d;
+    // use the following to avoid mixing exception policies which is an error
     if(d < 0)
         --motor_position;
     else
         ++motor_position;
+    // *** possible exception
+    ++i;
     // calculate next difference in time
     for(;;){
         switch (ramp_sts) {
@@ -96,8 +96,8 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                     ramp_sts = ramp_down;
                     continue;
                 }
-                // *** possible exception
-                // equation 12
+                // equation 13
+                // *** possible negative overflow on update of c
                 c -= literal(2) * c / (literal(4) * i + literal(1));
                 if(c < C_MIN){
                     c = C_MIN;
@@ -120,9 +120,11 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                     CCP1IE = literal(0); // disable_interrupts(INT_CCP1);
                     return;
                 }
-                // *** possible exception
                 // equation 14
-                c += literal(2) * c / (literal(4) * (m - i) + literal(1));
+                // *** possible positive overflow on update of c
+                // note: re-arrange expression to avoid negative result
+                // from difference of two unsigned values
+                c += literal(2) * c / (literal(4) * (m - i) - literal(1));
                 if(c > C0){
                     c = C0;
                 }
@@ -136,7 +138,6 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
     assert(c <= C0 && c >= C_MIN);
     // *** possible exception
     ccpr = literal(0xffffff) & (ccpr + c);
-    // *** possible exception
     phase_ix = (phase_ix + d) & literal(3);
     update(ccpr, phase_ix);
 } // isr_motor_step()
@@ -162,8 +163,7 @@ void motor_run(position_t new_position) {
     }
 
     i = literal(0);
-    // *** possible exception
-    m2 = (m - i) / 2;
+    m2 = m / literal(2);
 
     ramp_sts = ramp_up; // start ramp state-machine
 
@@ -172,11 +172,7 @@ void motor_run(position_t new_position) {
     current_on(); // current in motor windings
 
     c = C0;
-    ccpr = (TMR1H << literal(8) | TMR1L);
-    // *** possible exception
-    ccpr += literal(1000);
-    // *** possible exception
-    ccpr += c;
+    ccpr = (TMR1H << literal(8) | TMR1L) + C0 + literal(1000);
     phase_ix = d & literal(3);
     update(ccpr, phase_ix);
 

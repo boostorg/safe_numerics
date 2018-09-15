@@ -8,7 +8,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <limits>
 
 // *************************** 
 // 1. include headers to support safe integers

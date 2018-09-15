@@ -755,4 +755,79 @@ int main(){
 }
 #endif
 
-int main(){}
+//////////////////////////////////////////////////////////////////
+// example93.cpp
+//
+// Copyright (c) 2015 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+#include <iostream>
+#include <limits>
+#include <boost/integer.hpp>
+
+// include headers to support safe integers
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/exception.hpp>
+#include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+
+// use same type promotion as used by the pic compiler
+// target compiler XC8 supports:
+using pic16_promotion = boost::safe_numerics::cpp<
+    8,  // char      8 bits
+    16, // short     16 bits
+    16, // int       16 bits
+    16, // long      16 bits
+    32  // long long 32 bits
+>;
+
+// ***************************
+// 1. Specify exception policies so we will generate a
+// compile time error whenever an operation MIGHT fail.
+
+// ***************************
+// generate compile time errors if operation could fail 
+using trap_policy = boost::safe_numerics::loose_trap_policy;
+// generate runtime errors if operation could fail
+using exception_policy = boost::safe_numerics::default_exception_policy;
+
+// ***************************
+// 2. Create a macro named literal an integral value
+// that can be evaluated at compile time.
+#define literal(n) make_safe_literal(n, pic16_promotion, void)
+
+// index into phase table
+using phase_ix_t = boost::safe_numerics::safe_unsigned_range<
+    0,
+    3,
+    pic16_promotion,
+    trap_policy
+>;
+
+// settings for control value output
+using phase_t = boost::safe_numerics::safe<
+    uint16_t,
+    pic16_promotion,
+    trap_policy
+>;
+
+// direction of rotation
+using direction_t = boost::safe_numerics::safe_signed_range<
+    -1,
+    +1,
+    pic16_promotion,
+    trap_policy
+>;
+
+int main(){
+    direction_t d;          // direction of traval -1 or +1
+    phase_ix_t phase_ix;    // motor phase index
+    // *** possible exception
+    //phase_ix = (phase_ix + d) & literal(3);
+    const boost::safe_numerics::safe_signed_range<-1, 4> x = phase_ix + d;
+//  phase_ix = x & literal(3);
+}

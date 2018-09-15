@@ -14,23 +14,72 @@
   Corporation</ulink>. This processor has 32KB of program memory. On a
   processor this small, it's common to use a mixture of 8, 16, and 32 bit data
   types in order to minimize memory footprint and program run time. The type
-  <code>int</code> has 16 bits. It's programmed in C.</para>
+  <code>int</code> has 16 bits. It's programmed in C. Since this program is
+  going to be running life critical function, it must be demonstrably correct.
+  This implies that it needs to be verifiable and testable. Since the target
+  micro processor is inconvenient for accomplishing these goals, we will build
+  and test the code on the desktop.</para>
 
-  <para>A stepper motor controller emits a pulse which causes the motor to
-  move one step. It seems simple, but in practice it turns out to be quite
-  intricate to get right as one has to time the pulses individually to
-  smoothly accelerate the rotation of the motor from a standing start until it
-  reaches the some maximum velocity. Failure to do this will either limit the
-  stepper motor to very low speed or result in skipped steps when the motor is
-  under load. Similarly, a loaded motor must be slowly decelerated down to a
-  stop. Already, this is turning it to a more complex project than it first
-  seemed. Searching around the net, we find a popular <ulink
-  url="../../example/stepper-motor.pdf">article</ulink> on the operation of
-  stepper motors using simple micro controllers. The algorithm is very well
-  explained and it includes complete <ulink url="../../example/motor.c">code
-  we can test</ulink>. The engineers are still debugging the prototype boards
-  and hope to have them ready before the product actually ships. But this
-  doesn't have to keep us from working on our code.</para>
+  <section>
+    <title>How a Stepper Motor Works</title>
+
+    <figure float="1">
+      <title>Stepper Motor</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="left" contentwidth="216"
+                     fileref="StepperMotor.gif" format="GIF" width="50%"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A stepper motor controller emits a pulse which causes the motor to
+    move one step. It seems simple, but in practice it turns out to be quite
+    intricate to get right as one has to time the pulses individually to
+    smoothly accelerate the rotation of the motor from a standing start until
+    it reaches the some maximum velocity. Failure to do this will either limit
+    the stepper motor to very low speed or result in skipped steps when the
+    motor is under load. Similarly, a loaded motor must be slowly decelerated
+    down to a stop.</para>
+
+    <para><figure>
+        <title>Motion Profile</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="stepper_profile.png" format="PNG" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </figure></para>
+
+    <para>This implies the the width of the pulses must decrease as the motor
+    accelerates. That is the pulse with has to be computed while the motor is
+    in motion. This is illustrated in the above drawing. A program to
+    accomplish this might look something like the following:</para>
+
+    <literallayout class="normal" linenumbering="unnumbered">setup registers and step to zero position
+
+specify target position
+set initial time to interrupt
+enable interrupts
+
+On interrupt
+    if at target position
+        disable interrupts and return
+    calculate width of next step
+    change current winding according to motor direction
+    set delay time to next interrupt to width of next step</literallayout>
+
+    <para>Already, this is turning it to a much more complex project than it
+    first seemed. Searching around the net, we find a popular <ulink
+    url="../../example/stepper-motor.pdf">article</ulink> on the operation of
+    stepper motors using simple micro controllers. The algorithm is very well
+    explained and it includes complete <ulink url="../../example/motor.c">code
+    we can test</ulink>. The engineers are still debugging the prototype
+    boards and hope to have them ready before the product actually ships. But
+    this doesn't have to keep us from working on our code.</para>
+  </section>
 
   <section>
     <title>Updating the Code</title>
@@ -97,6 +146,33 @@
     and verify that the motor rotates 5 revolutions in each direction with
     smooth acceleration and deceleration. We don't have such a board yet, but
     the engineers have promised a working board real soon now.</para>
+  </section>
+
+  <section>
+    <title>Refactor for Testing</title>
+
+    <para>In order to develop our test suite and execute the same code on the
+    desktop and the target system we factor out the shared code as a separate
+    module which will used in both environments without change. The shared
+    module <ulink url="../../example/motor2.c"><code><ulink
+    url="../../example/motor1.c">motor2.c</ulink></code></ulink> contains the
+    algorithm for handling the interrupts in such a way as to create the
+    smooth acceleration we require.</para>
+
+    <literallayout>    <ulink url="../../example/motor2.c"><code><ulink
+            url="../../example/motor_test2.c">motor_test2.c</ulink></code></ulink>        <ulink
+        url="../../example/motor2.c"><code><ulink
+            url="../../example/example92.cpp">example92.cpp</ulink></code></ulink>
+
+    #include ...         #include ...
+    PIC typedefs ...     desktop types ...
+            \               /
+             \             /
+            #include <ulink url="../../example/motor2.c"><code><ulink
+            url="../../example/motor2.c">motor2.c</ulink></code></ulink>
+             /             \
+            /               \
+    PIC test code        desktop test code</literallayout>
   </section>
 
   <section>
@@ -399,17 +475,24 @@ int main(){
         all known compilers, this change should not affect runtime performance
         in any way. It will result in unambiguously portable code.</para>
       </listitem>
+
+      <listitem>
+        <para>Alter the code so that the expression in question is never
+        negative. Depending on sizes of the operands and the size of the
+        native integer, this expression might return convert the operands to
+        int or result in an invalid result.</para>
+      </listitem>
     </itemizedlist>
 
-    <para>Of these alternatives, the second seems simplest and more definitive
-    fix so we'll choose that one. We also decide to make a couple of minor
-    changes to simplify the code and make mapping of the algorithm in the
-    article to the code more transparent. With these changes, our test program
-    runs to the end with no errors or exceptions. In addition, I made a minor
-    change which simplifies the handling of floating point values in format of
-    24.8. This results in <ulink url="../../example/motor2.c">motor2.c</ulink>
-    which makes the above changes. It should be easy to see that these two
-    versions are otherwise identical.</para>
+    <para>Of these alternatives, the third seems the more definitive fix so
+    we'll choose that one. We also decide to make a couple of minor changes to
+    simplify the code and make mapping of the algorithm in the article to the
+    code more transparent. With these changes, our test program runs to the
+    end with no errors or exceptions. In addition, I made a minor change which
+    simplifies the handling of floating point values in format of 24.8. This
+    results in <ulink url="../../example/motor2.c">motor2.c</ulink> which
+    makes the above changes. It should be easy to see that these two versions
+    are otherwise identical.</para>
 
     <para>Finally our range test fails. In order to handle the full range we
     need, we'll have to change some data types used for holding step count and

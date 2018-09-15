@@ -21,16 +21,16 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.checked_integer_arithmetic"></a>safe_compare&lt;T, U&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224964736">Synopsis</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224876496">Description</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224869152">Type requirements</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224865648">Complexity</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224864416">Example of use</a></span></dt>
-<dt><span class="section"><a href="checked_integer_arithmetic.html#idm516224833760">Header</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75954020832">Synopsis</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75953932624">Description</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75953925280">Type requirements</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75953921776">Complexity</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75953920544">Example of use</a></span></dt>
+<dt><span class="section"><a href="checked_integer_arithmetic.html#idm75953889888">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224964736"></a>Synopsis</h4></div></div></div>
+<a name="idm75954020832"></a>Synopsis</h4></div></div></div>
 <pre class="programlisting"><span class="comment">// compare any pair of integers</span>
 <span class="keyword">template</span><span class="special">&lt;</span><span class="keyword">class</span> <span class="identifier">T</span><span class="special">,</span> <span class="keyword">class</span> <span class="identifier">U</span><span class="special">&gt;</span>
 <span class="keyword">bool</span> <span class="keyword">constexpr</span> <span class="identifier">safe_compare</span><span class="special">::</span><span class="identifier">less_than</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">T</span> <span class="special">&amp;</span> <span class="identifier">lhs</span><span class="special">,</span> <span class="keyword">const</span> <span class="identifier">U</span> <span class="special">&amp;</span> <span class="identifier">rhs</span><span class="special">)</span><span class="special">;</span>
@@ -52,7 +52,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224876496"></a>Description</h4></div></div></div>
+<a name="idm75953932624"></a>Description</h4></div></div></div>
 <p>Compare two primitive integers. These functions will return a
     correct result regardless of the type of the operands. Specifically it is
     guaranteed to return the correct arithmetic result when comparing signed
@@ -67,19 +67,19 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224869152"></a>Type requirements</h4></div></div></div>
+<a name="idm75953925280"></a>Type requirements</h4></div></div></div>
 <p>All template parameters of the functions must be C/C++ built-in
     integer types, <code class="computeroutput"><code class="computeroutput">char</code></code>,
     <code class="computeroutput"><code class="computeroutput">int</code></code> ....</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224865648"></a>Complexity</h4></div></div></div>
+<a name="idm75953921776"></a>Complexity</h4></div></div></div>
 <p>Each function performs one and only one arithmetic operation.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224864416"></a>Example of use</h4></div></div></div>
+<a name="idm75953920544"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">safe_compare</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
@@ -92,7 +92,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm516224833760"></a>Header</h4></div></div></div>
+<a name="idm75953889888"></a>Header</h4></div></div></div>
 <p><a href="../../include/safe_compare.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/safe_compare.hpp&gt;
     </code></a></p>

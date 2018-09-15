@@ -296,7 +296,6 @@ private:
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
-
         constexpr const r_type_interval_t u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))

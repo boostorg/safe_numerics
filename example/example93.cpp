@@ -8,8 +8,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <limits>
-#include <boost/integer.hpp>
 
 // include headers to support safe integers
 #include <boost/safe_numerics/cpp.hpp>
@@ -35,33 +33,30 @@ using pic16_promotion = boost::safe_numerics::cpp<
 // ***************************
 // generate compile time errors if operation could fail 
 using trap_policy = boost::safe_numerics::loose_trap_policy;
+
 // generate runtime errors if operation could fail
 using exception_policy = boost::safe_numerics::default_exception_policy;
 
 // ***************************
 // 2. Create a macro named literal an integral value
 // that can be evaluated at compile time.
-#define literal(n) make_safe_literal(n, void, void)
+#define literal(n) make_safe_literal(n, pic16_promotion, void)
 
 // For min speed of 2 mm / sec (24.8 format)
 // sec / step = sec / 2 mm * 2 mm / rotation * rotation / 200 steps
-#define C0    (5000 << 8)
+#define C0      literal(5000 << 8)
 
 // For max speed of 400 mm / sec
 // sec / step = sec / 400 mm * 2 mm / rotation * rotation / 200 steps
-#define C_MIN  (25 << 8)
+#define C_MIN   literal(25 << 8)
 
 static_assert(
-    boost::safe_numerics::base_value(C0) < 0xffffff,
+    C0 < make_safe_literal(0xffffff, pic16_promotion,trap_policy),
     "Largest step too long"
 );
 static_assert(
-    boost::safe_numerics::base_value(C_MIN) > 0,
+    C_MIN > make_safe_literal(0, pic16_promotion,trap_policy),
     "Smallest step must be greater than zero"
-);
-static_assert(
-    boost::safe_numerics::base_value(C_MIN) < boost::safe_numerics::base_value(C0),
-    "Smallest step must be smaller than largest step"
 );
 
 // ***************************
@@ -76,9 +71,14 @@ using pic_register_t = boost::safe_numerics::safe<
     trap_policy // use for compiling and running tests
 >;
 
-// number of steps
-using step_t = boost::safe_numerics::safe<
-    std::int32_t,
+// note: the maximum value of step_t would be:
+// 50000 = 500 mm / 2 mm/rotation * 200 steps/rotation.
+// But in one expression the value of number of steps * 4 is
+// used.  To prevent introduction of error, permit this
+// type to hold the larger value.
+using step_t = boost::safe_numerics::safe_unsigned_range<
+    0,
+    200000,
     pic16_promotion,
     exception_policy
 >;
@@ -111,11 +111,16 @@ using c_t = boost::safe_numerics::safe_unsigned_range<
 >;
 
 // index into phase table
+// note: The legal values are 0-3.  So why must this be a signed
+// type?  Turns out that expressions like phase_ix + d
+// will convert both operands to unsigned.  This in turn will
+// create an exception.  So leave it signed even though the
+// value is greater than zero.
 using phase_ix_t = boost::safe_numerics::safe_signed_range<
     0,
     3,
     pic16_promotion,
-    exception_policy
+    trap_policy
 >;
 
 // settings for control value output
@@ -130,7 +135,7 @@ using direction_t = boost::safe_numerics::safe_signed_range<
     -1,
     +1,
     pic16_promotion,
-    exception_policy
+    trap_policy
 >;
 
 // some number of microseconds
@@ -237,10 +242,10 @@ const result_t success = 1;
 const result_t fail = 0;
 
 // move motor to the indicated target position in steps
-result_t test(position_t m){
+result_t test(position_t new_position){
     try {
-        std::cout << "move motor to " << m << '\n';
-        motor_run(m);
+        std::cout << "move motor to " << new_position << '\n';
+        motor_run(new_position);
         std::cout
         << "step #" << ' '
         << "delay(us)(24.8)" << ' '
@@ -272,18 +277,18 @@ int main(){
     try {
         initialize();
         // move motor to position 1000
-        result &= test(1000);
+        result &= test(literal(1000));
         // move to the left before zero position
         // fails to compile !
         // result &= ! test(-10);
         // move motor to position 200
-        result &= test(200);
+        result &= test(literal(200));
         // move motor to position 200 again! Should result in no movement.
-        result &= test(200);
+        result &= test(literal(200));
         // move motor to position 50000.
-        result &= test(50000);
+        result &= test(literal(50000));
         // move motor back to position 0.
-        result &= test(0);
+        result &= test(literal(0));
     }
     catch(...){
         std::cout << "test interrupted\n";

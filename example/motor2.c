@@ -30,12 +30,12 @@ uint8  phase_ix=0;      // index to ccpPhase[]
 uint8  phase_inc;       // phase_ix increment
 uint8  run_flg;         // true while motor is running
 // ***************************
-// keep track of total delay count
+// 1. keep track of total delay count
 uint32 ccpr;            // 24.8 fixed point delay count
-uint32 c;                // 24.8 fixed point delay count increment
-uint16 step_no;          // progress of move
+uint32 c;               // 24.8 fixed point delay count increment
+uint16 step_no;         // progress of move
 uint16 step_down;       // start of down-ramp
-uint16 move;             // total steps to move
+uint16 move;            // total steps to move
 uint16 midpt;           // midpoint of move
 int16 denom;            // 4.n+1 in ramp algo
 
@@ -59,9 +59,9 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
             if (step_no == midpt) { // midpoint: decel
                 ramp_sts = ramp_down;
                 // ***************************
+                // 2. convert shift to multiplication
+                // 3. avoid negative result from subtraction of unsigned values
                 // denom = ((step_no - move) << 2) + 1;
-                // address problems created by mixing unsigned and signed values
-                // convert shift to divide
                 if(step_no > move)
                     denom = ((step_no - move) * 4) + 1;
                 else
@@ -78,10 +78,10 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                 break;
             }
             denom += 4;
-            // ***************************
-            // c -= (c << 1) / denom; // ramp algorithm
-            // address problems created by mixing unsigned and signed values
             // calculate increment/decrement in delay count
+            // ***************************
+            // 3. avoid negative result from subtraction of unsigned values
+            // c -= (c << 1) / denom; // ramp algorithm
             if(denom > 0)
                 c -= (c << 1) / denom;
             else
@@ -97,10 +97,10 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
         case ramp_max: // constant speed
             if (step_no == step_down) { // start decel
                 ramp_sts = ramp_down;
-                // *************************** 
-                // denom = ((step_no - move) << 2) + 5;
-                // avoid negative result of unsigned subtraction
-                // convert shift to divide
+                // ***************************
+                // 2. convert shift to multiplication
+                // 3. avoid negative result from subtraction of unsigned values
+                // denom = ((step_no - move) << 2) + 1;
                 denom = 5 - ((move - step_no) * 4);
             }
             break;

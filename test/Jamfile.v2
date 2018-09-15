@@ -7,6 +7,8 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 
 import testing ;
+import ../../config/checks/config : requires ;
+project : requirements [ requires cxx14_constexpr ] ;
 
 run test_add_automatic.cpp ;
 run test_add_native.cpp ;
