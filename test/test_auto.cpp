@@ -47,8 +47,6 @@ int test_auto(const T & t, const U & u){
     catch(std::exception e){
         t + safe<U, automatic>(u);
     }
-
-
     return 0;
 }
 
@@ -72,8 +70,8 @@ int test_compare_result(){
     using namespace boost::safe_numerics;
 
     automatic::comparison_result<
-        safe<std::int8_t, automatic>,
-        safe<std::uint64_t, automatic>
+        safe<std::int16_t, automatic>,
+        safe<std::int16_t, automatic>
     >::type r1;
     print_argument_type(r1);
 

@@ -12,7 +12,11 @@ file(GLOB test_list
 )
 
 # CMake doesn't work well for some tests
-list(REMOVE_ITEM test_list test_performance.cpp test_trap.cpp test_constexpr.cpp)
+list(REMOVE_ITEM test_list
+  test_performance.cpp
+  test_trap.cpp
+  test_constexpr.cpp
+)
 
 foreach(file_name ${test_list})
   string(REPLACE ".cpp" "" base_name ${file_name})

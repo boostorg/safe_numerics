@@ -280,6 +280,9 @@ public:
     };
 
     ///////////////////////////////////////////////////////////////////////
+    // note: comparison_result (<, >, ...) is special.
+    // The return value is always a bool.  The type returned here is
+    // the intermediate type applied to make the values comparable.
     template<typename T, typename U>
     struct comparison_result {
         using temp_base_type = typename std::conditional<
@@ -305,8 +308,33 @@ public:
             checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
+        constexpr static r_type min(const r_type & t, const r_type & u){
+            // assert(! u.exception());
+            // assert(! t.exception());
+            return static_cast<bool>(t < u) ? t : u;
+        }
+
+       constexpr static r_type max(const r_type & t, const r_type & u){
+            // assert(! u.exception());
+            // assert(! t.exception());
+            return static_cast<bool>(t < u) ? u : t;
+        }
+
+        // union of two intervals
+        // note: we can't use t_interval | u_interval because it
+        // depends on max and min which in turn depend on < which in turn
+        // depends on implicit conversion of tribool to bool
+        constexpr static r_interval_type union_interval(
+            const r_interval_type & t,
+            const r_interval_type & u
+        ){
+            const r_type & rl = min(t.l, u.l);
+            const r_type & ru = max(t.u, u.u);
+            return r_interval_type(rl, ru);
+        }
+
         constexpr static const r_interval_type r_interval =
-            t_interval | u_interval;
+            union_interval(t_interval, u_interval);
 
         using type = typename result_type<
             temp_base_type,

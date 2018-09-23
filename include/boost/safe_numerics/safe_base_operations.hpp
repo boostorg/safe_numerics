@@ -1083,21 +1083,21 @@ private:
         return safe_compare::equal(base_value(t), base_value(u));
     }
 
-    using r_type_interval_t = interval<r_type>;
+    using r_type_interval = interval<r_type>;
 
-    constexpr static bool interval_open(const r_type_interval_t & t){
+    constexpr static bool interval_open(const r_type_interval & t){
         return t.l.exception() || t.u.exception();
     }
 
 public:
     constexpr static bool
     return_value(const T & t, const U & u){
-        constexpr const r_type_interval_t t_interval{
+        constexpr const r_type_interval t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
         };
 
-        constexpr const r_type_interval_t u_interval{
+        constexpr const r_type_interval u_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<U>::max()))
         };
