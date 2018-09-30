@@ -326,7 +326,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -335,14 +335,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -448,7 +448,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -457,14 +457,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -569,7 +569,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -578,14 +578,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -730,7 +730,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -739,14 +739,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -889,7 +889,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -898,14 +898,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -1214,7 +1214,7 @@ private:
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -1223,14 +1223,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -1352,7 +1352,7 @@ struct right_shift_result {
     }
 
 public:
-    using return_type =
+    using type =
         safe_base<
             result_base_type,
             return_interval.l,
@@ -1361,14 +1361,14 @@ public:
             exception_policy
         >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             return_value(
                 t,
                 u,
                 std::integral_constant<bool, exception_possible()>()
             ),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -1432,7 +1432,7 @@ private:
 
 public:
     // lazy_enable_if_c depends on this
-    using return_type = safe_base<
+    using type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1440,11 +1440,11 @@ public:
         exception_policy
     >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             static_cast<result_base_type>(base_value(t))
             | static_cast<result_base_type>(base_value(u)),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -1497,7 +1497,7 @@ private:
 
 public:
     // lazy_enable_if_c depends on this
-    using return_type = safe_base<
+    using type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1505,11 +1505,11 @@ public:
         exception_policy
     >;
     
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             static_cast<result_base_type>(base_value(t))
             & static_cast<result_base_type>(base_value(u)),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
@@ -1561,7 +1561,7 @@ struct bitwise_xor_result {
 
 public:
     // lazy_enable_if_c depends on this
-    using return_type = safe_base<
+    using type = safe_base<
         result_base_type,
         r_interval.l,
         r_interval.u,
@@ -1569,11 +1569,11 @@ public:
         exception_policy
     >;
 
-    constexpr static return_type return_value(const T & t, const U & u){
-        return return_type(
+    constexpr static type return_value(const T & t, const U & u){
+        return type(
             static_cast<result_base_type>(base_value(t))
             ^ static_cast<result_base_type>(base_value(u)),
-            typename return_type::skip_validation()
+            typename type::skip_validation()
         );
     }
 };
