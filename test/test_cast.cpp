@@ -36,7 +36,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         }
         std::cout << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         if( safe_compare::equal(static_cast<T2>(v1), v1)){
             std::cout
                 << ' ' << t1_name << "<-" << t2_name
@@ -45,7 +45,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 static_cast<safe<T2> >(v1);
             }
-            catch(std::exception){}
+            catch(const std::exception &){}
             return false;
         }
     }
@@ -65,7 +65,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
             return false;
         }
     }
-    catch(std::exception){
+    catch(const std::exception &){
         if(safe_compare::equal(static_cast<T2>(v1), v1)){
             std::cout
                 << ' ' << t1_name << "<-" << t2_name
@@ -74,7 +74,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
             try{
                 static_cast<T2>(s1);
             }
-            catch(std::exception){}
+            catch(const std::exception &){}
             return false;
         }
     }

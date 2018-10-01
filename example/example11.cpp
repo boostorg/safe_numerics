@@ -19,7 +19,7 @@ int main(int, const char * []){
         std::cout << z << " != " << x + y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         std::cout << "error detected!" << std::endl;
     }
     // solution: replace std::int8_t with safe<std::int8_t>
@@ -32,7 +32,7 @@ int main(int, const char * []){
         // rather than producing and invalid result an exception is thrown
         z = x + y;
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         // which can catch here
         std::cout << e.what() << std::endl;
     }

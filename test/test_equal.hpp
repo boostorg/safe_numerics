@@ -50,7 +50,7 @@ bool test_equal(
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " == " << av2
@@ -91,7 +91,7 @@ bool test_equal(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " == " << av2
@@ -100,7 +100,7 @@ bool test_equal(
                 try{
                     v1 == t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -130,7 +130,7 @@ bool test_equal(
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout
                     << " == "<< av1 << " == " << av2
@@ -139,7 +139,7 @@ bool test_equal(
                 try{
                     t1 == t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

@@ -18,7 +18,7 @@ int main(int, const char *[]){
         std::cout << "error NOT detected!" << std::endl;
         std::cout << z << " != " << y << " - " << x << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         std::cout << "error detected!" << std::endl;
     }
     // solution: replace int with safe<int>
@@ -33,7 +33,7 @@ int main(int, const char *[]){
         std::cout << "error NOT detected!" << std::endl;
         std::cout << z << " != " << y << " - " << x << std::endl;
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         // which we can catch here
         std::cout << "error detected:" << e.what() << std::endl;
     }

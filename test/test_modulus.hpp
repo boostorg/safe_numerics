@@ -49,7 +49,7 @@ bool test_modulus(
             }
             std::cout << std::endl;
         }
-        catch(std::exception e){
+        catch(const std::exception & e){
             if(expected_result == '.'){
                 std::cout
                     << " == "<< av1 << " % " << av2
@@ -58,7 +58,7 @@ bool test_modulus(
                 try{
                     t1 % v2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -88,12 +88,12 @@ bool test_modulus(
                 try{
                     v1 % t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " % " << av2
@@ -102,7 +102,7 @@ bool test_modulus(
                 try{
                     v1 % t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -129,12 +129,12 @@ bool test_modulus(
                 try{
                     t1 % t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " % " << av2
@@ -143,7 +143,7 @@ bool test_modulus(
                 try{
                     t1 % t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

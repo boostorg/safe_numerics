@@ -48,7 +48,7 @@ bool test_add(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                     std::cout
                         << " == "<< av1 << " + " << av2
@@ -57,7 +57,7 @@ bool test_add(
                 try{
                     t1 + v2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -89,7 +89,7 @@ bool test_add(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                     std::cout
                         << " == "<< av1 << " + " << av2
@@ -98,7 +98,7 @@ bool test_add(
                 try{
                     v1 + t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -127,7 +127,7 @@ bool test_add(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout
                     << " == "<< av1 << " + " << av2
@@ -136,7 +136,7 @@ bool test_add(
                 try{
                     t1 + t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

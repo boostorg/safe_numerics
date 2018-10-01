@@ -18,7 +18,7 @@ int main(int, const char *[]){
         std::cout << x << ' ' << y << std::endl;
         std::cout << "error NOT detected!" << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         std::cout << "error detected!" << std::endl;
     }
 
@@ -33,7 +33,7 @@ int main(int, const char *[]){
             std::cout << x << ' ' << y << std::endl;
             std::cout << "error NOT detected!" << std::endl;
         }
-        catch(std::exception & e){
+        catch(const std::exception & e){
             std::cout << "error detected:"  << e.what() << std::endl;
         }
     }

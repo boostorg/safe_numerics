@@ -47,7 +47,7 @@ bool test_assignment(
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                     std::cout
                         << "erroneously detected error in assignment "
@@ -58,7 +58,7 @@ bool test_assignment(
                 try{
                     t1 = s2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -83,7 +83,7 @@ bool test_assignment(
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout
                     << "erroneously detected error in assignment "
@@ -94,7 +94,7 @@ bool test_assignment(
                 try{
                     s1 = t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

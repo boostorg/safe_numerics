@@ -165,7 +165,7 @@ result_t test(int32 m){
             << motor_pos << '\n';
         }while(run_flg);
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         std::cout << e.what() << '\n';
         return fail;
     }
@@ -194,7 +194,7 @@ int main(){
         // move motor back to position 0.
         result &= test(0);
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         std::cout << e.what() << '\n';
         return 1;
     }

@@ -23,7 +23,7 @@ bool test1(){
         yi = y;
         zi = x + yi;
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return false;
@@ -42,7 +42,7 @@ bool test2(){
     try{
         z = x - y; // should trap here
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         success = true;
     }
     if(success == false)
@@ -52,7 +52,7 @@ bool test2(){
         int yi = y;
         z = x + yi; // should trap here
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return false;
@@ -74,7 +74,7 @@ bool test3(){
         zi = x + yi;
         z = x + yi;
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return false;
@@ -93,7 +93,7 @@ bool test4(){
     try{
         z = x - y; // should trap here
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         success = true;
     }
     if(success == false)
@@ -119,7 +119,7 @@ bool test5(){
     try{
         z = x - y; // should trap here
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         success = true;
     }
     if(success == false)

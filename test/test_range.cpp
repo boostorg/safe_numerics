@@ -75,7 +75,7 @@ bool test2(){
             yi = y;
             zi = x + yi;
     }
-    catch(std::exception e){
+    catch(const std::exception & e){
         // none of the above should trap. Mark failure if they do
         std::cout << e.what() << std::endl;
         return false;

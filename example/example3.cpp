@@ -22,7 +22,7 @@ int main(int, const char *[]){
 
         std::cout << "error NOT detected!" << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         // never arrive here
         std::cout << "error detected!" << std::endl;
     }
@@ -35,7 +35,7 @@ int main(int, const char *[]){
         --x;
         assert(false); // never arrive here
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         std::cout << e.what() << std::endl;
         std::cout << "error detected!" << std::endl;
     }

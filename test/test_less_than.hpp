@@ -52,7 +52,7 @@ bool test_less_than(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " < " << av2
@@ -61,7 +61,7 @@ bool test_less_than(
                 try{
                     t1 < v2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -95,7 +95,7 @@ bool test_less_than(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result != 'x'){
                 std::cout
                     << " == "<< av1 << " < " << av2
@@ -104,7 +104,7 @@ bool test_less_than(
                 try{
                     v1 < t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -136,7 +136,7 @@ bool test_less_than(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout
                     << " == "<< av1 << " < " << av2
@@ -145,7 +145,7 @@ bool test_less_than(
                 try{
                     t1 < t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

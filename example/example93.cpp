@@ -264,7 +264,7 @@ result_t test(position_t new_position){
             << motor_position << '\n';
         };
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         std::cout << e.what() << '\n';
         return fail;
     }

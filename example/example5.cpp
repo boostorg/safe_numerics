@@ -32,7 +32,7 @@ int main(int, const char *[]){
         i_index = 43; // throw exception here!
         std::cout << "error NOT detected!" << std::endl; // so we never arrive here
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         std::cout <<  "error detected:" << e.what() << std::endl;
     }
     return 0;

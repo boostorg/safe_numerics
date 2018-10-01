@@ -56,7 +56,7 @@ bool test_left_shift(
                 try{
                     t1 << v2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -92,7 +92,7 @@ bool test_left_shift(
                 try{
                     v1 << t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -130,7 +130,7 @@ bool test_left_shift(
                 try{
                     t1 << t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

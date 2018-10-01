@@ -21,7 +21,7 @@ int main(){
         }
         std::cout << "error NOT detected!" << std::endl;
     }
-    catch(std::exception){
+    catch(const std::exception &){
         // never arrive here - just produce the wrong answer!
         std::cout << "error detected!" << std::endl;
         return 1;
@@ -43,7 +43,7 @@ int main(){
         std::cout << "error NOT detected!" << std::endl;
         return 1;
     }
-    catch(std::exception & e){
+    catch(const std::exception & e){
         // never arrive here - just produce the correct answer!
         std::cout << e.what() << std::endl;
         std::cout << "error detected!" << std::endl;

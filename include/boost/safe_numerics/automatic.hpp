@@ -192,21 +192,21 @@ public:
         };
 
         constexpr static const r_interval_type rx(){
-        if(u_interval.u < r_type(0)
-        || u_interval.l > r_type(0))
-            return t_interval / u_interval;
-        return utility::minmax(
-            std::initializer_list<r_type> {
-                t_interval.l / u_interval.l,
-                t_interval.l / r_type(-1),
-                t_interval.l / r_type(1),
-                t_interval.l / u_interval.u,
-                t_interval.u / u_interval.l,
-                t_interval.u / r_type(-1),
-                t_interval.u / r_type(1),
-                t_interval.u / u_interval.u,
-            }
-        );
+            if(u_interval.u < r_type(0)
+            || u_interval.l > r_type(0))
+                return t_interval / u_interval;
+            return utility::minmax(
+                std::initializer_list<r_type> {
+                    t_interval.l / u_interval.l,
+                    t_interval.l / r_type(-1),
+                    t_interval.l / r_type(1),
+                    t_interval.l / u_interval.u,
+                    t_interval.u / u_interval.l,
+                    t_interval.u / r_type(-1),
+                    t_interval.u / r_type(1),
+                    t_interval.u / u_interval.u,
+                }
+            );
         }
 
         constexpr static const r_interval_type r_interval = rx();
@@ -308,6 +308,8 @@ public:
             checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
+        // workaround some microsoft problem
+        #if 0
         constexpr static r_type min(const r_type & t, const r_type & u){
             // assert(! u.exception());
             // assert(! t.exception());
@@ -319,6 +321,7 @@ public:
             // assert(! t.exception());
             return static_cast<bool>(t < u) ? u : t;
         }
+        #endif
 
         // union of two intervals
         // note: we can't use t_interval | u_interval because it
@@ -328,8 +331,10 @@ public:
             const r_interval_type & t,
             const r_interval_type & u
         ){
-            const r_type & rl = min(t.l, u.l);
-            const r_type & ru = max(t.u, u.u);
+            //const r_type & rl = min(t.l, u.l);
+            const r_type & rl = static_cast<bool>(t.l < u.l) ? t.l : u.l;
+            //const r_type & ru = max(t.u, u.u);
+            const r_type & ru = static_cast<bool>(t.u < u.u) ? u.u : t.u;
             return r_interval_type(rl, ru);
         }
 

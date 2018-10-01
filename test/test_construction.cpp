@@ -24,7 +24,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
             safe<T1> s1(t1);
             // should always arrive here!
         }
-        catch(std::exception){
+        catch(const std::exception &){
             // should never, ever arrive here
             std::cout
                 << "erroneously detected error in construction "
@@ -33,7 +33,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
             try{
                 safe<T1> s1(t1); // try again for debugging
             }
-            catch(std::exception){}
+            catch(const std::exception &){}
             return false;
         }
     }
@@ -51,7 +51,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(safe_compare::equal(t2, t1)){
                 std::cout
                     << "erroneously detected error in construction "
@@ -60,7 +60,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 try{
                     safe<T2> sx2(t1); // try again for debugging
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -79,7 +79,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             // should never arrive here
             std::cout
                 << "erroneously detected error in construction "
@@ -88,7 +88,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
             try{
                 safe<T1> s1(t1);
             }
-            catch(std::exception){}
+            catch(const std::exception &){}
             return false;
         }
     }
@@ -108,7 +108,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 return false;
             }
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(safe_compare::equal(t1, t2)){
                 std::cout
                     << "erroneously detected error in construction "
@@ -117,7 +117,7 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
                 try{
                     safe<T2> s1(t1);
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }

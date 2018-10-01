@@ -48,13 +48,13 @@ bool test_divide(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout << " *** erroneously detected error in division" << std::endl;
                 try{
                     t1 / v2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
@@ -85,13 +85,13 @@ bool test_divide(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout << "*** erroneously detected error in division " << std::endl;
                 try{
                     v1 / t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 // assert(result == unsafe_result);
                 return false;
             }
@@ -121,13 +121,13 @@ bool test_divide(
             }
             std::cout << std::endl;
         }
-        catch(std::exception){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout << " *** erroneously detected error in division \\" << std::endl;
                 try{
                     t1 / t2;
                 }
-                catch(std::exception){}
+                catch(const std::exception &){}
                 return false;
             }
         }
