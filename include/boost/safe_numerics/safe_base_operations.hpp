@@ -1418,6 +1418,8 @@ private:
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
 
+    #if 0
+    // breaks compilation for earlier versions of clant
     constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
@@ -1427,6 +1429,7 @@ private:
             )
         )
     };
+    #endif
 
     using exception_policy = typename common_exception_policy<T, U>::type;
 
@@ -1434,8 +1437,15 @@ public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
         result_base_type,
-        r_interval.l,
-        r_interval.u,
+        //r_interval.l,
+        r_type(0),
+        //r_interval.u,
+        utility::round_out(
+            std::max(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        ),
         promotion_policy,
         exception_policy
     >;
@@ -1483,6 +1493,8 @@ private:
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
 
+    #if 0
+    // breaks compilation for earlier versions of clant
     constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
@@ -1492,15 +1504,22 @@ private:
             )
         )
     };
-
+    #endif
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
         result_base_type,
-        r_interval.l,
-        r_interval.u,
+        //r_interval.l,
+        r_type(0),
+        //r_interval.u,
+        utility::round_out(
+            std::min(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        ),
         promotion_policy,
         exception_policy
     >;
@@ -1547,6 +1566,8 @@ struct bitwise_xor_result {
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
 
+    #if 0
+    // breaks compilation for earlier versions of clant
     constexpr static const r_type_interval_t r_interval{
         r_type(0),
         utility::round_out(
@@ -1556,6 +1577,7 @@ struct bitwise_xor_result {
             )
         )
     };
+    #endif
 
     using exception_policy = typename common_exception_policy<T, U>::type;
 
@@ -1563,8 +1585,15 @@ public:
     // lazy_enable_if_c depends on this
     using type = safe_base<
         result_base_type,
-        r_interval.l,
-        r_interval.u,
+        //r_interval.l,
+        r_type(0),
+        //r_interval.u,
+        utility::round_out(
+            std::max(
+                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
+                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
+            )
+        ),
         promotion_policy,
         exception_policy
     >;
