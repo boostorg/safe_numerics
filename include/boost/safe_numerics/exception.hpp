@@ -63,7 +63,7 @@ namespace std {
     template <>
     struct is_error_code_enum<boost::safe_numerics::safe_numerics_error>
         : public true_type {};
-};
+} // std
 
 namespace boost {
 namespace safe_numerics {
@@ -126,7 +126,7 @@ namespace std {
     template <>
     struct is_error_condition_enum<boost::safe_numerics::safe_numerics_actions>
         : public true_type {};
-};
+} // std
 
 namespace boost {
 namespace safe_numerics {

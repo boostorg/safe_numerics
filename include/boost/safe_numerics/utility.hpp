@@ -128,7 +128,7 @@ namespace ilog2_detail {
             : 32 + ilog2(upper_half);
     }
 
-}; // ilog2_detail
+} // ilog2_detail
 
 template<typename T>
 constexpr unsigned int ilog2(const T & t){

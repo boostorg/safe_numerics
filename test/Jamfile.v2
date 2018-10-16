@@ -58,7 +58,6 @@ run test_right_shift_native.cpp ;
 run test_safe_compare.cpp ;
 run test_subtract_automatic.cpp ;
 run test_subtract_native.cpp ;
-run test_trap.cpp ;
 run test_xor_automatic.cpp ;
 run test_xor_native.cpp ;
 run test_z.cpp ;

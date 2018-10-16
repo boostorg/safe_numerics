@@ -46,7 +46,7 @@ std::basic_ostream<CharT, Traits> & operator<<(
     return os
         << boost::safe_numerics::make_interval(t.m_t)
         << t.m_t;
-};
+}
 
 template<typename T>
 struct result_display {
