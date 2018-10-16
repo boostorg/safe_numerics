@@ -55,35 +55,13 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      compiler: clang++-3.5
-      env: TOOLSET=clang COMPILER=clang++-3.5 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.5
-            - libstdc++-5-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
-      compiler: clang++-3.6
-      env: TOOLSET=clang COMPILER=clang++-3.6 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.6
-            - libstdc++-6-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
       compiler: clang++-3.8
       env: TOOLSET=clang COMPILER=clang++-3.8 CXXSTD=14,1z
       addons:
         apt:
           packages:
             - clang-3.8
-            - libstdc++-7-dev
+            - libstdc++-5-dev
           sources:
             - ubuntu-toolchain-r-test
 
