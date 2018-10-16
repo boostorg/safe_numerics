@@ -100,7 +100,7 @@ public:
         }
         return ""; // suppress bogus warning
     }
-} safe_numerics_error_category ;
+} safe_numerics_error_category {};
 
 // constexpr - damn, can't use constexpr due to std::error_code
 std::error_code make_error_code(safe_numerics_error e){
@@ -172,7 +172,7 @@ public:
         // suppress bogus warning
         return false; 
     }
-} safe_numerics_actions_category ;
+} safe_numerics_actions_category {};
 
 std::error_condition make_error_condition(safe_numerics_error e) {
     return std::error_condition(
