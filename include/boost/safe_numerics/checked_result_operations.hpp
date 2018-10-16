@@ -135,6 +135,18 @@ constexpr inline operator+(
     return checked_result<T>(e, "addition result");
 }
 
+// unary +
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator+(
+    const checked_result<T> & t
+){
+    return t;
+}
+
 // integers subtraction
 template<class T>
 typename std::enable_if<
@@ -190,6 +202,19 @@ constexpr inline operator-(
     if(safe_numerics_error::success == e)
         return checked::subtract<T>(t, u);
     return checked_result<T>(e, "subtraction result");
+}
+
+// unary -
+template<class T>
+typename std::enable_if<
+    std::is_integral<T>::value,
+    checked_result<T>
+>::type
+constexpr inline operator-(
+    const checked_result<T> & t
+){
+//    assert(false);
+    return checked_result<T>(0) - t;
 }
 
 struct product_value_type {
@@ -713,18 +738,6 @@ constexpr inline operator>>(
     const checked_result<T> & t,
     const checked_result<T> & u
 );
-
-template<class T>
-typename std::enable_if<
-    std::is_integral<T>::value,
-    checked_result<T>
->::type
-constexpr inline operator-(
-    const checked_result<T> & t
-){
-//    assert(false);
-    return checked_result<T>(0) - t;
-}
 
 template<class T>
 typename std::enable_if<
