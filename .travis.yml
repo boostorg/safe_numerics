@@ -11,6 +11,7 @@ branches:
   only:
     - master
     - develop
+    - /feature\/.*/
 
 env:
   matrix:
@@ -22,16 +23,6 @@ matrix:
     - env: BOGUS_JOB=true
 
   include:
-    - os: linux
-      compiler: g++-5
-      env: TOOLSET=gcc COMPILER=g++-5 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - g++-5
-          sources:
-            - ubuntu-toolchain-r-test
-
     - os: linux
       compiler: g++-6
       env: TOOLSET=gcc COMPILER=g++-6 CXXSTD=14,1z
@@ -64,46 +55,13 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      compiler: clang++-3.5
-      env: TOOLSET=clang COMPILER=clang++-3.5 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.5
-            - libstdc++-4.9-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
-      compiler: clang++-3.6
-      env: TOOLSET=clang COMPILER=clang++-3.6 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.6
-            - libstdc++-4.9-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
-      compiler: clang++-3.8
-      env: TOOLSET=clang COMPILER=clang++-3.8 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.8
-            - libstdc++-4.9-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
       compiler: clang++-3.9
       env: TOOLSET=clang COMPILER=clang++-3.9 CXXSTD=14,1z
       addons:
         apt:
           packages:
             - clang-3.9
-            - libstdc++-4.9-dev
+            - libstdc++-5-dev
           sources:
             - ubuntu-toolchain-r-test
 
@@ -114,6 +72,7 @@ matrix:
         apt:
           packages:
             - clang-4.0
+            - libstdc++-6-dev
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-4.0
@@ -125,6 +84,7 @@ matrix:
         apt:
           packages:
             - clang-5.0
+            - libstdc++-7-dev
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-5.0
@@ -136,6 +96,7 @@ matrix:
         apt:
           packages:
             - clang-6.0
+            - libstdc++-8-dev
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
@@ -153,8 +114,9 @@ matrix:
       env: TOOLSET=clang COMPILER=clang++ CXXSTD=14,1z
 
 install:
+  - BOOST_BRANCH=develop && [ "$TRAVIS_BRANCH" == "master" ] && BOOST_BRANCH=master || true
   - cd ..
-  - git clone -b $TRAVIS_BRANCH https://github.com/boostorg/boost.git boost
+  - git clone -b $BOOST_BRANCH https://github.com/boostorg/boost.git boost
   - cd boost
   - git submodule update --init tools/build
   - git submodule update --init libs/config
