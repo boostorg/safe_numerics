@@ -6,8 +6,8 @@
     ],
     "description": "Guaranteed Correct Integer Arithmetic",
     "category": [
-        "Math and Numerics",
-        "Correctness and Testing"
+        "Math",
+        "Correctness"
     ],
     "maintainers": [
         "Robert Ramey <ramey -at- rrsd.com>"
