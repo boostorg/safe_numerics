@@ -151,4 +151,4 @@ bool test_modulus(
     return true;
 }
 
-#endif // BOOST_TEST_MODULUS
+#endif // BOOST_TEST_MODULUS_HPP

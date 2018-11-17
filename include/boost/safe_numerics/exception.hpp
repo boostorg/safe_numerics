@@ -1,5 +1,5 @@
-#ifndef BOOST_NUMERIC_EXCEPTION
-#define BOOST_NUMERIC_EXCEPTION
+#ifndef BOOST_NUMERIC_EXCEPTION_HPP
+#define BOOST_NUMERIC_EXCEPTION_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -184,4 +184,4 @@ std::error_condition make_error_condition(safe_numerics_error e) {
 } // safe_numerics
 } // boost
 
-#endif // BOOST_NUMERIC_CHECKED_RESULT
+#endif // BOOST_NUMERIC_EXCEPTION_HPP

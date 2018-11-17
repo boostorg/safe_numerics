@@ -153,4 +153,4 @@ bool test_less_than(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_SUBTRACT
+#endif // BOOST_TEST_LESS_THAN_HPP

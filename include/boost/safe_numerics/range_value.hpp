@@ -1,5 +1,5 @@
-#ifndef BOOST_RANGE_VALUE_HPP
-#define BOOST_RANGE_VALUE_HPP
+#ifndef BOOST_NUMERIC_RANGE_VALUE_HPP
+#define BOOST_NUMERIC_RANGE_VALUE_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -73,4 +73,4 @@ operator<<(
         << "(" << std::dec << r.m_t << ")";
 }
 
-#endif  // BOOST_RANGE_VALUE_HPP
+#endif  // BOOST_NUMERIC_RANGE_VALUE_HPP

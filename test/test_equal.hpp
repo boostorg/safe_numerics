@@ -1,5 +1,5 @@
-  #ifndef BOOST_TEST_LESS_THAN_HPP
-#define BOOST_TEST_LESS_THAN_HPP
+#ifndef BOOST_TEST_EQUAL_HPP
+#define BOOST_TEST_EQUAL_HPP
 
 //  Copyright (c) 2015 Robert Ramey
 //
@@ -147,4 +147,4 @@ bool test_equal(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_SUBTRACT
+#endif // BOOST_TEST_EQUAL_HPP

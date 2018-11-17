@@ -135,4 +135,4 @@ bool test_divide(
     return true;
 }
 
-#endif // BOOST_TEST_DIVIDE
+#endif // BOOST_TEST_DIVIDE_HPP

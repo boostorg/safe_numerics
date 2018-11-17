@@ -35,4 +35,4 @@ struct PromotionPolicy {
 } // safe_numerics
 } // boost
 
-#endif // BOOST_NUMERIC_CONCEPT_EXCEPTION_POLICY_HPP
+#endif // BOOST_NUMERIC_CONCEPT_PROMOTION_POLICY_HPP

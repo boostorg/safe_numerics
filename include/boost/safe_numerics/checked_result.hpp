@@ -1,5 +1,5 @@
-#ifndef BOOST_NUMERIC_CHECKED_RESULT
-#define BOOST_NUMERIC_CHECKED_RESULT
+#ifndef BOOST_NUMERIC_CHECKED_RESULT_HPP
+#define BOOST_NUMERIC_CHECKED_RESULT_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
@@ -94,4 +94,4 @@ struct checked_result {
 } // safe_numerics
 } // boost
 
-#endif  // BOOST_NUMERIC_CHECKED_RESULT
+#endif  // BOOST_NUMERIC_CHECKED_RESULT_HPP

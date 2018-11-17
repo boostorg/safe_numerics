@@ -1,5 +1,5 @@
-#ifndef BOOST_TEST_ADD_HPP
-#define BOOST_TEST_ADD_HPP
+#ifndef BOOST_TEST_LEFT_SHIFT_HPP
+#define BOOST_TEST_LEFT_SHIFT_HPP
 
 //  Copyright (c) 2015 Robert Ramey
 //
@@ -138,4 +138,4 @@ bool test_left_shift(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_DIVIDE
+#endif // BOOST_TEST_LEFT_SHIFT_HPP

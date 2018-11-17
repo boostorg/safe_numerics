@@ -1,3 +1,6 @@
+#ifndef BOOST_TEST_VALUES_HPP
+#define BOOST_TEST_VALUES_HPP
+
 //
 //  test_values.hpp
 //
@@ -5,8 +8,6 @@
 //
 //
 
-#ifndef test_values_hpp
-#define test_values_hpp
 
 #include <cstdint>
 
@@ -46,4 +47,4 @@
     (std::int8_t)0x0                  \
 ))
 
-#endif
+#endif // BOOST_TEST_VALUES_HPP

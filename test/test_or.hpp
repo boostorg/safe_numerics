@@ -145,4 +145,4 @@ bool test_or(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_DIVIDE
+#endif // BOOST_TEST_OR_HPP

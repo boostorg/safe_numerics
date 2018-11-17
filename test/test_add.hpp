@@ -144,4 +144,4 @@ bool test_add(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_DIVIDE
+#endif // BOOST_TEST_ADD_HPP

@@ -149,4 +149,4 @@ bool test_multiply(
 }
 
 
-#endif // BOOST_TEST_MULTIPLY
+#endif // BOOST_TEST_MULTIPLY_HPP

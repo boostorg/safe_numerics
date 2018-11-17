@@ -199,4 +199,4 @@ public:
 } // safe_numerics
 } // boost
 
-#endif // BOOST_NUMERIC_cpp_HPP
+#endif // BOOST_NUMERIC_CPP_HPP

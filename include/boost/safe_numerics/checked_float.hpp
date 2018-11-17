@@ -171,5 +171,5 @@ constexpr checked_result<R> bitwise_and(const T & t, const U & u) noexcept {
 } // safe_numerics
 } // boost
 
-#endif // BOOST_NUMERIC_CHECKED_DEFAULT_HPP
+#endif // BOOST_NUMERIC_CHECKED_FLOAT_HPP
 

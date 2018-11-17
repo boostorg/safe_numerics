@@ -1,5 +1,5 @@
-#ifndef SAFE_NUMERIC_TEST_HPP
-#define SAFE_NUMERIC_TEST_HPP
+#ifndef BOOST_TEST_HPP
+#define BOOST_TEST_HPP
 
 // MS compatible compilers support #pragma once
 #if defined(_MSC_VER)
@@ -38,4 +38,4 @@
     )
 /**/
 
-#endif
+#endif // BOOST_TEST_HPP

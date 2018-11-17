@@ -62,4 +62,4 @@ using safe_unsigned_range = safe_base<
 } // safe_numerics
 } // boost
 
-#endif // BOOST_NUMERIC_SAFE_RANGE_HPP
+#endif // BOOST_NUMERIC_SAFE_INTEGER_RANGE_HPP

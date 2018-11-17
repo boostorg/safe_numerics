@@ -144,4 +144,4 @@ bool test_subtract(
     return true; // correct result
 }
 
-#endif // BOOST_TEST_SUBTRACT
+#endif // BOOST_TEST_SUBTRACT_HPP

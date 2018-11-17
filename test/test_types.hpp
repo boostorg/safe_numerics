@@ -1,12 +1,12 @@
+#ifndef BOOST_TEST_TYPES_HPP
+#define BOOST_TEST_TYPES_HPP
+
 //
 //  test_types.hpp
 //
 //  Created by Robert Ramey on 3/27/14.
 //
 //
-
-#ifndef test_types_hpp
-#define test_types_hpp
 
 #include <cstdint>
 
@@ -21,4 +21,4 @@
     std::uint64_t    \
 ))
 
-#endif
+#endif // BOOST_TEST_TYPES_HPP
