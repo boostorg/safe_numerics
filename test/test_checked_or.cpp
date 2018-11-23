@@ -4,13 +4,9 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <exception>
-#include <cstdlib>   // EXIT_SUCCESS
 #include <iostream>
-#include <cassert>
-#include <typeinfo>
-#include <boost/core/demangle.hpp>
 
+#include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/checked_result.hpp>
 #include <boost/safe_numerics/checked_result_operations.hpp>
 #include <boost/safe_numerics/checked_integer.hpp>

@@ -5,85 +5,58 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
-#include <cassert>
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/automatic.hpp>
+
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
+#include "test_compare_native.hpp"
 
 template <class T>
-using safe_t = boost::safe_numerics::safe<T>;
-
+using safe_t = boost::safe_numerics::safe<
+    T,
+    boost::safe_numerics::native
+>;
 #include "test_less_than.hpp"
-#include "test.hpp"
-#include "test_values.hpp"
 
-const char *test_less_than_result[VALUE_ARRAY_SIZE] = {
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/* 0*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/* 1*/ ">=>>><>>><>>><>>>=<<><<<><<<><<<>",
-/* 2*/ "<<=<<<><<<><<<><<<<<<<<<xxxxxxxx<",
-/* 3*/ "<<>=<<>=<<>=<<>=<<<<<<<<xxxxxxxx<",
-/* 4*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/* 5*/ ">>>>>=>>><>>><>>>>>>>=<<><<<><<<>",
-/* 6*/ "<<<<<<=<<<><<<><<<<<<<<<xxxxxxxx<",
-/* 7*/ "<<>=<<>=<<>=<<>=<<<<<<<<xxxxxxxx<",
+using namespace boost::mp11;
 
-/* 8*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/* 9*/ ">>>>>>>>>=>>><>>>>>>>>>>>=<<><<<>",
-/*10*/ "<<<<<<<<<<=<<<><<<<<<<<<xxxxxxxx<",
-/*11*/ "<<>=<<>=<<>=<<>=<<<<<<<<xxxxxxxx<",
-/*12*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/*13*/ ">>>>>>>>>>>>>=>>>>>>>>>>>>>>>=<<>",
-/*14*/ "<<<<<<<<<<<<<<=<<<<<<<<<<<<<xxxx<",
-/*15*/ "<<>=<<>=<<>=<<>=<<<<<<<<<<<<xxxx<",
-
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/*16*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/*17*/ ">=>>><>>><>>><>>>=<<><<<><<<><<<>",
-/*18*/ ">>>>><>>><>>><>>>>=<><<<><<<><<<>",
-/*19*/ ">>>>><>>><>>><>>>>>=><<<><<<><<<>",
-/*20*/ "=<>>=<>>=<>>=<>>=<<<=<<<=<<<=<<<>",
-/*21*/ ">>>>>=>>><>>><>>>>>>>=<<><<<><<<>",
-/*22*/ ">>>>>>>>><>>><>>>>>>>>=<><<<><<<>",
-/*23*/ ">>>>>>>>><>>><>>>>>>>>>=><<<><<<>",
-
-/*24*/ "=<xx=<xx=<xx=<>>=<<<=<<<=<<<=<<<>",
-/*25*/ ">>xx>>xx>=xx><>>>>>>>>>>>=<<><<<>",
-/*26*/ ">>xx>>xx>>xx><>>>>>>>>>>>>=<><<<>",
-/*27*/ ">>xx>>xx>>xx><>>>>>>>>>>>>>=><<<>",
-/*28*/ "=<xx=<xx=<xx=<xx=<<<=<<<=<<<=<<<>",
-/*29*/ ">>xx>>xx>>xx>=xx>>>>>>>>>>>>>=<<>",
-/*30*/ ">>xx>>xx>>xx>>xx>>>>>>>>>>>>>>=<>",
-/*31*/ ">>xx>>xx>>xx>>xx>>>>>>>>>>>>>>>=>",
-/*32*/ "<<>><<>><<>><<>><<<<<<<<<<<<<<<<="
+template<typename L>
+struct test {
+    static_assert(mp_is_list<L>(), "must be a list of integral constants");
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two integral constants");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
+        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        m_error &= test_less_than<T1, T2>(
+            boost::mp11::mp_at_c<L, i1>(), // value of first argument
+            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            test_compare_native[i1][i2]
+        );
+    }
 };
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_less_than(       \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+int main(){
+    //TEST_EACH_VALUE_PAIR
+    test<test_values> rval(true);
 
-#define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
-    TEST_IMPL(                                     \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_less_than_result[value_index1][value_index2] \
-    )
-/**/
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    mp_for_each<
+        mp_product<mp_list, value_indices, value_indices>
+    >(rval);
 
-int main(int, char *[]){
-    bool rval = true;
-    TEST_EACH_VALUE_PAIR
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

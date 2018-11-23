@@ -8,7 +8,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/range_value.hpp>

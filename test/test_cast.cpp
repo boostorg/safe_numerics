@@ -5,7 +5,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
 #include <boost/safe_numerics/safe_compare.hpp>
@@ -14,113 +13,123 @@
 
 using namespace boost::safe_numerics;
 
+// works for both GCC and clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
+
 // test conversion to T2 from different literal types
 template<class T2, class T1>
 bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
     std::cout
-        << "testing static_cast<safe<" << t2_name << ">(" << t1_name << ")"
+        << "testing static_cast<safe<" << t2_name << ">>(" << t1_name << ")"
         << std::endl;
-{
-    /* test conversion constructor to safe<T2> from v1 */
-    try{
-        // use auto to avoid checking assignment.
-        auto result = static_cast<safe<T2>>(v1);
-        std::cout << make_result_display(result);
-        if(! safe_compare::equal(base_value(result), v1)){
-            std::cout
-                << ' ' << t2_name << "<-" << t1_name
-                << " failed to detect error in construction"
+    {
+        /* test conversion constructor to safe<T2> from v1 */
+        try{
+            // use auto to avoid checking assignment.
+            auto result = static_cast<safe<T2>>(v1);
+            std::cout << make_result_display(result) << " <- " << v1
                 << std::endl;
-            static_cast<safe<T2> >(v1);
-            return false;
-        }
-        std::cout << std::endl;
-    }
-    catch(const std::exception &){
-        if( safe_compare::equal(static_cast<T2>(v1), v1)){
-            std::cout
-                << ' ' << t1_name << "<-" << t2_name
-                << " erroneously emitted error "
-                << std::endl;
-            try{
+            if(! safe_compare::equal(base_value(result), v1)){
+                std::cout
+                    << ' ' << t2_name << "<-" << t1_name
+                    << " failed to detect error in construction"
+                    << std::endl;
                 static_cast<safe<T2> >(v1);
+                return false;
             }
-            catch(const std::exception &){}
-            return false;
+        }
+        catch(const std::exception &){
+            if( safe_compare::equal(static_cast<T2>(v1), v1)){
+                std::cout
+                    << ' ' << t1_name << "<-" << t2_name
+                    << " erroneously emitted error "
+                    << std::endl;
+                try{
+                    static_cast<safe<T2> >(v1);
+                }
+                catch(const std::exception &){}
+                return false;
+            }
         }
     }
-}
-{
-    /* test conversion to T1 from safe<T2>(v2) */
-    safe<T1> s1(v1);
-    try{
-        auto result = static_cast<T2>(s1);
-        std::cout << make_result_display(result);
-        if(! safe_compare::equal(result, v1)){
-            std::cout
-                << ' ' << t2_name << "<-" << t1_name
-                << " failed to detect error in construction"
+    {
+        /* test conversion to T1 from safe<T2>(v2) */
+        safe<T1> s1(v1);
+        try{
+            auto result = static_cast<T2>(s1);
+            std::cout << make_result_display(result) << " <- " << v1
                 << std::endl;
-            static_cast<T2>(s1);
-            return false;
-        }
-    }
-    catch(const std::exception &){
-        if(safe_compare::equal(static_cast<T2>(v1), v1)){
-            std::cout
-                << ' ' << t1_name << "<-" << t2_name
-                << " erroneously emitted error"
-                << std::endl;
-            try{
+            if(! safe_compare::equal(result, v1)){
+                std::cout
+                    << ' ' << t2_name << "<-" << t1_name
+                    << " failed to detect error in construction"
+                    << std::endl;
                 static_cast<T2>(s1);
+                return false;
             }
-            catch(const std::exception &){}
-            return false;
+        }
+        catch(const std::exception &){
+            if(safe_compare::equal(static_cast<T2>(v1), v1)){
+                std::cout
+                    << ' ' << t1_name << "<-" << t2_name
+                    << " erroneously emitted error"
+                    << std::endl;
+                try{
+                    static_cast<T2>(s1);
+                }
+                catch(const std::exception &){}
+                return false;
+            }
         }
     }
     return true; // passed test
 }
-}
+#pragma GCC diagnostic pop
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
-#include "test_types.hpp"
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 #include "test_values.hpp"
-#include "test.hpp"
 
-#define TEST_CAST(T1, v)              \
-    rval = rval && test_cast<T1>(     \
-        v,                            \
-        BOOST_PP_STRINGIZE(T1),       \
-        BOOST_PP_STRINGIZE(v)         \
-    );
-/**/
+using namespace boost::mp11;
 
-#define EACH_VALUE(z, value_index, type_index)     \
-    TEST_CAST(                               \
-        BOOST_PP_ARRAY_ELEM(type_index, TYPES),    \
-        BOOST_PP_ARRAY_ELEM(value_index, VALUES)   \
-    )                                              \
-/**/
+template<typename T>
+using extract_value_type = typename T::value_type;
+using test_types = mp_unique<
+    mp_transform<
+        extract_value_type,
+        test_values
+    >
+>;
 
-#define EACH_TYPE1(z, type_index, nothing)         \
-    BOOST_PP_REPEAT(                               \
-        BOOST_PP_ARRAY_SIZE(VALUES),               \
-        EACH_VALUE,                                \
-        type_index                                 \
-    )                                              \
-/**/
+struct test {
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two types");
+        using T1 = mp_first<T>; // first element is a type
+        // second element is an integral constant
+        using T2 = typename mp_second<T>::value_type; // get it's type
+        constexpr T2 v2 = mp_second<T>(); // get it's value
+        m_error &= test_cast<T1>(
+            v2,
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str()
+        );
+    }
+};
 
-int main(int, char *[]){
-    bool rval = true;
-    BOOST_PP_REPEAT(
-        BOOST_PP_ARRAY_SIZE(TYPES),
-        EACH_TYPE1,
-        nothing
-    )
+int main(){
+    test rval(true);
+
+    mp_for_each<
+        mp_product<mp_list, test_types, test_values>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
+    return ! rval ;
 }

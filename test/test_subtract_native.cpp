@@ -5,19 +5,15 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
-#include <cassert>
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <boost/safe_numerics/automatic.hpp>
 
-template <class T>
-using safe_t = boost::safe_numerics::safe<T>;
-
-#include "test_subtract.hpp"
-#include "test.hpp"
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
 #include "test_values.hpp"
 
-const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
+const char *test_subtraction_result[boost::mp11::mp_size<test_values>::value] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012
@@ -62,28 +58,53 @@ const char *test_subtraction_result[VALUE_ARRAY_SIZE] = {
 /*32*/ "..........x...x.........xxxxxxxx."
 };
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_subtract(        \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
-#define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
-    TEST_IMPL(                                     \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_subtraction_result[value_index1][value_index2] \
-    )
-/**/
+template <class T>
+using safe_t = boost::safe_numerics::safe<
+    T,
+    boost::safe_numerics::native
+>;
+#include "test_subtract.hpp"
 
-int main(int , char * []){
-    bool rval = true;
-    TEST_EACH_VALUE_PAIR
+using namespace boost::mp11;
+
+template<typename L>
+struct test {
+    static_assert(mp_is_list<L>(), "must be a list of integral constants");
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two integral constants");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
+        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        m_error &= test_subtract<T1, T2>(
+            boost::mp11::mp_at_c<L, i1>(), // value of first argument
+            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            test_subtraction_result[i1][i2]
+        );
+    }
+};
+
+int main(){
+    //TEST_EACH_VALUE_PAIR
+    test<test_values> rval(true);
+
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    mp_for_each<
+        mp_product<mp_list, value_indices, value_indices>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

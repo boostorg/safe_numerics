@@ -15,9 +15,6 @@
 #include <limits>
 #include <type_traits> // is_integral, enable_if, conditional
 
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/identity.hpp>
-
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"
 

@@ -7,7 +7,6 @@
 // test constructors
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_compare.hpp>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -125,45 +124,49 @@ bool test_construction(T1 t1, const char *t2_name, const char *t1_name){
     return true;
 }
 
-#include "test.hpp"
-#include "test_types.hpp"
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 #include "test_values.hpp"
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
+using namespace boost::mp11;
 
-#define TEST_CONSTRUCTION(T1, v)      \
-    rval &= test_construction<T1>(    \
-        v,                            \
-        BOOST_PP_STRINGIZE(T1),       \
-        BOOST_PP_STRINGIZE(v)         \
-    );
-/**/
+struct test {
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two types");
+        using T1 = mp_first<T>; // first element is a type
+        // second element is an integral constant
+        using T2 = typename mp_second<T>::value_type; // get it's type
+        constexpr T2 v2 = mp_second<T>(); // get it's value
+        m_error &= test_construction<T1>(
+            v2,
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str()
+        );
+    }
+};
 
-#define EACH_VALUE(z, value_index, type_index)     \
-    TEST_CONSTRUCTION(                             \
-        BOOST_PP_ARRAY_ELEM(type_index, TYPES),    \
-        BOOST_PP_ARRAY_ELEM(value_index, VALUES)   \
-    )                                              \
-/**/
+template<typename T>
+using extract_value_type = typename T::value_type;
+using test_types = mp_unique<
+    mp_transform<
+        extract_value_type,
+        test_values
+    >
+>;
 
-#define EACH_TYPE1(z, type_index, nothing)         \
-    BOOST_PP_REPEAT(                               \
-        BOOST_PP_ARRAY_SIZE(VALUES),               \
-        EACH_VALUE,                                \
-        type_index                                 \
-    )                                              \
-/**/
-int main(int, char *[]){
-    bool rval = true;
-    BOOST_PP_REPEAT(
-        BOOST_PP_ARRAY_SIZE(TYPES),
-        EACH_TYPE1,
-        nothing
-    )
+int main(){
+    test rval(true);
+
+    mp_for_each<
+        mp_product<mp_list, test_types, test_values>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }
-

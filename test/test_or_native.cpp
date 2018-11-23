@@ -5,44 +5,57 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
-#include <boost/safe_numerics/native.hpp>
+#include <boost/safe_numerics/automatic.hpp>
 
 template <class T>
 using safe_t = boost::safe_numerics::safe<
     T,
     boost::safe_numerics::native
 >;
-
 #include "test_or.hpp"
-#include "test.hpp"
 #include "test_values.hpp"
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
-#include <boost/preprocessor/stringize.hpp>
+using namespace boost::mp11;
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_or(             \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+template<typename L>
+struct test {
+    static_assert(mp_is_list<L>(), "must be a list of integral constants");
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two integral constants");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
+        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        m_error &= test_or<T1, T2>(
+            boost::mp11::mp_at_c<L, i1>(), // value of first argument
+            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            '.'
+        );
+    }
+};
 
-#define TESTX(value_index1, value_index2)           \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
-    TEST_IMPL(                                      \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES),  \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES),  \
-        '.'                                         \
-    )
-/**/
-int main(int, char *[]){
-    bool rval = true;
-    TEST_EACH_VALUE_PAIR
+int main(){
+    //TEST_EACH_VALUE_PAIR
+    test<test_values> rval(true);
+
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    mp_for_each<
+        mp_product<mp_list, value_indices, value_indices>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return rval ? 0 : 1;
+    return ! rval ;
 }

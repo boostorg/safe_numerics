@@ -8,7 +8,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/range_value.hpp>
@@ -28,6 +27,7 @@ bool test_right_shift(
     {
         safe_t<T1> t1 = v1;
         using result_type = decltype(t1 >> v2);
+        std::cout << "safe<" << av1 << "> << " << av2 << " -> ";
         static_assert(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -60,11 +60,13 @@ bool test_right_shift(
                 catch(const std::exception & e){}
                 return false;
             }
+            std::cout << std::endl;
         }
     }
     {
         safe_t<T2> t2 = v2;
         using result_type = decltype(v1 >> t2);
+        std::cout << av1 << " >> " << "safe<" << av2 << "> -> ";
         static_assert(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -73,6 +75,7 @@ bool test_right_shift(
         try{
             // use auto to avoid checking assignment.
             auto result = v1 >> t2;
+            std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout
                     << " ! = "<< av1 << " >> " << av2
@@ -97,12 +100,14 @@ bool test_right_shift(
                 catch(const std::exception &){}
                 return false;
             }
+            std::cout << std::endl;
         }
     }
     {
         safe_t<T1> t1 = v1;
         safe_t<T2> t2 = v2;
         using result_type = decltype(t1 >> t2);
+        std::cout << "safe<" << av1 << "> >> " << "safe<" << av2 << "> -> ";
         static_assert(
             boost::safe_numerics::is_safe<result_type>::value,
             "Expression failed to return safe type"
@@ -135,6 +140,7 @@ bool test_right_shift(
                 catch(const std::exception &){}
                 return false;
             }
+            std::cout << std::endl;
         }
     }
     return true; // correct result

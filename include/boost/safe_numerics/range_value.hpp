@@ -44,7 +44,7 @@ std::basic_ostream<CharT, Traits> & operator<<(
     const range_value<T> & t
 ){
     return os
-        << boost::safe_numerics::make_interval(t.m_t)
+        << boost::safe_numerics::make_interval<T>()
         << t.m_t;
 }
 

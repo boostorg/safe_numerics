@@ -5,26 +5,19 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/automatic.hpp>
 
-template <class T>
-using safe_t = boost::safe_numerics::safe<
-    T,
-    boost::safe_numerics::automatic
->;
-
-#include "test_modulus.hpp"
-#include "test.hpp"
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
 #include "test_values.hpp"
 
 // note: These tables presume that the the size of an int is 32 bits.
 // This should be changed for a different architecture or better yet
 // be dynamically adjusted depending on the indicated architecture
 
-const char *test_modulus_result[VALUE_ARRAY_SIZE] = {
+const char *test_modulus_result[boost::mp11::mp_size<test_values>::value] = {
 //      0       0       0       0
 //      012345670123456701234567012345672
 //      012345678901234567890123456789010
@@ -69,28 +62,53 @@ const char *test_modulus_result[VALUE_ARRAY_SIZE] = {
 /*32*/ "..............................xxx"
 };
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_modulus(         \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
-#define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 << ','); \
-    TEST_IMPL(                                     \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_modulus_result[value_index1][value_index2] \
-    )
-/**/
+template <class T>
+using safe_t = boost::safe_numerics::safe<
+    T,
+    boost::safe_numerics::automatic
+>;
+#include "test_modulus.hpp"
 
-int main(int, char *[]){
-    bool rval = true;
-    TEST_EACH_VALUE_PAIR
+using namespace boost::mp11;
+
+template<typename L>
+struct test {
+    static_assert(mp_is_list<L>(), "must be a list of integral constants");
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two integral constants");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
+        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        m_error &= test_modulus<T1, T2>(
+            boost::mp11::mp_at_c<L, i1>(), // value of first argument
+            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            test_modulus_result[i1][i2]
+        );
+    }
+};
+
+int main(){
+    //TEST_EACH_VALUE_PAIR
+    test<test_values> rval(true);
+
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    mp_for_each<
+        mp_product<mp_list, value_indices, value_indices>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }

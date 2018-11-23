@@ -8,10 +8,13 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/range_value.hpp>
+
+// works for both GCC and clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
 
 template<class T1, class T2>
 bool test_equal(
@@ -21,6 +24,7 @@ bool test_equal(
     const char *av2,
     char expected_result
 ){
+    using namespace boost::safe_numerics;
     std::cout << "testing"<< std::boolalpha << std::endl;
     {
         safe_t<T1> t1 = v1;
@@ -49,6 +53,7 @@ bool test_equal(
                 t1 == v2;
                 return false;
             }
+           std::cout << std::endl;
         }
         catch(const std::exception &){
             if(expected_result != 'x'){
@@ -56,11 +61,14 @@ bool test_equal(
                     << " == "<< av1 << " == " << av2
                     << " erroneously detected error in equals"
                     << std::endl;
-                t1 == v2;
+                try{
+                    t1 == v2;
+                }
+                catch(const std::exception &){}
                 return false;
             }
+            std::cout << std::endl;
         }
-        std::cout << std::endl;
     }
     {
         safe_t<T2> t2 = v2;
@@ -103,6 +111,7 @@ bool test_equal(
                 catch(const std::exception &){}
                 return false;
             }
+            std::cout << std::endl;
         }
     }
     {
@@ -129,6 +138,7 @@ bool test_equal(
                 t1 == t2;
                 return false;
             }
+            std::cout << std::endl;
         }
         catch(const std::exception &){
             if(expected_result == '.'){
@@ -142,9 +152,11 @@ bool test_equal(
                 catch(const std::exception &){}
                 return false;
             }
+            std::cout << std::endl;
         }
     }
     return true; // correct result
 }
+#pragma GCC diagnostic pop
 
 #endif // BOOST_TEST_SUBTRACT

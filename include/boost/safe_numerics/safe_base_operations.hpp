@@ -18,7 +18,6 @@
 #include <cassert>
 
 #include <boost/config.hpp>
-#include <boost/mpl/eval_if.hpp>
 
 #include <boost/core/enable_if.hpp> // lazy_enable_if
 #include <boost/integer.hpp>

@@ -5,7 +5,6 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 #include <cstdlib> // EXIT_SUCCESS
 
 #include <boost/safe_numerics/checked_integer.hpp>
@@ -43,66 +42,76 @@ bool test_cast(
     return true; // passed test
 }
 
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/preprocessor/array/elem.hpp>
-#include <boost/preprocessor/array/size.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
-#include "test_types.hpp"
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
 #include "test_values.hpp"
-#include "test.hpp"
 
-// note: same test matrix as used in test_checked.  Here we test all combinations
-// safe and unsafe integers.  in test_checked we test all combinations of
-// integer primitives
+// note: the types indexed on the left side of the table are gathered
+// by filtering the test_values list.  So the types are in the same
+// sequence
 
-const char *test_result[VALUE_ARRAY_SIZE] = {
+const char *test_result[boost::mp11::mp_size<test_values>::value] = {
 //      0       0       0       0
 //      01234567012345670123456701234567
 //      01234567890123456789012345678901
 /* 0*/ ".....xx..xx..xx...xx.xxx.xxx.xxx",
-/* 1*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx",
-/* 2*/ ".........xx..xx.......xx.xxx.xxx",
-/* 3*/ "..xx..xx.xxx.xxx.........xxx.xxx",
-/* 4*/ ".............xx...........xx.xxx",
-/* 5*/ "..xx..xx..xx.xxx.............xxx",
-/* 6*/ "..............................xx",
+/* 1*/ ".........xx..xx.......xx.xxx.xxx",
+/* 2*/ ".............xx...........xx.xxx",
+/* 3*/ "..............................xx",
+/* 4*/ "..xx.xxx.xxx.xxx.....xxx.xxx.xxx",
+/* 5*/ "..xx..xx.xxx.xxx.........xxx.xxx",
+/* 6*/ "..xx..xx..xx.xxx.............xxx",
 /* 7*/ "..xx..xx..xx..xx................"
 };
 
-#define TEST_CAST(T1, v, result)      \
-    rval = rval && test_cast<T1>(     \
-        v,                            \
-        BOOST_PP_STRINGIZE(T1),       \
-        BOOST_PP_STRINGIZE(v),        \
-        result                        \
-    );
-/**/
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
-#define EACH_VALUE(z, value_index, type_index)     \
-    (std::cout << type_index << ',' << value_index << ','); \
-    TEST_CAST(                                     \
-        BOOST_PP_ARRAY_ELEM(type_index, TYPES),    \
-        BOOST_PP_ARRAY_ELEM(value_index, VALUES),  \
-        test_result[type_index][value_index]       \
-    )                                              \
-/**/
+using namespace boost::mp11;
 
-#define EACH_TYPE1(z, type_index, nothing)         \
-    BOOST_PP_REPEAT(                               \
-        BOOST_PP_ARRAY_SIZE(VALUES),               \
-        EACH_VALUE,                                \
-        type_index                                 \
-    )                                              \
-/**/
+template<typename T>
+using extract_value_type = typename T::value_type;
+using test_types = mp_unique<
+    mp_transform<
+        extract_value_type,
+        test_values
+    >
+>;
+
+struct test {
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two types");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = boost::mp11::mp_at_c<test_types, i1>;
+        using T2 = typename boost::mp11::mp_at_c<test_values, i2>::value_type;
+        constexpr T2 v2 = typename boost::mp11::mp_at_c<test_values, i2>();
+        m_error &= test_cast<T1>(
+            v2,
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            test_result[i1][i2]
+        );
+    }
+};
+
 
 int main(){
-    bool rval = true;
-    BOOST_PP_REPEAT(                               \
-        BOOST_PP_ARRAY_SIZE(TYPES),                \
-        EACH_TYPE1,                                \
-        nothing                                    \
-    )
+    test rval(true);
+
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    using type_indices = mp_iota_c<mp_size<test_types>::value>;
+    mp_for_each<
+        mp_product<mp_list, type_indices, value_indices>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
-    return rval ? EXIT_SUCCESS : EXIT_FAILURE;
+    return ! rval ;
 }

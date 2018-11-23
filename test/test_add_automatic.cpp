@@ -5,26 +5,19 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <iostream>
-#include <exception>
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/automatic.hpp>
 
-template <class T>
-using safe_t = boost::safe_numerics::safe<
-    T,
-    boost::safe_numerics::automatic
->;
-
-#include "test_add.hpp"
-#include "test.hpp"
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
 #include "test_values.hpp"
 
 // note: same test matrix as used in test_checked.  Here we test all combinations
 // safe and unsafe integers.  in test_checked we test all combinations of
 // integer primitives
 
-const char *test_addition_result[VALUE_ARRAY_SIZE] = {
+const char *test_addition_result[boost::mp11::mp_size<test_values>::value] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012
@@ -69,35 +62,58 @@ const char *test_addition_result[VALUE_ARRAY_SIZE] = {
 /*32*/ "..............................xx."
 };
 
-#define TEST_IMPL(v1, v2, result) \
-    rval &= test_add(             \
-        v1,                       \
-        v2,                       \
-        BOOST_PP_STRINGIZE(v1),   \
-        BOOST_PP_STRINGIZE(v2),   \
-        result                    \
-    );
-/**/
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
-#define TESTX(value_index1, value_index2)          \
-    (std::cout << value_index1 << ',' << value_index2 <<  ','); \
-    TEST_IMPL(                                     \
-        BOOST_PP_ARRAY_ELEM(value_index1, VALUES), \
-        BOOST_PP_ARRAY_ELEM(value_index2, VALUES), \
-        test_addition_result[value_index1][value_index2] \
-    )
-/**/
+template <class T>
+using safe_t = boost::safe_numerics::safe<
+    T,
+    boost::safe_numerics::automatic
+>;
+#include "test_add.hpp"
 
-int main(int, char *[]){
+using namespace boost::mp11;
+
+template<typename L>
+struct test {
+    static_assert(mp_is_list<L>(), "must be a list of integral constants");
+    bool m_error;
+    test(bool b = true) : m_error(b) {}
+    operator bool(){
+        return m_error;
+    }
+    template<typename T>
+    void operator()(const T &){
+        static_assert(mp_is_list<T>(), "must be a list of two integral constants");
+        constexpr size_t i1 = mp_first<T>(); // index of first argument
+        constexpr size_t i2 = mp_second<T>();// index of second argument
+        std::cout << i1 << ',' << i2 << ',';
+        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
+        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        m_error &= test_add<T1, T2>(
+            boost::mp11::mp_at_c<L, i1>(), // value of first argument
+            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            boost::core::demangle(typeid(T1).name()).c_str(),
+            boost::core::demangle(typeid(T2).name()).c_str(),
+            test_addition_result[i1][i2]
+        );
+    }
+};
+
+#include "check_symmetry.hpp"
+
+int main(){
     // sanity check on test matrix - should be symetrical
-    for(int i = 0; i < VALUE_ARRAY_SIZE; ++i)
-        for(int j = i + 1; j < VALUE_ARRAY_SIZE; ++j)
-            if(test_addition_result[i][j] != test_addition_result[j][i]){
-                std::cout << i << ',' << j << std::endl;
-                return 1;
-            }
-    bool rval = true;
-    TEST_EACH_VALUE_PAIR
+    check_symmetry(test_addition_result);
+
+    //TEST_EACH_VALUE_PAIR
+    test<test_values> rval(true);
+
+    using value_indices = mp_iota_c<mp_size<test_values>::value>;
+    mp_for_each<
+        mp_product<mp_list, value_indices, value_indices>
+    >(rval);
+
     std::cout << (rval ? "success!" : "failure") << std::endl;
     return ! rval ;
 }
