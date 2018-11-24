@@ -1,11 +1,6 @@
 #ifndef BOOST_NUMERIC_SAFE_COMPARE_HPP
 #define BOOST_NUMERIC_SAFE_COMPARE_HPP
 
-// MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
-# pragma once
-#endif
-
 //  Copyright (c) 2012 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
