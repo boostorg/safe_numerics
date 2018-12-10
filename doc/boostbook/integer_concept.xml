@@ -203,7 +203,7 @@
     <title>Models</title>
 
     <para><code>int, safe&lt;int&gt;, safe_unsigned_range&lt;0, 11&gt;,
-    etc.</code></para>
+    checked_result&lt;int&gt; etc.</code></para>
   </section>
 
   <section>

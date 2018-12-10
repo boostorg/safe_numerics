@@ -129,7 +129,7 @@
     <itemizedlist>
       <listitem>
         <para>The library defines "safe" versions of C++ primitive arithmetic
-        types such as int, unsigned int, etc.</para>
+        types such as <code>int</code>, <code>unsigned int</code>, etc.</para>
       </listitem>
 
       <listitem>
@@ -201,6 +201,15 @@
         type <link
         linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.</para>
       </listitem>
+
+      <listitem>
+        <para>Operations on primitives are implemented via free standing
+        functions described as <link
+        linkend="safe_numerics.checked_arithmetic">checked arithmetic</link>.
+        These operations will return instances of <link
+        linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>
+        .</para>
+      </listitem>
     </itemizedlist>
 
     <para>At run time:</para>
@@ -227,10 +236,11 @@
       </listitem>
 
       <listitem>
-        <para>Otherwise, the operation is performed as another "checked
-        operation". These free functions mirror the normal operators +, -, *,
-        ... except that rather than returning values of type R, they return
-        values of the type <link
+        <para>Otherwise, the operation is performed using "<link
+        linkend="safe_numerics.checked_arithmetic">checked arithmetic</link>".
+        These free functions mirror the normal operators +, -, *, ... except
+        that rather than returning values of type R, they return values of the
+        type <link
         linkend="safenumerics.checked_result"><code>checked_result&lt;R&gt;</code></link>.
         They are defined in files "<ulink
         url="../../include/boost/safe_numerics/checked_default.hpp">checked_default.hpp</ulink>",

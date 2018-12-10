@@ -53,7 +53,12 @@ struct range {
     {}
 };</programlisting></para>
 
-    <para>Then redeclare <code>safe_base</code>, etc. accordingly.</para>
+    <para>Then redeclare <code>safe_base</code>, etc., accordingly.</para>
+
+    <para>Also not that for C++20, template value parameters are no longer
+    restricted to integer primitive types buy maybe class types as well. This
+    means the library maybe extended to user class types without changing the
+    current template signatures.</para>
   </section>
 
   <section>
@@ -94,7 +99,7 @@ struct range {
   </section>
 
   <section>
-    <title> <code>Safe</code> values Can Be Uninitialized</title>
+    <title><code>Safe</code> values Can Be Uninitialized</title>
 
     <para>Currently the library permits a <code>safe&lt;int&gt;</code> value
     to be uninitialized. This supports the goal of "drop-in" replacement of
@@ -120,7 +125,9 @@ struct range {
           <code>checked</code> integer arithmetic - depend upon two's
           complement representation of integers. Hence the library is probably
           not currently portable to all other possible C++ architectures.
-          These days, this is unlikely to be a limitation in practice.</para>
+          These days, this is unlikely to be a limitation in practice.
+          Starting with C++20, integer arithmetic will be guaranteed by the
+          C++ standard to be two's complement.</para>
         </listitem>
 
         <listitem>
@@ -128,22 +135,6 @@ struct range {
           libraries, including std::chrono. Without a specialization for
           <code>safe&lt;T&gt;</code>s one cannot use the safe wrappers e.g. as
           a representation for <code>std::chrono::duration</code>.</para>
-        </listitem>
-
-        <listitem>
-          <para>For many meta programming tasks, the library uses the classic
-          Boost.MPL library as well as the more current Boost.MP11 library. In
-          the interests of conserving brain surface area required to
-          understand and maintain the library, the remaining instances of
-          usage of Boost.MPL should be replaces with code based on Boost.MP11.
-          </para>
-        </listitem>
-
-        <listitem>
-          <para>For testing the library, we rely on Boost.Preprocessor to
-          generate test cases. In later tests, we've depended on boost mp11.
-          Again, in order to diminish the dependencies, we plan to replace
-          usages of Boost.Preprocessor with Boost.MP11.</para>
         </listitem>
       </itemizedlist></para>
   </section>

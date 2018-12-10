@@ -1,4 +1,4 @@
-  #ifndef BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
+#ifndef BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
 #define BOOST_NUMERIC_CHECKED_RESULT_OPERATIONS
 
 //  Copyright (c) 2012 Robert Ramey
@@ -8,12 +8,12 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 // Implemenation of arithmetic on "extended" integers.
-// extended integers are
+// Extended integers are defined in terms of C++ primitive integers as
 //     a) an interger range
 //     b) extra elements +inf, -inf, indeterminate
 //
-// arithmetic operations are closed on the set of extended integers
-// but operations are not associative when they result in the
+// Integer operations are closed on the set of extended integers
+// but operations are not necessarily associative when they result in the
 // extensions +inf, -inf, and indeterminate
 //
 // in this code, the type "checked_result<T>" where T is some
@@ -32,6 +32,34 @@
 
 namespace boost {
 namespace safe_numerics {
+
+template<typename T>
+constexpr void display(const boost::safe_numerics::checked_result<T> & c){
+    switch(c.m_e){
+    case safe_numerics_error::success:
+        std::terminate();
+    case safe_numerics_error::positive_overflow_error:    // result is above representational maximum
+        std::terminate();
+    case safe_numerics_error::negative_overflow_error:    // result is below representational minimum
+        std::terminate();
+    case safe_numerics_error::domain_error:               // one operand is out of valid range
+        std::terminate();
+    case safe_numerics_error::range_error:                // result cannot be produced for this operation
+        std::terminate();
+    case safe_numerics_error::precision_overflow_error:   // result lost precision
+        std::terminate();
+    case safe_numerics_error::underflow_error:            // result is too small to be represented
+        std::terminate();
+    case safe_numerics_error::negative_value_shift:       // negative value in shift operator
+        std::terminate();
+    case safe_numerics_error::negative_shift:             // shift a negative value
+        std::terminate();
+    case safe_numerics_error::shift_too_large:            // l/r shift exceeds variable size
+        std::terminate();
+    case safe_numerics_error::uninitialized_value:        // creating of uninitialized value
+        std::terminate();
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 // implement C++ operators for check_result<T>
@@ -80,13 +108,13 @@ constexpr inline operator+(
     const checked_result<T> & u
 ){
     using value_type = sum_value_type;
-    constexpr const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
+    const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
     // note major pain.  Clang constexpr multi-dimensional array is fine.
     // but gcc doesn't permit a multi-dimensional array to be be constexpr.
     // so we need to some ugly gymnastics to make our system work for all
     // all systems.
-    constexpr const enum safe_numerics_error result[order * order] = {
+    const enum safe_numerics_error result[order * order] = {
         // t == known_value
         //{
             // u == ...
@@ -221,8 +249,12 @@ struct product_value_type {
         greater_than_zero,
         greater_than_max,
         indeterminate,
+        // count of number of cases for values
         count,
-        t_value
+        // temporary values for special cases
+        t_value,
+        u_value,
+        z_value
     } m_flag;
     template<class T>
     constexpr flag to_flag(const checked_result<T> & t) const {
@@ -460,20 +492,20 @@ constexpr inline operator%(
         //{
             // u == ...
             value_type::indeterminate,      // less_than_min,
-            value_type::indeterminate,      // less_than_zero,
+            value_type::z_value,            // less_than_zero,
             value_type::indeterminate,      // zero,
-            value_type::indeterminate,      // greater_than_zero,
+            value_type::z_value,            // greater_than_zero,
             value_type::indeterminate,      // greater than max,
             value_type::indeterminate,      // indeterminate,
         //},
         // t == less_than_zero,
         //{
             // u == ...
-            value_type::t_value,      // less_than_min,
+            value_type::t_value,            // less_than_min,
             value_type::greater_than_zero,  // less_than_zero,
             value_type::indeterminate,      // zero,
             value_type::less_than_zero,     // greater_than_zero,
-            value_type::t_value,     // greater than max,
+            value_type::t_value,            // greater than max,
             value_type::indeterminate,      // indeterminate,
         //},
         // t == zero,
@@ -499,9 +531,9 @@ constexpr inline operator%(
         // t == greater_than_max
         //{
             value_type::indeterminate,      // less_than_min,
-            value_type::indeterminate,      // less_than_zero,
+            value_type::u_value,            // less_than_zero,
             value_type::indeterminate,      // zero,
-            value_type::indeterminate,      // greater_than_zero,
+            value_type::u_value,            // greater_than_zero,
             value_type::indeterminate,      // greater than max,
             value_type::indeterminate,      // indeterminate,
         //},
@@ -529,6 +561,10 @@ constexpr inline operator%(
             return safe_numerics_error::range_error;
         case value_type::t_value:
             return t;
+        case value_type::u_value:
+            return checked::subtract<T>(u, 1);
+        case value_type::z_value:
+            return checked::subtract<T>(1, u);
         case value_type::greater_than_max:
         case value_type::less_than_min:
         default:
@@ -556,9 +592,8 @@ constexpr boost::logic::tribool operator<(
     //
     // b) return false because the two values are "equal"
     //
-    // for our purposes, b) is the better interpretation as it better
-    // models our view that the < operation referes to the place holders
-    // rather than some underlying value.
+    // for our purposes, a) seems the better interpretation.
+    
     enum class result_type : std::uint8_t {
         runtime,
         false_value,
@@ -578,7 +613,7 @@ constexpr boost::logic::tribool operator<(
         //{
             // u == ...
             result_type::true_value,    // known_value,
-            result_type::false_value,   // less_than_min, see above argument
+            result_type::indeterminate, // less_than_min, see above argument
             result_type::true_value,    // greater_than_max,
             result_type::indeterminate, // indeterminate,
         //},
@@ -587,7 +622,7 @@ constexpr boost::logic::tribool operator<(
             // u == ...
             result_type::false_value,   // known_value,
             result_type::false_value,   // less_than_min,
-            result_type::false_value,   // greater_than_max, see above argument
+            result_type::indeterminate, // greater_than_max, see above argument
             result_type::indeterminate, // indeterminate,
         //},
         // t == indeterminate
@@ -758,7 +793,7 @@ constexpr inline operator<<(
     using value_type = product_value_type;
     const std::uint8_t order = static_cast<std::uint8_t>(value_type::count);
 
-    const std::uint8_t result[order * order] = {
+    constexpr const std::uint8_t result[order * order] = {
         // t == less_than_min
         //{
             // u == ...

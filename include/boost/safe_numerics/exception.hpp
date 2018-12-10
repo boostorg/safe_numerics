@@ -42,7 +42,7 @@ enum class safe_numerics_error : std::uint8_t {
     negative_value_shift,       // negative value in shift operator
     negative_shift,             // shift a negative value
     shift_too_large,            // l/r shift exceeds variable size
-    uninitialized_value         // l/r shift exceeds variable size
+    uninitialized_value         // creating of uninitialized value
 };
 
 const std::uint8_t safe_numerics_casting_error_count =

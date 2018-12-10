@@ -21,25 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe.html#idm75955666912">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955664912">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955660880">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955653584">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955646544">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955628144">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955622192">Examples of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm75955347952">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151510912">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151508912">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151504880">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151497584">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151490544">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151472144">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151466256">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm360151191360">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955666912"></a>Description</h4></div></div></div>
+<a name="idm360151510912"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or to trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955664912"></a>Model of</h4></div></div></div>
+<a name="idm360151508912"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 <p>This type inherits all the notation, associated types and template
@@ -48,7 +48,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955660880"></a>Notation</h4></div></div></div>
+<a name="idm360151504880"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -67,7 +67,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955653584"></a>Associated Types</h4></div></div></div>
+<a name="idm360151497584"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -89,7 +89,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955646544"></a>Template Parameters</h4></div></div></div>
+<a name="idm360151490544"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -125,7 +125,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955628144"></a>Valid Expressions</h4></div></div></div>
+<a name="idm360151472144"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a>&lt;T&gt;
     type requirements. Note that all these expressions are
@@ -145,7 +145,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955622192"></a>Examples of use</h4></div></div></div>
+<a name="idm360151466256"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -284,7 +284,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm75955420896"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm360151264304"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic.</p>
 <p>Stepping back, we can see that many of the cases of invalid
@@ -319,7 +319,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75955347952"></a>Header</h4></div></div></div>
+<a name="idm360151191360"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>

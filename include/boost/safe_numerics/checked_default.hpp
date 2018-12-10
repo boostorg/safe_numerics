@@ -179,7 +179,7 @@ constexpr checked_result<R> bitwise_or(const R & t, const R & u) noexcept {
 }
 template<typename R>
 constexpr checked_result<R> bitwise_xor(const R & t, const R & u) noexcept {
-    return checked_operation<R>::bitwise_or(t, u);
+    return checked_operation<R>::bitwise_xor(t, u);
 }
 template<typename R>
 constexpr checked_result<R> bitwise_and(const R & t, const R & u) noexcept {

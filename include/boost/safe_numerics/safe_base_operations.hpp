@@ -110,6 +110,60 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 }
 
 /////////////////////////////////////////////////////////////////
+// constructors
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+    constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+    const Stored & rhs,
+    skip_validation
+) :
+    m_t(rhs)
+{}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(){
+    dispatch<E>(
+        safe_numerics_error::uninitialized_value,
+        "safe values must be initialized"
+    );
+}
+
+// construct an instance of a safe type
+// from an instance of a convertible underlying type.
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+    const T & t,
+    typename std::enable_if<
+        is_safe<T>::value,
+        bool
+    >::type
+) :
+    m_t(validated_cast(t))
+{}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+    const T & t,
+    typename std::enable_if<
+        std::is_integral<T>::value,
+        bool
+    >::type
+) :
+    m_t(validated_cast(t))
+{}
+
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<class T, T value>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+
+    const std::integral_constant<T, value> &
+) :
+    m_t(validated_cast(value))
+{}
+
+/////////////////////////////////////////////////////////////////
 // casting operators
 
 // cast to a builtin type from a safe type

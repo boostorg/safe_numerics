@@ -31,11 +31,12 @@ using pic16_promotion = boost::safe_numerics::cpp<
 // compile time error whenever an operation MIGHT fail.
 
 // ***************************
-// generate compile time errors if operation could fail 
-using trap_policy = boost::safe_numerics::loose_trap_policy;
-
 // generate runtime errors if operation could fail
 using exception_policy = boost::safe_numerics::default_exception_policy;
+
+// generate compile time errors if operation could fail
+//using trap_policy = boost::safe_numerics::loose_trap_policy;
+using trap_policy = boost::safe_numerics::default_exception_policy;
 
 // ***************************
 // 2. Create a macro named literal an integral value

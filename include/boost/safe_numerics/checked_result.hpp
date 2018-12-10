@@ -27,6 +27,39 @@ struct checked_result {
     // don't permit construction without initial value;
     checked_result() = delete;
 
+    // note: I implemented the following non-default copy and move
+    // constructors because I thought I needed to do this in order
+    // to make them constexpr.  Turns out though that doing this creates
+    // a syntax error because the assignment results in error due
+    // to assignment "outside of object lifetime".  I think this could
+    // be addressed by replacing the anonymous union above with a
+    // named union.  This would create some syntax changes which would
+    // ripple through some parts of th program.  So for now, we'll just
+    // rely on the default copy and move constructors.
+    #if 0
+    // copy constructor
+    constexpr /*explicit*/ checked_result(const checked_result & r) :
+        m_e(r.m_e)
+    {
+        if(safe_numerics_error::success == r.m_e)
+            m_r = r.m_r;
+        else
+            m_msg = r.m_msg;
+    }
+
+    // move constructor
+    constexpr /*explicit*/ checked_result(checked_result && r) noexcept :
+        m_e(r.m_e)
+    {
+        if(safe_numerics_error::success == r.m_e)
+            m_r = r.m_r;
+        else
+            m_msg = r.m_msg;
+    }
+    #endif
+    checked_result(const checked_result & r) = default;
+    checked_result(checked_result && r) = default;
+    
     constexpr /*explicit*/ checked_result(const R & r) :
         m_e(safe_numerics_error::success),
         m_r(r)

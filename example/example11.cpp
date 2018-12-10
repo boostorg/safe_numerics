@@ -31,9 +31,8 @@ int main(int, const char * []){
         using namespace boost::safe_numerics;
         safe<std::int8_t> x = 127;
         safe<std::int8_t> y = 2;
-        safe<std::int8_t> z;
         // rather than producing and invalid result an exception is thrown
-        z = x + y;
+        safe<std::int8_t> z = x + y;
     }
     catch(const std::exception & e){
         // which can catch here

@@ -21,16 +21,16 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.pending_issues"></a>Pending Issues</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="pending_issues.html#idm75953721984"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm75953682176">Concepts are Defined but Not Enforced.</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm75953677200"> <code class="computeroutput">Safe</code> values Can Be Uninitialized</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm75953674288">Other Pending Issues</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm360149566048"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm360149526448">Concepts are Defined but Not Enforced.</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm360149520720"><code class="computeroutput">Safe</code> values Can Be Uninitialized</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm360149517808">Other Pending Issues</a></span></dt>
 </dl></div>
 <p>The library is under development. There are a number of issues still
   pending.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm75953721984"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
+<a name="idm360149566048"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
 <p>The following is paraphrased from an issue raised by Andrzej
     Krzemie&#324;ski as a <a href="https://github.com/robertramey/safe_numerics/issues/44" target="_top">github
     issue</a>. It touches upon fundamental ideas behind the library and
@@ -68,11 +68,15 @@
         <span class="identifier">m_highest</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="identifier">T</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="identifier">t_max</span><span class="special">)</span>
     <span class="special">{</span><span class="special">}</span>
 <span class="special">}</span><span class="special">;</span></pre>
-<p>Then redeclare <code class="computeroutput">safe_base</code>, etc. accordingly.</p>
+<p>Then redeclare <code class="computeroutput">safe_base</code>, etc., accordingly.</p>
+<p>Also not that for C++20, template value parameters are no longer
+    restricted to integer primitive types buy maybe class types as well. This
+    means the library maybe extended to user class types without changing the
+    current template signatures.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm75953682176"></a>Concepts are Defined but Not Enforced.</h3></div></div></div>
+<a name="idm360149526448"></a>Concepts are Defined but Not Enforced.</h3></div></div></div>
 <p>The following is paraphrased from an issue raised by Andrzej
     Krzemie&#324;ski as a <a href="https://github.com/robertramey/safe_numerics/issues/46" target="_top">github
     issue</a>.</p>
@@ -103,7 +107,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm75953677200"></a> <code class="computeroutput">Safe</code> values Can Be Uninitialized</h3></div></div></div>
+<a name="idm360149520720"></a><code class="computeroutput">Safe</code> values Can Be Uninitialized</h3></div></div></div>
 <p>Currently the library permits a <code class="computeroutput">safe&lt;int&gt;</code> value
     to be uninitialized. This supports the goal of "drop-in" replacement of
     C++/C built-in types with safe counter parts. On the other hand, this
@@ -113,7 +117,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm75953674288"></a>Other Pending Issues</h3></div></div></div>
+<a name="idm360149517808"></a>Other Pending Issues</h3></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>The library is currently limited to integers. If there is
           interest, it could be extended to floats and possible to user
@@ -123,21 +127,13 @@
           <code class="computeroutput">checked</code> integer arithmetic - depend upon two's
           complement representation of integers. Hence the library is probably
           not currently portable to all other possible C++ architectures.
-          These days, this is unlikely to be a limitation in practice.</p></li>
+          These days, this is unlikely to be a limitation in practice.
+          Starting with C++20, integer arithmetic will be guaranteed by the
+          C++ standard to be two's complement.</p></li>
 <li class="listitem"><p><code class="computeroutput">std::common_type</code> is used in a variety of generic
           libraries, including std::chrono. Without a specialization for
           <code class="computeroutput">safe&lt;T&gt;</code>s one cannot use the safe wrappers e.g. as
           a representation for <code class="computeroutput">std::chrono::duration</code>.</p></li>
-<li class="listitem"><p>For many meta programming tasks, the library uses the classic
-          Boost.MPL library as well as the more current Boost.MP11 library. In
-          the interests of conserving brain surface area required to
-          understand and maintain the library, the remaining instances of
-          usage of Boost.MPL should be replaces with code based on Boost.MP11.
-          </p></li>
-<li class="listitem"><p>For testing the library, we rely on Boost.Preprocessor to
-          generate test cases. In later tests, we've depended on boost mp11.
-          Again, in order to diminish the dependencies, we plan to replace
-          usages of Boost.Preprocessor with Boost.MP11.</p></li>
 </ul></div>
 </div>
 </div>

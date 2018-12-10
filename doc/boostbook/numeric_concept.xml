@@ -372,7 +372,8 @@
     <title>Models</title>
 
     <para><code>int, float, safe_signed_integer&lt;int&gt;,
-    safe_signed_range&lt;int&gt;, etc.</code></para>
+    safe_signed_range&lt;int&gt;, checked_result&lt;int&gt;,
+    etc.</code></para>
   </section>
 
   <section>
@@ -381,5 +382,70 @@
     <para><ulink url="../../include/concept/numeric.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/concepts/numeric.hpp&gt;
     </code></ulink></para>
+  </section>
+
+  <section>
+    <title>Note on Usage of <code>std::numeric_limits</code></title>
+
+    <para>We define the word "Numeric" in terms of the operations which are
+    supported by "Numeric" types. This is in line with the current and
+    historical usage of the word "concept" in the context of C++. It is also
+    common to define compile time predicates such as
+    "<code>is_numeric&lt;T&gt;</code>" to permit one to include expressions in
+    his code which will generated a compile time error if the specified type
+    (T) does not support the operations required. But this is not always true.
+    In the C++ standard library there is a predicate
+    <code>is_arithmetic&lt;T&gt;</code> whose name might suggest that it
+    should return <code>true</code> for any type which supports the operations
+    above. But this is not the case. The standard defines
+    <code>is_arithmetic&lt;T&gt;</code> as <code>true</code> for any of the
+    builtin types <code>int</code>, <code>long</code>, <code>float</code>,
+    <code>double</code>, etc and <code>false</code> for any other types. So
+    even if a user defined type U were to support the operations above,
+    <code>is_arithmetic&lt;U&gt;</code> would still return <code>false</code>.
+    This is quite unintuitive and not a good match for our purposes. Hence we
+    define our own term "Numeric" to designate any type T which:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>Supports the operations above</para>
+        </listitem>
+
+        <listitem>
+          <para>Specializes the standard type numeric_limits</para>
+        </listitem>
+      </itemizedlist>while following the C++ standard in using
+    <code>is_arithmetic&lt;T&gt;</code>, <code>is_integral&lt;T&gt;</code> to
+    detect specific types only. The standard types are useful in various
+    aspects of the implementation - which of course is done in terms of the
+    standard types.</para>
+
+    <para>This in turn raises another question: Is it "legal" to specialize
+    <code>std::numeric_limits</code> for one's own types such as
+    <code>safe&lt;int&gt;</code>. In my view the standard is ambiguous on
+    this. See various interpretations: <itemizedlist>
+        <listitem>
+          <para><ulink
+          url="https://stackoverflow.com/questions/16122912/is-it-ok-to-specialize-stdnumeric-limitst-for-user-defined-number-like-class">is-it-ok-to-specialize-stdnumeric-limitst-for-user-defined-number-like-class</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink
+          url="https://en.cppreference.com/w/cpp/types/numeric_limits">cppreference.com/w/cpp/types/numeric_limits</ulink></para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>In any case, it seems pretty clear that no harm will come of it. In
+    spite of the consideration given to this issue, it turns out that the
+    found no real need to implement these predicates. For example, there is no
+    "is_numeric&lt;T&gt;" implemented as part of the safe numerics library.
+    This may change in the future though. Even if not used, defining and
+    maintaining these type requirements in this document has been very
+    valuable in keeping the concepts and code more unified and
+    understandable.</para>
+
+    <para>Remember that above considerations apply to other numeric types used
+    in this library even though we don't explicitly repeat this information
+    for every case.</para>
   </section>
 </section>

@@ -32,10 +32,13 @@
     <code class="computeroutput">sizeof(T)</code> which is then used by users in arithmetic.</p>
 <p>This program demonstrates this problem. The solution is to replace
     instances of built in integer types with corresponding safe types.</p>
-<pre class="programlisting"><p><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cassert</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<pre class="programlisting"><p><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
-<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
@@ -52,7 +55,7 @@
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">z</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="string">" - "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span><span class="special">)</span><span class="special">{</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
     <span class="comment">// solution: replace int with safe&lt;int&gt;</span>
@@ -67,7 +70,7 @@
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error NOT detected!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="identifier">z</span> <span class="special">&lt;&lt;</span> <span class="string">" != "</span> <span class="special">&lt;&lt;</span> <span class="identifier">y</span> <span class="special">&lt;&lt;</span> <span class="string">" - "</span> <span class="special">&lt;&lt;</span> <span class="identifier">x</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>
-    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="keyword">const</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
         <span class="comment">// which we can catch here</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error detected:"</span> <span class="special">&lt;&lt;</span> <span class="identifier">e</span><span class="special">.</span><span class="identifier">what</span><span class="special">(</span><span class="special">)</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>

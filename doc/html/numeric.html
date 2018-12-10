@@ -22,11 +22,12 @@
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="numeric.html#safe_numerics.numeric.description">Description</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm75956184544">Notation</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm75956177360">Associated Types</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm75956172032">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm75956072288">Models</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm75956070400">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360152033408">Notation</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360152026160">Associated Types</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360152020864">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360151921152">Models</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360151919344">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm360151917152">Note on Usage of <code class="computeroutput">std::numeric_limits</code></a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -45,7 +46,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75956184544"></a>Notation</h4></div></div></div>
+<a name="idm360152033408"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -65,7 +66,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75956177360"></a>Associated Types</h4></div></div></div>
+<a name="idm360152026160"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -82,13 +83,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75956172032"></a>Valid Expressions</h4></div></div></div>
+<a name="idm360152020864"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid. Any operations which result in
     integers which cannot be represented as some Numeric type will throw an
     exception.</p>
 <div class="table">
-<a name="idm75956170240"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
+<a name="idm360152019040"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -134,7 +135,7 @@
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="idm75956149248"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
+<a name="idm360151998016"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -181,7 +182,7 @@
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="idm75956128496"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
+<a name="idm360151977360"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -293,16 +294,68 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75956072288"></a>Models</h4></div></div></div>
+<a name="idm360151921152"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, float, safe_signed_integer&lt;int&gt;,
-    safe_signed_range&lt;int&gt;, etc.</code></p>
+    safe_signed_range&lt;int&gt;, checked_result&lt;int&gt;,
+    etc.</code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm75956070400"></a>Header</h4></div></div></div>
+<a name="idm360151919344"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/numeric.hpp&gt;
     </code></a></p>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm360151917152"></a>Note on Usage of <code class="computeroutput">std::numeric_limits</code>
+</h4></div></div></div>
+<p>We define the word "Numeric" in terms of the operations which are
+    supported by "Numeric" types. This is in line with the current and
+    historical usage of the word "concept" in the context of C++. It is also
+    common to define compile time predicates such as
+    "<code class="computeroutput">is_numeric&lt;T&gt;</code>" to permit one to include expressions in
+    his code which will generated a compile time error if the specified type
+    (T) does not support the operations required. But this is not always true.
+    In the C++ standard library there is a predicate
+    <code class="computeroutput">is_arithmetic&lt;T&gt;</code> whose name might suggest that it
+    should return <code class="computeroutput">true</code> for any type which supports the operations
+    above. But this is not the case. The standard defines
+    <code class="computeroutput">is_arithmetic&lt;T&gt;</code> as <code class="computeroutput">true</code> for any of the
+    builtin types <code class="computeroutput">int</code>, <code class="computeroutput">long</code>, <code class="computeroutput">float</code>,
+    <code class="computeroutput">double</code>, etc and <code class="computeroutput">false</code> for any other types. So
+    even if a user defined type U were to support the operations above,
+    <code class="computeroutput">is_arithmetic&lt;U&gt;</code> would still return <code class="computeroutput">false</code>.
+    This is quite unintuitive and not a good match for our purposes. Hence we
+    define our own term "Numeric" to designate any type T which:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>Supports the operations above</p></li>
+<li class="listitem"><p>Specializes the standard type numeric_limits</p></li>
+</ul></div>
+<p>while following the C++ standard in using
+    <code class="computeroutput">is_arithmetic&lt;T&gt;</code>, <code class="computeroutput">is_integral&lt;T&gt;</code> to
+    detect specific types only. The standard types are useful in various
+    aspects of the implementation - which of course is done in terms of the
+    standard types.</p>
+<p>This in turn raises another question: Is it "legal" to specialize
+    <code class="computeroutput">std::numeric_limits</code> for one's own types such as
+    <code class="computeroutput">safe&lt;int&gt;</code>. In my view the standard is ambiguous on
+    this. See various interpretations: </p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p><a href="https://stackoverflow.com/questions/16122912/is-it-ok-to-specialize-stdnumeric-limitst-for-user-defined-number-like-class" target="_top">is-it-ok-to-specialize-stdnumeric-limitst-for-user-defined-number-like-class</a></p></li>
+<li class="listitem"><p><a href="https://en.cppreference.com/w/cpp/types/numeric_limits" target="_top">cppreference.com/w/cpp/types/numeric_limits</a></p></li>
+</ul></div>
+<p>In any case, it seems pretty clear that no harm will come of it. In
+    spite of the consideration given to this issue, it turns out that the
+    found no real need to implement these predicates. For example, there is no
+    "is_numeric&lt;T&gt;" implemented as part of the safe numerics library.
+    This may change in the future though. Even if not used, defining and
+    maintaining these type requirements in this document has been very
+    valuable in keeping the concepts and code more unified and
+    understandable.</p>
+<p>Remember that above considerations apply to other numeric types used
+    in this library even though we don't explicitly repeat this information
+    for every case.</p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

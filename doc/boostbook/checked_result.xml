@@ -261,23 +261,25 @@
 
             <row>
               <entry><code><simplelist>
-                  <member>c &lt; t</member>
+                  <member>c1 &lt; c2</member>
 
-                  <member>c &gt;= t</member>
+                  <member>c1 &gt;= c2</member>
 
-                  <member>c &gt; t</member>
+                  <member>c1 &gt; c2</member>
 
-                  <member>c &lt;= t</member>
+                  <member>c1 &lt;= c2</member>
 
-                  <member>c == t</member>
+                  <member>c1 == c2</member>
 
-                  <member>c != t</member>
+                  <member>c1 != c2</member>
                 </simplelist></code></entry>
 
               <entry><code>boost::logic::tribool</code></entry>
 
               <entry>compare the wrapped values of two checked_result
-              instances. If either one contains an error_type value, return
+              instances. If the values are such that the result of such a
+              comparison cannot be reasonably defined, The result of the
+              comparison is
               <code>boost::logic::tribool::indeterminant</code>.</entry>
             </row>
 

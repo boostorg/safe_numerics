@@ -84,8 +84,8 @@ make_safe_numerics_action(const safe_numerics_error & e){
     case safe_numerics_error::shift_too_large:
         return safe_numerics_actions::implementation_defined_behavior;
 
-//    case safe_numerics_error::uninitialized_value:
-//        return safe_numerics_actions::uninitialized_value;
+    case safe_numerics_error::uninitialized_value:
+        return safe_numerics_actions::uninitialized_value;
 
     case safe_numerics_error::success:
         return safe_numerics_actions::no_action;
@@ -97,9 +97,53 @@ make_safe_numerics_action(const safe_numerics_error & e){
     return safe_numerics_actions::no_action;
 }
 
+#if 0
+namespace dispatch_detail {
+
+template<safe_numerics_actions, class EP>
+struct dispatcherX {
+    void operator()(const safe_numerics_error & e,char const * const & msg);
+};
+
+template<class EP>
+struct dispatcherX<safe_numerics_actions::uninitialized_value, EP> {
+    void operator()(const safe_numerics_error & e,char const * const & msg){
+        EP::on_uninitialized_value(e, msg);
+    }
+};
+template<class EP>
+struct dispatcherX<safe_numerics_actions::arithmetic_error, EP> {
+    void operator()(const safe_numerics_error & e,char const * const & msg){
+        EP::on_arithmetic_error(e, msg);
+    }
+};
+template<class EP>
+struct dispatcherX<safe_numerics_actions::implementation_defined_behavior, EP> {
+    void operator()(const safe_numerics_error & e,char const * const & msg){
+        EP::on_implementation_defined_behavior(e, msg);
+    }
+};
+template<class EP>
+struct dispatcherX<safe_numerics_actions::undefined_behavior, EP> {
+    void operator()(const safe_numerics_error & e,char const * const & msg){
+        EP::on_undefined_behavior(e, msg);
+    }
+};
+
+} // dispatch_detail
+
 template<class EP>
 constexpr void
 dispatch(const safe_numerics_error & e, char const * const & msg){
+    assert(e != safe_numerics_error::success);
+    const safe_numerics_actions a = make_safe_numerics_action(e);
+    dispatch_detail::dispatcherX<a, EP>()(e, msg);
+}
+#else
+template<class EP>
+constexpr void
+dispatch(const safe_numerics_error & e, char const * const & msg){
+    assert(e != safe_numerics_error::success);
     const safe_numerics_actions a = make_safe_numerics_action(e);
     switch(a){
     case safe_numerics_actions::uninitialized_value:
@@ -118,11 +162,12 @@ dispatch(const safe_numerics_error & e, char const * const & msg){
         assert(false);
     }
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // pre-made error policy classes
 
-// loose policy
+// loose exception
 // - throw on arithmetic errors
 // - ignore other errors.
 // Some applications ignore these issues and still work and we don't
@@ -131,7 +176,7 @@ using loose_exception_policy = exception_policy<
     throw_exception,    // arithmetic error
     ignore_exception,   // implementation defined behavior
     ignore_exception,   // undefined behavior
-    ignore_exception    // uninitialized value
+    ignore_exception     // uninitialized value
 >;
 
 // loose trap
@@ -141,20 +186,12 @@ using loose_exception_policy = exception_policy<
 // bit manipulation operations to work.
 using loose_trap_policy = exception_policy<
     trap_exception,    // arithmetic error
-    ignore_exception,   // implementation defined behavior
-    ignore_exception,   // undefined behavior
-    ignore_exception    // uninitialized value
+    ignore_exception,  // implementation defined behavior
+    ignore_exception,  // undefined behavior
+    trap_exception     // uninitialized value
 >;
 
-#if 0
-template<>
-constexpr void
-dispatch<loose_trap_policy>(const safe_numerics_error &, char const * const &){// strict exception policy
-    static_assert(false, "trap");
-}
-#endif
-
-// - permit just about anything
+// strict exception
 // - throw at runtime on any kind of error
 // recommended for new code.  Check everything at compile time
 // if possible and runtime if necessary.  Trap or Throw as
@@ -164,7 +201,7 @@ using strict_exception_policy = exception_policy<
     throw_exception,
     throw_exception,
     throw_exception,
-    throw_exception
+    ignore_exception
 >;
 
 // strict trap

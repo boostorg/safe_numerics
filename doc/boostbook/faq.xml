@@ -15,12 +15,12 @@
 
       <answer>
         <para>This surprised me when it was first raised. But some of the
-        feedback I've received makes me thing that it's a widely held view.
+        feedback I've received makes me think that it's a widely held view.
         The best answer is to consider the examples in the <link
         linkend="safe_numerics.tutorial">Tutorials and Motivating
-        Examples</link> section of the library documentation. I believe the
-        convincingly demonstrate that any program that doesn't use this
-        library is absent of arithmetic errors.</para>
+        Examples</link> section of the library documentation. I believe they
+        convincingly demonstrate that any program which does not use this
+        library must be assumed to contain arithmetic errors.</para>
       </answer>
     </qandaentry>
 
@@ -86,8 +86,8 @@
       <answer>
         <para>Yes. safe type construction and calculations are all
         <code>constexpr</code>. Note that to get maximum benefit, you'll have
-        to use <code>safe...literal</code> to specify the independent values
-        at compile time.</para>
+        to use <code>safe...literal</code> to specify the primitive values at
+        compile time.</para>
       </answer>
     </qandaentry>
 
@@ -206,22 +206,6 @@
 
     <qandaentry>
       <question>
-        <para>Why is it necessary to specialize <code>numeric_limits</code>
-        for "safe" types?</para>
-      </question>
-
-      <answer>
-        <para><code>safe&lt;T&gt;</code> behaves like a "number" just as
-        <code><code>int</code></code> does. It has max, min, etc Any code
-        which uses numeric limits to test a type <code>T</code> should work
-        with <code>safe&lt;T&gt;</code>. <code>safe&lt;T&gt;</code> is a
-        drop-in replacement for <code>T</code> so it has to implement all the
-        operations.</para>
-      </answer>
-    </qandaentry>
-
-    <qandaentry>
-      <question>
         <para>According to C/C++ standards, <code>unsigned integers</code>
         cannot overflow - they are modular integers which "wrap around". Yet
         the safe numerics library detects and traps this behavior as errors.
@@ -233,15 +217,15 @@
         arithmetic behavior - not just undefined behavior. Although a savvy
         user may understand and keep present in his mind that an unsigned
         integer is really a modular type, the plain reading of an arithmetic
-        expression conveys the idea that all operands are integers. Also in
-        many cases, <code>unsigned integers</code> are used in cases where
-        modular arithmetic is not intended, such as array indices. Finally,
-        the modulus for such an integer would vary depending upon the machine
-        architecture. For these reasons, in the context of this library, an
-        <code>unsigned integer</code> is considered to be a representation of
-        a subset of integers. Note that this decision is consistent with
-        <citation>INT30-C</citation>, “Ensure that unsigned integer operations
-        do not wrap” in the CERT C Secure Coding Standard
+        expression conveys the idea that all operands are common integers.
+        Also in many cases, <code>unsigned integers</code> are used in cases
+        where modular arithmetic is not intended, such as array indices.
+        Finally, the modulus for such an integer would vary depending upon the
+        machine architecture. For these reasons, in the context of this
+        library, an <code>unsigned integer</code> is considered to be a
+        representation of a subset of integers. Note that this decision is
+        consistent with <citation>INT30-C</citation>, “Ensure that unsigned
+        integer operations do not wrap” in the CERT C Secure Coding Standard
         <citation>Seacord</citation>.</para>
       </answer>
     </qandaentry>

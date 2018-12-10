@@ -39,7 +39,7 @@
 <p>At compile time:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>The library defines "safe" versions of C++ primitive arithmetic
-        types such as int, unsigned int, etc.</p></li>
+        types such as <code class="computeroutput">int</code>, <code class="computeroutput">unsigned int</code>, etc.</p></li>
 <li class="listitem"><p>Arithmetic operators are defined for these "safe" types. These
         operators are enhanced versions of the standard C/C++ implementations.
         These operators are declared and implemented in the files "<a href="../../include/boost/safe_numerics/safe_base.hpp" target="_top">safe_base.hpp</a>"
@@ -76,6 +76,10 @@
         implemented in the header file "<a href="../../include/boost/safe_numerics/interval.hpp" target="_top">interval.hpp</a>".
         The range of the result is also represented as a pair of values of the
         type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p></li>
+<li class="listitem"><p>Operations on primitives are implemented via free standing
+        functions described as <a class="link" href="checked_arithmetic.html" title="Checked Arithmetic">checked arithmetic</a>.
+        These operations will return instances of <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>
+        .</p></li>
 </ul></div>
 <p>At run time:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
@@ -89,10 +93,10 @@
         values of type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.</p></li>
 <li class="listitem"><p>If either of the casting operations fails, an exception is
         handled in accordance with the exception policy.</p></li>
-<li class="listitem"><p>Otherwise, the operation is performed as another "checked
-        operation". These free functions mirror the normal operators +, -, *,
-        ... except that rather than returning values of type R, they return
-        values of the type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.
+<li class="listitem"><p>Otherwise, the operation is performed using "<a class="link" href="checked_arithmetic.html" title="Checked Arithmetic">checked arithmetic</a>".
+        These free functions mirror the normal operators +, -, *, ... except
+        that rather than returning values of type R, they return values of the
+        type <a class="link" href="checked_result.html" title="checked_result&lt;R&gt;"><code class="computeroutput">checked_result&lt;R&gt;</code></a>.
         They are defined in files "<a href="../../include/boost/safe_numerics/checked_default.hpp" target="_top">checked_default.hpp</a>",
         "<a href="../../include/boost/safe_numerics/checked_integer.hpp" target="_top">checked_integer.hpp</a>"
         ,"<a href="../../include/boost/safe_numerics/checked_float.hpp" target="_top">checked_float.hpp</a>".</p></li>

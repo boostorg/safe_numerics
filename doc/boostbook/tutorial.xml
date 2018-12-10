@@ -257,8 +257,9 @@ error detected:error in file input: domain error
     when this situation occurs.</para>
 
     <para>This library will detect divide by zero errors before the operation
-    is invoked. Any errors of this nature are handled according to the
-    ErrorPolicy selected by the library user.</para>
+    is invoked. Any errors of this nature are handled according to the <link
+    linkend="safe_numeric.exception_policies">exception_policy</link> selected
+    by the library user.</para>
 
     <para><programlisting><xi:include href="../../example/example13.cpp"
           parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 7: cannot recover from arithmetic errors
@@ -267,6 +268,46 @@ error NOT detectable!
 Using safe numerics
 error detected:divide by zero: domain error
 </screen></para>
+  </section>
+
+  <section id="safe_numerics.tutorial.8">
+    <title>Compile Time Arithmetic is Not Always Correct</title>
+
+    <para>If a divide by zero error occurs while a program is being compiled,
+    there is not guarantee that it will be detected. This example shows a real
+    example compiled with a recent version of CLang.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Source code includes a constant expression containing a simple
+        arithmetic error.</para>
+      </listitem>
+
+      <listitem>
+        <para>The compiler emits a warning but otherwise calculates the wrong
+        result.</para>
+      </listitem>
+
+      <listitem>
+        <para>Replacing int with safe&lt;int&gt; will guarantee that the error
+        is detected at runtime</para>
+      </listitem>
+
+      <listitem>
+        <para>Operations using safe types are marked constexpr. So we can
+        force the operations to occur at runtime by marking the results as
+        constexpr. This will result in an error at compile time if the
+        operations cannot be correctly calculated.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para><programlisting><xi:include href="../../example/example14.cpp"
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 8: cannot detect compile time arithmetic errors
+Not using safe numerics
+0error NOT detected!
+Using safe numerics
+error detected:positive overflow error
+Program ended with exit code: 0</screen></para>
   </section>
 
   <section id="safe_numerics.tutorial.9">
