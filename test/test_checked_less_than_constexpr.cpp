@@ -41,7 +41,8 @@ template<typename T, typename First, typename Second>
 struct test_signed_pair {
     static const std::size_t i = First();
     static const std::size_t j = Second();
-    static const bool value = test_checked_less_than(
+    // note: is constexpr really required here?  compilers disagree!
+    constexpr static const bool value = test_checked_less_than(
         signed_values<T>[i],
         signed_values<T>[j],
         signed_comparison_results[i][j]
