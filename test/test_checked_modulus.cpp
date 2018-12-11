@@ -34,7 +34,7 @@ bool test_checked_modulus(
             return false;
         }
         if(expected_result == '0'
-        && result != 0
+        && result != T(0)
         ){
             std::cout
                 << "failed to get expected zero result "

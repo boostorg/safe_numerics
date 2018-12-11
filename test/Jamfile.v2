@@ -8,7 +8,14 @@
 
 import testing ;
 import ../../config/checks/config : requires ;
-project : requirements [ requires cxx14_constexpr ] ;
+project 
+    : requirements 
+        [ requires cxx14_constexpr ]
+        # toolset optimizations
+        <toolset>gcc:<cxxflags>"-ftemplate-depth-1024"
+        <toolset>clang:<cxxflags>"-ftemplate-depth-1024"
+        <toolset>darwin:<cxxflags>"-ftemplate-depth-1024"
+        ;
 
 run test_checked_add.cpp ;
 run test_checked_and.cpp ;

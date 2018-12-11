@@ -23,7 +23,7 @@ constexpr bool test_checked_multiply(
             return false;
         }
         if(expected_result == '0'
-        && result != 0
+        && result != T(0)
         ){
            return false;
         }

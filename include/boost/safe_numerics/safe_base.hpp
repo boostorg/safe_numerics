@@ -98,6 +98,10 @@ template<
 >
 class safe_literal_impl;
 
+// works for both GCC and clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmismatched-tags"
+
 /////////////////////////////////////////////////////////////////
 // Main implementation
 
@@ -308,10 +312,6 @@ public:
 // numeric limits for safe<int> etc.
 
 #include <limits>
-
-// works for both GCC and clang
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmismatched-tags"
 
 namespace std {
 
