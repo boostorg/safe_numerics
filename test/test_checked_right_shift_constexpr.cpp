@@ -74,7 +74,8 @@ template<typename T, typename First, typename Second>
 struct test_unsigned_pair {
     static const std::size_t i = First();
     static const std::size_t j = Second();
-    static const bool value = test_checked_right_shift(
+    // note: is constexpr really required here?  compilers disagree!
+    constexpr static const bool value = test_checked_right_shift(
         unsigned_values<T>[i],
         unsigned_values<T>[j],
         unsigned_right_shift_results[i][j]

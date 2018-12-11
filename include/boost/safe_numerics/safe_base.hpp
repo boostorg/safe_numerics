@@ -309,6 +309,10 @@ public:
 
 #include <limits>
 
+// works for both GCC and clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmismatched-tags"
+
 namespace std {
 
 template<
@@ -335,5 +339,7 @@ public:
 };
 
 } // std
+
+#pragma GCC diagnostic pop
 
 #endif // BOOST_NUMERIC_SAFE_BASE_HPP

@@ -83,8 +83,6 @@ int main(){
     using value_indices = mp_iota_c<mp_size<test_values>::value>;
     // list of indices for types (integral constants)
     using type_indices = mp_iota_c<mp_size<test_types>::value>;
-    // all combinations of type index, value index
-    using index_pairs = mp_product<mp_list, type_indices, value_indices>;
 
     // test runtime behavior
     test_pair rval(true);

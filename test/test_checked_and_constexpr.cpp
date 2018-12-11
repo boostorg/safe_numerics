@@ -47,7 +47,8 @@ template<typename T, typename First, typename Second>
 struct test_unsigned_pair {
     static const std::size_t i = First();
     static const std::size_t j = Second();
-    static const bool value = test_checked_and(
+    // note: is constexpr really required here?  compilers disagree!
+    constexpr static const bool value = test_checked_and(
         unsigned_values<T>[i],
         unsigned_values<T>[j],
         unsigned_and_results[i][j]
@@ -71,7 +72,7 @@ int main(){
             >,
             mp_to_bool
         >(),
-        "all values for all signed types correctly added"
+        "all values for all signed types correctly anded"
     );
 
     static_assert(
@@ -83,7 +84,7 @@ int main(){
             >,
             mp_to_bool
         >(),
-        "all values for all unsigned types correctly added"
+        "all values for all unsigned types correctly anded"
     );
     return 0;
 }

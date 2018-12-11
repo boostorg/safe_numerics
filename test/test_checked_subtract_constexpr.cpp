@@ -53,7 +53,8 @@ template<typename T, typename First, typename Second>
 struct test_unsigned_pair {
     static const std::size_t i = First();
     static const std::size_t j = Second();
-    static const bool value = test_checked_subtract(
+    // note: is constexpr really required here?  compilers disagree!
+    constexpr static const bool value = test_checked_subtract(
         unsigned_values<T>[i],
         unsigned_values<T>[j],
         unsigned_subtraction_results[i][j]

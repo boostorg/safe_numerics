@@ -1,7 +1,7 @@
 #ifndef BOOST_SAFE_NUMERICS_TEST_CHECKED_CAST_HPP
 #define BOOST_SAFE_NUMERICS_TEST_CHECKED_CAST_HPP
 
-//  Copyright (c) 2012 Robert Ramey
+//  Copyright (c) 2018 Robert Ramey
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -28,4 +28,4 @@ constexpr const char *test_result_cast[boost::mp11::mp_size<test_values>::value]
 /* 7*/ "..xx..xx..xx..xx................"
 };
 
-#endif BOOST_SAFE_NUMERICS_TEST_CHECKED_CAST_HPP
+#endif // BOOST_SAFE_NUMERICS_TEST_CHECKED_CAST_HPP
