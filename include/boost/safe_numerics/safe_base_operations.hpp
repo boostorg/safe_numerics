@@ -339,7 +339,7 @@ private:
     using r_type = checked_result<result_base_type>;
     using r_type_interval_t = interval<r_type>;
 
-    constexpr static r_type_interval_t get_r_type_interval(){
+    constexpr static const r_type_interval_t get_r_type_interval(){
         constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
@@ -353,8 +353,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -459,7 +458,7 @@ private:
     }
     using r_type_interval_t = interval<r_type>;
 
-    constexpr static r_type_interval_t get_r_type_interval(){
+    constexpr static const r_type_interval_t get_r_type_interval(){
         constexpr const r_type_interval_t t_interval{
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::min())),
             checked::cast<result_base_type>(base_value(std::numeric_limits<T>::max()))
@@ -475,8 +474,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -596,8 +594,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -756,9 +753,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -770,7 +765,6 @@ private:
     constexpr static bool exception_possible(){
         constexpr const r_type_interval_t ri = get_r_type_interval();
         constexpr const r_type_interval_t ui = u_interval();
-
         return
             static_cast<bool>(ui.includes(r_type(0)))
             || ri.l.exception()
@@ -916,8 +910,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -929,7 +922,6 @@ private:
     constexpr static bool exception_possible(){
         constexpr const r_type_interval_t ri = get_r_type_interval();
         constexpr const r_type_interval_t ui = u_interval();
-
         return
             static_cast<bool>(ui.includes(r_type(0)))
             || ri.l.exception()
@@ -1241,8 +1233,7 @@ private:
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),
@@ -1372,9 +1363,7 @@ struct right_shift_result {
 
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    using return_interval_t = interval<result_base_type>;
-
-    constexpr static return_interval_t return_interval{
+    constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
             ? std::numeric_limits<result_base_type>::min()
             : static_cast<result_base_type>(r_type_interval.l),

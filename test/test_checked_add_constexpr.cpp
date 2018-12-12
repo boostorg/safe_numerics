@@ -34,8 +34,8 @@ constexpr bool test_checked_add(
 
 template<typename T, typename First, typename Second>
 struct test_signed_pair {
-    static const std::size_t i = First();
-    static const std::size_t j = Second();
+    constexpr static const std::size_t i = First();
+    constexpr static const std::size_t j = Second();
     // note: is constexpr really required here?  compilers disagree!
     constexpr static const bool value = test_checked_add(
         signed_values<T>[i],
@@ -46,8 +46,8 @@ struct test_signed_pair {
 
 template<typename T, typename First, typename Second>
 struct test_unsigned_pair {
-    static const std::size_t i = First();
-    static const std::size_t j = Second();
+    constexpr static const std::size_t i = First();
+    constexpr static const std::size_t j = Second();
     // note: is constexpr really required here?  compilers disagree!
     constexpr static const bool value = test_checked_add(
         unsigned_values<T>[i],
