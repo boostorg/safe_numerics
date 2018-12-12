@@ -93,7 +93,7 @@
     throw some sort of exception. In any case, the execution has failed in a
     manner from which there is no recovery.</para>
 
-    <para>All of the above conditions prevent obstacles to creation of a
+    <para>All of the above conditions are obstacles to creation of a
     program which will never fail. The Safe Numerics Library addresses all of
     these conditions, at least as far as integer operations are
     concerned.</para>
@@ -157,8 +157,8 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     <code>safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
     underlying types <emphasis role="bold">except</emphasis> that expressions
     using these types fulfill the above guarantee. These "safe" types are
-    meant to be "drop-in" replacements for the built-in types they are meant
-    to replace. So things which are legal - such as assignment of a
+    meant to be "drop-in" replacements for the built-in types of the same name.
+    So things which are legal - such as assignment of a
     <code>signed</code> to <code>unsigned</code> value - are not trapped at
     compile time as they are legal C/C++ code. Instead, they are checked at
     runtime to trap the case where this (legal) operation would lead to an
@@ -195,7 +195,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
               </listitem>
 
               <listitem>
-                <para>Trap at compiler time all operations which could
+                <para>Trap at compile time all operations which could
                 possibly fail at runtime.</para>
               </listitem>
 
@@ -240,10 +240,9 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>Enforce other program requirements using bounded integer
           types. The library includes the types for ranges and literals.
-          Operations which result in operations which violate these
-          requirements will trapped at either compile or runtime and not
-          silently return invalid values. These types can be used to improve
-          program correctness and performance.</para>
+          Operations which violate these requirements will be trapped at either
+          compile time or runtime and not silently return invalid values.
+          These types can be used to improve program correctness and performance.</para>
         </listitem>
       </itemizedlist></para>
   </section>
