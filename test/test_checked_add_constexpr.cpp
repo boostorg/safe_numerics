@@ -34,10 +34,10 @@ constexpr bool test_checked_add(
 
 template<typename T, typename First, typename Second>
 struct test_signed_pair {
-    constexpr static const std::size_t i = First();
-    constexpr static const std::size_t j = Second();
+    static const std::size_t i = First();
+    static const std::size_t j = Second();
     // note: is constexpr really required here?  compilers disagree!
-    constexpr static const bool value = test_checked_add(
+    static const bool value = test_checked_add(
         signed_values<T>[i],
         signed_values<T>[j],
         signed_addition_results[i][j]
@@ -46,10 +46,9 @@ struct test_signed_pair {
 
 template<typename T, typename First, typename Second>
 struct test_unsigned_pair {
-    constexpr static const std::size_t i = First();
-    constexpr static const std::size_t j = Second();
-    // note: is constexpr really required here?  compilers disagree!
-    constexpr static const bool value = test_checked_add(
+    static const std::size_t i = First();
+    static const std::size_t j = Second();
+    static const bool value = test_checked_add(
         unsigned_values<T>[i],
         unsigned_values<T>[j],
         unsigned_addition_results[i][j]
@@ -58,6 +57,9 @@ struct test_unsigned_pair {
 
 #include "check_symmetry.hpp"
 #include <boost/mp11/algorithm.hpp>
+
+template<class T>
+using test_result = boost::mp11::mp_bool<T::value>;
 
 int main(){
     using namespace boost::mp11;
@@ -71,7 +73,7 @@ int main(){
                 signed_test_types,
                 signed_value_indices, signed_value_indices
             >,
-            mp_to_bool
+            test_result
         >(),
         "all values for all signed types correctly added"
     );
@@ -83,7 +85,7 @@ int main(){
                 unsigned_test_types,
                 unsigned_value_indices, unsigned_value_indices
             >,
-            mp_to_bool
+            test_result
         >(),
         "all values for all unsigned types correctly added"
     );
