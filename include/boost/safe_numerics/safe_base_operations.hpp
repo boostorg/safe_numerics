@@ -362,7 +362,7 @@ private:
                 : static_cast<result_base_type>(r_type_interval.u)
         };
     };
-    constexpr static const interval<result_base_type> return_interval = get_r_type_interval();
+    constexpr static const interval<result_base_type> return_interval = get_return_interval();
 
     constexpr static bool exception_possible(){
         if(r_type_interval.l.exception())

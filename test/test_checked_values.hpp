@@ -12,6 +12,10 @@
 #include <boost/mp11/algorithm.hpp>
 
 // values
+// note: In theory explicity specifying the number of elements in the
+// array should not be necessary.  However, this seems to crash the CLang
+// compilers with standards setting of C++17.  So don't remove the array
+// bounds below
 template<typename T>
 constexpr const boost::safe_numerics::checked_result<T> signed_values[9] = {
     boost::safe_numerics::safe_numerics_error::range_error,
