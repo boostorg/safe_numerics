@@ -30,6 +30,15 @@ constexpr bool test_checked_add(
     return false;
 }
 
+static_assert(
+    test_checked_add(
+        boost::safe_numerics::checked_result<char>{1},
+        boost::safe_numerics::checked_result<char>{1},
+        '.'
+    ),
+    "expecting successful addition"
+);
+
 #include "test_checked_add.hpp"
 
 template<typename T, typename First, typename Second>
