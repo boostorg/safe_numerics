@@ -350,17 +350,19 @@ private:
         };
         return t_interval + u_interval;
     }
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
-
-    constexpr static const interval<result_base_type> return_interval{
-        r_type_interval.l.exception()
-            ? std::numeric_limits<result_base_type>::min()
-            : static_cast<result_base_type>(r_type_interval.l),
-        r_type_interval.u.exception()
-            ? std::numeric_limits<result_base_type>::max()
-            : static_cast<result_base_type>(r_type_interval.u)
+    constexpr static const interval<result_base_type> get_return_interval(){
+       return interval<result_base_type>{
+            r_type_interval.l.exception()
+                ? std::numeric_limits<result_base_type>::min()
+                : static_cast<result_base_type>(r_type_interval.l),
+            r_type_interval.u.exception()
+                ? std::numeric_limits<result_base_type>::max()
+                : static_cast<result_base_type>(r_type_interval.u)
+        };
     };
+    constexpr static const interval<result_base_type> return_interval = get_r_type_interval();
 
     constexpr static bool exception_possible(){
         if(r_type_interval.l.exception())

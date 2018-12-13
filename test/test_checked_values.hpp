@@ -13,7 +13,7 @@
 
 // values
 template<typename T>
-constexpr const boost::safe_numerics::checked_result<T> signed_values[] = {
+constexpr const boost::safe_numerics::checked_result<T> signed_values[9] = {
     boost::safe_numerics::safe_numerics_error::range_error,
     boost::safe_numerics::safe_numerics_error::domain_error,
     boost::safe_numerics::safe_numerics_error::positive_overflow_error,
@@ -33,7 +33,7 @@ using signed_value_indices = boost::mp11::mp_iota_c<
 >;
 
 template<typename T>
-constexpr const boost::safe_numerics::checked_result<T> unsigned_values[] = {
+constexpr const boost::safe_numerics::checked_result<T> unsigned_values[7] = {
     boost::safe_numerics::safe_numerics_error::range_error,
     boost::safe_numerics::safe_numerics_error::domain_error,
     boost::safe_numerics::safe_numerics_error::positive_overflow_error,
