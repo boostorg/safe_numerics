@@ -30,15 +30,6 @@ constexpr bool test_checked_add(
     return false;
 }
 
-static_assert(
-    test_checked_add(
-        boost::safe_numerics::checked_result<char>{1},
-        boost::safe_numerics::checked_result<char>{1},
-        '.'
-    ),
-    "expecting successful addition"
-);
-
 #include "test_checked_add.hpp"
 
 template<typename T, typename First, typename Second>
@@ -68,9 +59,6 @@ struct test_unsigned_pair {
 #include "check_symmetry.hpp"
 #include <boost/mp11/algorithm.hpp>
 
-template<class T>
-using test_result = boost::mp11::mp_bool<T::value>;
-
 int main(){
     using namespace boost::mp11;
     check_symmetry(signed_addition_results);
@@ -83,7 +71,7 @@ int main(){
                 signed_test_types,
                 signed_value_indices, signed_value_indices
             >,
-            test_result
+            mp_to_bool
         >(),
         "all values for all signed types correctly added"
     );
@@ -95,7 +83,7 @@ int main(){
                 unsigned_test_types,
                 unsigned_value_indices, unsigned_value_indices
             >,
-            test_result
+            mp_to_bool
         >(),
         "all values for all unsigned types correctly added"
     );
