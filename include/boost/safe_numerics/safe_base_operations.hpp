@@ -356,10 +356,10 @@ private:
        return interval<result_base_type>{
             r_type_interval.l.exception()
                 ? std::numeric_limits<result_base_type>::min()
-                : static_cast<result_base_type>(r_type_interval.l),
+                : static_cast<result_base_type>(r_type_interval.get_l()),
             r_type_interval.u.exception()
                 ? std::numeric_limits<result_base_type>::max()
-                : static_cast<result_base_type>(r_type_interval.u)
+                : static_cast<result_base_type>(r_type_interval.get_u())
         };
     };
     constexpr static const interval<result_base_type> return_interval = get_return_interval();
@@ -378,8 +378,8 @@ public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            return_interval.get_l(),
+            return_interval.get_u(),
             promotion_policy,
             exception_policy
         >;
