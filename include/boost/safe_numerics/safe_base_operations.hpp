@@ -352,17 +352,14 @@ private:
     }
     constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
-    constexpr static const interval<result_base_type> get_return_interval(){
-       return interval<result_base_type>{
-            r_type_interval.l.exception()
-                ? std::numeric_limits<result_base_type>::min()
-                : static_cast<result_base_type>(r_type_interval.get_l()),
-            r_type_interval.u.exception()
-                ? std::numeric_limits<result_base_type>::max()
-                : static_cast<result_base_type>(r_type_interval.get_u())
-        };
+    constexpr static const interval<result_base_type> return_interval{
+        r_type_interval.l.exception()
+            ? std::numeric_limits<result_base_type>::min()
+            : static_cast<result_base_type>(r_type_interval.l),
+        r_type_interval.u.exception()
+            ? std::numeric_limits<result_base_type>::max()
+            : static_cast<result_base_type>(r_type_interval.u)
     };
-    constexpr static const interval<result_base_type> return_interval = get_return_interval();
 
     constexpr static bool exception_possible(){
         if(r_type_interval.l.exception())
@@ -374,10 +371,10 @@ private:
         return false;
     }
 
-public:
     constexpr static auto rl = return_interval.l;
     constexpr static auto ru = return_interval.u;
 
+public:
     using type =
         safe_base<
             result_base_type,
@@ -476,7 +473,6 @@ private:
 
         return t_interval - u_interval;
     }
-
     static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
@@ -499,11 +495,14 @@ private:
     }
 
 public:
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
@@ -618,12 +617,15 @@ private:
         return false;
     }
 
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
 public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
@@ -776,12 +778,15 @@ private:
             || ri.u.exception();
     }
 
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
 public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
@@ -933,12 +938,15 @@ private:
             || ri.u.exception();
     }
 
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
 public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
@@ -1257,12 +1265,15 @@ private:
         return false;
     }
 
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
 public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
@@ -1393,12 +1404,15 @@ struct right_shift_result {
         );
     }
 
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
 public:
     using type =
         safe_base<
             result_base_type,
-            return_interval.l,
-            return_interval.u,
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
