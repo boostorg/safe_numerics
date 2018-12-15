@@ -48,10 +48,6 @@ struct interval {
 
     constexpr interval();
 
-    // note: on msvc compilers the .l syntax has failed
-    constexpr const R get_l() const { return l;}
-    constexpr const R get_u() const { return u;}
-
     // return true if this interval contains the given point
     constexpr tribool includes(const R & t) const {
         return l <= t && t <= u;

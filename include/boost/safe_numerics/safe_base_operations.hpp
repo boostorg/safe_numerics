@@ -375,11 +375,14 @@ private:
     }
 
 public:
+    constexpr static auto rl = return_interval.l;
+    constexpr static auto ru = return_interval.u;
+
     using type =
         safe_base<
             result_base_type,
-            return_interval.get_l(),
-            return_interval.get_u(),
+            rl,
+            ru,
             promotion_policy,
             exception_policy
         >;
