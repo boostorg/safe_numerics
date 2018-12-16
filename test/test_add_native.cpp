@@ -102,6 +102,19 @@ struct test {
 
 #include "check_symmetry.hpp"
 
+// this is a hack to workaround the limititation of template
+// expansion depth in the MSVC compiler.
+template<class L, class F>
+BOOST_MP11_CONSTEXPR F mp_for_each_1( F && f ){
+    const std::size_t size = mp_size<L>::value;
+    if(0 == size)
+        return f;
+    if(size < 1024)
+        return mp_for_each<mp_take_c<L, size>>(f);
+    mp_for_each<mp_take_c<L, 1024>>(f);
+    return mp_for_each<mp_drop_c<L, 1024>>(f);
+}
+
 int main(){
     // sanity check on test matrix - should be symetrical
     check_symmetry(test_addition_result);
@@ -110,7 +123,7 @@ int main(){
     test<test_values> rval(true);
 
     using value_indices = mp_iota_c<mp_size<test_values>::value>;
-    mp_for_each<
+    mp_for_each_1<
         mp_product<mp_list, value_indices, value_indices>
     >(rval);
 
