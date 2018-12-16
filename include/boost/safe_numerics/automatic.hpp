@@ -83,10 +83,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -118,10 +118,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -160,10 +160,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -220,10 +220,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -280,10 +280,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -356,10 +356,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -396,10 +396,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
@@ -439,10 +439,10 @@ public:
 
         using type = typename result_type<
             temp_base_type,
-            r_interval.l.exception()
+            rl.exception()
                 ? std::numeric_limits<temp_base_type>::min()
                 : static_cast<temp_base_type>(rl),
-            r_interval.u.exception()
+            ru.exception()
                 ? std::numeric_limits<temp_base_type>::max()
                 : static_cast<temp_base_type>(ru)
         >::type;
