@@ -169,12 +169,18 @@ public:
     }
 } safe_numerics_actions_category {};
 
+// the following function is used to "finish" implementation of conversion
+// of safe_numerics_error to std::error_condition.  At least for now, this
+// isn't being used and defining here it can lead duplicate symbol errors
+// depending on the compiler.  So suppress it until further notice
+#if 0
 std::error_condition make_error_condition(safe_numerics_error e) {
     return std::error_condition(
         static_cast<int>(e),
         safe_numerics_error_category
     );
 }
+#endif
 
 } // safe_numerics
 } // boost

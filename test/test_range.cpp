@@ -25,16 +25,11 @@ bool test_significant_bits(){
 
 bool test1(){
     using namespace boost::safe_numerics;
-
-    safe_signed_range<-128, 127> s1(1);
-    safe_signed_range<-256, 254> s2(2);
-
     using t2 = safe_unsigned_range<0u, 1000u>;
     static_assert(
         std::numeric_limits<t2>::is_signed == false,
         "this range should be unsigned"
     );
-
     return true;
 }
 

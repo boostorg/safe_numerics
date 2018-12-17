@@ -88,11 +88,11 @@ struct test {
         constexpr size_t i1 = mp_first<T>(); // index of first argument
         constexpr size_t i2 = mp_second<T>();// index of second argument
         std::cout << i1 << ',' << i2 << ',';
-        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
-        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        using T1 = typename mp_at_c<L, i1>::value_type;
+        using T2 = typename mp_at_c<L, i2>::value_type;
         m_error &= test_add<T1, T2>(
-            boost::mp11::mp_at_c<L, i1>(), // value of first argument
-            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            mp_at_c<L, i1>(), // value of first argument
+            mp_at_c<L, i2>(), // value of second argument
             boost::core::demangle(typeid(T1).name()).c_str(),
             boost::core::demangle(typeid(T2).name()).c_str(),
             test_addition_result[i1][i2]
@@ -102,19 +102,6 @@ struct test {
 
 #include "check_symmetry.hpp"
 
-// this is a hack to workaround the limititation of template
-// expansion depth in the MSVC compiler.
-template<class L, class F>
-BOOST_MP11_CONSTEXPR F mp_for_each_1( F && f ){
-    const std::size_t size = mp_size<L>::value;
-    if(0 == size)
-        return f;
-    if(size < 1024)
-        return mp_for_each<mp_take_c<L, size>>(f);
-    mp_for_each<mp_take_c<L, 1024>>(f);
-    return mp_for_each<mp_drop_c<L, 1024>>(f);
-}
-
 int main(){
     // sanity check on test matrix - should be symetrical
     check_symmetry(test_addition_result);
@@ -123,7 +110,7 @@ int main(){
     test<test_values> rval(true);
 
     using value_indices = mp_iota_c<mp_size<test_values>::value>;
-    mp_for_each_1<
+    mp_for_each<
         mp_product<mp_list, value_indices, value_indices>
     >(rval);
 

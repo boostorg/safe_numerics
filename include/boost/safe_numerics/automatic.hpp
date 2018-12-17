@@ -342,10 +342,10 @@ public:
             const r_interval_type & u
         ){
             //const r_type & rl = min(t.l, u.l);
-            const r_type & rl = static_cast<bool>(t.l < u.l) ? t.l : u.l;
+            const r_type & rmin = static_cast<bool>(t.l < u.l) ? t.l : u.l;
             //const r_type & ru = max(t.u, u.u);
-            const r_type & ru = static_cast<bool>(t.u < u.u) ? u.u : t.u;
-            return r_interval_type(rl, ru);
+            const r_type & rmax = static_cast<bool>(t.u < u.u) ? u.u : t.u;
+            return r_interval_type(rmin, rmax);
         }
 
         constexpr static const r_interval_type r_interval =
