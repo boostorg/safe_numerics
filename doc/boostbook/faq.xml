@@ -48,7 +48,7 @@
 
       <answer>
         <para>By defining our own "special" type we can simplify the
-        interface. Using <code>std::integral_const</code> requires one to
+        interface. Using <code>std::integral_const</code> would require one to
         specify both the type <emphasis>and</emphasis> the value. Using
         <code>safe_signed_literal&lt;42&gt;</code> doesn't require a parameter
         for the type. So the library can select the best type to hold the
@@ -73,21 +73,10 @@
         range of the result of the operation.</para>
 
         <para>So when an operation is performed, the range of the result is
-        calculated from [INTMIN, INTMAX] rather than from [42,42].</para>
-      </answer>
-    </qandaentry>
-
-    <qandaentry>
-      <question>
-        <para>Are safe type operations <code>constexpr</code>? That is, can
-        they be invoked at compile time?</para>
-      </question>
-
-      <answer>
-        <para>Yes. safe type construction and calculations are all
-        <code>constexpr</code>. Note that to get maximum benefit, you'll have
-        to use <code>safe...literal</code> to specify the primitive values at
-        compile time.</para>
+        calculated from [INTMIN, INTMAX] rather than from [42,42]. This larger
+        range would propagate through any compile time computations and
+        suggest that run time checking is necessary, when it fact it would not
+        be.</para>
       </answer>
     </qandaentry>
 
@@ -128,7 +117,37 @@
               surprises which are create errors which are hard to find and
               hard to work around.</para>
             </listitem>
+
+            <listitem>
+              <para><code>const safe&lt;int&gt;(42)</code> looks like it might
+              be what we want: An immutable value which invokes the "safe"
+              operators when used in an expression. But there is one problem.
+              The <code>std::numeric_limits&lt;safe&lt;int&gt;&gt;</code> is a
+              range from INTMIN to INTMAX even though the value is fixed to 42
+              at compile time. It is this range which is used at compile time
+              to calculate the range of the result of the operation.</para>
+
+              <para>So when an operation is performed, the range of the result
+              is calculated from [INTMIN, INTMAX] rather than from [42,42].
+              This larger range would propagate through any compile time
+              computations and suggest that run time checking is necessary,
+              when it fact it would not be.</para>
+            </listitem>
           </itemizedlist></para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Are safe type operations <code>constexpr</code>? That is, can
+        they be invoked at compile time?</para>
+      </question>
+
+      <answer>
+        <para>Yes. safe type construction and calculations are all
+        <code>constexpr</code>. Note that to get maximum benefit, you'll have
+        to use <code>safe...literal</code> to specify the primitive values at
+        compile time.</para>
       </answer>
     </qandaentry>
 
@@ -200,7 +219,9 @@
       <answer>
         <para>As far as is known as of this writing, the library does not
         presume that the underlying hardware is two's complement. However,
-        this has yet to be verified in any rigorous way.</para>
+        this has yet to be verified in any rigorous way. Note that as of
+        C++17, signed integers are required to be implemented as twos
+        complement integers.</para>
       </answer>
     </qandaentry>
 

@@ -157,7 +157,6 @@ constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T, T value>
 constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
-
     const std::integral_constant<T, value> &
 ) :
     m_t(validated_cast(value))

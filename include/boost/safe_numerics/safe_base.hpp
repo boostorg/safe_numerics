@@ -100,7 +100,7 @@ class safe_literal_impl;
 
 // works for both GCC and clang
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmismatched-tags"
+#pragma diagnostic ignored "-Wmismatched-tags"
 
 /////////////////////////////////////////////////////////////////
 // Main implementation
