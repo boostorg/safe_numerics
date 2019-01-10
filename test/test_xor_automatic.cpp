@@ -4,8 +4,6 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-#include <iostream>
-
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/automatic.hpp>
 
@@ -16,6 +14,7 @@ using safe_t = boost::safe_numerics::safe<
 >;
 #include "test_xor.hpp"
 #include "test_values.hpp"
+
 #include <boost/mp11/algorithm.hpp>
 #include <boost/core/demangle.hpp>
 
@@ -35,11 +34,11 @@ struct test {
         constexpr size_t i1 = mp_first<T>(); // index of first argument
         constexpr size_t i2 = mp_second<T>();// index of second argument
         std::cout << i1 << ',' << i2 << ',';
-        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
-        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        using T1 = typename mp_at_c<L, i1>::value_type;
+        using T2 = typename mp_at_c<L, i2>::value_type;
         m_error &= test_xor<T1, T2>(
-            boost::mp11::mp_at_c<L, i1>(), // value of first argument
-            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            mp_at_c<L, i1>()(), // value of first argument
+            mp_at_c<L, i2>()(), // value of second argument
             boost::core::demangle(typeid(T1).name()).c_str(),
             boost::core::demangle(typeid(T2).name()).c_str(),
             '.'

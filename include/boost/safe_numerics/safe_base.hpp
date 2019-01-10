@@ -9,7 +9,7 @@
 
 #include <limits>
 #include <type_traits> // is_integral, enable_if, conditional
-
+#include <boost/config.hpp> // BOOST_CLANG
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"
 
@@ -99,8 +99,10 @@ template<
 class safe_literal_impl;
 
 // works for both GCC and clang
+#if BOOST_CLANG==1
 #pragma GCC diagnostic push
-#pragma diagnostic ignored "-Wmismatched-tags"
+#pragma GCC diagnostic ignored "-Wmismatched-tags"
+#endif
 
 /////////////////////////////////////////////////////////////////
 // Main implementation
@@ -340,6 +342,8 @@ public:
 
 } // std
 
+#if BOOST_CLANG==1
 #pragma GCC diagnostic pop
+#endif
 
 #endif // BOOST_NUMERIC_SAFE_BASE_HPP

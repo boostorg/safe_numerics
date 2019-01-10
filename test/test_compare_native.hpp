@@ -1,6 +1,8 @@
 #include "test_values.hpp"
 
-const char *test_compare_native[boost::mp11::mp_size<test_values>::value] = {
+constexpr const char *test_compare_native_result[
+    boost::mp11::mp_size<test_values>::value
+] = {
 //      0       0       0       0
 //      012345670123456701234567012345670
 //      012345678901234567890123456789012

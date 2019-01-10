@@ -120,7 +120,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
     <para><note>
         <para>Library code in this document resides in the namespace
-        <code>boost::safe_numerics</code>. This namespace has generally been
+        <code>boost::numeric</code>. This namespace has generally been
         eliminated from text, code and examples in order to improve
         readability of the text.</para>
       </note>The addition expression is checked at runtime or (if possible) at
@@ -276,7 +276,9 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>enable_if</para>
         </listitem>
-      </itemizedlist></para>
+      </itemizedlist>The Safe Numerics library is delivered with an exhaustive
+    suite of test programs. Users who choose to run this test suite will also
+    need to install the Boost.Preprocessor and Boost.MP11 libraries.</para>
   </section>
 
   <section id="safe_numerics.introduction.scope">

@@ -5,38 +5,35 @@
 
 message( STATUS "Runtimes are stored in ${CMAKE_CURRENT_BINARY_DIR}" )
 
-function( test_run_pass_example base_name )
-  test_run_pass(${base_name})
-  set_target_properties(${base_name} PROPERTIES FOLDER "examples")
-endfunction(test_run_pass_example)
+set(run_examples_list
+  example1
+  example2
+  example3
+  example4
+  example5
+  example6
+  example7
+  example8
+  example10
+  example11
+  example13
+  example14
+  example15
+  example18
+  example19
+  example20
+  # example81 # requires console input
+  example82
+  example83
+  # example84 # requires console input
+  example92
+  example93
+)
 
-function( test_compile_fail_example base_name )
-  test_compile_fail(${base_name})
-  set_target_properties(${base_name} PROPERTIES FOLDER "examples")
-endfunction(test_compile_fail_example)
-
-test_run_pass_example(example1)
-test_run_pass_example(example2)
-test_run_pass_example(example3)
-test_run_pass_example(example4)
-test_run_pass_example(example5)
-test_run_pass_example(example6)
-test_run_pass_example(example7)
-test_run_pass_example(example8)
-test_run_pass_example(example10)
-test_run_pass_example(example11)
-test_run_pass_example(example13)
-test_run_pass_example(example14)
-test_run_pass_example(example15)
-test_run_pass_example(example18)
-test_run_pass_example(example19)
-test_run_pass_example(example20)
-# test_run_pass_example(example81) # requires console input
-test_run_pass_example(example82)
-test_run_pass_example(example83)
-# test_run_pass_example(example84) # requires console input
-test_run_pass_example(example92)
-test_run_pass_example(example93)
+foreach(test_name ${run_examples_list})
+  test_run_pass(${test_name})
+  set_target_properties(${test_name} PROPERTIES FOLDER "run test examples")
+endforeach(test_name)
 
 # end examples targets
 ####################

@@ -195,24 +195,20 @@ public:
             checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static auto tl = t_interval.l;
-        constexpr static auto tu = t_interval.u;
-        constexpr static auto ul = u_interval.l;
-        constexpr static auto uu = u_interval.u;
-
         constexpr static const r_interval_type rx(){
-            if(uu < r_type(0) || ul > r_type(0))
+            if(u_interval.u < r_type(0)
+            || u_interval.l > r_type(0))
                 return t_interval / u_interval;
             return utility::minmax(
                 std::initializer_list<r_type> {
-                    tl / ul,
-                    tl / r_type(-1),
-                    tl / r_type(1),
-                    tl / uu,
-                    tu / ul,
-                    tu / r_type(-1),
-                    tu / r_type(1),
-                    tu / uu,
+                    t_interval.l / u_interval.l,
+                    t_interval.l / r_type(-1),
+                    t_interval.l / r_type(1),
+                    t_interval.l / u_interval.u,
+                    t_interval.u / u_interval.l,
+                    t_interval.u / r_type(-1),
+                    t_interval.u / r_type(1),
+                    t_interval.u / u_interval.u,
                 }
             );
         }
@@ -259,24 +255,20 @@ public:
             checked::cast<temp_base_type>(base_value(std::numeric_limits<U>::max()))
         };
 
-        constexpr static auto tl = t_interval.l;
-        constexpr static auto tu = t_interval.u;
-        constexpr static auto ul = u_interval.l;
-        constexpr static auto uu = u_interval.u;
-
         constexpr static const r_interval_type rx(){
-            if(uu < r_type(0) || ul > r_type(0))
+            if(u_interval.u < r_type(0)
+            || u_interval.l > r_type(0))
                 return t_interval / u_interval;
             return utility::minmax(
                 std::initializer_list<r_type> {
-                    tl % ul,
-                    tl % r_type(-1),
-                    tl % r_type(1),
-                    tl % uu,
-                    tu % ul,
-                    tu % r_type(-1),
-                    tu % r_type(1),
-                    tu % uu,
+                    t_interval.l % u_interval.l,
+                    t_interval.l % r_type(-1),
+                    t_interval.l % r_type(1),
+                    t_interval.l % u_interval.u,
+                    t_interval.u % u_interval.l,
+                    t_interval.u % r_type(-1),
+                    t_interval.u % r_type(1),
+                    t_interval.u % u_interval.u,
                 }
             );
         }

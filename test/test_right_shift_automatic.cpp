@@ -8,62 +8,7 @@
 
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/automatic.hpp>
-
-#include <boost/mp11/list.hpp>
-#include <boost/mp11/algorithm.hpp>
-#include "test_values.hpp"
-
-// note: same test matrix as used in test_checked.  Here we test all combinations
-// safe and unsafe integers.  in test_checked we test all combinations of
-// integer primitives
-
-const char *test_right_shift_result[boost::mp11::mp_size<test_values>::value] = {
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/* 0*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 1*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 2*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 3*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 4*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 5*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 6*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/* 7*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-
-/* 8*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/* 9*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*10*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*11*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*12*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*13*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*14*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-/*15*/ "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-
-//      0       0       0       0
-//      012345670123456701234567012345670
-//      012345678901234567890123456789012
-/*16*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*17*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*18*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*19*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*20*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*21*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*22*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*23*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-
-/*24*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*25*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*26*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*27*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*28*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*29*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*30*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*31*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx.",
-/*32*/ ".xxx.xxx.xxx.xxx.xxx.xxx.xxx.xxx."
-};
-
-#include <boost/mp11/algorithm.hpp>
-#include <boost/core/demangle.hpp>
+#include "test_right_shift_automatic_results.hpp"
 
 template <class T>
 using safe_t = boost::safe_numerics::safe<
@@ -71,6 +16,10 @@ using safe_t = boost::safe_numerics::safe<
     boost::safe_numerics::automatic
 >;
 #include "test_right_shift.hpp"
+
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
 using namespace boost::mp11;
 
@@ -88,14 +37,14 @@ struct test {
         constexpr size_t i1 = mp_first<T>(); // index of first argument
         constexpr size_t i2 = mp_second<T>();// index of second argument
         std::cout << i1 << ',' << i2 << ',';
-        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
-        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
+        using T1 = typename mp_at_c<L, i1>::value_type;
+        using T2 = typename mp_at_c<L, i2>::value_type;
         m_error &= test_right_shift<T1, T2>(
-            boost::mp11::mp_at_c<L, i1>(), // value of first argument
-            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+            mp_at_c<L, i1>()(), // value of first argument
+            mp_at_c<L, i2>()(), // value of second argument
             boost::core::demangle(typeid(T1).name()).c_str(),
             boost::core::demangle(typeid(T2).name()).c_str(),
-            test_right_shift_result[i1][i2]
+            test_right_shift_automatic_result[i1][i2]
         );
     }
 };

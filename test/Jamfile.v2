@@ -15,6 +15,16 @@ project
         <c++-template-depth>1024
     ;
 
+# compile and run tests
+
+run test_add_automatic.cpp ;
+run test_add_native.cpp ;
+run test_and_automatic.cpp ;
+run test_and_native.cpp ;
+run test_assignment.cpp ;
+run test_auto.cpp ;
+run test_cast.cpp ;
+
 run test_checked_add.cpp ;
 run test_checked_and.cpp ;
 run test_checked_cast.cpp ;
@@ -28,14 +38,6 @@ run test_checked_or.cpp ;
 run test_checked_right_shift.cpp ;
 run test_checked_subtract.cpp ;
 run test_checked_xor.cpp ;
-
-run test_add_automatic.cpp ;
-run test_add_native.cpp ;
-run test_and_automatic.cpp ;
-run test_and_native.cpp ;
-run test_assignment.cpp ;
-run test_auto.cpp ;
-run test_cast.cpp ;
 
 run test_construction.cpp ;
 run test_cpp.cpp ;
@@ -71,6 +73,38 @@ run test_xor_automatic.cpp ;
 run test_xor_native.cpp ;
 run test_z.cpp ;
 
+# compile fail tests
+
+compile-fail test_constexpr.cpp ;
+compile-fail test_trap.cpp ;
+
+# safe integer constexpr tests
+
+compile test_add_automatic_constexpr.cpp ;
+compile test_add_native_constexpr.cpp ;
+compile test_divide_automatic_constexpr.cpp ;
+compile test_divide_native_constexpr.cpp ;
+compile test_equal_automatic_constexpr.cpp ;
+compile test_equal_native_constexpr.cpp ;
+compile test_left_shift_automatic_constexpr.cpp ;
+compile test_left_shift_native_constexpr.cpp ;
+compile test_less_than_automatic_constexpr.cpp ;
+compile test_less_than_native_constexpr.cpp ;
+compile test_modulus_automatic_constexpr.cpp ;
+compile test_modulus_native_constexpr.cpp ;
+compile test_multiply_automatic_constexpr.cpp ;
+compile test_multiply_native_constexpr.cpp ;
+compile test_or_automatic_constexpr.cpp ;
+compile test_or_native_constexpr.cpp ;
+compile test_right_shift_automatic_constexpr.cpp ;
+compile test_right_shift_native_constexpr.cpp ;
+compile test_xor_automatic_constexpr.cpp ;
+compile test_xor_native_constexpr.cpp ;
+compile test_subtract_native_constexpr.cpp ;
+compile test_subtract_automatic_constexpr.cpp ;
+
+# checked results constexpr
+
 compile test_checked_add_constexpr.cpp ;
 compile test_checked_and_constexpr.cpp ;
 compile test_checked_cast_constexpr.cpp ;
@@ -85,5 +119,3 @@ compile test_checked_right_shift_constexpr.cpp ;
 compile test_checked_subtract_constexpr.cpp ;
 compile test_checked_xor_constexpr.cpp ;
 
-compile-fail test_constexpr.cpp ;
-compile-fail test_trap.cpp ;

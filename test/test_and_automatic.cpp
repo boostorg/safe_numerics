@@ -9,19 +9,17 @@
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/automatic.hpp>
 
-#include <boost/mp11/list.hpp>
-#include <boost/mp11/algorithm.hpp>
-#include "test_values.hpp"
-
-#include <boost/mp11/algorithm.hpp>
-#include <boost/core/demangle.hpp>
-
 template <class T>
 using safe_t = boost::safe_numerics::safe<
     T,
     boost::safe_numerics::automatic
 >;
 #include "test_and.hpp"
+
+#include "test_values.hpp"
+#include <boost/mp11/list.hpp>
+#include <boost/mp11/algorithm.hpp>
+#include <boost/core/demangle.hpp>
 
 using namespace boost::mp11;
 
@@ -39,11 +37,11 @@ struct test {
         constexpr size_t i1 = mp_first<T>(); // index of first argument
         constexpr size_t i2 = mp_second<T>();// index of second argument
         std::cout << i1 << ',' << i2 << ',';
-        using T1 = typename boost::mp11::mp_at_c<L, i1>::value_type;
-        using T2 = typename boost::mp11::mp_at_c<L, i2>::value_type;
-        m_error &= test_and<T1, T2>(
-            boost::mp11::mp_at_c<L, i1>(), // value of first argument
-            boost::mp11::mp_at_c<L, i2>(), // value of second argument
+        using T1 = typename mp_at_c<L, i1>::value_type;
+        using T2 = typename mp_at_c<L, i2>::value_type;
+        m_error &= test_and(
+            mp_at_c<L, i1>()(), // value of first argument
+            mp_at_c<L, i2>()(), // value of second argument
             boost::core::demangle(typeid(T1).name()).c_str(),
             boost::core::demangle(typeid(T2).name()).c_str(),
             '.'
@@ -52,7 +50,6 @@ struct test {
 };
 
 int main(){
-    //TEST_EACH_VALUE_PAIR
     test<test_values> rval(true);
 
     using value_indices = mp_iota_c<mp_size<test_values>::value>;

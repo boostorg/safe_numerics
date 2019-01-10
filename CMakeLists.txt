@@ -67,13 +67,18 @@ set(CTEST_DROP_SITE_CDASH TRUE)
 
 endif()
 
-function( test_run_pass base_name )
+function(test_run_pass base_name )
   message(STATUS ${base_name})
   add_executable(${base_name} ${base_name}.cpp)
   add_test(NAME ${base_name} COMMAND ${base_name})
 endfunction(test_run_pass)
 
-function( test_compile_fail base_name )
+function(test_compile_pass base_name )
+  message(STATUS ${base_name} - compile only)
+  add_library(${base_name} OBJECT ${base_name})
+endfunction(test_compile_pass)
+
+function(test_compile_fail base_name )
   message(STATUS ${base_name})
   # Add failing-to-compile targets
   add_executable(${base_name} ${base_name}.cpp)
