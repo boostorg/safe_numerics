@@ -6,6 +6,8 @@
 
   <bibliography>
     <biblioentry id="coker">
+      <abbrev>Coker</abbrev>
+
       <author>
         <firstname>Zack</firstname>
 
@@ -50,11 +52,11 @@
       </publishername>
 
       <date>January 15, 2012</date>
-
-      <abbrev>Coker</abbrev>
     </biblioentry>
 
     <biblioentry id="crowl1">
+      <abbrev>Crowl</abbrev>
+
       <author>
         <firstname>Lawrence</firstname>
 
@@ -75,11 +77,11 @@
       </publishername>
 
       <date>January 15, 2012</date>
-
-      <abbrev>Crowl</abbrev>
     </biblioentry>
 
     <biblioentry id="crowl2">
+      <abbrev>Crowl &amp; Ottosen</abbrev>
+
       <author>
         <firstname>Lawrence</firstname>
 
@@ -104,11 +106,11 @@
       </publishername>
 
       <date>February 25, 2006</date>
-
-      <abbrev>Crowl &amp; Ottosen</abbrev>
     </biblioentry>
 
     <biblioentry id="dietz">
+      <abbrev>Dietz</abbrev>
+
       <author>
         <firstname>Will</firstname>
 
@@ -147,11 +149,11 @@
       </publishername>
 
       <date>June 2012</date>
-
-      <abbrev>Dietz</abbrev>
     </biblioentry>
 
     <biblioentry id="garcia">
+      <abbrev>Garcia</abbrev>
+
       <author>
         <firstname>J. Daniel</firstname>
 
@@ -172,11 +174,11 @@
       </publishername>
 
       <date>December 23, 2014</date>
-
-      <abbrev>Garcia</abbrev>
     </biblioentry>
 
     <biblioentry id="katz">
+      <abbrev>Katz</abbrev>
+
       <author>
         <firstname>Omer</firstname>
 
@@ -195,8 +197,6 @@
         Developer's List</ulink>
       </publishername>
 
-      <abbrev>Katz</abbrev>
-
       <abstract>
         <para>Posts of various authors regarding a proposed SafeInt library
         for boost</para>
@@ -204,45 +204,43 @@
     </biblioentry>
 
     <biblioentry id="keaton">
-      <authorgroup>
-        <author>
-          <firstname>David</firstname>
+      <author>
+        <firstname>David</firstname>
 
-          <surname>Keaton</surname>
-        </author>
+        <surname>Keaton</surname>
+      </author>
 
-        <author>
-          <firstname>Thomas</firstname>
+      <author>
+        <firstname>Thomas</firstname>
 
-          <surname>Plum</surname>
-        </author>
+        <surname>Plum</surname>
+      </author>
 
-        <author>
-          <firstname>Robert</firstname>
+      <author>
+        <firstname>Robert</firstname>
 
-          <othername>C.</othername>
+        <othername>C.</othername>
 
-          <surname>Seacord</surname>
-        </author>
+        <surname>Seacord</surname>
+      </author>
 
-        <author>
-          <firstname>David</firstname>
+      <author>
+        <firstname>David</firstname>
 
-          <surname>Svoboda</surname>
-        </author>
+        <surname>Svoboda</surname>
+      </author>
 
-        <author>
-          <firstname>Alex</firstname>
+      <author>
+        <firstname>Alex</firstname>
 
-          <surname>Volkovitsky</surname>
-        </author>
+        <surname>Volkovitsky</surname>
+      </author>
 
-        <author>
-          <firstname>Timothy</firstname>
+      <author>
+        <firstname>Timothy</firstname>
 
-          <surname>Wilson</surname>
-        </author>
-      </authorgroup>
+        <surname>Wilson</surname>
+      </author>
 
       <title>
         <ulink url="http://www.cert.org/secure-coding/publications/books/secure-coding-c-c-second-edition.cfm?">
@@ -265,6 +263,8 @@
     </biblioentry>
 
     <biblioentry id="leblanc1">
+      <abbrev>LeBlanc</abbrev>
+
       <author>
         <firstname>David</firstname>
 
@@ -282,11 +282,11 @@
       </publishername>
 
       <date>January 7, 2004</date>
-
-      <abbrev>LeBlanc</abbrev>
     </biblioentry>
 
     <biblioentry id="leblanc2">
+      <abbrev>LeBlanc</abbrev>
+
       <author>
         <firstname>David</firstname>
 
@@ -302,11 +302,11 @@
       </publishername>
 
       <date>Dec 3, 2014</date>
-
-      <abbrev>LeBlanc</abbrev>
     </biblioentry>
 
     <biblioentry id="lions">
+      <abbrev>Lions</abbrev>
+
       <author>
         <firstname>Jacques-Louis</firstname>
 
@@ -325,11 +325,11 @@
       </publishername>
 
       <date>July 19, 1996</date>
-
-      <abbrev>Lions</abbrev>
     </biblioentry>
 
     <biblioentry id="matthews">
+      <abbrev>Matthews</abbrev>
+
       <author>
         <firstname>Hubert</firstname>
 
@@ -346,11 +346,11 @@
       </publishername>
 
       <date>December 2003</date>
-
-      <abbrev>Matthews</abbrev>
     </biblioentry>
 
     <biblioentry id="mouawad">
+      <abbrev>Mouawad</abbrev>
+
       <author>
         <firstname>Jad</firstname>
 
@@ -378,6 +378,8 @@
     </biblioentry>
 
     <biblioentry id="plakosh">
+      <abbrev>Plakosh</abbrev>
+
       <author>
         <firstname>Daniel</firstname>
 
@@ -396,11 +398,11 @@
       </publishername>
 
       <date>May 10, 2013</date>
-
-      <abbrev>Plakosh</abbrev>
     </biblioentry>
 
     <biblioentry id="seacord1">
+      <abbrev>Seacord</abbrev>
+
       <author>
         <firstname>Robert C.</firstname>
 
@@ -420,11 +422,11 @@
       <date>April 12, 2013</date>
 
       <isbn>978-0321822130</isbn>
-
-      <abbrev>Seacord</abbrev>
     </biblioentry>
 
     <biblioentry id="seacord2">
+      <abbrev>INT30-C</abbrev>
+
       <author>
         <firstname>Robert C.</firstname>
 
@@ -443,11 +445,11 @@
       </publishername>
 
       <date>August 17, 2014</date>
-
-      <abbrev>INT30-C</abbrev>
     </biblioentry>
 
     <biblioentry id="seacord3">
+      <abbrev>INT32-C</abbrev>
+
       <author>
         <firstname>Robert C.</firstname>
 
@@ -467,11 +469,11 @@
       </publishername>
 
       <date>August 17, 2014</date>
-
-      <abbrev>INT32-C</abbrev>
     </biblioentry>
 
     <biblioentry id="stone">
+      <abbrev>Stone</abbrev>
+
       <author>
         <firstname>David</firstname>
 
@@ -482,18 +484,20 @@
         <ulink url="http://doublewise.net/c++/bounded/">C++ Bounded Integer
         Library</ulink>
       </title>
-
-      <abbrev>Stone</abbrev>
     </biblioentry>
 
     <biblioentry id="stroustrup">
+      <abbrev>Stroustrup</abbrev>
+
       <author>
         <firstname>Bjarn</firstname>
 
         <surname>Stroustrup</surname>
       </author>
 
-      <title>The C++ Programming Language Fourth Edition</title>
+      <title>The C++ Programming Language </title>
+
+      <edition>Fourth Edition</edition>
 
       <publishername>
         <ulink
@@ -505,11 +509,11 @@
       </copyright>
 
       <date>January 15, 2012</date>
-
-      <abbrev>Stroustrup</abbrev>
     </biblioentry>
 
     <biblioentry id="forum">
+      <abbrev>Forum</abbrev>
+
       <author>
         <surname>Forum Posts</surname>
       </author>
@@ -527,8 +531,6 @@
         url="https://groups.google.com/a/isocpp.org/forum/?fromgroups#!forum/std-proposals">ISO
         C++ Standard Future Proposals</ulink>
       </publishername>
-
-      <abbrev>Forum</abbrev>
 
       <abstract>
         <para>Posts of various authors regarding proposal to add safe integer

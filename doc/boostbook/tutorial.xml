@@ -315,11 +315,11 @@ Program ended with exit code: 0</screen></para>
 
     <para>Programming by Contract is a highly regarded technique. There has
     been much written about it and it has been proposed as an addition to the
-    C++ language <citation>Garcia</citation><citation>Crowl &amp;
-    Ottosen</citation>. It (mostly) depends upon runtime checking of parameter
-    and object values upon entry to and exit from every function. This can
-    slow the program down considerably which in turn undermines the main
-    motivation for using C++ in the first place! One popular scheme for
+    C++ language <citation><xref linkend="garcia"/></citation><citation><xref
+    linkend="crowl2"/></citation> It (mostly) depends upon runtime checking of
+    parameter and object values upon entry to and exit from every function.
+    This can slow the program down considerably which in turn undermines the
+    main motivation for using C++ in the first place! One popular scheme for
     addressing this issue is to enable parameter checking only during
     debugging and testing which defeats the guarantee of correctness which we
     are seeking here! Programming by Contract will never be accepted by
