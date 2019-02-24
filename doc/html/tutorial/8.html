@@ -7,7 +7,7 @@
 <link rel="home" href="../index.html" title="Safe Numerics">
 <link rel="up" href="../tutorial.html" title="Tutorial and Motivating Examples">
 <link rel="prev" href="7.html" title="Checking of Input Values Can Be Easily Overlooked">
-<link rel="next" href="9.html" title="Programming by Contract is Too Slow">
+<link rel="next" href="9.html" title="Compile Time Arithmetic is Not Always Correct">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table cellpadding="2" width="100%"><tr>
@@ -34,8 +34,8 @@
     ignore the issue which usually results in immediate program termination
     when this situation occurs.</p>
 <p>This library will detect divide by zero errors before the operation
-    is invoked. Any errors of this nature are handled according to the
-    ErrorPolicy selected by the library user.</p>
+    is invoked. Any errors of this nature are handled according to the <a class="link" href="exception_policies.html" title="exception_policy&lt;AE, IDB, UB, UV&gt;">exception_policy</a> selected
+    by the library user.</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 

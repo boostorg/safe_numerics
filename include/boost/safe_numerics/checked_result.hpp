@@ -38,7 +38,7 @@ struct checked_result {
     // rely on the default copy and move constructors.
     #if 0
     // copy constructor
-    constexpr /*explicit*/ checked_result(const checked_result & r) :
+    constexpr /*explicit*/ checked_result(const checked_result & r) noexpect :
         m_e(r.m_e)
     {
         if(safe_numerics_error::success == r.m_e)
@@ -66,15 +66,15 @@ struct checked_result {
     {}
     #if 0
     template<typename T>
-    constexpr /*explicit*/ checked_result(const T & t) :
+    constexpr /*explicit*/ checked_result(const T & t) noexcept :
         m_e(safe_numerics_error::success),
         m_r(t)
     {}
     #endif
     constexpr /*explicit*/ checked_result(
-        safe_numerics_error e,
-        const char * msg = ""
-    ) :
+        const safe_numerics_error & e,
+        const char * const & msg = ""
+    )  noexcept :
         m_e(e),
         m_msg(msg)
     {
@@ -82,7 +82,7 @@ struct checked_result {
     }
     // permit construct from another checked result type
     template<typename T>
-    constexpr /*explicit*/ checked_result(const checked_result<T> & t) :
+    constexpr /*explicit*/ checked_result(const checked_result<T> & t) noexcept :
         m_e(t.m_e)
     {
         static_assert(
@@ -99,24 +99,45 @@ struct checked_result {
     }
 
     // accesors
-    constexpr operator R() const {
+    constexpr operator R() const  noexcept{
         // don't assert here.  Let the library catch these errors
         assert(! exception());
         return m_r;
     }
     
-    constexpr operator safe_numerics_error () const {
+    constexpr operator safe_numerics_error () const  noexcept{
         // note that this is a legitimate operation even when
         // the operation was successful - it will return success
         return m_e;
     }
-    constexpr operator const char *() const {
+    constexpr operator const char *() const  noexcept{
         assert(exception());
         return m_msg;
     }
 
     // disallow assignment
     checked_result & operator=(const checked_result &) = delete;
+};
+
+#if 0
+template<typename R>
+constexpr checked_result<R> make_checked_result(
+    const safe_numerics_error & e,
+    char const * const & m
+)  noexcept {
+    return checked_result<R>(e, m);
+}
+#endif
+
+template <class R>
+class make_checked_result {
+public:
+    template<safe_numerics_error E>
+    constexpr static checked_result<R> invoke(
+        char const * const & m
+    ) noexcept {
+        return checked_result<R>(E, m);
+    }
 };
 
 } // safe_numerics

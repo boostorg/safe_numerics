@@ -21,12 +21,12 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safety_critical_embedded_controller"></a>Safety Critical Embedded Controller</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360153745840">How a Stepper Motor Works</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360153733712">Updating the Code</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360153717440">Refactor for Testing</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360153708688">Compiling on the Desktop</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360153194528">Trapping Errors at Compile Time</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm360152070992">Summary</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450402534144">How a Stepper Motor Works</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450402521984">Updating the Code</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450402505712">Refactor for Testing</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450402496960">Compiling on the Desktop</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450401966656">Trapping Errors at Compile Time</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm450400859584">Summary</a></span></dt>
 </dl></div>
 <p>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
@@ -42,10 +42,10 @@
   and test the code on the desktop.</p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360153745840"></a>How a Stepper Motor Works</h4></div></div></div>
+<a name="idm450402534144"></a>How a Stepper Motor Works</h4></div></div></div>
 <div class="figure-float" style="float: left;">
 <div class="figure">
-<a name="idm360153745200"></a><p class="title"><b>Figure&#160;1.&#160;Stepper Motor</b></p>
+<a name="idm450402533504"></a><p class="title"><b>Figure&#160;1.&#160;Stepper Motor</b></p>
 <div class="figure-contents"><div class="mediaobject" align="left"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="50%"><tr><td align="left"><img src="StepperMotor.gif" align="left" width="216" alt="Stepper Motor"></td></tr></table></div></div>
 </div>
 <br class="figure-break">
@@ -59,7 +59,7 @@
     motor is under load. Similarly, a loaded motor must be slowly decelerated
     down to a stop.</p>
 <div class="figure">
-<a name="idm360153740912"></a><p class="title"><b>Figure&#160;2.&#160;Motion Profile</b></p>
+<a name="idm450402529184"></a><p class="title"><b>Figure&#160;2.&#160;Motion Profile</b></p>
 <div class="figure-contents"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="100%"><tr><td><img src="stepper_profile.png" width="100%" alt="Motion Profile"></td></tr></table></div></div>
 </div>
 <p><br class="figure-break"></p>
@@ -89,7 +89,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360153733712"></a>Updating the Code</h4></div></div></div>
+<a name="idm450402521984"></a>Updating the Code</h4></div></div></div>
 <p>Inspecting this <a href="../../example/motor.c" target="_top">code</a>, we
     find that it is written in a dialect of C rather than C itself. At the
     time this code was written, conforming versions of the C compiler were not
@@ -126,7 +126,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360153717440"></a>Refactor for Testing</h4></div></div></div>
+<a name="idm450402505712"></a>Refactor for Testing</h4></div></div></div>
 <p>In order to develop our test suite and execute the same code on the
     desktop and the target system we factor out the shared code as a separate
     module which will used in both environments without change. The shared
@@ -146,7 +146,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360153708688"></a>Compiling on the Desktop</h4></div></div></div>
+<a name="idm450402496960"></a>Compiling on the Desktop</h4></div></div></div>
 <p>Using the target environment to run tests is often very difficult or
     impossible due to limited resources. So software unit testing for embedded
     systems is very problematic and often skipped. The C language on our
@@ -467,7 +467,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360153194528"></a>Trapping Errors at Compile Time</h4></div></div></div>
+<a name="idm450401966656"></a>Trapping Errors at Compile Time</h4></div></div></div>
 <p>We can test the same code we're going to load into our target system
     on the desktop. We could build and execute a complete unit test suite. We
     could capture the output and graph it. We have the ability to make are
@@ -563,8 +563,7 @@ On&#160;interrupt<br>
 <span class="keyword">using</span> <span class="identifier">exception_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">default_exception_policy</span><span class="special">;</span>
 
 <span class="comment">// generate compile time errors if operation could fail</span>
-<span class="comment">//using trap_policy = boost::safe_numerics::loose_trap_policy;</span>
-<span class="keyword">using</span> <span class="identifier">trap_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">default_exception_policy</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="identifier">trap_policy</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">loose_trap_policy</span><span class="special">;</span>
 
 <span class="comment">// ***************************</span>
 <span class="comment">// 2. Create a macro named literal an integral value</span>
@@ -1091,7 +1090,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm360152070992"></a>Summary</h4></div></div></div>
+<a name="idm450400859584"></a>Summary</h4></div></div></div>
 <p>The intent of this case study is to show that the Safe Numerics
     Library can be an essential tool in validating the correctness of C/C++
     programs in all environments - including the most restricted.</p>

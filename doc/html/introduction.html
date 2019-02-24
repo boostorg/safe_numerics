@@ -98,10 +98,9 @@
     Some runtime environments will just terminate the program, others may
     throw some sort of exception. In any case, the execution has failed in a
     manner from which there is no recovery.</p>
-<p>All of the above conditions are obstacles to creation of a
-    program which will never fail. The Safe Numerics Library addresses all of
-    these conditions, at least as far as integer operations are
-    concerned.</p>
+<p>All of the above conditions are obstacles to creation of a program
+    which will never fail. The Safe Numerics Library addresses all of these
+    conditions, at least as far as integer operations are concerned.</p>
 <p>Since the problems and their solution are similar, we'll confine the
     current discussion to just the one example shown above.</p>
 </div>
@@ -152,8 +151,8 @@
     <code class="computeroutput">safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
     underlying types <span class="bold"><strong>except</strong></span> that expressions
     using these types fulfill the above guarantee. These "safe" types are
-    meant to be "drop-in" replacements for the built-in types of the same name.
-    So things which are legal - such as assignment of a
+    meant to be "drop-in" replacements for the built-in types of the same
+    name. So things which are legal - such as assignment of a
     <code class="computeroutput">signed</code> to <code class="computeroutput">unsigned</code> value - are not trapped at
     compile time as they are legal C/C++ code. Instead, they are checked at
     runtime to trap the case where this (legal) operation would lead to an
@@ -183,8 +182,8 @@
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; ">
 <li class="listitem"><p>Throw exception on runtime, trap at compile time if
                 possible.</p></li>
-<li class="listitem"><p>Trap at compile time all operations which could
-                possibly fail at runtime.</p></li>
+<li class="listitem"><p>Trap at compile time all operations which could possibly
+                fail at runtime.</p></li>
 <li class="listitem"><p>Specify custom functions which should be called in case
                 errors are detected at runtime.</p></li>
 </ul></div>
@@ -214,9 +213,10 @@
 </li>
 <li class="listitem"><p>Enforce other program requirements using bounded integer
           types. The library includes the types for ranges and literals.
-          Operations which violate these requirements will be trapped at either
-          compile time or runtime and not silently return invalid values.
-          These types can be used to improve program correctness and performance.</p></li>
+          Operations which violate these requirements will be trapped at
+          either compile time or runtime and not silently return invalid
+          values. These types can be used to improve program correctness and
+          performance.</p></li>
 </ul></div>
 </div>
 <div class="section">
@@ -227,16 +227,14 @@
 <p>The following Boost Libraries must be installed in order to use this
     library</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem"><p>MPL</p></li>
-<li class="listitem"><p>Integer</p></li>
-<li class="listitem"><p>Config</p></li>
-<li class="listitem"><p>Concept Checking</p></li>
-<li class="listitem"><p>Tribool</p></li>
-<li class="listitem"><p>Enable_if</p></li>
+<li class="listitem"><p>mp11</p></li>
+<li class="listitem"><p>integer</p></li>
+<li class="listitem"><p>config</p></li>
+<li class="listitem"><p>tribool</p></li>
+<li class="listitem"><p>enable_if</p></li>
 </ul></div>
 <p>The Safe Numerics library is delivered with an exhaustive
-    suite of test programs. Users who choose to run this test suite will also
-    need to install the Boost.Preprocessor and Boost.MP11 libraries.</p>
+    suite of test programs.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">

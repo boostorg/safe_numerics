@@ -98,7 +98,7 @@ public:
 } safe_numerics_error_category {};
 
 // constexpr - damn, can't use constexpr due to std::error_code
-std::error_code make_error_code(safe_numerics_error e){
+std::error_code make_error_code(const safe_numerics_error & e){
     return std::error_code(static_cast<int>(e), safe_numerics_error_category);
 }
 
@@ -174,7 +174,7 @@ public:
 // isn't being used and defining here it can lead duplicate symbol errors
 // depending on the compiler.  So suppress it until further notice
 #if 0
-std::error_condition make_error_condition(safe_numerics_error e) {
+std::error_condition make_error_condition(const safe_numerics_error & e) {
     return std::error_condition(
         static_cast<int>(e),
         safe_numerics_error_category

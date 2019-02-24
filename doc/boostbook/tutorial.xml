@@ -270,7 +270,7 @@ error detected:divide by zero: domain error
 </screen></para>
   </section>
 
-  <section id="safe_numerics.tutorial.8">
+  <section id="safe_numerics.tutorial.9">
     <title>Compile Time Arithmetic is Not Always Correct</title>
 
     <para>If a divide by zero error occurs while a program is being compiled,
@@ -310,7 +310,7 @@ error detected:positive overflow error
 Program ended with exit code: 0</screen></para>
   </section>
 
-  <section id="safe_numerics.tutorial.9">
+  <section id="safe_numerics.tutorial.10">
     <title>Programming by Contract is Too Slow</title>
 
     <para>Programming by Contract is a highly regarded technique. There has

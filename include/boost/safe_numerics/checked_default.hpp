@@ -44,14 +44,27 @@ namespace safe_numerics {
 // it should trap with a static_assert. This occurs at compile time while
 // calculating result interval.  This needs more investigation.
 
-template<typename R, typename T = void, class Default = void>
-struct checked_operation{
+template<
+    typename R,
+    typename T,
+    class F = make_checked_result<R>,
+    class Default = void
+>
+struct heterogeneous_checked_operation {
     constexpr static checked_result<R>
     cast(const T & t) /* noexcept */ {
         return static_cast<R>(t);
     }
-    constexpr static checked_result<T>
-    minus(const T & t) noexcept {
+};
+
+template<
+    typename R,
+    class F = make_checked_result<R>,
+    class Default = void
+>
+struct checked_operation{
+    constexpr static checked_result<R>
+    minus(const R & t) noexcept {
         return - t;
     }
     constexpr static checked_result<R>
@@ -119,7 +132,7 @@ namespace checked {
 
 template<typename R, typename T>
 constexpr checked_result<R> cast(const T & t) /* noexcept */ {
-    return checked_operation<R, T>::cast(t);
+    return heterogeneous_checked_operation<R, T>::cast(t);
 }
 template<typename R>
 constexpr checked_result<R> minus(const R & t) noexcept {
@@ -195,4 +208,3 @@ constexpr checked_result<R> bitwise_not(const R & t) noexcept {
 } // boost
 
 #endif // BOOST_NUMERIC_CHECKED_DEFAULT_HPP
-

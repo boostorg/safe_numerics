@@ -324,9 +324,32 @@ count = 1857858
               xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
   <section id="safe_numerics.change_log">
-    <title>Change Log</title>
+    <title>Release Log</title>
 
     <para>This is the third version.</para>
+
+    <para><revhistory>
+        <revision>
+          <revnumber>1.69</revnumber>
+
+          <date>29 September 2018</date>
+
+          <revdescription>
+            <para>First Boost Release</para>
+          </revdescription>
+        </revision>
+
+        <revision>
+          <revnumber>1.70</revnumber>
+
+          <date>9 March 2019</date>
+
+          <revdescription>
+            <para>Fixed Exception Policies for <code>trap</code> and
+            <code>ignore</code>.</para>
+          </revdescription>
+        </revision>
+      </revhistory></para>
   </section>
 
   <xi:include href="bibliography.xml" xpointer="element(/1)"

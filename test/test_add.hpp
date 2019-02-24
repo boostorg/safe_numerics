@@ -23,19 +23,18 @@ bool test_add(
     std::cout << "testing"<< std::endl;
     {
         safe_t<T1> t1 = v1;
-        using result_type = decltype(t1 + v2);
         std::cout << "safe<" << av1 << "> + " << av2 << " -> ";
         static_assert(
             boost::safe_numerics::is_safe<safe_t<T1> >::value,
             "safe_t not safe!"
         );
-        static_assert(
-            boost::safe_numerics::is_safe<result_type>::value,
-            "Expression failed to return safe type"
-        );
         try{
             // use auto to avoid checking assignment.
             auto result = t1 + v2;
+            static_assert(
+                boost::safe_numerics::is_safe<decltype(result)>::value,
+                "Expression failed to return safe type"
+            );
             std::cout << make_result_display(result);
             if(expected_result == 'x'){
                 std::cout

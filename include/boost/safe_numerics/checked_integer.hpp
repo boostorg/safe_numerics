@@ -33,8 +33,12 @@ using bool_type = typename std::conditional<tf, std::true_type, std::false_type>
 // Note presumption of twos complement integer arithmetic
 
 // convert an integral value to some other integral type
-template<typename R, typename T>
-struct checked_operation<R, T,
+template<
+    typename R,
+    typename T,
+    class F
+>
+struct heterogeneous_checked_operation<R, T, F,
     typename std::enable_if<
         std::is_integral<R>::value
         && std::is_integral<T>::value
@@ -49,7 +53,7 @@ struct checked_operation<R, T,
             const T & t,
             std::true_type, // R is signed
             std::true_type  // T is signed
-        ) noexcept {
+        ){
             // INT32-C Ensure that operations on signed
             // integers do not overflow
             return
@@ -57,8 +61,7 @@ struct checked_operation<R, T,
                 t,
                 std::numeric_limits<R>::max()
             ) ?
-                checked_result<R>(
-                    safe_numerics_error::positive_overflow_error,
+                F::template invoke<safe_numerics_error::positive_overflow_error>(
                     "converted signed value too large"
                 )
             :
@@ -66,8 +69,7 @@ struct checked_operation<R, T,
                 t,
                 std::numeric_limits<R>::min()
             ) ?
-                checked_result<R>(
-                    safe_numerics_error::negative_overflow_error,
+                F::template invoke<safe_numerics_error::negative_overflow_error>(
                     "converted signed value too small"
                 )
             :
@@ -79,7 +81,7 @@ struct checked_operation<R, T,
             const T & t,
             std::true_type,  // R is signed
             std::false_type  // T is unsigned
-        ) noexcept {
+        ){
             // INT30-C Ensure that unsigned integer operations
             // do not wrap
             return
@@ -87,8 +89,7 @@ struct checked_operation<R, T,
                 t,
                 std::numeric_limits<R>::max()
             ) ?
-                checked_result<R>(
-                    safe_numerics_error::positive_overflow_error,
+                F::template invoke<safe_numerics_error::positive_overflow_error>(
                     "converted unsigned value too large"
                 )
             :
@@ -100,7 +101,7 @@ struct checked_operation<R, T,
             const T & t,
             std::false_type, // R is unsigned
             std::false_type  // T is unsigned
-        ) noexcept {
+        ){
             // INT32-C Ensure that operations on unsigned
             // integers do not overflow
             return
@@ -108,8 +109,7 @@ struct checked_operation<R, T,
                 t,
                 std::numeric_limits<R>::max()
             ) ?
-                checked_result<R>(
-                    safe_numerics_error::positive_overflow_error,
+                F::template invoke<safe_numerics_error::positive_overflow_error>(
                     "converted unsigned value too large"
                 )
             :
@@ -121,11 +121,10 @@ struct checked_operation<R, T,
             const T & t,
             std::false_type, // R is unsigned
             std::true_type   // T is signed
-        ) noexcept {
+        ){
             return
             boost::safe_numerics::safe_compare::less_than(t, 0) ?
-                checked_result<R>(
-                    safe_numerics_error::domain_error,
+                F::template invoke<safe_numerics_error::domain_error>(
                     "converted negative value to unsigned"
                 )
             :
@@ -133,8 +132,7 @@ struct checked_operation<R, T,
                 t,
                 std::numeric_limits<R>::max()
             ) ?
-                checked_result<R>(
-                    safe_numerics_error::positive_overflow_error,
+                F::template invoke<safe_numerics_error::positive_overflow_error>(
                     "converted signed value too large"
                 )
             :
@@ -144,7 +142,7 @@ struct checked_operation<R, T,
     }; // cast_impl_detail
 
     constexpr static checked_result<R>
-    cast(const T & t) noexcept {
+    cast(const T & t){
         return
             cast_impl_detail::cast_impl(
                 t,
@@ -155,15 +153,19 @@ struct checked_operation<R, T,
 };
 
 // converting floating point value to integral type
-template<typename R, typename T>
-struct checked_operation<R, T,
+template<
+    typename R,
+    typename T,
+    class F
+>
+struct heterogeneous_checked_operation<R, T, F,
     typename std::enable_if<
         std::is_integral<R>::value
         && std::is_floating_point<T>::value
     >::type
 >{
     constexpr static checked_result<R>
-    cast(const T & t) noexcept {
+    cast(const T & t){
         return static_cast<R>(t);
     }
 };
@@ -171,29 +173,38 @@ struct checked_operation<R, T,
 // converting integral value to floating point type
 
 // INT35-C. Use correct integer precisions
-template<typename R, typename T>
-struct checked_operation<R, T,
+template<
+    typename R,
+    typename T,
+    class F
+>
+struct heterogeneous_checked_operation<R, T, F,
     typename std::enable_if<
         std::is_floating_point<R>::value
         && std::is_integral<T>::value
      >::type
  >{
      constexpr static checked_result<R>
-     cast(const T & t) noexcept {
+     cast(const T & t){
         if(std::numeric_limits<R>::digits < std::numeric_limits<T>::digits){
             if(utility::significant_bits(t) > std::numeric_limits<R>::digits){
-                return {
+                return F::invoke(
                     safe_numerics_error::precision_overflow_error,
                     "keep precision"
-                };
+                );
             }
         }
         return t;
     }
 };
 
-template<typename R>
-struct checked_operation<R,
+// binary operations on primitive integer types
+
+template<
+    typename R,
+    class F
+>
+struct checked_operation<R, F,
     typename std::enable_if<
         std::is_integral<R>::value
     >::type
@@ -207,12 +218,11 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::false_type // R unsigned
-        ) noexcept {
+        ){
             return
                 // INT30-C. Ensure that unsigned integer operations do not wrap
                 std::numeric_limits<R>::max() - u < t ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "addition result too large"
                     )
                 :
@@ -225,18 +235,17 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::true_type // R signed
-        ) noexcept {
+        ){
+        // INT32-C. Ensure that operations on signed integers do not result in overflow
             return
                 // INT32-C. Ensure that operations on signed integers do not result in overflow
                 ((u > 0) && (t > (std::numeric_limits<R>::max() - u))) ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "addition result too large"
                     )
                 :
                 ((u < 0) && (t < (std::numeric_limits<R>::min() - u))) ?
-                    checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                    F::template invoke<safe_numerics_error::negative_overflow_error>(
                         "addition result too low"
                     )
                 :
@@ -246,7 +255,7 @@ struct checked_operation<R,
     }; // add_impl_detail
 
     constexpr static checked_result<R>
-    add(const R & t, const R & u) noexcept {
+    add(const R & t, const R & u){
         return add_impl_detail::add(t, u, std::is_signed<R>());
     }
 
@@ -259,12 +268,11 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::false_type // R is unsigned
-        ) noexcept {
+        ){
             // INT30-C. Ensure that unsigned integer operations do not wrap
             return
                 t < u ?
-                    checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                    F::template invoke<safe_numerics_error::negative_overflow_error>(
                         "subtraction result cannot be negative"
                     )
                 :
@@ -277,18 +285,16 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::true_type // R is signed
-        ) noexcept { // INT32-C
+        ){ // INT32-C
             return
                 // INT32-C. Ensure that operations on signed integers do not result in overflow
                 ((u > 0) && (t < (std::numeric_limits<R>::min() + u))) ?
-                    checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                    F::template invoke<safe_numerics_error::negative_overflow_error>(
                         "subtraction result overflows result type"
                     )
                 :
                 ((u < 0) && (t > (std::numeric_limits<R>::max() + u))) ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "subtraction result overflows result type"
                     )
                 :
@@ -298,7 +304,7 @@ struct checked_operation<R,
 
     }; // subtract_impl_detail
 
-    constexpr static checked_result<R> subtract(const R & t, const R & u) noexcept {
+    constexpr static checked_result<R> subtract(const R & t, const R & u){
         return subtract_impl_detail::subtract(t, u, std::is_signed<R>());
     }
 
@@ -310,10 +316,9 @@ struct checked_operation<R,
         constexpr static checked_result<R> minus(
             const R t,
             std::false_type // R is unsigned
-        ) noexcept {
+        ){
             return t > 0 ?
-                    checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                    F::template invoke<safe_numerics_error::negative_overflow_error>(
                         "minus unsigned would be negative"
                     )
                 :
@@ -326,10 +331,9 @@ struct checked_operation<R,
         constexpr static checked_result<R> minus(
             const R t,
             std::true_type // R is signed
-        ) noexcept { // INT32-C
+        ){ // INT32-C
             return t == std::numeric_limits<R>::min() ?
-                checked_result<R>(
-                    safe_numerics_error::positive_overflow_error,
+                F::template invoke<safe_numerics_error::positive_overflow_error>(
                     "subtraction result overflows result type"
                 )
             :
@@ -339,7 +343,7 @@ struct checked_operation<R,
 
     }; // minus_impl_detail
 
-    constexpr static checked_result<R> minus(const R & t) noexcept {
+    constexpr static checked_result<R> minus(const R & t){
         return minus_impl_detail::minus(t, std::is_signed<R>());
     }
 
@@ -353,9 +357,9 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::false_type,  // R is unsigned
-            std::false_type   // !(sizeof(R) > sizeof(std::uintmax_t) / 2)
+            std::false_type   // !(sizeochecked_result<R>R) > sizeochecked_result<R>std::uintmax_t) / 2)
 
-        ) noexcept {
+        ){
             // INT30-C
             // fast method using intermediate result guaranteed not to overflow
             // todo - replace std::uintmax_t with a size double the size of R
@@ -363,8 +367,7 @@ struct checked_operation<R,
             return
                 static_cast<i_type>(t) * static_cast<i_type>(u)
                 > std::numeric_limits<R>::max() ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "multiplication overflow"
                     )
                 :
@@ -375,14 +378,13 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::false_type,  // R is unsigned
-            std::true_type    // (sizeof(R) > sizeof(std::uintmax_t) / 2)
+            std::true_type    // (sizeochecked_result<R>R) > sizeochecked_result<R>std::uintmax_t) / 2)
 
-        ) noexcept {
+        ){
             // INT30-C
             return
                 u > 0 && t > std::numeric_limits<R>::max() / u ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "multiplication overflow"
                     )
                 :
@@ -395,9 +397,9 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::true_type, // R is signed
-            std::false_type // ! (sizeof(R) > (sizeof(std::intmax_t) / 2))
+            std::false_type // ! (sizeochecked_result<R>R) > (sizeochecked_result<R>std::intmax_t) / 2))
 
-        ) noexcept {
+        ){
             // INT30-C
             // fast method using intermediate result guaranteed not to overflow
             // todo - replace std::intmax_t with a size double the size of R
@@ -407,8 +409,7 @@ struct checked_operation<R,
                     static_cast<i_type>(t) * static_cast<i_type>(u)
                     > static_cast<i_type>(std::numeric_limits<R>::max())
                 ) ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "multiplication overflow"
                     )
                 :
@@ -416,8 +417,7 @@ struct checked_operation<R,
                     static_cast<i_type>(t) * static_cast<i_type>(u)
                     < static_cast<i_type>(std::numeric_limits<R>::min())
                 ) ?
-                    checked_result<R>(
-                        safe_numerics_error::negative_overflow_error,
+                    F::template invoke<safe_numerics_error::negative_overflow_error>(
                         "multiplication overflow"
                     )
                 :
@@ -428,21 +428,19 @@ struct checked_operation<R,
             const R t,
             const R u,
             std::true_type,   // R is signed
-            std::true_type    // (sizeof(R) > (sizeof(std::intmax_t) / 2))
-        ) noexcept { // INT32-C
+            std::true_type    // (sizeochecked_result<R>R) > (sizeochecked_result<R>std::intmax_t) / 2))
+        ){ // INT32-C
             return t > 0 ?
                 u > 0 ?
                     t > std::numeric_limits<R>::max() / u ?
-                        checked_result<R>(
-                            safe_numerics_error::positive_overflow_error,
+                        F::template invoke<safe_numerics_error::positive_overflow_error>(
                             "multiplication overflow"
                         )
                     :
                         checked_result<R>(t * u)
                 : // u <= 0
                     u < std::numeric_limits<R>::min() / t ?
-                        checked_result<R>(
-                            safe_numerics_error::negative_overflow_error,
+                        F::template invoke<safe_numerics_error::negative_overflow_error>(
                             "multiplication overflow"
                         )
                     :
@@ -450,16 +448,14 @@ struct checked_operation<R,
             : // t <= 0
                 u > 0 ?
                     t < std::numeric_limits<R>::min() / u ?
-                        checked_result<R>(
-                            safe_numerics_error::negative_overflow_error,
+                        F::template invoke<safe_numerics_error::negative_overflow_error>(
                             "multiplication overflow"
                         )
                     :
                         checked_result<R>(t * u)
                 : // u <= 0
                     t != 0 && u < std::numeric_limits<R>::max() / t ?
-                        checked_result<R>(
-                            safe_numerics_error::positive_overflow_error,
+                        F::template invoke<safe_numerics_error::positive_overflow_error>(
                             "multiplication overflow"
                         )
                     :
@@ -468,7 +464,7 @@ struct checked_operation<R,
         }
     }; // multiply_impl_detail
 
-    constexpr static checked_result<R> multiply(const R & t, const R & u) noexcept {
+    constexpr static checked_result<R> multiply(const R & t, const R & u){
         return multiply_impl_detail::multiply(
             t,
             u,
@@ -488,7 +484,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::false_type // R is unsigned
-        ) noexcept {
+        ){
             return t / u;
         }
 
@@ -496,11 +492,10 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::true_type // R is signed
-        ) noexcept {
+        ){
             return
                 (u == -1 && t == std::numeric_limits<R>::min()) ?
-                    checked_result<R>(
-                        safe_numerics_error::positive_overflow_error,
+                    F::template invoke<safe_numerics_error::positive_overflow_error>(
                         "result cannot be represented"
                     )
                 :
@@ -510,10 +505,9 @@ struct checked_operation<R,
     }; // divide_impl_detail
 
     // note that we presume that the size of R >= size of T
-    constexpr static checked_result<R> divide(const R & t, const R & u) noexcept {
+    constexpr static checked_result<R> divide(const R & t, const R & u){
         if(u == 0){
-            return checked_result<R>(
-                safe_numerics_error::domain_error,
+            return F::template invoke<safe_numerics_error::domain_error>(
                 "divide by zero"
             );
         }
@@ -528,7 +522,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::false_type // R is unsigned
-        ) noexcept {
+        ){
             return t % u;
         }
 
@@ -536,7 +530,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::true_type // R is signed
-        ) noexcept {
+        ){
             if(u >= 0)
                 return t % u;
             checked_result<R> ux = checked::minus(u);
@@ -546,10 +540,9 @@ struct checked_operation<R,
         }
     }; // modulus_impl_detail
 
-    constexpr static checked_result<R> modulus(const R & t, const R & u) noexcept {
+    constexpr static checked_result<R> modulus(const R & t, const R & u){
         if(0 == u)
-            return checked_result<R>(
-                safe_numerics_error::domain_error,
+            return F::template invoke<safe_numerics_error::domain_error>(
                 "denominator is zero"
             );
 
@@ -600,7 +593,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::false_type // R is unsigned
-        ) noexcept {
+        ){
             // the value of the result is E1 x 2^E2, reduced modulo one more than
             // the maximum value representable in the result type.
 
@@ -614,8 +607,7 @@ struct checked_operation<R,
                 )
             ){
                 // behavior is undefined
-                return checked_result<R>(
-                   safe_numerics_error::shift_too_large,
+                return F::template invoke<safe_numerics_error::shift_too_large>(
                    "shifting left more bits than available is undefined behavior"
                 );
             }
@@ -626,7 +618,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::true_type // R is signed
-        ) noexcept {
+        ){
             // and [E1] has a non-negative value
             if(t >= 0){
                 // and E1 x 2^E2 is representable in the corresponding
@@ -642,8 +634,7 @@ struct checked_operation<R,
                     )
                 ){
                     // behavior is undefined
-                    return checked_result<R>(
-                       safe_numerics_error::shift_too_large,
+                    return F::template invoke<safe_numerics_error::shift_too_large>(
                        "shifting left more bits than available"
                     );
                 }
@@ -652,8 +643,7 @@ struct checked_operation<R,
                 }
             }
             // otherwise, the behavior is undefined.
-            return checked_result<R>(
-               safe_numerics_error::negative_shift,
+            return F::template invoke<safe_numerics_error::negative_shift>(
                "shifting a negative value"
             );
         }
@@ -663,7 +653,7 @@ struct checked_operation<R,
     constexpr static checked_result<R> left_shift(
         const R & t,
         const R & u
-    ) noexcept {
+    ){
         // INT34-C - Do not shift an expression by a negative number of bits
 
         // standard paragraph 5.8 & 1
@@ -672,15 +662,13 @@ struct checked_operation<R,
             return t;
         }
         if(u < 0){
-            return checked_result<R>(
-               safe_numerics_error::negative_shift,
+            return F::template invoke<safe_numerics_error::negative_shift>(
                "shifting negative amount"
             );
         }
         if(u > std::numeric_limits<R>::digits){
             // behavior is undefined
-            return checked_result<R>(
-               safe_numerics_error::shift_too_large,
+            return F::template invoke<safe_numerics_error::shift_too_large>(
                "shifting more bits than available"
             );
         }
@@ -700,7 +688,7 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::false_type // T is unsigned
-        ) noexcept {
+        ){
             // the value of the result is the integral part of the
             // quotient of E1/2E2
             return t >> u;
@@ -710,12 +698,11 @@ struct checked_operation<R,
             const R & t,
             const R & u,
             std::true_type  // T is signed;
-        ) noexcept {
+        ){
         if(t < 0){
             // note that the C++ standard considers this case is "implemenation
             // defined" rather than "undefined".
-            return checked_result<R>(
-                safe_numerics_error::negative_value_shift,
+            return F::template invoke<safe_numerics_error::negative_value_shift>(
                 "shifting a negative value"
             );
          }
@@ -728,21 +715,19 @@ struct checked_operation<R,
 constexpr static checked_result<R> right_shift(
     const R & t,
     const R & u
-) noexcept {
+){
     // INT34-C - Do not shift an expression by a negative number of bits
 
     // standard paragraph 5.8 & 1
     // if the right operand is negative
     if(u < 0){
-        return checked_result<R>(
-           safe_numerics_error::negative_shift,
+        return F::template invoke<safe_numerics_error::negative_shift>(
            "shifting negative amount"
         );
     }
     if(u > std::numeric_limits<R>::digits){
         // behavior is undefined
-        return checked_result<R>(
-           safe_numerics_error::shift_too_large,
+        return F::template invoke<safe_numerics_error::shift_too_large>(
            "shifting more bits than available"
         );
     }
@@ -756,56 +741,52 @@ constexpr static checked_result<R> right_shift(
 // as it would break too many programs.  Specifically, we permit signed
 // integer operands.
 
-constexpr static checked_result<R> bitwise_or(const R & t, const R & u) noexcept {
+constexpr static checked_result<R> bitwise_or(const R & t, const R & u){
     using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
     if(result_size > bits_type<R>::value){
-        return checked_result<R>{
-            safe_numerics_error::positive_overflow_error,
+        return F::template invoke<safe_numerics_error::positive_overflow_error>(
             "result type too small to hold bitwise or"
-        };
+        );
     }
     return t | u;
 }
 
-constexpr static checked_result<R> bitwise_xor(const R & t, const R & u) noexcept {
+constexpr static checked_result<R> bitwise_xor(const R & t, const R & u){
     using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::max(significant_bits(t), significant_bits(u));
 
     if(result_size > bits_type<R>::value){
-        return checked_result<R>{
-            safe_numerics_error::positive_overflow_error,
+        return F::template invoke<safe_numerics_error::positive_overflow_error>(
             "result type too small to hold bitwise or"
-        };
+        );
     }
     return t ^ u;
 }
 
-constexpr static checked_result<R> bitwise_and(const R & t, const R & u) noexcept {
+constexpr static checked_result<R> bitwise_and(const R & t, const R & u){
     using namespace boost::safe_numerics::utility;
     const unsigned int result_size
         = std::min(significant_bits(t), significant_bits(u));
 
     if(result_size > bits_type<R>::value){
-        return checked_result<R>{
-            safe_numerics_error::positive_overflow_error,
+        return F::template invoke<safe_numerics_error::positive_overflow_error>(
             "result type too small to hold bitwise and"
-        };
+        );
     }
     return t & u;
 }
 
-constexpr static checked_result<R> bitwise_not(const R & t) noexcept {
+constexpr static checked_result<R> bitwise_not(const R & t){
     using namespace boost::safe_numerics::utility;
 
     if(significant_bits(t) > bits_type<R>::value){
-        return checked_result<R>{
-            safe_numerics_error::positive_overflow_error,
+        return F::template invoke<safe_numerics_error::positive_overflow_error>(
             "result type too small to hold bitwise inverse"
-        };
+        );
     }
     return ~t;
 }
