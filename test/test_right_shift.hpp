@@ -57,7 +57,7 @@ bool test_right_shift(
                 try{
                     t1 >> v2;
                 }
-                catch(const std::exception & e){}
+                catch(const std::exception &){}
                 return false;
             }
             std::cout << std::endl;

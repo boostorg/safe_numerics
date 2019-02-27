@@ -35,7 +35,7 @@ void test(){
     t & u;
     t ^ u;
 }
-int main(int argc, char *argv[]){
+int main(int, char *[]){
     test<std::int8_t, std::int8_t>();   // should compile
     test<std::int16_t, std::int16_t>(); // should compile
     test<std::int32_t, std::int32_t>(); // should fail to compile

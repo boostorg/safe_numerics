@@ -98,7 +98,7 @@ namespace ilog2_detail {
     constexpr static unsigned int ilog2(const boost::uint_t<8>::exact & t){
         #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
         const char LogTable256[256] = {
-            -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
+            static_cast<const char>(-1), 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
             LT(4), LT(5), LT(5), LT(6), LT(6), LT(6), LT(6),
             LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7), LT(7)
         };
@@ -236,13 +236,13 @@ constexpr T round_out(const T & t){
     if(t >= 0){
         const std::uint8_t sb = utility::significant_bits(t);
         return (sb < sizeof(T) * 8)
-            ? (1ul << sb) - 1
+            ? ((T)1 << sb) - 1
             : std::numeric_limits<T>::max();
     }
     else{
         const std::uint8_t sb = utility::significant_bits(~t);
         return (sb < sizeof(T) * 8)
-            ? ~((1ul << sb) - 1)
+            ? ~(((T)1 << sb) - 1)
             : std::numeric_limits<T>::min();
     }
 }

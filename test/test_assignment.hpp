@@ -23,8 +23,8 @@ bool test_assignment(
 ){
     std::cout << "testing " << std::endl;
     {
-        //std::cout << "safe<" << at1 << "> = " << at2 << std::endl;
-        std::cout << boost::core::demangle(typeid(t1).name()) << " = " << at2 << std::endl;
+        std::cout << "safe<" << at1 << "> = " << at2 << std::endl;
+        // std::cout << boost::core::demangle(typeid(t1).name()) << " = " << at2 << std::endl;
         safe_t<T2> s2(t2);
 
         static_assert(
