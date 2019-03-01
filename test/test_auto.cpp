@@ -37,14 +37,14 @@ int test_auto(const T & t, const U & u){
     try{
         safe<T, automatic>(t) + u;
     }
-    catch(const std::exception & e){
+    catch(const std::exception &){
         safe<T, automatic>(t) + u;
     }
 
     try{
         t + safe<U, automatic>(u);
     }
-    catch(const std::exception & e){
+    catch(const std::exception &){
         t + safe<U, automatic>(u);
     }
     return 0;

@@ -23,25 +23,25 @@ template<
 struct exception_policy {
     static constexpr void on_arithmetic_error(
         const safe_numerics_error & e,
-        const char * const & msg
+        const char * msg
     ){
         AE(e, msg);
     }
     static constexpr void on_implementation_defined_behavior(
         const safe_numerics_error & e,
-        const char * const & msg
+        const char * msg
     ){
         IDB(e, msg);
     }
     static constexpr void on_undefined_behavior(
         const safe_numerics_error & e,
-        const char * const & msg
+        const char * msg
     ){
         UB(e, msg);
     }
     static constexpr void on_uninitialized_value(
         const safe_numerics_error & e,
-        const char * const & msg
+        const char * msg
     ){
         UV(e, msg);
     }
@@ -52,12 +52,12 @@ struct exception_policy {
 
 // ignore any error and just return.
 struct ignore_exception {
-    constexpr ignore_exception(const safe_numerics_error &, const char * const & ){}
+    constexpr ignore_exception(const safe_numerics_error &, const char * ){}
 };
 
 // If an exceptional condition is detected at runtime throw the exception.
 struct throw_exception {
-    throw_exception(const safe_numerics_error & e, const char * const &  message){
+    throw_exception(const safe_numerics_error & e, const char * message){
         throw std::system_error(std::error_code(e), message);
     }
 };
@@ -112,25 +112,25 @@ namespace dispatch_switch {
 
     template<class EP>
     struct dispatch_case<EP, safe_numerics_actions::uninitialized_value> {
-        constexpr static void invoke(const safe_numerics_error & e, const char * const & msg){
+        constexpr static void invoke(const safe_numerics_error & e, const char * msg){
             EP::on_uninitialized_value(e, msg);
         }
     };
     template<class EP>
     struct dispatch_case<EP, safe_numerics_actions::arithmetic_error> {
-        constexpr static void invoke(const safe_numerics_error & e, const char * const & msg){
+        constexpr static void invoke(const safe_numerics_error & e, const char * msg){
             EP::on_arithmetic_error(e, msg);
         }
     };
     template<class EP>
     struct dispatch_case<EP, safe_numerics_actions::implementation_defined_behavior> {
-        constexpr static void invoke(const safe_numerics_error & e, const char * const & msg){
+        constexpr static void invoke(const safe_numerics_error & e, const char * msg){
             EP::on_implementation_defined_behavior(e, msg);
         }
     };
     template<class EP>
     struct dispatch_case<EP, safe_numerics_actions::undefined_behavior> {
-        constexpr static void invoke(const safe_numerics_error & e, const char * const & msg){
+        constexpr static void invoke(const safe_numerics_error & e, const char * msg){
             EP::on_undefined_behavior(e, msg);
         }
     };
@@ -139,7 +139,7 @@ namespace dispatch_switch {
 
 template<class EP, safe_numerics_error E>
 constexpr void
-dispatch(const char * const & msg){
+dispatch(const char * msg){
     constexpr safe_numerics_actions a = make_safe_numerics_action(E);
     dispatch_switch::dispatch_case<EP, a>::invoke(E, msg);
 }

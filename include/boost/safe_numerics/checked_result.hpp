@@ -73,7 +73,7 @@ struct checked_result {
     #endif
     constexpr /*explicit*/ checked_result(
         const safe_numerics_error & e,
-        const char * const & msg = ""
+        const char * msg = ""
     )  noexcept :
         m_e(e),
         m_msg(msg)

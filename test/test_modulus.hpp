@@ -48,7 +48,7 @@ bool test_modulus(
             }
             std::cout << std::endl;
         }
-        catch(const std::exception & e){
+        catch(const std::exception &){
             if(expected_result == '.'){
                 std::cout
                     << " == "<< av1 << " % " << av2
