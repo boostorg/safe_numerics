@@ -22,19 +22,18 @@
 <a name="safe_numerics.safe_literal"></a>safe_signed_literal&lt;Value, PP , EP&gt; and
   safe_unsigned_literal&lt;Value, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_literal.html#idm450399827632">Description</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399826128">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399822224">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399815232">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399797760">Inherited Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399765888">Valid Expression</a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399735840">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515596160">Description</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515594656">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515590752">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515583760">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515566224">Inherited Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515534256">Example of use</a></span></dt>
 <dt><span class="section"><a href="safe_literal.html#safe_numerics.safe_literal.make_safe_literal"><code class="computeroutput">make_safe_literal(n, PP, EP) </code></a></span></dt>
-<dt><span class="section"><a href="safe_literal.html#idm450399719312">Header</a></span></dt>
+<dt><span class="section"><a href="safe_literal.html#idm63515517264">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399827632"></a>Description</h4></div></div></div>
+<a name="idm63515596160"></a>Description</h4></div></div></div>
 <p>A safe type which holds a literal value. This is required to be able
     to initialize other safe types in such a way that an exception code is not
     generated. It is also useful when creating constexpr versions of safe
@@ -43,7 +42,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399826128"></a>Model of</h4></div></div></div>
+<a name="idm63515594656"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 <p>This type inherits all the notation, associated types and template
@@ -52,7 +51,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399822224"></a>Associated Types</h4></div></div></div>
+<a name="idm63515590752"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -74,7 +73,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399815232"></a>Template Parameters</h4></div></div></div>
+<a name="idm63515583760"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -95,24 +94,26 @@
 <tr>
 <td align="left"><code class="computeroutput">PP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">PromotionPolicy&lt;PP&gt;</a></td>
-<td align="left"><p>Default value is <code class="computeroutput">void</code></p></td>
+<td align="left"><p>Optional promotion policy. Default value is
+            <code class="computeroutput">void</code></p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
 <td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Exception
             Policy&lt;EP&gt;</a></td>
-<td align="left"><p>Default value is <code class="computeroutput">void</code></p></td>
+<td align="left"><p>Optional exception policy. Default value is
+            <code class="computeroutput">void</code></p></td>
 </tr>
 </tbody>
 </table></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399797760"></a>Inherited Valid Expressions</h4></div></div></div>
+<a name="idm63515566224"></a>Inherited Valid Expressions</h4></div></div></div>
 <p>safe literal types are immutable. Hence they only inherit those
-    valid expressions which don't change the value. This excludes assignment,
-    increment, and decrement and all unary operators except unary -, + and ~.
-    Other than that, they can be used anywhere a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type can
+    valid expressions which don't change the value. <span class="emphasis"><em>This excludes
+    assignment, increment, and decrement and all unary operators except unary
+    -, + and ~</em></span>. Other than that, they can be used anywhere a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type can
     be used. Note that the default promotion and exception policies are void.
     This is usually convenient since when a safe literal is used in a binary
     operation, this will inherit the policies of the other type. On the other
@@ -137,86 +138,8 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399765888"></a>Valid Expression</h4></div></div></div>
-<div class="informaltable"><table class="table">
-<colgroup>
-<col align="left">
-<col align="left">
-<col align="left">
-</colgroup>
-<thead><tr>
-<th align="left">Expression</th>
-<th align="left">Result Type</th>
-<th align="left">Description</th>
-</tr></thead>
-<tbody>
-<tr>
-<td align="left"><code class="computeroutput">t op s</code></td>
-<td align="left">unspecified S</td>
-<td align="left"><p>invoke C++ operator op and return another
-              SafeNumeric type.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">s1 op s2</code></td>
-<td align="left">unspecified S</td>
-<td align="left"><p>invoke C++ operator op and return another
-              SafeNumeric type.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">prefix_op S</code></td>
-<td align="left">unspecified S</td>
-<td align="left"><p>invoke C++ operator <code class="computeroutput">prefix_op</code> and
-              return another SafeNumeric type.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">S postfix_op</code></td>
-<td align="left">unspecified S</td>
-<td align="left"><p>invoke C++ operator <code class="computeroutput">postfix_op</code> and
-              return another SafeNumeric type.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">s assign_op t</code></td>
-<td align="left">S1</td>
-<td align="left"><p>convert t to type S and assign it to s. If the
-              value t cannot be represented as an instance of type S, it is an
-              error.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">S(t)</code></td>
-<td align="left">unspecified S</td>
-<td align="left"><p>construct an instance of S from a value of type T.
-              If the value t cannot be represented as an instance of type S,
-              it is an error.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">S</code></td>
-<td align="left">S</td>
-<td align="left"><p>construct an uninitialized instance of
-              S.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">is_safe&lt;S&gt;</code></td>
-<td align="left">
-<code class="computeroutput">std::true_type</code> or
-              <code class="computeroutput">std::false_type</code>
-</td>
-<td align="left"><p>type trait to query whether any type S fulfills the
-              requirements for a SafeNumeric type.</p></td>
-</tr>
-<tr>
-<td align="left"><code class="computeroutput">static_cast&lt;T&gt;(s)</code></td>
-<td align="left">T</td>
-<td align="left"><p>convert the value of s to type T. If the value of s
-              cannot be correctly represented as a type T, it is an error.
-              </p></td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399735840"></a>Example of use</h4></div></div></div>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<a name="idm63515534256"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><a href="../../include/safe_integer_literal.hpp" target="_top"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">numeric</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span></a>
 
 <span class="keyword">constexpr</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">::</span><span class="identifier">safe_signed_literal</span><span class="special">&lt;</span><span class="number">42</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">;</span>
 </pre>
@@ -231,9 +154,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm450399719312"></a>Header</h4></div></div></div>
-<p><a href="../../include/safe_literal.hpp" target="_top">#include
-    &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;</a></p>
+<a name="idm63515517264"></a>Header</h4></div></div></div>
+<p><a href="../../include/safe_integer_literal.hpp" target="_top">#include
+    &lt;boost/numeric/safe_numerics/safe_integer_literal.hpp&gt;</a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

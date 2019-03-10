@@ -96,7 +96,8 @@
             <entry><link linkend="safe_numerics.numeric"><link
             linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
 
-            <entry><para>Default value is <code>void</code></para></entry>
+            <entry><para>Optional promotion policy. Default value is
+            <code>void</code></para></entry>
           </row>
 
           <row>
@@ -106,7 +107,8 @@
             linkend="safe_numerics.exception_policy">Exception
             Policy&lt;EP&gt;</link></link></entry>
 
-            <entry><para>Default value is <code>void</code></para></entry>
+            <entry><para>Optional exception policy. Default value is
+            <code>void</code></para></entry>
           </row>
         </tbody>
       </tgroup>
@@ -117,9 +119,9 @@
     <title>Inherited Valid Expressions</title>
 
     <para>safe literal types are immutable. Hence they only inherit those
-    valid expressions which don't change the value. This excludes assignment,
-    increment, and decrement and all unary operators except unary -, + and ~.
-    Other than that, they can be used anywhere a <link
+    valid expressions which don't change the value. <emphasis>This excludes
+    assignment, increment, and decrement and all unary operators except unary
+    -, + and ~</emphasis>. Other than that, they can be used anywhere a <link
     linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type can
     be used. Note that the default promotion and exception policies are void.
     This is usually convenient since when a safe literal is used in a binary
@@ -146,120 +148,9 @@ constexpr safe&lt;int&gt; z = x / y;
   </section>
 
   <section>
-    <title>Valid Expression</title>
-
-    <para><informaltable>
-        <tgroup cols="3">
-          <colspec align="left" colwidth="1*"/>
-
-          <colspec align="left" colwidth="1*"/>
-
-          <colspec align="left" colwidth="3*"/>
-
-          <thead>
-            <row>
-              <entry align="left">Expression</entry>
-
-              <entry align="left">Result Type</entry>
-
-              <entry>Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry><code>t op s</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>invoke C++ operator op and return another
-              SafeNumeric type.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>s1 op s2</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>invoke C++ operator op and return another
-              SafeNumeric type.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>prefix_op S</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>invoke C++ operator <code>prefix_op</code> and
-              return another SafeNumeric type.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>S postfix_op</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>invoke C++ operator <code>postfix_op</code> and
-              return another SafeNumeric type.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>s assign_op t</code></entry>
-
-              <entry>S1</entry>
-
-              <entry><para>convert t to type S and assign it to s. If the
-              value t cannot be represented as an instance of type S, it is an
-              error.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>S(t)</code></entry>
-
-              <entry>unspecified S</entry>
-
-              <entry><para>construct an instance of S from a value of type T.
-              If the value t cannot be represented as an instance of type S,
-              it is an error.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>S</code></entry>
-
-              <entry>S</entry>
-
-              <entry><para>construct an uninitialized instance of
-              S.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>is_safe&lt;S&gt;</code></entry>
-
-              <entry><code>std::true_type</code> or
-              <code>std::false_type</code></entry>
-
-              <entry><para>type trait to query whether any type S fulfills the
-              requirements for a SafeNumeric type.</para></entry>
-            </row>
-
-            <row>
-              <entry><code>static_cast&lt;T&gt;(s)</code></entry>
-
-              <entry>T</entry>
-
-              <entry><para>convert the value of s to type T. If the value of s
-              cannot be correctly represented as a type T, it is an error.
-              </para></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable></para>
-  </section>
-
-  <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;
+    <programlisting><ulink url="../../include/safe_integer_literal.hpp">#include &lt;boost/numeric/safe_numerics/safe_integer_literal.hpp&gt;</ulink>
 
 constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
 </programlisting>
@@ -276,7 +167,7 @@ constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
   <section>
     <title>Header</title>
 
-    <para><ulink url="../../include/safe_literal.hpp">#include
-    &lt;boost/numeric/safe_numerics/safe_literal.hpp&gt;</ulink></para>
+    <para><ulink url="../../include/safe_integer_literal.hpp">#include
+    &lt;boost/numeric/safe_numerics/safe_integer_literal.hpp&gt;</ulink></para>
   </section>
 </section>

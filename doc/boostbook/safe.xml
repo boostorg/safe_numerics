@@ -123,7 +123,7 @@
             <entry><link linkend="safe_numerics.numeric"><link
             linkend="safe_numerics.promotion_policy">PromotionPolicy&lt;PP&gt;</link></link></entry>
 
-            <entry><para>Default value is <link
+            <entry><para>Optional promotion policy. Default value is <link
             linkend="safe_numerics.promotion_policies.native"><code>boost::numeric::native</code></link></para></entry>
           </row>
 
@@ -134,7 +134,7 @@
             linkend="safe_numerics.exception_policy">Exception
             Policy&lt;EP&gt;</link></link></entry>
 
-            <entry><para>Default value is <link
+            <entry><para>Optional exception policy. Default value is <link
             linkend="safe_numerics.exception_policies.default_exception_policy"><code>boost::numeric::default_exception_policy</code></link></para></entry>
           </row>
         </tbody>
