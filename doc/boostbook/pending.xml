@@ -99,17 +99,6 @@ struct range {
   </section>
 
   <section>
-    <title><code>Safe</code> values Can Be Uninitialized</title>
-
-    <para>Currently the library permits a <code>safe&lt;int&gt;</code> value
-    to be uninitialized. This supports the goal of "drop-in" replacement of
-    C++/C built-in types with safe counter parts. On the other hand, this
-    breaks the "always valid" guarantee. The recent improvements in the
-    exception policy implementation will permit a user to specify how this is
-    to be handled.</para>
-  </section>
-
-  <section>
     <title>Other Pending Issues</title>
 
     <para><itemizedlist>

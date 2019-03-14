@@ -328,5 +328,33 @@ typedef long int_least16_t;
         written in C.</para>
       </answer>
     </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Some compilers (including gcc and clang) include builtin
+        functions for checked addition, multiplication, etc. Does this library
+        use these intrinsics?</para>
+      </question>
+
+      <answer>
+        <para>No. I attempted to use these but they are currently not
+        <code>constexpr</code>. So I couldn't use these without breaking
+        <code>constexpr</code> compatibility for the safe numerics
+        primitives.</para>
+      </answer>
+    </qandaentry>
+
+    <qandaentry>
+      <question>
+        <para>Some compilers (including gcc and clang) included a builtin
+        function for detecting constants. This seemed attractive to eliminate
+        the requirement for the safe_literal type. Alas, these builtin
+        functions are defined as macros. Constants passed through functions
+        down into the safe numerics library cannot be detected as constants.
+        So the opportunity to make the library even more efficient by moving
+        more operations to compile time doesn't exist - contrary to my hopes
+        and expections.</para>
+      </question>
+    </qandaentry>
   </qandaset>
 </section>
