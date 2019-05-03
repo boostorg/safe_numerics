@@ -201,7 +201,7 @@
 
       <para><programlisting>#include &lt;exception&gt;
 #include &lt;iostream&gt;
-#include &lt;boost/numeric/safe.hpp&gt;
+#include &lt;safe_integer.hpp&gt;
 
 void f(){
     using namespace boost::numeric;
@@ -293,7 +293,7 @@ void f(){
       for exceptions is necessary. The following example illustrates
       this.</para>
 
-      <para><programlisting>#include &lt;boost/numeric/safe.hpp&gt;
+      <para><programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt;
 #include &lt;iostream&gt;
 
 int main(int, char[]){

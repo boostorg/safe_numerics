@@ -152,7 +152,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
     <title>How It Works</title>
 
     <para>The library implements special versions of <code>int</code>,
-    <code>unsigned</code>, etc. named <code>safe&lt;int&gt;</code>,
+    <code>unsigned</code>, etc. Named <code>safe&lt;int&gt;</code>,
     <code>safe&lt;unsigned int&gt;</code> etc. These behave exactly like the
     underlying types <emphasis role="bold">except</emphasis> that expressions
     using these types fulfill the above guarantee. These "safe" types are

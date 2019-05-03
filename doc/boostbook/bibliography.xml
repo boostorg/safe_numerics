@@ -55,6 +55,22 @@
     </biblioentry>
 
     <biblioentry id="crowl1">
+      <abbrev>Cook</abbrev>
+
+      <author>
+        <firstname>John D.</firstname>
+
+        <surname>Cook</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://www.johndcook.com/blog/ieee_exceptions_in_cpp/">IEEE
+        floating-point exceptions in C++</ulink>
+      </title>
+    </biblioentry>
+
+    <biblioentry id="crowl1">
       <abbrev>Crowl</abbrev>
 
       <author>
@@ -174,6 +190,30 @@
       </publishername>
 
       <date>December 23, 2014</date>
+    </biblioentry>
+
+    <biblioentry id="garcia">
+      <abbrev>Goldberg</abbrev>
+
+      <author>
+        <firstname>David</firstname>
+
+        <surname>Goldberg</surname>
+      </author>
+
+      <title>
+        <ulink
+        url="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">What
+        Every Computer Scientist Should Know About Floating-Point
+        Arithmetic</ulink>
+      </title>
+
+      <publishername>
+        <ulink url="https://csur.acm.org/index.cfm">ACM Computing
+        Surveys</ulink>
+      </publishername>
+
+      <date>March, 1991</date>
     </biblioentry>
 
     <biblioentry id="katz">
@@ -495,7 +535,7 @@
         <surname>Stroustrup</surname>
       </author>
 
-      <title>The C++ Programming Language </title>
+      <title>The C++ Programming Language</title>
 
       <edition>Fourth Edition</edition>
 
