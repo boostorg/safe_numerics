@@ -4,7 +4,17 @@ cmake_minimum_required(VERSION 3.6)
 
 project("SafeIntegers")
 enable_language(CXX)
-set(CMAKE_CXX_STANDARD 14)
+
+########################################################
+# Create interface library
+#
+add_library(boost_safe_numerics INTERFACE)
+add_library(Boost::safe_numerics ALIAS boost_safe_numerics)
+
+target_include_directories(boost_safe_numerics INTERFACE include)
+target_compile_features(boost_safe_numerics INTERFACE cxx_std_14)
+
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -45,6 +55,8 @@ foreach(dir ${dirs})
   message(STATUS "   ${dir}")
 endforeach()
 
+target_link_libraries(boost_safe_numerics INTERFACE Boost::boost)
+
 #use folders in organization of the IDE
 set(USE_FOLDERS TRUE)
 
@@ -70,6 +82,7 @@ endif()
 function(test_run_pass base_name )
   message(STATUS ${base_name})
   add_executable(${base_name} ${base_name}.cpp)
+  target_link_libraries(${base_name} PUBLIC Boost::safe_numerics)
   add_test(NAME ${base_name} COMMAND ${base_name})
 endfunction(test_run_pass)
 
@@ -82,6 +95,7 @@ function(test_compile_fail base_name )
   message(STATUS ${base_name})
   # Add failing-to-compile targets
   add_executable(${base_name} ${base_name}.cpp)
+  target_link_libraries(${base_name} PUBLIC Boost::safe_numerics)
 
   # Avoid building these targets normally
   set_target_properties(${base_name} PROPERTIES
@@ -105,9 +119,6 @@ endfunction( test_compile_fail base_name )
 ########################################################
 # End Compiler settings
 #
-
-include_directories("${Boost_INCLUDE_DIRS}")
-include_directories("include")
 
 enable_testing()
 
