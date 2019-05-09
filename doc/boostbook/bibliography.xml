@@ -54,7 +54,7 @@
       <date>January 15, 2012</date>
     </biblioentry>
 
-    <biblioentry id="crowl1">
+    <biblioentry id="cook">
       <abbrev>Cook</abbrev>
 
       <author>
@@ -70,7 +70,7 @@
       </title>
     </biblioentry>
 
-    <biblioentry id="crowl1">
+    <biblioentry id="crowl">
       <abbrev>Crowl</abbrev>
 
       <author>
@@ -192,7 +192,7 @@
       <date>December 23, 2014</date>
     </biblioentry>
 
-    <biblioentry id="garcia">
+    <biblioentry id="goldberg">
       <abbrev>Goldberg</abbrev>
 
       <author>

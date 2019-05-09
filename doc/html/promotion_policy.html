@@ -21,15 +21,15 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="promotion_policy.html#idm63516284016">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm63516273424">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm63516247984">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm63516223072">Models</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm63516128016">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm130203778896">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm130203768304">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm130203759120">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm130203734208">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm130203639168">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm63516284016"></a>Description</h4></div></div></div>
+<a name="idm130203778896"></a>Description</h4></div></div></div>
 <p>In C++, arithmetic operations result in types which may or may not
     be the same as the constituent types. A promotion policy determines the
     type of the result of an arithmetic operation. For example, in the
@@ -44,7 +44,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm63516273424"></a>Notation</h4></div></div></div>
+<a name="idm130203768304"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -70,7 +70,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm63516247984"></a>Valid Expressions</h4></div></div></div>
+<a name="idm130203759120"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.These expressions return a
     type which can be used as the basis create a SafeNumeric type.</p>
@@ -143,7 +143,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm63516223072"></a>Models</h4></div></div></div>
+<a name="idm130203734208"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -223,7 +223,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm63516128016"></a>Header</h4></div></div></div>
+<a name="idm130203639168"></a>Header</h4></div></div></div>
 <p><a href="../../include/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
     </code></a></p>
