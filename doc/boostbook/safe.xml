@@ -318,7 +318,8 @@ int main(int, char[]){
   <section>
     <title>Header</title>
 
-    <para><filename><ulink url="../../include/safe_integer.hpp">#include
+    <para><filename><ulink
+    url="../../include/boost/safe_numerics/safe_integer.hpp">#include
     &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
   </section>
 </section>

@@ -76,7 +76,8 @@ assert(safe_compare::less_than(x, y)); // OK</programlisting>
   <section>
     <title>Header</title>
 
-    <para><ulink url="../../include/safe_compare.hpp"><code>#include
+    <para><ulink
+    url="../../include/boost/safe_numerics/safe_compare.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/safe_compare.hpp&gt;
     </code></ulink></para>
   </section>

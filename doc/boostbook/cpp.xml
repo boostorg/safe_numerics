@@ -130,7 +130,8 @@
   <section>
     <title>Header</title>
 
-    <para><code><ulink url="../../include/cpp.hpp"><code>#include
+    <para><code><ulink
+    url="../../include/boost/safe_numerics/cpp.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/cpp.hpp&gt; </code></ulink></code></para>
   </section>
 </section>

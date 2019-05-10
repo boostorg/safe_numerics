@@ -330,7 +330,8 @@ int main(){
   <section>
     <title>Header</title>
 
-    <para><ulink url="../../include/concept/safe_numeric.hpp"><code>#include
+    <para><ulink
+    url="../../include/boost/safe_numerics/concept/safe_numeric.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
   </section>
 </section>

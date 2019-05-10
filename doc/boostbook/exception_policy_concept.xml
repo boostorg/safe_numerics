@@ -147,7 +147,7 @@ dispatch&lt;boost::numeric::loose_exception_policy&gt;(
     <title>Models</title>
 
     <para>The library header <ulink
-    url="../../include/exception_policies.hpp"><code>&lt;boost/numerics/safe_numerics/exception_policies.hpp&gt;
+    url="../../include/boost/safe_numerics/exception_policies.hpp"><code>&lt;boost/numerics/safe_numerics/exception_policies.hpp&gt;
     </code></ulink>contains a number of pre-made exception policies:</para>
 
     <itemizedlist>
@@ -204,7 +204,7 @@ dispatch&lt;boost::numeric::loose_exception_policy&gt;(
     <title>Header</title>
 
     <para><ulink
-    url="../../include/concept/exception_policy.hpp"><code>#include
+    url="../../include/boost/safe_numerics/concept/exception_policy.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/concepts/exception_policy.hpp&gt;
     </code></ulink></para>
   </section>

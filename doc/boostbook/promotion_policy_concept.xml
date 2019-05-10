@@ -255,7 +255,7 @@ x + y; // detect possible overflow on the pic.</programlisting></para>
     <title>Header</title>
 
     <para><ulink
-    url="../../include/concept/promotion_policy.hpp"><code>#include
+    url="../../include/boost/safe_numerics/concept/promotion_policy.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
     </code></ulink></para>
   </section>

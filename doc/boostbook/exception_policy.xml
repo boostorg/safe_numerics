@@ -256,7 +256,7 @@ using logging_exception_policy = exception_policy&lt;
     <title>Header</title>
 
     <para><ulink
-    url="../../include/concept/exception_policy.hpp"><code>#include
+    url="../../include/boost/safe_numerics/concept/exception_policy.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/concept/exception_policy.hpp&gt;</code></ulink></para>
   </section>
 </section>

@@ -124,16 +124,18 @@ checked_result&lt;R&gt; constexpr checked::bitwise_xor(const R &amp; t, const R 
   <section>
     <title>Header</title>
 
-    <para><ulink url="../../include/checked.hpp"><code>#include
+    <para><ulink
+    url="../../include/boost/safe_numerics/checked_default.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/checked_default.hpp&gt;
     </code></ulink></para>
 
-    <para><ulink url="../../include/checked_integer.hpp"><code>#include
+    <para><ulink
+    url="../../include/boost/safe_numerics/checked_integer.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/checked_integer.hpp&gt;
     </code></ulink></para>
 
     <para><ulink url="../../include/checked.hpp"><code/></ulink><ulink
-    url="../../include/checked_float.hpp"><code>#include
+    url="../../include/boost/safe_numerics/checked_float.hpp"><code>#include
     &lt;boost/numeric/safe_numerics/checked_float.hpp&gt;
     </code></ulink></para>
   </section>

@@ -177,7 +177,8 @@
   <section>
     <title>Header</title>
 
-    <para><filename><ulink url="../../include/safe_range.hpp">#include
+    <para><filename><ulink
+    url="../../include/boost/safe_numerics/safe_integer_range.hpp">#include
     &lt;boost/numeric/safe_numerics/safe_range.hpp&gt;</ulink></filename></para>
   </section>
 </section>
