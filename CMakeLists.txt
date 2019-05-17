@@ -1,12 +1,18 @@
 # CMake build control file for safe numerics Library Examples
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.8.6)
 
 project("SafeIntegers")
 enable_language(CXX)
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+
+########################################################
+# Create interface library
+#
+add_library(boost_safe_numerics INTERFACE)
+add_library(Boost::safe_numerics ALIAS boost_safe_numerics)
+
+target_include_directories(boost_safe_numerics INTERFACE "${Boost_INCLUDE_DIRS}")
+target_compile_features(boost_safe_numerics INTERFACE cxx_std_14)
 
 ########################################################
 # Compiler settings - special settings for known compilers
@@ -31,10 +37,11 @@ find_package(Boost )
 
 if(Boost_FOUND)
   if( CMAKE_HOST_APPLE )
-    set(Boost_ADDRESS_MODEL 64 CACHE INTEGER "32/64 bits")
+    set(Boost_ADDRESS_MODEL 64 CACHE STRING "32/64 bits")
   endif()
   message(STATUS "Boost directories found at ${Boost_INCLUDE_DIRS}")
   message(STATUS "Boost version found is ${Boost_VERSION}")
+  include_directories("${Boost_INCLUDE_DIRS}")  # note: sets header search path?
 elseif()
     message("Boost NOT Found!")
 endif()
@@ -101,13 +108,9 @@ function(test_compile_fail base_name )
   set_tests_properties(${base_name} PROPERTIES WILL_FAIL TRUE)
 endfunction( test_compile_fail base_name )
 
-
 ########################################################
 # End Compiler settings
 #
-
-include_directories("${Boost_INCLUDE_DIRS}")
-include_directories("include")
 
 enable_testing()
 
