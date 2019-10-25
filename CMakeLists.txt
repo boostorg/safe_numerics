@@ -18,6 +18,10 @@ target_compile_features(boost_safe_numerics INTERFACE cxx_std_14)
 # Compiler settings - special settings for known compilers
 #
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 message(STATUS "compiler is ${CMAKE_CXX_COMPILER_ID}" )
 
 if( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
