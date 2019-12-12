@@ -54,7 +54,7 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
         }
     }
     {
-        /* test conversion to T1 from safe<T2>(v2) */
+        /* test conversion to T2 from safe<T1>(v1) */
         safe<T1> s1(v1);
         try{
             auto result = static_cast<T2>(s1);
@@ -92,15 +92,6 @@ bool test_cast(T1 v1, const char *t2_name, const char *t1_name){
 #include "test_values.hpp"
 
 using namespace boost::mp11;
-
-template<typename T>
-using extract_value_type = typename T::value_type;
-using test_types = mp_unique<
-    mp_transform<
-        extract_value_type,
-        test_values
-    >
->;
 
 struct test {
     bool m_error;

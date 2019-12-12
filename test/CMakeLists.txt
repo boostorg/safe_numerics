@@ -78,6 +78,7 @@ endforeach(test_name)
 set(safe_constexpr_test_list
   test_add_automatic_constexpr
   test_add_native_constexpr
+  test_cast_constexpr
   test_divide_automatic_constexpr
   test_divide_native_constexpr
   test_equal_automatic_constexpr

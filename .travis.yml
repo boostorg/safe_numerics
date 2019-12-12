@@ -55,17 +55,6 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      compiler: clang++-3.8
-      env: TOOLSET=clang COMPILER=clang++-3.8 CXXSTD=14,1z
-      addons:
-        apt:
-          packages:
-            - clang-3.8
-            - libstdc++-5-dev
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - os: linux
       compiler: clang++-3.9
       env: TOOLSET=clang COMPILER=clang++-3.9 CXXSTD=14,1z
       addons:

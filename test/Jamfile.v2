@@ -75,11 +75,11 @@ run test_z.cpp ;
 
 # compile fail tests
 
-compile-fail test_constexpr.cpp ;
 compile-fail test_trap.cpp ;
 
 # safe integer constexpr tests
 
+compile test_cast_constexpr.cpp ;
 compile test_add_automatic_constexpr.cpp ;
 compile test_add_native_constexpr.cpp ;
 compile test_divide_automatic_constexpr.cpp ;

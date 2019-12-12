@@ -232,7 +232,7 @@ constexpr T base_value(const T & t){
     return t;
 }
 
-template<typename R, R Min, R Max, typename T, typename E>
+template<typename R, R Min, R Max, typename E>
 struct validate_detail {
 
     constexpr static const interval<checked_result<R>> t_interval{
@@ -729,7 +729,7 @@ int main(){
 
 #include <iostream>
 #include <boost/safe_numerics/safe_integer.hpp>
-#include <boost/safe_numerics/automatic.hpp>
+//#include <boost/safe_numerics/automatic.hpp>
 
 using namespace boost::safe_numerics;
 
@@ -755,4 +755,30 @@ int main(){
 }
 #endif
 
-int main(){}
+#include <cstdint>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+
+template <uintmax_t Min, uintmax_t Max>
+using urange = boost::safe_numerics::safe_unsigned_range<
+    Min,
+    Max,
+    boost::safe_numerics::native,
+    boost::safe_numerics::strict_trap_policy
+>;
+
+template <uintmax_t N>
+using ulit = boost::safe_numerics::safe_unsigned_literal<
+    N,
+    boost::safe_numerics::native,
+    boost::safe_numerics::strict_trap_policy
+>;
+
+int main(){
+    urange<0,4095> x = ulit<0>(); // 12 bits
+    urange<0, 69615> y = x * ulit<17>(); // no error - resulting value
+        // cannot exceed  69615
+    auto z = y / ulit<17>() ; //Boom, compile-time error
+    return z;
+}
+
