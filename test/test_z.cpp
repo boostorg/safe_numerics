@@ -753,7 +753,7 @@ int main(){
 
     return 0;
 }
-#endif
+
 
 #include <cstdint>
 #include <boost/safe_numerics/safe_integer_range.hpp>
@@ -782,3 +782,12 @@ int main(){
     return z;
 }
 
+#endif
+
+#include <boost/safe_numerics/safe_integer_range.hpp>
+
+int main(){
+    using namespace boost::safe_numerics;
+    safe_unsigned_range<0, 36> a = 30;
+    return 0;
+}

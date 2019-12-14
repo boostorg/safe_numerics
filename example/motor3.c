@@ -124,9 +124,11 @@ void __interrupt isr_motor_step(void) { // CCP1 match -> step pulse + IRQ
                 // *** possible positive overflow on update of c
                 // note: re-arrange expression to avoid negative result
                 // from difference of two unsigned values
-                c += literal(2) * c / (literal(4) * (m - i) - literal(1));
-                if(c > C0){
-                    c = C0;
+                {
+                    // testing discovered that this can overflow.  It's not easy to
+                    // avoid so we'll use a temporary unsigned variable 32 bits wide
+                    const temp_t x = c + literal(2) * c / (literal(4) * (m - i) - literal(1));
+                    c = x > C0 ? C0 : x;
                 }
                 break;
             default:

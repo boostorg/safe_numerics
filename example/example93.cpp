@@ -110,6 +110,13 @@ using c_t = boost::safe_numerics::safe_unsigned_range<
     exception_policy
 >;
 
+// 32 bit unsigned integer used for temporary purposes
+using temp_t = boost::safe_numerics::safe_unsigned_range<
+    0, 0xffffffff,
+    pic16_promotion,
+    exception_policy
+>;
+
 // index into phase table
 // note: The legal values are 0-3.  So why must this be a signed
 // type?  Turns out that expressions like phase_ix + d
@@ -277,7 +284,7 @@ int main(){
     try {
         initialize();
         // move motor to position 1000
-        result &= test(literal(1000));
+        result &= test(literal(9000));
         // move to the left before zero position
         // fails to compile !
         // result &= ! test(-10);

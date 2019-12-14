@@ -43,13 +43,13 @@ struct validate_detail {
             // INT08-C
             const r_type rx = heterogeneous_checked_operation<
                 R,
+                Min,
+                Max,
                 typename base_type<T>::type,
                 dispatch_and_return<E, R>
             >::cast(t);
-            const R r = rx.exception()
-                ? static_cast<R>(t)
-                : rx.m_r;
-            return r;
+
+            return rx;
         }
     };
     struct exception_not_possible {
@@ -70,13 +70,11 @@ struct validate_detail {
         };
         constexpr const interval<r_type> r_interval{r_type(Min), r_type(Max)};
 
-        /*
         static_assert(
             true != static_cast<bool>(r_interval.excludes(t_interval)),
             "can't cast from ranges that don't overlap"
         );
-        */
-        
+
         return std::conditional<
             static_cast<bool>(r_interval.includes(t_interval)),
             exception_not_possible,
@@ -290,6 +288,8 @@ constexpr static casting_helper(const T & t, const U & u){
     using r_type = checked_result<R>;
     const r_type tx = heterogeneous_checked_operation<
         R,
+        std::numeric_limits<R>::min(),
+        std::numeric_limits<R>::max(),
         typename base_type<T>::type,
         dispatch_and_return<EP, R>
     >::cast(base_value(t));
@@ -299,6 +299,8 @@ constexpr static casting_helper(const T & t, const U & u){
 
     const r_type ux = heterogeneous_checked_operation<
         R,
+        std::numeric_limits<R>::min(),
+        std::numeric_limits<R>::max(),
         typename base_type<U>::type,
         dispatch_and_return<EP, R>
     >::cast(base_value(u));
