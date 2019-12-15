@@ -9,7 +9,7 @@ using safe_t = boost::safe_numerics::safe<
     boost::safe_numerics::loose_trap_policy  // note use of "loose_trap_exception" policy!
 >;
 
-int main(int argc, const char * argv[]){
+int main(){
     std::cout << "example 81:\n";
     safe_t x(INT_MAX);
     safe_t y(2);

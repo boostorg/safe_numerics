@@ -22,10 +22,9 @@ set(run_examples_list
   example18
   example19
   example20
-  # example81 # requires console input
   example82
   example83
-  # example84 # requires console input
+  example84
   example92
   example93
 )
@@ -34,6 +33,9 @@ foreach(test_name ${run_examples_list})
   test_run_pass(${test_name})
   set_target_properties(${test_name} PROPERTIES FOLDER "run test examples")
 endforeach(test_name)
+
+test_compile_fail(example81)
+set_target_properties(example81 PROPERTIES FOLDER "safe numeric compile fail tests")
 
 # end examples targets
 ####################
