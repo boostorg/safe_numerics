@@ -52,8 +52,10 @@ struct test {
 #include "check_symmetry.hpp"
 
 int main(){
-    // sanity check on test matrix - should be symetrical
-    check_symmetry(test_addition_native_result);
+    static_assert(
+        check_symmetry(test_addition_native_result),
+        "sanity check on test matrix - should be symmetrical"
+    );
 
     test<test_values> rval(true);
 

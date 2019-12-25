@@ -31,11 +31,9 @@ struct test_pair {
 
 #include <boost/mp11/list.hpp>
 #include <boost/mp11/algorithm.hpp>
-#include "check_symmetry.hpp"
 
 int main(){
     using namespace boost::mp11;
-
     using value_indices = mp_iota_c<mp_size<test_values>::value>;
 
     static_assert(

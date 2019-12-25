@@ -67,9 +67,14 @@ struct test_unsigned_pair {
 
 int main(){
     using namespace boost::mp11;
-    // sanity check on test matrix - should be symetrical
-    check_symmetry(signed_or_results);
-    check_symmetry(unsigned_or_results);
+    static_assert(
+        check_symmetry(signed_or_results),
+        "sanity check on test matrix - should be symmetrical"
+    );
+    static_assert(
+        check_symmetry(unsigned_or_results),
+        "sanity check on test matrix - should be symmetrical"
+    );
 
     static_assert(
         mp_all_of<

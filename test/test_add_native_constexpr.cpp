@@ -37,8 +37,10 @@ struct test_pair {
 int main(){
     using namespace boost::mp11;
 
-    // sanity check on test matrix - should be symetrical
-    check_symmetry(test_addition_native_result);
+    static_assert(
+        check_symmetry(test_addition_native_result),
+        "sanity check on test matrix - should be symmetrical"
+    );
 
     using value_indices = mp_iota_c<mp_size<test_values>::value>;
 

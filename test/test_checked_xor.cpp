@@ -36,12 +36,15 @@ bool test_checked_xor(
     case '-':
         if(safe_numerics_error::negative_overflow_error == result.m_e)
             return true;
+        break;
     case '+':
         if(safe_numerics_error::positive_overflow_error == result.m_e)
             return true;
+        break;
     case '!':
         if(safe_numerics_error::range_error == result.m_e)
             return true;
+        break;
     }
     std::cout
         << "failed to detect error in exclusive or "
@@ -89,11 +92,16 @@ struct test_unsigned_pair {
 #include <boost/mp11/algorithm.hpp>
 
 int main(){
-    using namespace boost::mp11;
-    // sanity check on test matrix - should be symetrical
-    check_symmetry(signed_xor_results);
-    check_symmetry(unsigned_xor_results);
+    static_assert(
+        check_symmetry(signed_xor_results),
+        "sanity check on test matrix - should be symmetrical"
+    );
+    static_assert(
+        check_symmetry(unsigned_xor_results),
+        "sanity check on test matrix - should be symmetrical"
+    );
 
+    using namespace boost::mp11;
     bool rval = true;
 
     std::cout << "*** testing signed values\n";

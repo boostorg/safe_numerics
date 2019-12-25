@@ -36,15 +36,18 @@ bool test_checked_subtract(
     case '-':
         if(safe_numerics_error::negative_overflow_error == result.m_e)
             return true;
+        break;
     case '+':
         if(safe_numerics_error::positive_overflow_error == result.m_e)
             return true;
+        break;
     case '!':
         if(safe_numerics_error::range_error == result.m_e)
             return true;
+        break;
     }
     std::cout
-        << "failed to detect error in ition "
+        << "failed to detect error in subtraction "
         << std::hex << result << "(" << std::dec << result << ")"
         << " != "<< v1 << " - " << v2
         << std::endl;
