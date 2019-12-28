@@ -13,6 +13,7 @@ project
         [ requires cxx14_constexpr ]
         # toolset optimizations
         <c++-template-depth>1024
+        <warnings>extra
     ;
 
 # compile and run tests
