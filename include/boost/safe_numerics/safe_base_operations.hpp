@@ -609,7 +609,7 @@ private:
         return t_interval * u_interval;
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -697,7 +697,7 @@ private:
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-    constexpr static int bits = std::min(
+    constexpr static const int bits = std::min(
         std::numeric_limits<std::uintmax_t>::digits,
         std::max(std::initializer_list<int>{
             std::numeric_limits<result_base_type>::digits,
@@ -852,7 +852,7 @@ private:
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-    constexpr static int bits = std::min(
+    constexpr static const int bits = std::min(
         std::numeric_limits<std::uintmax_t>::digits,
         std::max(std::initializer_list<int>{
             std::numeric_limits<result_base_type>::digits,
@@ -1237,7 +1237,7 @@ private:
         return (t_interval << u_interval);
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -1258,8 +1258,8 @@ private:
         return false;
     }
 
-    constexpr static auto rl = return_interval.l;
-    constexpr static auto ru = return_interval.u;
+    constexpr static const auto rl = return_interval.l;
+    constexpr static const auto ru = return_interval.u;
 
 public:
     using type =
@@ -1370,7 +1370,7 @@ struct right_shift_result {
         return (t_interval() >> u_interval());
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
