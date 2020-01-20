@@ -17,6 +17,8 @@
 
 #include "utility.hpp" // log
 
+#include "concept/integer.hpp"
+
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
 
@@ -158,7 +160,10 @@ constexpr interval<T> operator%(const interval<T> & t, const interval<T> & u){
 
 template<typename T>
 constexpr interval<T> operator<<(const interval<T> & t, const interval<T> & u){
-//    static_assert(std::is_integral<T>::value, "left shift only defined for integral type");
+    static_assert(
+        boost::safe_numerics::Integer<T>::value,
+        "left shift only defined for integral type"
+    );
     //return interval<T>{t.l << u.l, t.u << u.u};
     return utility::minmax<T>(
         std::initializer_list<T> {
@@ -172,7 +177,10 @@ constexpr interval<T> operator<<(const interval<T> & t, const interval<T> & u){
 
 template<typename T>
 constexpr interval<T> operator>>(const interval<T> & t, const interval<T> & u){
-//    static_assert(std::is_integral<T>::value, "right shift only defined for integral type");
+    static_assert(
+        boost::safe_numerics::Integer<T>::value,
+        "right shift only defined for integral type"
+    );
     //return interval<T>{t.l >> u.u, t.u >> u.l};
     return utility::minmax<T>(
         std::initializer_list<T> {

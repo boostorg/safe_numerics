@@ -27,7 +27,8 @@ int main(int, const char *[]){
     >;
 
     // use rationals created with safe_t
-    const safe_rational sc {1, INT_MAX};
+    const safe_rational sc {1, std::numeric_limits<int>::max()};
+
     std::cout << "c = " << sc << std::endl;
     const safe_rational sd {1, 2};
     std::cout << "d = " << sd << std::endl;

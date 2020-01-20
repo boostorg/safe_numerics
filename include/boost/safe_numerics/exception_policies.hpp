@@ -21,25 +21,25 @@ template<
     typename UV
 >
 struct exception_policy {
-    static constexpr void on_arithmetic_error(
+    constexpr static void on_arithmetic_error(
         const safe_numerics_error & e,
         const char * msg
     ){
         AE(e, msg);
     }
-    static constexpr void on_implementation_defined_behavior(
+    constexpr static void on_implementation_defined_behavior(
         const safe_numerics_error & e,
         const char * msg
     ){
         IDB(e, msg);
     }
-    static constexpr void on_undefined_behavior(
+    constexpr static void on_undefined_behavior(
         const safe_numerics_error & e,
         const char * msg
     ){
         UB(e, msg);
     }
-    static constexpr void on_uninitialized_value(
+    constexpr static void on_uninitialized_value(
         const safe_numerics_error & e,
         const char * msg
     ){
