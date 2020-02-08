@@ -30,7 +30,6 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      dist: trusty
       compiler: g++-7
       env: TOOLSET=gcc COMPILER=g++-7 CXXSTD=14,17
       addons:
@@ -52,7 +51,7 @@ matrix:
 
     - os: linux
       compiler: g++-9
-      env: TOOLSET=gcc COMPILER=g++-8 CXXSTD=14,17
+      env: TOOLSET=gcc COMPILER=g++-9 CXXSTD=14,17,2a
       addons:
         apt:
           packages:
@@ -62,18 +61,36 @@ matrix:
 
     - os: linux
       arch: arm64
-      compiler: g++
-      env: TOOLSET=gcc COMPILER=g++ CXXSTD=14
+      compiler: g++-6
+      env: TOOLSET=gcc COMPILER=g++-6 CXXSTD=14
+      addons:
+        apt:
+          packages:
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
 
     - os: linux
       arch: ppc64le
-      compiler: g++
-      env: TOOLSET=gcc COMPILER=g++ CXXSTD=14
+      compiler: g++-7
+      env: TOOLSET=gcc COMPILER=g++-7 CXXSTD=14
+      addons:
+        apt:
+          packages:
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
 
     - os: linux
       arch: s390x
-      compiler: g++
-      env: TOOLSET=gcc COMPILER=g++ CXXSTD=14
+      compiler: g++-8
+      env: TOOLSET=gcc COMPILER=g++-8 CXXSTD=14
+      addons:
+        apt:
+          packages:
+            - g++-8
+          sources:
+            - ubuntu-toolchain-r-test
 
     - os: linux
       compiler: clang++-3.9
