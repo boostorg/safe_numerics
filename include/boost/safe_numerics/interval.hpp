@@ -1,5 +1,5 @@
-#ifndef BOOST_NUMERIC_INTERVAL_HPP
-#define BOOST_NUMERIC_INTERVAL_HPP
+#ifndef BOOST_SAFE_NUMERICS_INTERVAL_HPP
+#define BOOST_SAFE_NUMERICS_INTERVAL_HPP
 
 //  Copyright (c) 2012 Robert Ramey
 //
@@ -47,9 +47,10 @@ struct interval {
         l(rhs.l),
         u(rhs.u)
     {}
-
-    constexpr interval();
-
+    constexpr interval() :
+        l(std::numeric_limits<R>::min()),
+        u(std::numeric_limits<R>::max())
+    {}
     // return true if this interval contains the given point
     constexpr tribool includes(const R & t) const {
         return l <= t && t <= u;
@@ -81,14 +82,18 @@ constexpr interval<R> make_interval(){
     return interval<R>();
 }
 template<class R>
-constexpr interval<R> make_interval(const R & r){
-    return interval<R>(r, r);
+constexpr interval<R> make_interval(const R &){
+    return interval<R>();
 }
+
+#if 0
 template<class R>
 constexpr interval<R>::interval() :
-    l(std::numeric_limits<R>::lowest()),
+    l(std::numeric_limits<R>::min()),
     u(std::numeric_limits<R>::max())
 {}
+#endif
+
 // account for the fact that for floats and doubles
 // the most negative value is called "lowest" rather
 // than min
@@ -314,5 +319,4 @@ operator<<(
 
 } // std
 
-
-#endif // BOOST_NUMERIC_INTERVAL_HPP
+#endif // BOOST_SAFE_NUMERICS_INTERVAL_HPP

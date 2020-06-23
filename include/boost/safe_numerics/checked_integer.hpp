@@ -130,7 +130,7 @@ struct heterogeneous_checked_operation<
             std::true_type   // T is signed
         ){
             return
-            boost::safe_numerics::safe_compare::less_than(t, 0) ?
+            boost::safe_numerics::safe_compare::less_than(t, Min) ?
                 F::template invoke<safe_numerics_error::domain_error>(
                     "converted negative value to unsigned"
                 )

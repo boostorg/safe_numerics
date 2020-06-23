@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>cpp&lt;int C, int S, int I, int L, int LL&gt;</title>
 <link rel="stylesheet" href="../boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
@@ -22,7 +22,7 @@
 <a name="safe_numerics.promotion_policies.cpp"></a>cpp&lt;int C, int S, int I, int L, int LL&gt;</h4></div></div></div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130202658416"></a>Description</h5></div></div></div>
+<a name="idm20547884800"></a>Description</h5></div></div></div>
 <p>This policy is used to promote safe types in arithmetic expressions
     according to the rules in the C++ standard. But rather than using the
     native C++ standard types supported by the compiler, it uses types whose
@@ -38,7 +38,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130202654880"></a>Template Parameters</h5></div></div></div>
+<a name="idm20547881264"></a>Template Parameters</h5></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -81,12 +81,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130202637904"></a>Model of</h5></div></div></div>
+<a name="idm20547864288"></a>Model of</h5></div></div></div>
 <p><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;">PromotionPolicy</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130202636192"></a>Example of Use</h5></div></div></div>
+<a name="idm20547862576"></a>Example of Use</h5></div></div></div>
 <p>Consider the following problem. One is developing software which
     uses a very small microprocessor and a very limited C compiler. The chip
     is so small, you can't print anything from the code, log, debug or
@@ -96,7 +96,7 @@
     usually the one used. But it can be quite time consuming.</p>
 <p>Consider an alternative. Build and compile your code in testable
     modules. For each module write a test which exercises all the code and
-    makes it work. Finally download your code into the chip and - voil&#224; -
+    makes it work. Finally download your code into the chip and - voilà -
     working product. This sounds great, but there's one problem. Our target
     processor - in this case a PIC162550 from Microchip Technology is only an
     8 bit CPU. The compiler we use defines INT as 8 bits. This (and a few
@@ -113,14 +113,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130202633184"></a>Header</h5></div></div></div>
-<p><code class="computeroutput"><a href="../../include/cpp.hpp" target="_top"><code class="computeroutput">#include
+<a name="idm20547859568"></a>Header</h5></div></div></div>
+<p><code class="computeroutput"><a href="../../include/boost/safe_numerics/cpp.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/cpp.hpp&gt; </code></a></code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright © 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

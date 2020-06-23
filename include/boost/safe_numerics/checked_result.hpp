@@ -101,7 +101,7 @@ struct checked_result {
     // accesors
     constexpr operator R() const  noexcept{
         // don't assert here.  Let the library catch these errors
-        assert(! exception());
+        // assert(! exception());
         return m_r;
     }
     

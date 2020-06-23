@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Safety Critical Embedded Controller</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
@@ -21,12 +21,12 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safety_critical_embedded_controller"></a>Safety Critical Embedded Controller</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130205797504">How a Stepper Motor Works</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130205785344">Updating the Code</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130205769072">Refactor for Testing</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130205760352">Compiling on the Desktop</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130205230160">Trapping Errors at Compile Time</a></span></dt>
-<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm130204123024">Summary</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20551051488">How a Stepper Motor Works</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20551039328">Updating the Code</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20551023056">Refactor for Testing</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20551014272">Compiling on the Desktop</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20550484064">Trapping Errors at Compile Time</a></span></dt>
+<dt><span class="section"><a href="safety_critical_embedded_controller.html#idm20549362080">Summary</a></span></dt>
 </dl></div>
 <p>Suppose we are given the task of creating stepper motor driver
   software to drive a robotic hand to be used in robotic micro surgery. The
@@ -42,9 +42,9 @@
   and test the code on the desktop.</p>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130205797504"></a>How a Stepper Motor Works</h4></div></div></div>
+<a name="idm20551051488"></a>How a Stepper Motor Works</h4></div></div></div>
 <div class="figure">
-<a name="idm130205796864"></a><p class="title"><b>Figure&#160;1.&#160;Stepper Motor</b></p>
+<a name="idm20551050848"></a><p class="title"><b>Figure 1. Stepper Motor</b></p>
 <div class="figure-contents"><div class="mediaobject" align="left"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="50%"><tr><td align="left"><img src="StepperMotor.gif" align="left" width="216" alt="Stepper Motor"></td></tr></table></div></div>
 </div>
 <br class="figure-break"><p>A stepper motor controller emits a pulse which causes the motor to
@@ -56,7 +56,7 @@
     motor is under load. Similarly, a loaded motor must be slowly decelerated
     down to a stop.</p>
 <div class="figure">
-<a name="idm130205792544"></a><p class="title"><b>Figure&#160;2.&#160;Motion Profile</b></p>
+<a name="idm20551046528"></a><p class="title"><b>Figure 2. Motion Profile</b></p>
 <div class="figure-contents"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="100%"><tr><td><img src="stepper_profile.png" width="100%" alt="Motion Profile"></td></tr></table></div></div>
 </div>
 <p><br class="figure-break"></p>
@@ -64,18 +64,18 @@
     accelerates. That is the pulse with has to be computed while the motor is
     in motion. This is illustrated in the above drawing. A program to
     accomplish this might look something like the following:</p>
-<div class="literallayout"><p>setup&#160;registers&#160;and&#160;step&#160;to&#160;zero&#160;position<br>
+<div class="literallayout"><p>setup registers and step to zero position<br>
 <br>
-specify&#160;target&#160;position<br>
-set&#160;initial&#160;time&#160;to&#160;interrupt<br>
-enable&#160;interrupts<br>
+specify target position<br>
+set initial time to interrupt<br>
+enable interrupts<br>
 <br>
-On&#160;interrupt<br>
-&#160;&#160;&#160;&#160;if&#160;at&#160;target&#160;position<br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;disable&#160;interrupts&#160;and&#160;return<br>
-&#160;&#160;&#160;&#160;calculate&#160;width&#160;of&#160;next&#160;step<br>
-&#160;&#160;&#160;&#160;change&#160;current&#160;winding&#160;according&#160;to&#160;motor&#160;direction<br>
-&#160;&#160;&#160;&#160;set&#160;delay&#160;time&#160;to&#160;next&#160;interrupt&#160;to&#160;width&#160;of&#160;next&#160;step</p></div>
+On interrupt<br>
+    if at target position<br>
+        disable interrupts and return<br>
+    calculate width of next step<br>
+    change current winding according to motor direction<br>
+    set delay time to next interrupt to width of next step</p></div>
 <p>Already, this is turning it to a much more complex project than it
     first seemed. Searching around the net, we find a popular <a href="../../example/stepper-motor.pdf" target="_top">article</a> on the operation of
     stepper motors using simple micro controllers. The algorithm is very well
@@ -86,7 +86,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130205785344"></a>Updating the Code</h4></div></div></div>
+<a name="idm20551039328"></a>Updating the Code</h4></div></div></div>
 <p>Inspecting this <a href="../../example/motor.c" target="_top">code</a>, we
     find that it is written in a dialect of C rather than C itself. At the
     time this code was written, conforming versions of the C compiler were not
@@ -123,27 +123,27 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130205769072"></a>Refactor for Testing</h4></div></div></div>
+<a name="idm20551023056"></a>Refactor for Testing</h4></div></div></div>
 <p>In order to develop our test suite and execute the same code on the
     desktop and the target system we factor out the shared code as a separate
     module which will used in both environments without change. The shared
     module <a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/motor1.c" target="_top">motor2.c</a></code></a> contains the
     algorithm for handling the interrupts in such a way as to create the
     smooth acceleration we require.</p>
-<div class="literallayout"><p>&#160;&#160;&#160;&#160;<a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/motor_test2.c" target="_top">motor_test2.c</a></code></a>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/example92.cpp" target="_top">example92.cpp</a></code></a><br>
+<div class="literallayout"><p>    <a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/motor_test2.c" target="_top">motor_test2.c</a></code></a>        <a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/example92.cpp" target="_top">example92.cpp</a></code></a><br>
 <br>
-&#160;&#160;&#160;&#160;#include&#160;...&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;#include&#160;...<br>
-&#160;&#160;&#160;&#160;PIC&#160;typedefs&#160;...&#160;&#160;&#160;&#160;&#160;desktop&#160;types&#160;...<br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;/<br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;/<br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;#include&#160;<a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/motor2.c" target="_top">motor2.c</a></code></a><br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;/&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\<br>
-&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;/&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;\<br>
-&#160;&#160;&#160;&#160;PIC&#160;test&#160;code&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;desktop&#160;test&#160;code</p></div>
+    #include ...         #include ...<br>
+    PIC typedefs ...     desktop types ...<br>
+            \               /<br>
+             \             /<br>
+            #include <a href="../../example/motor2.c" target="_top"><code class="computeroutput"><a href="../../example/motor2.c" target="_top">motor2.c</a></code></a><br>
+             /             \<br>
+            /               \<br>
+    PIC test code        desktop test code</p></div>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130205760352"></a>Compiling on the Desktop</h4></div></div></div>
+<a name="idm20551014272"></a>Compiling on the Desktop</h4></div></div></div>
 <p>Using the target environment to run tests is often very difficult or
     impossible due to limited resources. So software unit testing for embedded
     systems is very problematic and often skipped. The C language on our
@@ -464,7 +464,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130205230160"></a>Trapping Errors at Compile Time</h4></div></div></div>
+<a name="idm20550484064"></a>Trapping Errors at Compile Time</h4></div></div></div>
 <p>We can test the same code we're going to load into our target system
     on the desktop. We could build and execute a complete unit test suite. We
     could capture the output and graph it. We have the ability to make are
@@ -631,6 +631,13 @@ On&#160;interrupt<br>
 <span class="keyword">using</span> <span class="identifier">c_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
     <span class="identifier">C_MIN</span><span class="special">,</span>
     <span class="identifier">C0</span><span class="special">,</span>
+    <span class="identifier">pic16_promotion</span><span class="special">,</span>
+    <span class="identifier">exception_policy</span>
+<span class="special">&gt;</span><span class="special">;</span>
+
+<span class="comment">// 32 bit unsigned integer used for temporary purposes</span>
+<span class="keyword">using</span> <span class="identifier">temp_t</span> <span class="special">=</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">::</span><span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span>
+    <span class="number">0</span><span class="special">,</span> <span class="number">0xffffffff</span><span class="special">,</span>
     <span class="identifier">pic16_promotion</span><span class="special">,</span>
     <span class="identifier">exception_policy</span>
 <span class="special">&gt;</span><span class="special">;</span>
@@ -802,7 +809,7 @@ On&#160;interrupt<br>
     <span class="keyword">try</span> <span class="special">{</span>
         <span class="identifier">initialize</span><span class="special">(</span><span class="special">)</span><span class="special">;</span>
         <span class="comment">// move motor to position 1000</span>
-        <span class="identifier">result</span> <span class="special">&amp;=</span> <span class="identifier">test</span><span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">1000</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+        <span class="identifier">result</span> <span class="special">&amp;=</span> <span class="identifier">test</span><span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">9000</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
         <span class="comment">// move to the left before zero position</span>
         <span class="comment">// fails to compile !</span>
         <span class="comment">// result &amp;= ! test(-10);</span>
@@ -1000,9 +1007,11 @@ On&#160;interrupt<br>
                 <span class="comment">// *** possible positive overflow on update of c</span>
                 <span class="comment">// note: re-arrange expression to avoid negative result</span>
                 <span class="comment">// from difference of two unsigned values</span>
-                <span class="identifier">c</span> <span class="special">+=</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">2</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">c</span> <span class="special">/</span> <span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">4</span><span class="special">)</span> <span class="special">*</span> <span class="special">(</span><span class="identifier">m</span> <span class="special">-</span> <span class="identifier">i</span><span class="special">)</span> <span class="special">-</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">1</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
-                <span class="keyword">if</span><span class="special">(</span><span class="identifier">c</span> <span class="special">&gt;</span> <span class="identifier">C0</span><span class="special">)</span><span class="special">{</span>
-                    <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">C0</span><span class="special">;</span>
+                <span class="special">{</span>
+                    <span class="comment">// testing discovered that this can overflow.  It's not easy to</span>
+                    <span class="comment">// avoid so we'll use a temporary unsigned variable 32 bits wide</span>
+                    <span class="keyword">const</span> <span class="identifier">temp_t</span> <span class="identifier">x</span> <span class="special">=</span> <span class="identifier">c</span> <span class="special">+</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">2</span><span class="special">)</span> <span class="special">*</span> <span class="identifier">c</span> <span class="special">/</span> <span class="special">(</span><span class="identifier">literal</span><span class="special">(</span><span class="number">4</span><span class="special">)</span> <span class="special">*</span> <span class="special">(</span><span class="identifier">m</span> <span class="special">-</span> <span class="identifier">i</span><span class="special">)</span> <span class="special">-</span> <span class="identifier">literal</span><span class="special">(</span><span class="number">1</span><span class="special">)</span><span class="special">)</span><span class="special">;</span>
+                    <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">&gt;</span> <span class="identifier">C0</span> <span class="special">?</span> <span class="identifier">C0</span> <span class="special">:</span> <span class="identifier">x</span><span class="special">;</span>
                 <span class="special">}</span>
                 <span class="keyword">break</span><span class="special">;</span>
             <span class="keyword">default</span><span class="special">:</span>
@@ -1087,7 +1096,7 @@ On&#160;interrupt<br>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130204123024"></a>Summary</h4></div></div></div>
+<a name="idm20549362080"></a>Summary</h4></div></div></div>
 <p>The intent of this case study is to show that the Safe Numerics
     Library can be an essential tool in validating the correctness of C/C++
     programs in all environments - including the most restricted.</p>
@@ -1116,7 +1125,7 @@ On&#160;interrupt<br>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright © 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

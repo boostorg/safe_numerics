@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>safe&lt;T, PP, EP&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
@@ -21,25 +21,25 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe"></a>safe&lt;T, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe.html#idm130203562112">Description</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203560112">Model of</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203556080">Notation</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203548784">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203541744">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203523280">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203517392">Examples of use</a></span></dt>
-<dt><span class="section"><a href="safe.html#idm130203247744">Header</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548801424">Description</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548799424">Model of</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548795392">Notation</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548788096">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548781056">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548762592">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548756704">Examples of use</a></span></dt>
+<dt><span class="section"><a href="safe.html#idm20548470736">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203562112"></a>Description</h4></div></div></div>
+<a name="idm20548801424"></a>Description</h4></div></div></div>
 <p>A <code class="computeroutput">safe&lt;T, PP , EP&gt;</code> can be used anywhere a type T
     can be used. Any expression which uses this type is guaranteed to return
     an arithmetically correct value or to trap in some way.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203560112"></a>Model of</h4></div></div></div>
+<a name="idm20548799424"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 <p>This type inherits all the notation, associated types and template
@@ -48,7 +48,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203556080"></a>Notation</h4></div></div></div>
+<a name="idm20548795392"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -67,7 +67,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203548784"></a>Associated Types</h4></div></div></div>
+<a name="idm20548788096"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -89,7 +89,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203541744"></a>Template Parameters</h4></div></div></div>
+<a name="idm20548781056"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col>
@@ -125,7 +125,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203523280"></a>Valid Expressions</h4></div></div></div>
+<a name="idm20548762592"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a>&lt;T&gt;
     type requirements. Note that all these expressions are
@@ -145,7 +145,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203517392"></a>Examples of use</h4></div></div></div>
+<a name="idm20548756704"></a>Examples of use</h4></div></div></div>
 <p>The most common usage would be safe&lt;T&gt; which uses the default
     promotion and exception policies. This type is meant to be a "drop-in"
     replacement of the intrinsic integer types. That is, expressions involving
@@ -278,7 +278,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h5 class="title">
-<a name="idm130203320752"></a>Adjust type promotion rules.</h5></div></div></div>
+<a name="idm20548559968"></a>Adjust type promotion rules.</h5></div></div></div>
 <p>Another way to avoid arithmetic errors like overflow is to promote
       types to larger sizes before doing the arithmetic.</p>
 <p>Stepping back, we can see that many of the cases of invalid
@@ -313,14 +313,14 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203247744"></a>Header</h4></div></div></div>
-<p><code class="filename"><a href="../../include/safe_integer.hpp" target="_top">#include
+<a name="idm20548470736"></a>Header</h4></div></div></div>
+<p><code class="filename"><a href="../../include/boost/safe_numerics/safe_integer.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</a></code></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright © 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

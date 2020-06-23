@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Numeric&lt;T&gt;</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
@@ -22,12 +22,12 @@
 <a name="safe_numerics.numeric"></a>Numeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
 <dt><span class="section"><a href="numeric.html#safe_numerics.numeric.description">Description</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130204085440">Notation</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130204078192">Associated Types</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130204072896">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130203973088">Models</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130203971280">Header</a></span></dt>
-<dt><span class="section"><a href="numeric.html#idm130203969088">Note on Usage of <code class="computeroutput">std::numeric_limits</code></a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549324496">Notation</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549317280">Associated Types</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549311984">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549212272">Models</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549210464">Header</a></span></dt>
+<dt><span class="section"><a href="numeric.html#idm20549208256">Note on Usage of <code class="computeroutput">std::numeric_limits</code></a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
@@ -46,7 +46,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130204085440"></a>Notation</h4></div></div></div>
+<a name="idm20549324496"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -66,7 +66,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130204078192"></a>Associated Types</h4></div></div></div>
+<a name="idm20549317280"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -83,13 +83,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130204072896"></a>Valid Expressions</h4></div></div></div>
+<a name="idm20549311984"></a>Valid Expressions</h4></div></div></div>
 <p>In addition to the expressions defined in <a href="http://www.sgi.com/tech/stl/Assignable.html" target="_top">Assignable</a> the
     following expressions must be valid. Any operations which result in
     integers which cannot be represented as some Numeric type will throw an
     exception.</p>
 <div class="table">
-<a name="idm130204071072"></a><p class="title"><b>Table&#160;1.&#160;General</b></p>
+<a name="idm20549310160"></a><p class="title"><b>Table 1. General</b></p>
 <div class="table-contents"><table class="table" summary="General">
 <colgroup>
 <col align="left">
@@ -135,7 +135,7 @@
 </div>
 <p><br class="table-break"></p>
 <div class="table">
-<a name="idm130204050048"></a><p class="title"><b>Table&#160;2.&#160;Unary Operators</b></p>
+<a name="idm20549289136"></a><p class="title"><b>Table 2. Unary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Unary Operators">
 <colgroup>
 <col align="left">
@@ -182,7 +182,7 @@
 </table></div>
 </div>
 <br class="table-break"><div class="table">
-<a name="idm130204029296"></a><p class="title"><b>Table&#160;3.&#160;Binary Operators</b></p>
+<a name="idm20549268448"></a><p class="title"><b>Table 3. Binary Operators</b></p>
 <div class="table-contents"><table class="table" summary="Binary Operators">
 <colgroup>
 <col align="left">
@@ -294,21 +294,21 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203973088"></a>Models</h4></div></div></div>
+<a name="idm20549212272"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">int, float, safe_signed_integer&lt;int&gt;,
     safe_signed_range&lt;int&gt;, checked_result&lt;int&gt;,
     etc.</code></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203971280"></a>Header</h4></div></div></div>
-<p><a href="../../include/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
+<a name="idm20549210464"></a>Header</h4></div></div></div>
+<p><a href="../../include/boost/safe_numerics/concept/numeric.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/numeric/safe_numerics/concepts/numeric.hpp&gt;
     </code></a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm130203969088"></a>Note on Usage of <code class="computeroutput">std::numeric_limits</code>
+<a name="idm20549208256"></a>Note on Usage of <code class="computeroutput">std::numeric_limits</code>
 </h4></div></div></div>
 <p>We define the word "Numeric" in terms of the operations which are
     supported by "Numeric" types. This is in line with the current and
@@ -360,7 +360,7 @@
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright © 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>
