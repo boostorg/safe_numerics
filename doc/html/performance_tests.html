@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Performance Tests</title>
 <link rel="stylesheet" href="boostbook.css" type="text/css">
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
@@ -29,10 +29,11 @@
 <p>So far we've only run one explicit performance test -
     <code class="filename"><a href="../../test/test_performance.cpp" target="_top">test_performance.cpp</a></code>.
     This runs a test from the Boost Multiprecision library to count prime
-    numbers and uses on integer arithmetic. We've run the tests with
-    <code class="computeroutput">unsigned</code> integers and with <code class="computeroutput">safe&lt;unsigned&gt;</code>
-    on two different compilers.. No other change was made to the program. We
-    list the results without further comment.</p>
+    numbers and makes extensive usage of integer arithmetic. We've run the
+    tests with <code class="computeroutput">unsigned</code> integers and with
+    <code class="computeroutput">safe&lt;unsigned&gt;</code> on two different compilers.. No other
+    change was made to the program. We list the results without further
+    comment.</p>
 <pre class="screen">g++ (GCC) 6.2.0
 Testing type unsigned:
 time = 17.6215
@@ -52,7 +53,7 @@ count = 1857858
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>
 <td align="left"></td>
-<td align="right"><div class="copyright-footer">Copyright &#169; 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
+<td align="right"><div class="copyright-footer">Copyright © 2012-2018 Robert Ramey<p><a href="http://www.boost.org/LICENSE_1_0.txt" target="_top">Subject to Boost
       Software License</a></p>
 </div></td>
 </tr></table>

@@ -33,8 +33,8 @@ template<typename I>
 struct get_values {
     static_assert(mp_is_list<I>(), "must be a list of two types");
     static_assert(2 == mp_size<I>::value, "must be a list of two types");
-    static constexpr const size_t first = mp_first<I>(); // index of first argument
-    static constexpr const size_t second = mp_second<I>();// index of second argument
+    constexpr static const size_t first = mp_first<I>(); // index of first argument
+    constexpr static const size_t second = mp_second<I>();// index of second argument
 };
 
 template<typename I>
@@ -42,8 +42,8 @@ struct test_pair_constexpr {
     using pair = get_values<I>;
     using TResult = mp_at<test_types, mp_first<I>>;
     using TArg = typename mp_at<test_values, mp_second<I>>::value_type;
-    static constexpr TArg v = mp_at<test_values, mp_second<I>>()();
-    static constexpr bool value = test_cast_constexpr<TResult>(
+    constexpr static const TArg v = mp_at<test_values, mp_second<I>>()();
+    constexpr static const bool value = test_cast_constexpr<TResult>(
         v,
         test_result_cast[pair::first][pair::second]
     );

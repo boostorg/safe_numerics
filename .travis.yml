@@ -3,10 +3,6 @@
 
 language: cpp
 
-sudo: false
-
-python: "2.7"
-
 branches:
   only:
     - master
@@ -24,6 +20,7 @@ matrix:
 
   include:
     - os: linux
+      arch: arm64
       compiler: g++-6
       env: TOOLSET=gcc COMPILER=g++-6 CXXSTD=14,1z
       addons:
@@ -34,7 +31,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      dist: trusty
+      arch: ppc64le
       compiler: g++-7
       env: TOOLSET=gcc COMPILER=g++-7 CXXSTD=14,17
       addons:
@@ -45,6 +42,7 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
+      arch: s390x
       compiler: g++-8
       env: TOOLSET=gcc COMPILER=g++-8 CXXSTD=14,17
       addons:
@@ -55,13 +53,22 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
+      compiler: g++-9
+      env: TOOLSET=gcc COMPILER=g++-9 CXXSTD=14,17,2a
+      addons:
+        apt:
+          packages:
+            - g++-9
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - os: linux
       compiler: clang++-3.9
       env: TOOLSET=clang COMPILER=clang++-3.9 CXXSTD=14,1z
       addons:
         apt:
           packages:
             - clang-3.9
-            - libstdc++-5-dev
           sources:
             - ubuntu-toolchain-r-test
 
@@ -75,10 +82,8 @@ matrix:
             - libstdc++-6-dev
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-4.0
 
     - os: linux
-      dist: trusty
       compiler: clang++-5.0
       env: TOOLSET=clang COMPILER=clang++-5.0 CXXSTD=14,1z
       addons:
@@ -88,10 +93,8 @@ matrix:
             - libstdc++-7-dev
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
 
     - os: linux
-      dist: trusty
       compiler: clang++-6.0
       env: TOOLSET=clang COMPILER=clang++-6.0 CXXSTD=14,17
       addons:
@@ -101,7 +104,28 @@ matrix:
             - libstdc++-8-dev
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+
+    - os: linux
+      compiler: clang++-7
+      env: TOOLSET=clang COMPILER=clang++-7 CXXSTD=14,17,2a
+      addons:
+        apt:
+          packages:
+            - clang-7
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-7
+
+    - os: linux
+      compiler: clang++-8
+      env: TOOLSET=clang COMPILER=clang++-8 CXXSTD=14,17,2a
+      addons:
+        apt:
+          packages:
+            - clang-8
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-8
 
     - os: linux
       dist: trusty

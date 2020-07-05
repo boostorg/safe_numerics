@@ -291,10 +291,11 @@
     <filename><ulink
     url="../../test/test_performance.cpp">test_performance.cpp</ulink></filename>.
     This runs a test from the Boost Multiprecision library to count prime
-    numbers and uses on integer arithmetic. We've run the tests with
-    <code>unsigned</code> integers and with <code>safe&lt;unsigned&gt;</code>
-    on two different compilers.. No other change was made to the program. We
-    list the results without further comment.</para>
+    numbers and makes extensive usage of integer arithmetic. We've run the
+    tests with <code>unsigned</code> integers and with
+    <code>safe&lt;unsigned&gt;</code> on two different compilers.. No other
+    change was made to the program. We list the results without further
+    comment.</para>
 
     <screen>g++ (GCC) 6.2.0
 Testing type unsigned:

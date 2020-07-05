@@ -487,7 +487,7 @@ private:
 
         return t_interval - u_interval;
     }
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -609,7 +609,7 @@ private:
         return t_interval * u_interval;
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -697,7 +697,7 @@ private:
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-    constexpr static int bits = std::min(
+    constexpr static const int bits = std::min(
         std::numeric_limits<std::uintmax_t>::digits,
         std::max(std::initializer_list<int>{
             std::numeric_limits<result_base_type>::digits,
@@ -768,7 +768,7 @@ private:
         );
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -852,7 +852,7 @@ private:
     // if exception possible
     using exception_policy = typename common_exception_policy<T, U>::type;
 
-    constexpr static int bits = std::min(
+    constexpr static const int bits = std::min(
         std::numeric_limits<std::uintmax_t>::digits,
         std::max(std::initializer_list<int>{
             std::numeric_limits<result_base_type>::digits,
@@ -925,7 +925,7 @@ private:
         );
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -1180,7 +1180,11 @@ constexpr operator!=(const T & lhs, const U & rhs) {
     return ! (lhs == rhs);
 }
 
-/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+// The following operators only make sense when applied to integet types
+
+/////////////////////////////////////////////////////////////////////////
 // shift operators
 
 // left shift
@@ -1237,7 +1241,7 @@ private:
         return (t_interval << u_interval);
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -1258,8 +1262,8 @@ private:
         return false;
     }
 
-    constexpr static auto rl = return_interval.l;
-    constexpr static auto ru = return_interval.u;
+    constexpr static const auto rl = return_interval.l;
+    constexpr static const auto ru = return_interval.u;
 
 public:
     using type =
@@ -1295,10 +1299,12 @@ constexpr operator<<(const T & t, const U & u){
     // INT13-CPP
     // C++ standards document N4618 & 5.8.2
     static_assert(
-        std::numeric_limits<T>::is_integer, "shifted value must be an integer"
+        boost::safe_numerics::Integer<T>::value,
+        "shifted value must be an integer"
     );
     static_assert(
-        std::numeric_limits<U>::is_integer, "shift amount must be an integer"
+        boost::safe_numerics::Integer<U>::value,
+        "bit shift count must be an integer"
     );
     return left_shift_result<T, U>::return_value(t, u);
 }
@@ -1370,7 +1376,7 @@ struct right_shift_result {
         return (t_interval() >> u_interval());
     }
 
-    static constexpr const r_type_interval_t r_type_interval = get_r_type_interval();
+    constexpr static const r_type_interval_t r_type_interval = get_r_type_interval();
 
     constexpr static const interval<result_base_type> return_interval{
         r_type_interval.l.exception()
@@ -1431,10 +1437,12 @@ typename boost::lazy_enable_if_c<
 constexpr operator>>(const T & t, const U & u){
     // INT13-CPP
     static_assert(
-        std::numeric_limits<T>::is_integer, "shifted value must be an integer"
+        boost::safe_numerics::Integer<T>::value,
+        "shifted value must be an integer"
     );
     static_assert(
-        std::numeric_limits<U>::is_integer, "shift amount must be an integer"
+        boost::safe_numerics::Integer<U>::value,
+        "bit shift count must be an integer"
     );
     return right_shift_result<T, U>::return_value(t, u);
 }
@@ -1514,6 +1522,14 @@ typename boost::lazy_enable_if_c<
     bitwise_or_result<T, U>
 >::type
 constexpr operator|(const T & t, const U & u){
+    static_assert(
+        boost::safe_numerics::Integer<T>::value,
+        "bitwise or arguments must be an integers"
+    );
+    static_assert(
+        boost::safe_numerics::Integer<U>::value,
+        "bitwise or arguments must be an integers"
+    );
     return bitwise_or_result<T, U>::return_value(t, u);
 }
 
@@ -1588,6 +1604,14 @@ typename boost::lazy_enable_if_c<
     bitwise_and_result<T, U>
 >::type
 constexpr operator&(const T & t, const U & u){
+    static_assert(
+        boost::safe_numerics::Integer<T>::value,
+        "bitwise and arguments must be an integers"
+    );
+    static_assert(
+        boost::safe_numerics::Integer<U>::value,
+        "bitwise and arguments must be an integers"
+    );
     return bitwise_and_result<T, U>::return_value(t, u);
 }
 
@@ -1662,6 +1686,14 @@ typename boost::lazy_enable_if_c<
     bitwise_xor_result<T, U>
 >::type
 constexpr operator^(const T & t, const U & u){
+    static_assert(
+        boost::safe_numerics::Integer<T>::value,
+        "bitwise xor arguments must be an integers"
+    );
+    static_assert(
+        boost::safe_numerics::Integer<U>::value,
+        "bitwise xor arguments must be an integers"
+    );
     return bitwise_xor_result<T, U>::return_value(t, u);
 }
 

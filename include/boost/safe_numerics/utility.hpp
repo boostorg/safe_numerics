@@ -237,7 +237,7 @@ using unsigned_stored_type = typename boost::uint_t<
 // b) is not guarenteed to handle non-assignable types
 template<typename T>
 constexpr std::pair<T, T>
-minmax(const std::initializer_list<T> l){
+minmax(const std::initializer_list<T> & l){
     assert(l.size() > 0);
     const T * minimum = l.begin();
     const T * maximum = l.begin();

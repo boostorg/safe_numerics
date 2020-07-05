@@ -10,3 +10,5 @@ The first one is a short version which gives the main motivation for the library
 The second is more extensive in that it addresses a real world case study which touches on most of the important aspects of the libary.  https://www.youtube.com/watch?v=93Cjg42bGEw .
 
 Finally, for those who still enjoy the written word there is the documentation in which significant effort has been invested. http://htmlpreview.github.io/?https://github.com/robertramey/safe_numerics/master/doc/html/index.html
+
+If you use this libary and find it useful, please add a star.  I need motivation!!!

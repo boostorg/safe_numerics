@@ -55,6 +55,7 @@ set( run_test_list
   test_subtract_native
   test_xor_automatic
   test_xor_native
+  test_custom_exception
   test_z
 )
 
