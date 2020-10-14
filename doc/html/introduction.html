@@ -114,7 +114,7 @@
     invoke an error. Using this library, the above example would be rendered
     as:</p>
 <pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
-<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">numeric</span><span class="special">;</span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">f</span><span class="special">(</span><span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">x</span><span class="special">,</span> <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">&gt;</span> <span class="identifier">y</span><span class="special">)</span><span class="special">{</span>
   <span class="keyword">return</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// throw exception if correct result cannot be returned</span>
 <span class="special">}</span>
@@ -125,7 +125,7 @@
 <th align="left">Note</th>
 </tr>
 <tr><td align="left" valign="top"><p>Library code in this document resides in the namespace
-        <code class="computeroutput">boost::numeric</code>. This namespace has generally been
+        <code class="computeroutput">boost::safe_numerics</code>. This namespace has generally been
         eliminated from text, code and examples in order to improve
         readability of the text.</p></td></tr>
 </table></div>
