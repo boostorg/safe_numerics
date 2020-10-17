@@ -10,7 +10,8 @@
 #include <limits>
 #include <type_traits> // is_base_of, is_same, is_floating_point, conditional
 #include <algorithm>   // max
-#include <cassert>
+#include <istream>
+#include <ostream>
 
 #include <boost/config.hpp>
 
@@ -1758,17 +1759,32 @@ void safe_base<T, Min, Max, P, E>::input(
         m_t = validated_cast(x);
     }
     else{
+        if(std::is_unsigned<T>::value){
+            // reading a negative number into an unsigned variable cannot result in
+            // a correct result.  But, C++ reads the absolute value, multiplies
+            // it by -1 and stores the resulting value.  This is crazy - but there
+            // it is!  Oh, and it doesn't set the failbit. We fix this behavior here
+            is >> std::ws;
+            int x = is.peek();
+            // if the input string starts with a '-', we know its an error
+            if(x == '-'){
+                // set fail bit
+                is.setstate(std::ios_base::failbit);
+            }
+        }
         is >> m_t;
-        validated_cast(m_t);
+        if(is.fail()){
+            boost::safe_numerics::dispatch<
+                E,
+                boost::safe_numerics::safe_numerics_error::domain_error
+            >(
+                "error in file input"
+            );
+        }
+        else
+            validated_cast(m_t);
     }
-    if(is.fail()){
-        boost::safe_numerics::dispatch<
-            E,
-            boost::safe_numerics::safe_numerics_error::domain_error
-        >(
-            "error in file input"
-        );
-    }
+    return is;
 }
 
 } // safe_numerics
