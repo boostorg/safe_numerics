@@ -64,7 +64,6 @@ struct validate_detail {
 
     template<typename T>
     constexpr static R return_value(const T & t){
-
         constexpr const interval<r_type> t_interval{
             checked::cast<R>(base_value(std::numeric_limits<T>::min())),
             checked::cast<R>(base_value(std::numeric_limits<T>::max()))
@@ -75,7 +74,6 @@ struct validate_detail {
             true != static_cast<bool>(r_interval.excludes(t_interval)),
             "can't cast from ranges that don't overlap"
         );
-
         return std::conditional<
             static_cast<bool>(r_interval.includes(t_interval)),
             exception_not_possible,
@@ -108,53 +106,26 @@ validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
 // constructors
 
 template<class Stored, Stored Min, Stored Max, class P, class E>
-    constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
-    const Stored & rhs,
-    skip_validation
-) :
-    m_t(rhs)
-{}
-
-template<class Stored, Stored Min, Stored Max, class P, class E>
 constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(){
     dispatch<E, safe_numerics_error::uninitialized_value>(
         "safe values must be initialized"
     );
 }
 
+template<class Stored, Stored Min, Stored Max, class P, class E>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+    const Stored & rhs,
+    skip_validation
+) :
+    m_t(rhs)
+{}
+
 // construct an instance of a safe type
 // from an instance of a convertible underlying type.
 template<class Stored, Stored Min, Stored Max, class P, class E>
 template<class T>
-constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
-    const T & t,
-    typename std::enable_if<
-        is_safe<T>::value,
-        bool
-    >::type
-) :
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(const T &t) :
     m_t(validated_cast(t))
-{}
-
-template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T>
-constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
-    const T & t,
-    typename std::enable_if<
-        std::is_integral<T>::value,
-        bool
-    >::type
-) :
-    m_t(validated_cast(t))
-{}
-
-template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T, T value>
-constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
-
-    const std::integral_constant<T, value> &
-) :
-    m_t(validated_cast(value))
 {}
 
 /////////////////////////////////////////////////////////////////
@@ -172,28 +143,18 @@ template<
 constexpr safe_base<Stored, Min, Max, P, E>::
 operator R () const {
     // if static values don't overlap, the program can never function
-    #if 1
     constexpr const interval<R> r_interval;
     constexpr const interval<Stored> this_interval(Min, Max);
     static_assert(
         ! r_interval.excludes(this_interval),
         "safe type cannot be constructed with this type"
     );
-    #endif
-
     return validate_detail<
         R,
         std::numeric_limits<R>::min(),
         std::numeric_limits<R>::max(),
         E
-    >::return_value(*this);
-}
-
-// cast to the underlying builtin type from a safe type
-template<class Stored, Stored Min, Stored Max, class P, class E>
-constexpr safe_base<Stored, Min, Max, P, E>::
-operator Stored () const {
-    return m_t;
+    >::return_value(m_t);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -1784,7 +1745,6 @@ void safe_base<T, Min, Max, P, E>::input(
         else
             validated_cast(m_t);
     }
-    return is;
 }
 
 } // safe_numerics

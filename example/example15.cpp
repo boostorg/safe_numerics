@@ -35,7 +35,7 @@ int main(int, const char *[]){
     std::cout << "c * d = ";
     try {
         // multiply them. This will overflow
-        std::cout << sc * sd << std::endl;
+        std::cout << (sc * sd) << std::endl;
     }
     catch (std::exception const& e) {
         // catch exception due to multiplication overflow

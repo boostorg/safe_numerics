@@ -179,37 +179,17 @@ public:
     ////////////////////////////////////////////////////////////
     // constructors
 
+    constexpr safe_base();
+
     struct skip_validation{};
 
     constexpr explicit safe_base(const Stored & rhs, skip_validation);
-
-    constexpr safe_base();
 
     // construct an instance of a safe type
     // from an instance of a convertible underlying type.
 
     template<class T>
-    constexpr /*explicit*/ safe_base(
-        const T & t,
-        typename std::enable_if<
-            is_safe<T>::value,
-            bool
-        >::type = true
-    );
-
-    template<class T>
-    constexpr /*explicit*/ safe_base(
-        const T & t,
-        typename std::enable_if<
-            std::is_integral<T>::value,
-            bool
-        >::type = true
-    );
-
-    template<class T, T value>
-    constexpr /*explicit*/ safe_base(
-        const std::integral_constant<T, value> &
-    );
+    constexpr /*explicit*/ safe_base(const T & t);
 
     // note: Rule of Five. Supply all or none of the following
     // a) user-defined destructor
@@ -237,8 +217,6 @@ public:
         >::type = 0
     >
     constexpr /*explicit*/ operator R () const;
-
-    constexpr /*explicit*/ operator Stored () const;
 
     /////////////////////////////////////////////////////////////////
     // modification binary operators
