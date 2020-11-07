@@ -36,7 +36,13 @@
 <p>The first step is to determine what parts of a program might invoke
   exceptions. The following program is similar to previous examples but uses a
   special exception policy: <a class="link" href="exception_policies.html#safe_numerics.exception_policies.loose_trap_policy"><code class="computeroutput">loose_trap_policy</code></a>.</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">exception_policies</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span> <span class="comment">// include exception policies</span>

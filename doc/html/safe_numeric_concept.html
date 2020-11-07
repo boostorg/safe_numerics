@@ -21,18 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_numeric_concept"></a>SafeNumeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596729072">Description</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596727616">Refinement of</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596725264">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596707792">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596699136">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596619392">Invariants</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596617792">Models</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm94596613456">Header</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720563920">Description</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720562464">Refinement of</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720560112">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720542640">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720533984">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720454272">Invariants</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720452672">Models</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720448336">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596729072"></a>Description</h4></div></div></div>
+<a name="idm488720563920"></a>Description</h4></div></div></div>
 <p>This holds an arithmetic value which can be used as a replacement
     for built-in C++ arithmetic values. These types differ from their built-in
     counter parts in that the are guaranteed not to produce invalid arithmetic
@@ -41,12 +41,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596727616"></a>Refinement of</h4></div></div></div>
+<a name="idm488720562464"></a>Refinement of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> or <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596725264"></a>Notation</h4></div></div></div>
+<a name="idm488720560112"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -97,7 +97,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596707792"></a>Associated Types</h4></div></div></div>
+<a name="idm488720542640"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -127,7 +127,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596699136"></a>Valid Expressions</h4></div></div></div>
+<a name="idm488720533984"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -287,7 +287,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596619392"></a>Invariants</h4></div></div></div>
+<a name="idm488720454272"></a>Invariants</h4></div></div></div>
 <p>The fundamental requirement of a SafeNumeric type is that it
     implements all C++ operations permitted on its base type in a way the
     prevents the return of an incorrect arithmetic result. Various
@@ -297,7 +297,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596617792"></a>Models</h4></div></div></div>
+<a name="idm488720452672"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">safe&lt;T&gt;</code></p>
 <p><code class="computeroutput">safe_signed_range&lt;-11, 11&gt;</code></p>
 <p><code class="computeroutput">safe_unsigned_range&lt;0, 11&gt;</code></p>
@@ -305,9 +305,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm94596613456"></a>Header</h4></div></div></div>
+<a name="idm488720448336"></a>Header</h4></div></div></div>
 <p><a href="../../include/boost/safe_numerics/concept/safe_numeric.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></a></p>
+    &lt;boost/safe_numerics/concepts/safe_numeric.hpp&gt;</code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

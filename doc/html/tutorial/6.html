@@ -24,7 +24,13 @@
     This can fail to be detected when it occurs and create bugs which are hard
     to find. There are several ways to address this, but one of the simplest
     would be to use safe_unsigned_range;</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">array</span><span class="special">&gt;</span>
 
