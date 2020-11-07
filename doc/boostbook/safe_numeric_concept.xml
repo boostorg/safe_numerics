@@ -393,6 +393,6 @@ int main(){
 
     <para><ulink
     url="../../include/boost/safe_numerics/concept/safe_numeric.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
+    &lt;boost/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
   </section>
 </section>

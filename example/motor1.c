@@ -46,7 +46,7 @@ void current_on(){/* code as needed */}  // motor drive current
 void current_off(){/* code as needed */} // reduce to holding value
 
 uint16 make16(uint8 l, uint8 r) {
-    return (uint16) l << 8 + r;
+    return (uint16) (l << 8) + r;
 }
 
 // compiler-specific ISR declaration

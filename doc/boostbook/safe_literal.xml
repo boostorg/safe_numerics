@@ -150,9 +150,9 @@ constexpr safe&lt;int&gt; z = x / y;
   <section>
     <title>Example of use</title>
 
-    <programlisting>#include &lt;boost/numeric/safe_numerics/safe_integer_literal.hpp&gt;
+    <programlisting>#include &lt;boost/safe_numerics/safe_integer_literal.hp&gt;
 
-constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
+constexpr boost::safe_numerics::safe_signed_literal&lt;42&gt; x;
 </programlisting>
   </section>
 
@@ -169,6 +169,6 @@ constexpr boost::numeric::safe_signed_literal&lt;42&gt; x;
 
     <para><ulink
     url="../../include/boost/safe_numerics/safe_integer_literal.hpp">#include
-    &lt;boost/numeric/safe_numerics/safe_integer_literal.hpp&gt;</ulink></para>
+    &lt;boost/safe_numerics/safe_integer_literal.hpp&gt;</ulink></para>
   </section>
 </section>

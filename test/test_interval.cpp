@@ -81,13 +81,6 @@ bool test_type_operator(
                     // if both r1 and r2 are within they're respective bounds
                     if(p1.includes(r1) && p2.includes(r2)
                     && ! result_interval.includes(result)){
-                        #if 0
-                        const boost::logic::tribool b1 = p1.includes(r1);
-                        const boost::logic::tribool b2 = p2.includes(r2);
-                        const boost::logic::tribool b3 = result_interval.includes(result);
-                        const interval<T> result_intervalx = opi.m_finterval(p1, p2);
-                        const T resultx = opi.m_f(r1, r2);
-                        #endif
                         return false;
                     }
                 }

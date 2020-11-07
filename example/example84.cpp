@@ -1,3 +1,9 @@
+//  Copyright (c) 2018 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -15,7 +21,7 @@ using safe_t = safe_signed_range<
     -24,
     82,
     native,
-    loose_trap_policy
+    loose_exception_policy
 >;
 
 // define variables used for input

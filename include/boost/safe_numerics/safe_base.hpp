@@ -8,7 +8,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <limits>
-#include <type_traits> // is_integral, enable_if, conditional
+#include <type_traits> // is_integral, enable_if, conditional is_convertible
 #include <boost/config.hpp> // BOOST_CLANG
 #include "concept/exception_policy.hpp"
 #include "concept/promotion_policy.hpp"
@@ -134,11 +134,6 @@ private:
     template<class T>
     constexpr Stored validated_cast(const T & t) const;
 
-    template<typename T, T N, class P1, class E1>
-    constexpr Stored validated_cast(
-        const safe_literal_impl<T, N, P1, E1> & t
-    ) const;
-
     // stream support
 
     template<class CharT, class Traits>
@@ -185,11 +180,19 @@ public:
 
     constexpr explicit safe_base(const Stored & rhs, skip_validation);
 
-    // construct an instance of a safe type
-    // from an instance of a convertible underlying type.
-
-    template<class T>
+    // construct an instance of a safe type from an instance of a convertible underlying type.
+    template<
+        class T,
+        typename std::enable_if<
+            std::is_convertible<T, Stored>::value,
+            bool
+        >::type = 0
+    >
     constexpr /*explicit*/ safe_base(const T & t);
+
+    // construct an instance of a safe type from a literal value
+    template<typename T, T N, class Px, class Ex>
+    constexpr /*explicit*/ safe_base(const safe_literal_impl<T, N, Px, Ex> & t);
 
     // note: Rule of Five. Supply all or none of the following
     // a) user-defined destructor
@@ -223,13 +226,6 @@ public:
     template<class T>
     constexpr safe_base &
     operator=(const T & rhs){
-        m_t = validated_cast(rhs);
-        return *this;
-    }
-
-    // required to passify VS2017
-    constexpr safe_base &
-    operator=(const Stored & rhs){
         m_t = validated_cast(rhs);
         return *this;
     }

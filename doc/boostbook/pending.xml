@@ -55,8 +55,8 @@ struct range {
 
     <para>Then redeclare <code>safe_base</code>, etc., accordingly.</para>
 
-    <para>Also not that for C++20, template value parameters are no longer
-    restricted to integer primitive types buy maybe class types as well. This
+    <para>Also note that for C++20, template value parameters are no longer
+    restricted to integer primitive types but may be class types as well. This
     means the library maybe extended to user class types without changing the
     current template signatures.</para>
   </section>

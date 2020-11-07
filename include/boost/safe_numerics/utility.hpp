@@ -60,7 +60,6 @@ constexpr void static_warning(const T){
    //using x = static_test<T>;
    const static_test<T> x;
 }
-
 #endif
 
 /*

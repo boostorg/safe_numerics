@@ -131,6 +131,7 @@ using phase_ix_t = boost::safe_numerics::safe_signed_range<
 >;
 
 // settings for control value output
+
 using phase_t = boost::safe_numerics::safe<
     uint16_t,
     pic16_promotion,

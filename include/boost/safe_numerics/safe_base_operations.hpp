@@ -89,29 +89,17 @@ validated_cast(const T & t) const {
     return validate_detail<Stored,Min,Max,E>::return_value(t);
 }
 
-template<class Stored, Stored Min, Stored Max, class P, class E>
-template<typename T, T N, class P1, class E1>
-constexpr Stored safe_base<Stored, Min, Max, P, E>::
-validated_cast(const safe_literal_impl<T, N, P1, E1> &) const {
-    constexpr const interval<Stored> this_interval{};
-    // if static values don't overlap, the program can never function
-    static_assert(
-        this_interval.includes(N),
-        "safe type cannot be constructed from this value"
-    );
-    return static_cast<Stored>(N);
-}
-
 /////////////////////////////////////////////////////////////////
 // constructors
 
+// default constructor
 template<class Stored, Stored Min, Stored Max, class P, class E>
 constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(){
     dispatch<E, safe_numerics_error::uninitialized_value>(
         "safe values must be initialized"
     );
 }
-
+// construct an instance of a safe type from an instance of a convertible underlying type.
 template<class Stored, Stored Min, Stored Max, class P, class E>
 constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
     const Stored & rhs,
@@ -120,11 +108,25 @@ constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
     m_t(rhs)
 {}
 
-// construct an instance of a safe type
-// from an instance of a convertible underlying type.
+// construct an instance from an instance of a convertible underlying type.
 template<class Stored, Stored Min, Stored Max, class P, class E>
-template<class T>
+    template<
+        class T,
+        typename std::enable_if<
+            std::is_convertible<T, Stored>::value,
+            bool
+        >::type
+    >
 constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(const T &t) :
+    m_t(validated_cast(t))
+{}
+
+// construct an instance of a safe type from a literal value
+template<class Stored, Stored Min, Stored Max, class P, class E>
+template<typename T, T N, class Px, class Ex>
+constexpr /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
+    const safe_literal_impl<T, N, Px, Ex> & t
+) :
     m_t(validated_cast(t))
 {}
 
@@ -1436,20 +1438,6 @@ private:
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
-
-    #if 0
-    // breaks compilation for earlier versions of clant
-    constexpr static const r_type_interval_t r_interval{
-        r_type(0),
-        utility::round_out(
-            std::max(
-                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
-                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
-            )
-        )
-    };
-    #endif
-
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
@@ -1519,19 +1507,6 @@ private:
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
-
-    #if 0
-    // breaks compilation for earlier versions of clant
-    constexpr static const r_type_interval_t r_interval{
-        r_type(0),
-        utility::round_out(
-            std::min(
-                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
-                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
-            )
-        )
-    };
-    #endif
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:
@@ -1600,20 +1575,6 @@ struct bitwise_xor_result {
 
     using r_type = typename std::make_unsigned<result_base_type>::type;
     using r_type_interval_t = interval<r_type>;
-
-    #if 0
-    // breaks compilation for earlier versions of clant
-    constexpr static const r_type_interval_t r_interval{
-        r_type(0),
-        utility::round_out(
-            std::max(
-                static_cast<r_type>(base_value(std::numeric_limits<T>::max())),
-                static_cast<r_type>(base_value(std::numeric_limits<U>::max()))
-            )
-        )
-    };
-    #endif
-
     using exception_policy = typename common_exception_policy<T, U>::type;
 
 public:

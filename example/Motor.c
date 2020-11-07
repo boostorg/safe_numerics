@@ -1,3 +1,9 @@
+//  Copyright (c) 2018 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 // Demo program for stepper motor control with linear ramps
 // Hardware: PIC18F252, L6219
 #include "18F252.h"

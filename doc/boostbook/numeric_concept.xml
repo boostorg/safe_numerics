@@ -381,8 +381,7 @@
 
     <para><ulink
     url="../../include/boost/safe_numerics/concept/numeric.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/concepts/numeric.hpp&gt;
-    </code></ulink></para>
+    &lt;boost/safe_numerics/concepts/numeric.hpp&gt; </code></ulink></para>
   </section>
 
   <section>

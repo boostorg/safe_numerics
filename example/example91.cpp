@@ -42,6 +42,26 @@ using safe_bool_t = boost::safe_numerics::safe_unsigned_range<
     pic16_promotion,
     boost::safe_numerics::default_exception_policy // use for compiling and running tests
 >;
+// alias original program's integer types to corresponding PIC safe types
+// In conjunction with the promotion policy above, this will permit us to
+// guarantee that the resulting program will be free of arithmetic errors
+// introduced by C expression syntax and type promotion with no runtime penalty
+
+typedef safe_t<int8_t> int8;
+typedef safe_t<int16_t> int16;
+typedef safe_t<int32_t> int32;
+typedef safe_t<uint8_t> uint8;
+typedef safe_t<uint16_t> uint16;
+typedef safe_t<uint32_t> uint32;
+
+// ***************************
+// 4. emulate PIC features on the desktop
+
+// filter out special keyword used only by XC8 compiler
+#define __interrupt
+// filter out XC8 enable/disable global interrupts
+#define ei()
+#define di()
 
 #define DESKTOP
 #include "motor1.c"

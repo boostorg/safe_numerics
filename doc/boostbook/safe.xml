@@ -291,6 +291,6 @@ int main(int, char[]){
 
     <para><filename><ulink
     url="../../include/boost/safe_numerics/safe_integer.hpp">#include
-    &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
+    &lt;boost/safe_numerics/safe_integer.hpp&gt;</ulink></filename></para>
   </section>
 </section>
