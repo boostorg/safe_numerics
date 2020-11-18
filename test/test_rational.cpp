@@ -42,8 +42,7 @@ using namespace boost::safe_numerics;
 
 using int_type = safe<int>;
 
-int main ()
-{
+int main (){
     rational<int_type> half(1,2);
     rational<int_type> one(1);
     rational<int_type> two(2);

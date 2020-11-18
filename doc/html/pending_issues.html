@@ -21,15 +21,15 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.pending_issues"></a>Pending Issues</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="pending_issues.html#idm20546872816"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm20546833216">Concepts are Defined but Not Enforced.</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm20546827488">Other Pending Issues</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm488718234528"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm488718194080">Concepts are Defined but Not Enforced.</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm488718189120">Other Pending Issues</a></span></dt>
 </dl></div>
 <p>The library is under development. There are a number of issues still
   pending.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm20546872816"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
+<a name="idm488718234528"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
 <p>The following is paraphrased from an issue raised by Andrzej
     Krzemieński as a <a href="https://github.com/robertramey/safe_numerics/issues/44" target="_top">github
     issue</a>. It touches upon fundamental ideas behind the library and
@@ -68,14 +68,14 @@
     <span class="special">{</span><span class="special">}</span>
 <span class="special">}</span><span class="special">;</span></pre>
 <p>Then redeclare <code class="computeroutput">safe_base</code>, etc., accordingly.</p>
-<p>Also not that for C++20, template value parameters are no longer
-    restricted to integer primitive types buy maybe class types as well. This
+<p>Also note that for C++20, template value parameters are no longer
+    restricted to integer primitive types but may be class types as well. This
     means the library maybe extended to user class types without changing the
     current template signatures.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm20546833216"></a>Concepts are Defined but Not Enforced.</h3></div></div></div>
+<a name="idm488718194080"></a>Concepts are Defined but Not Enforced.</h3></div></div></div>
 <p>The following is paraphrased from an issue raised by Andrzej
     Krzemieński as a <a href="https://github.com/robertramey/safe_numerics/issues/46" target="_top">github
     issue</a>.</p>
@@ -106,7 +106,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm20546827488"></a>Other Pending Issues</h3></div></div></div>
+<a name="idm488718189120"></a>Other Pending Issues</h3></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>The library is currently limited to integers. If there is
           interest, it could be extended to floats and possible to user

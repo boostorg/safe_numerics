@@ -36,7 +36,13 @@
 <p>This library will detect divide by zero errors before the operation
     is invoked. Any errors of this nature are handled according to the <a class="link" href="exception_policies.html" title="exception_policy&lt;AE, IDB, UB, UV&gt;">exception_policy</a> selected
     by the library user.</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">stdexcept</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
@@ -48,10 +54,10 @@
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"Not using safe numerics"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
 
     <span class="keyword">try</span><span class="special">{</span>
-        <span class="keyword">int</span> <span class="identifier">x</span> <span class="special">=</span> <span class="number">1</span><span class="special">;</span>
-        <span class="keyword">int</span> <span class="identifier">y</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>
         <span class="comment">// can't do this as it will crash the program with no</span>
         <span class="comment">// opportunity for recovery - comment out for example</span>
+        <span class="comment">// int x = 1;</span>
+        <span class="comment">// int y = 0;</span>
         <span class="comment">// std::cout &lt;&lt; x / y;</span>
         <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"error cannot be handled at runtime!"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
     <span class="special">}</span>

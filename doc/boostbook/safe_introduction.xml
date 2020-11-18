@@ -112,7 +112,7 @@
     as:</para>
 
     <programlisting>#include &lt;boost/safe_numerics/safe_integer.hpp&gt;
-using namespace boost::numeric;
+using namespace boost::safe_numerics;
 safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
   return x + y; // throw exception if correct result cannot be returned
 }
@@ -120,7 +120,7 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
 
     <para><note>
         <para>Library code in this document resides in the namespace
-        <code>boost::numeric</code>. This namespace has generally been
+        <code>boost::safe_numerics</code>. This namespace has generally been
         eliminated from text, code and examples in order to improve
         readability of the text.</para>
       </note>The addition expression is checked at runtime or (if possible) at

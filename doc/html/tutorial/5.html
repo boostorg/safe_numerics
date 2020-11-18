@@ -27,7 +27,13 @@
     "rules" to avoid these problems. It's not always easy to apply these
     "rules" to existing code without creating even more bugs. Here is a
     typical example of this problem:</p>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">cstdint</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>

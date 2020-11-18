@@ -86,14 +86,6 @@ constexpr interval<R> make_interval(const R &){
     return interval<R>();
 }
 
-#if 0
-template<class R>
-constexpr interval<R>::interval() :
-    l(std::numeric_limits<R>::min()),
-    u(std::numeric_limits<R>::max())
-{}
-#endif
-
 // account for the fact that for floats and doubles
 // the most negative value is called "lowest" rather
 // than min

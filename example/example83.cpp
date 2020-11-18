@@ -1,3 +1,9 @@
+//  Copyright (c) 2018 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 #include <iostream>
 
 #include <boost/safe_numerics/safe_integer_range.hpp>
@@ -30,7 +36,9 @@ int main(int, const char *[]){
     std::cout << "x = " << safe_format(x) << std::endl;
     constexpr const const_safe_t<67> y;
     std::cout << "y = " << safe_format(y) << std::endl;
-    const safe_t z = x + y;
+    auto zx = x + y;
+    const safe_t z = zx;
+    //auto z = x + y;
     std::cout << "x + y = " << safe_format(x + y) << std::endl;
     std::cout << "z = " << safe_format(z) << std::endl;
     return 0;

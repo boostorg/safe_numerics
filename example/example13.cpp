@@ -1,3 +1,9 @@
+//  Copyright (c) 2018 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
 #include <stdexcept>
 #include <iostream>
 
@@ -10,10 +16,10 @@ int main(int, const char *[]){
     std::cout << "Not using safe numerics" << std::endl;
 
     try{
-        int x = 1;
-        int y = 0;
         // can't do this as it will crash the program with no
         // opportunity for recovery - comment out for example
+        // int x = 1;
+        // int y = 0;
         // std::cout << x / y;
         std::cout << "error cannot be handled at runtime!" << std::endl;
     }

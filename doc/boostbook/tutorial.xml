@@ -331,7 +331,7 @@ Program ended with exit code: 0</screen></para>
     overhead. Consider the following example:</para>
 
     <para><programlisting><xi:include href="../../example/example7.cpp"
-          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 8: 
+          parse="text" xmlns:xi="http://www.w3.org/2001/XInclude"/></programlisting><screen>example 7: 
 enforce contracts with zero runtime cost
 parameter error detected</screen></para>
 

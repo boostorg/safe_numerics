@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_range.html#idm20548466976">Description</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548464096">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548456736">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548449648">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548428384">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548425728">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548423440">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm20548339280">Header</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719907856">Description</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719904976">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719897616">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719890528">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719869264">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719866608">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719864320">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm488719697936">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548466976"></a>Description</h4></div></div></div>
+<a name="idm488719907856"></a>Description</h4></div></div></div>
 <p>This type holds a signed or unsigned integer in the closed range
     [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
@@ -43,7 +43,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548464096"></a>Notation</h4></div></div></div>
+<a name="idm488719904976"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548456736"></a>Associated Types</h4></div></div></div>
+<a name="idm488719897616"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -84,7 +84,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548449648"></a>Template Parameters</h4></div></div></div>
+<a name="idm488719890528"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -130,13 +130,13 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548428384"></a>Model of</h4></div></div></div>
+<a name="idm488719869264"></a>Model of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
 <p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548425728"></a>Valid Expressions</h4></div></div></div>
+<a name="idm488719866608"></a>Valid Expressions</h4></div></div></div>
 <p>Implements all expressions and only those expressions defined by the
     <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
     requirements. Thus, the result type of such an expression will be another
@@ -145,23 +145,56 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548423440"></a>Example of use</h4></div></div></div>
-<pre class="programlisting"><span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">type_traits</span><span class="special">&gt;</span>
+<a name="idm488719864320"></a>Example of use</h4></div></div></div>
+<pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
+<span class="comment">//</span>
+<span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
+<span class="comment">// accompanying file LICENSE_1_0.txt or copy at</span>
+<span class="comment">// http://www.boost.org/LICENSE_1_0.txt)</span>
+
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">exception</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">iostream</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">type_traits</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_range</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
+<span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">safe_integer_literal</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="preprocessor">#include</span> <span class="special">&lt;</span><span class="identifier">boost</span><span class="special">/</span><span class="identifier">safe_numerics</span><span class="special">/</span><span class="identifier">utility</span><span class="special">.</span><span class="identifier">hpp</span><span class="special">&gt;</span>
 
 <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="identifier">boost</span><span class="special">::</span><span class="identifier">safe_numerics</span><span class="special">;</span>
 
-<span class="keyword">void</span> <span class="identifier">f</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
+<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span>
     <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">7</span><span class="special">,</span> <span class="number">24</span><span class="special">&gt;</span> <span class="identifier">i</span><span class="special">;</span>
-    <span class="comment">// since the range is included in [0,255], the underlying type of i </span>
+    
+    <span class="comment">// since the range is included in [0,255], the underlying type of i</span>
     <span class="comment">// will be an unsigned char.</span>
-    <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>  <span class="comment">// throws out_of_range exception</span>
-    <span class="identifier">i</span> <span class="special">=</span> <span class="number">9</span><span class="special">;</span>  <span class="comment">// ok</span>
-    <span class="identifier">i</span> <span class="special">*=</span> <span class="number">9</span><span class="special">;</span> <span class="comment">// throws out_of_range exception</span>
-    <span class="identifier">i</span> <span class="special">=</span> <span class="special">-</span><span class="number">1</span><span class="special">;</span> <span class="comment">// throws out_of_range exception</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">i</span> <span class="special">=</span> <span class="number">0</span><span class="special">;</span>  <span class="comment">// throws out_of_range exception</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"fails to detect erroneous assignment"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// should arrive here</span>
+    <span class="special">}</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">i</span> <span class="special">=</span> <span class="number">9</span><span class="special">;</span>  <span class="comment">// ok - no exception expected</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"erroneous error for legal assignment"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">i</span> <span class="special">*=</span> <span class="number">9</span><span class="special">;</span> <span class="comment">// fails to compile because result can't fin in range</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"fails to out of range result"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// should arrive here</span>
+    <span class="special">}</span>
+    <span class="keyword">try</span><span class="special">{</span>
+        <span class="identifier">i</span> <span class="special">=</span> <span class="special">-</span><span class="number">1</span><span class="special">;</span> <span class="comment">// throws out_of_range exception</span>
+        <span class="identifier">std</span><span class="special">::</span><span class="identifier">cout</span> <span class="special">&lt;&lt;</span> <span class="string">"fails to detect erroneous assignment"</span> <span class="special">&lt;&lt;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">endl</span><span class="special">;</span>
+    <span class="special">}</span>
+    <span class="keyword">catch</span><span class="special">(</span><span class="identifier">std</span><span class="special">::</span><span class="identifier">exception</span> <span class="special">&amp;</span> <span class="identifier">e</span><span class="special">)</span><span class="special">{</span>
+        <span class="comment">// should arrive here</span>
+    <span class="special">}</span>
     <span class="identifier">std</span><span class="special">::</span><span class="identifier">uint8_t</span> <span class="identifier">j</span> <span class="special">=</span> <span class="number">4</span><span class="special">;</span>
     <span class="keyword">auto</span> <span class="identifier">k</span> <span class="special">=</span> <span class="identifier">i</span> <span class="special">+</span> <span class="identifier">j</span><span class="special">;</span>
 
@@ -175,14 +208,13 @@
         <span class="special">&amp;&amp;</span> <span class="identifier">std</span><span class="special">::</span><span class="identifier">numeric_limits</span><span class="special">&lt;</span><span class="keyword">decltype</span><span class="special">(</span><span class="identifier">k</span><span class="special">)</span><span class="special">&gt;</span><span class="special">::</span><span class="identifier">max</span><span class="special">(</span><span class="special">)</span> <span class="special">==</span> <span class="number">279</span><span class="special">,</span>
         <span class="string">"k is a safe range of [7,279]"</span>
     <span class="special">)</span><span class="special">;</span>
+    <span class="keyword">return</span> <span class="number">0</span><span class="special">;</span>
 <span class="special">}</span>
-
-<span class="keyword">int</span> <span class="identifier">main</span><span class="special">(</span><span class="special">)</span><span class="special">{</span><span class="special">}</span>
 </pre>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20548339280"></a>Header</h4></div></div></div>
+<a name="idm488719697936"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/boost/safe_numerics/safe_integer_range.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>

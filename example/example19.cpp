@@ -1,19 +1,52 @@
+//  Copyright (c) 2018 Robert Ramey
+//
+// Distributed under the Boost Software License, Version 1.0. (See
+// accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
+
+#include <exception>
+#include <iostream>
 #include <type_traits>
 #include <boost/safe_numerics/safe_integer.hpp>
 #include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
 
 #include <boost/safe_numerics/utility.hpp>
 
 using namespace boost::safe_numerics;
 
-void f(){
+int main(){
     safe_unsigned_range<7, 24> i;
-    // since the range is included in [0,255], the underlying type of i 
+    
+    // since the range is included in [0,255], the underlying type of i
     // will be an unsigned char.
-    i = 0;  // throws out_of_range exception
-    i = 9;  // ok
-    i *= 9; // throws out_of_range exception
-    i = -1; // throws out_of_range exception
+    try{
+        i = 0;  // throws out_of_range exception
+        std::cout << "fails to detect erroneous assignment" << std::endl;
+    }
+    catch(std::exception & e){
+        // should arrive here
+    }
+    try{
+        i = 9;  // ok - no exception expected
+    }
+    catch(std::exception & e){
+        std::cout << "erroneous error for legal assignment" << std::endl;
+    }
+    try{
+        i *= 9; // fails to compile because result can't fin in range
+        std::cout << "fails to out of range result" << std::endl;
+    }
+    catch(std::exception & e){
+        // should arrive here
+    }
+    try{
+        i = -1; // throws out_of_range exception
+        std::cout << "fails to detect erroneous assignment" << std::endl;
+    }
+    catch(std::exception & e){
+        // should arrive here
+    }
     std::uint8_t j = 4;
     auto k = i + j;
 
@@ -27,6 +60,5 @@ void f(){
         && std::numeric_limits<decltype(k)>::max() == 279,
         "k is a safe range of [7,279]"
     );
+    return 0;
 }
-
-int main(){}

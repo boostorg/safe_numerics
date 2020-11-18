@@ -32,7 +32,7 @@ int main(int, const char * []){
         safe<std::int8_t> x = 127;
         safe<std::int8_t> y = 2;
         // rather than producing and invalid result an exception is thrown
-        safe<std::int8_t> z = x + y;
+        x + y;
     }
     catch(const std::exception & e){
         // which can catch here

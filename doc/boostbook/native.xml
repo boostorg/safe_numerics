@@ -52,8 +52,8 @@ void int f(safe_int x, safe_int y){
     using <code>native</code> is not necessary.</para>
 
     <programlisting>#include &lt;cassert&gt;
-#include &lt;boost/numeric/safe_numerics/safe_integer.hpp&gt; 
-#include &lt;boost/numeric/safe_numerics/native.hpp&gt; 
+#include &lt;boost/safe_numerics/safe_integer.hpp&gt; 
+#include &lt;boost/safe_numerics/native.hpp&gt; 
 int main(){
     using namespace boost::numeric;
     // use native promotion policy where C++ standard arithmetic 

@@ -21,17 +21,18 @@
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.safe_numeric_concept"></a>SafeNumeric&lt;T&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549120864">Description</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549119408">Refinement of</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549117056">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549099616">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549027856">Invariants</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549026256">Models</a></span></dt>
-<dt><span class="section"><a href="safe_numeric_concept.html#idm20549021920">Header</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720563920">Description</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720562464">Refinement of</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720560112">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720542640">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720533984">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720454272">Invariants</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720452672">Models</a></span></dt>
+<dt><span class="section"><a href="safe_numeric_concept.html#idm488720448336">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549120864"></a>Description</h4></div></div></div>
+<a name="idm488720563920"></a>Description</h4></div></div></div>
 <p>This holds an arithmetic value which can be used as a replacement
     for built-in C++ arithmetic values. These types differ from their built-in
     counter parts in that the are guaranteed not to produce invalid arithmetic
@@ -40,12 +41,12 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549119408"></a>Refinement of</h4></div></div></div>
+<a name="idm488720562464"></a>Refinement of</h4></div></div></div>
 <p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Numeric</a> or <a class="link" href="integer.html" title="Integer&lt;T&gt;">Integer</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549117056"></a>Notation</h4></div></div></div>
+<a name="idm488720560112"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -96,7 +97,37 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549099616"></a>Valid Expressions</h4></div></div></div>
+<a name="idm488720542640"></a>Associated Types</h4></div></div></div>
+<div class="informaltable"><table class="table">
+<colgroup>
+<col align="left">
+<col align="left">
+</colgroup>
+<tbody>
+<tr>
+<td align="left"><a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;"><code class="computeroutput">PromotionPolicy</code></a></td>
+<td align="left">In C++ expressions, arguments must be of the same type. If
+            they are not, all arguments are converted to a common type in
+            accordance with rules of the C++ standard. For some applications
+            of the safe numerics library, we might want conversions which are
+            different than the standard ones. This class type implements the
+            conversion functions that are to be used with the safe numeric
+            type being instantiated.</td>
+</tr>
+<tr>
+<td align="left"><a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;"><code class="computeroutput">ExceptionPolicy</code></a></td>
+<td align="left">The exception policy specifies what is to occur when a safe
+            operation cannot return a valid result. A type is an
+            ExceptionPolicy if it has specific functions for handling
+            exceptional events that occur in the course of safe numeric
+            operations.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section">
+<div class="titlepage"><div><div><h4 class="title">
+<a name="idm488720533984"></a>Valid Expressions</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -187,6 +218,18 @@
               requirements for a SafeNumeric type.</p></td>
 </tr>
 <tr>
+<td align="left"><code class="computeroutput">get_promotion_policy&lt;S&gt;</code></td>
+<td align="left">S</td>
+<td align="left"><p>Retrieve the <a class="link" href="promotion_policy.html" title="PromotionPolicy&lt;PP&gt;"><code class="computeroutput">PromotionPolicy</code></a><code class="computeroutput">
+              which is used by the specified safe type</code>.</p></td>
+</tr>
+<tr>
+<td align="left"><code class="computeroutput">get_exception_policy&lt;S&gt;</code></td>
+<td align="left">S</td>
+<td align="left"><p>Retrieve the <a class="link" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;"><code class="computeroutput">ExceptionPolicy</code></a>
+              which is used by the specified safe type.</p></td>
+</tr>
+<tr>
 <td align="left"><code class="computeroutput">base_type&lt;S&gt;::type</code></td>
 <td align="left">T</td>
 <td align="left"><p>Retrieve the base type of a given safe
@@ -203,7 +246,10 @@
 </table></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>The result of any binary operation where one or both of the
-        operands is a SafeNumeric type is also a SafeNumeric type.</p></li>
+        operands is a SafeNumeric type is also a SafeNumeric type. The
+        specific type is determined by the promotion rules implement in the
+        PromotionPolicy returned by get_promotion_policy&lt;S&gt; where S is
+        the result type.</p></li>
 <li class="listitem"><p>All the expressions in the above table are
         <code class="computeroutput">constexpr</code> expressions.</p></li>
 <li class="listitem"><p>Binary expressions which are not assignments and whose operands
@@ -241,7 +287,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549027856"></a>Invariants</h4></div></div></div>
+<a name="idm488720454272"></a>Invariants</h4></div></div></div>
 <p>The fundamental requirement of a SafeNumeric type is that it
     implements all C++ operations permitted on its base type in a way the
     prevents the return of an incorrect arithmetic result. Various
@@ -251,7 +297,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549026256"></a>Models</h4></div></div></div>
+<a name="idm488720452672"></a>Models</h4></div></div></div>
 <p><code class="computeroutput">safe&lt;T&gt;</code></p>
 <p><code class="computeroutput">safe_signed_range&lt;-11, 11&gt;</code></p>
 <p><code class="computeroutput">safe_unsigned_range&lt;0, 11&gt;</code></p>
@@ -259,9 +305,9 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm20549021920"></a>Header</h4></div></div></div>
+<a name="idm488720448336"></a>Header</h4></div></div></div>
 <p><a href="../../include/boost/safe_numerics/concept/safe_numeric.hpp" target="_top"><code class="computeroutput">#include
-    &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></a></p>
+    &lt;boost/safe_numerics/concepts/safe_numeric.hpp&gt;</code></a></p>
 </div>
 </div>
 <table xmlns:rev="http://www.cs.rpi.edu/~gregod/boost/tools/doc/revision" width="100%"><tr>

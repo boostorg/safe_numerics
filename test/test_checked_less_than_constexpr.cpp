@@ -66,6 +66,9 @@ struct test_unsigned_pair {
 int main(){
     using namespace boost::mp11;
 
+    static_assert(test_checked_less_than<signed char>(77, -24, '>'), "77 > -24");
+    static_assert(test_checked_less_than<signed char>(77, 82, '<'), "77 < 82");
+
     static_assert(
         mp_all_of<
             mp_product<

@@ -9,10 +9,12 @@
   <section>
     <title>Description</title>
 
-    <para>In C++, arithmetic operations result in types which may or may not
-    be the same as the constituent types. A promotion policy determines the
-    type of the result of an arithmetic operation. For example, in the
-    following code<programlisting>int x;
+    <para>In C++ expressions, arguments must be of the same type. If they are
+    not, all arguments are converted to a common type in accordance with rules
+    of the C++ standard. For some applications of the safe numerics library,
+    we might want conversions which are different than the standard ones. This
+    class type implements the conversion functions that are to be used with
+    the safe numeric type being instantiated.<programlisting>int x;
 char y;
 auto z = x + y</programlisting>the type of <code>z</code> will be an
     <code>int</code>. This is a consequence for the standard rules for type
@@ -256,7 +258,7 @@ x + y; // detect possible overflow on the pic.</programlisting></para>
 
     <para><ulink
     url="../../include/boost/safe_numerics/concept/promotion_policy.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/concepts/promotion_policy.hpp&gt;
+    &lt;boost/safe_numerics/concepts/promotion_policy.hpp&gt;
     </code></ulink></para>
   </section>
 </section>

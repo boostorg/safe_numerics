@@ -99,6 +99,44 @@
   </section>
 
   <section>
+    <title>Associated Types</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="3*"/>
+
+        <colspec align="left" colwidth="10*"/>
+
+        <tbody>
+          <row>
+            <entry><link
+            linkend="safe_numerics.promotion_policy"><code>PromotionPolicy</code></link></entry>
+
+            <entry>In C++ expressions, arguments must be of the same type. If
+            they are not, all arguments are converted to a common type in
+            accordance with rules of the C++ standard. For some applications
+            of the safe numerics library, we might want conversions which are
+            different than the standard ones. This class type implements the
+            conversion functions that are to be used with the safe numeric
+            type being instantiated.</entry>
+          </row>
+
+          <row>
+            <entry><link
+            linkend="safe_numerics.exception_policy"><code>ExceptionPolicy</code></link></entry>
+
+            <entry>The exception policy specifies what is to occur when a safe
+            operation cannot return a valid result. A type is an
+            ExceptionPolicy if it has specific functions for handling
+            exceptional events that occur in the course of safe numeric
+            operations.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
     <title>Valid Expressions</title>
 
     <para><informaltable>
@@ -234,6 +272,26 @@
             </row>
 
             <row>
+              <entry><code>get_promotion_policy&lt;S&gt;</code></entry>
+
+              <entry>S</entry>
+
+              <entry><para>Retrieve the <link
+              linkend="safe_numerics.promotion_policy"><code>PromotionPolicy</code></link><code>
+              which is used by the specified safe type</code>.</para></entry>
+            </row>
+
+            <row>
+              <entry><code>get_exception_policy&lt;S&gt;</code></entry>
+
+              <entry>S</entry>
+
+              <entry><para>Retrieve the <link
+              linkend="safe_numerics.exception_policy"><code>ExceptionPolicy</code></link>
+              which is used by the specified safe type.</para></entry>
+            </row>
+
+            <row>
               <entry><code>base_type&lt;S&gt;::type</code></entry>
 
               <entry>T</entry>
@@ -258,7 +316,10 @@
     <itemizedlist>
       <listitem>
         <para>The result of any binary operation where one or both of the
-        operands is a SafeNumeric type is also a SafeNumeric type.</para>
+        operands is a SafeNumeric type is also a SafeNumeric type. The
+        specific type is determined by the promotion rules implement in the
+        PromotionPolicy returned by get_promotion_policy&lt;S&gt; where S is
+        the result type.</para>
       </listitem>
 
       <listitem>
@@ -332,6 +393,6 @@ int main(){
 
     <para><ulink
     url="../../include/boost/safe_numerics/concept/safe_numeric.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
+    &lt;boost/safe_numerics/concepts/safe_numeric.hpp&gt;</code></ulink></para>
   </section>
 </section>

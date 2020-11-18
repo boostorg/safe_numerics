@@ -212,6 +212,6 @@ make_safe_numerics_action(const safe_numerics_error &amp; e);</programlisting></
 
     <para><ulink
     url="../../include/boost/safe_numerics/exception.hpp"><code>#include
-    &lt;boost/numeric/safe_numerics/exception.hpp&gt;</code></ulink></para>
+    &lt;boost/safe_numerics/exception.hpp&gt;</code></ulink></para>
   </section>
 </section>

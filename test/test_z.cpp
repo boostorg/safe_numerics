@@ -794,6 +794,7 @@ int main(){
 
 #endif
 
+#if 0
 #include <iostream>
 #include <functional>
 #include <boost/safe_numerics/safe_integer_range.hpp>
@@ -856,5 +857,40 @@ int main() {
     std::cout << "test3 = " << test3 << '\n';
     sur<1910, 2099> test4 = 2000;   // OK value
     std::cout << "test4 = " << test4 << boost::safe_numerics::make_interval(test4) << '\n';
+    return 0;
+}
+
+#endif
+
+#if 0
+#include <iostream>
+#include <boost/safe_numerics/safe_integer.hpp>
+
+using boost::safe_numerics::safe;
+
+int main(){
+    safe<safe<int>> r {};
+    //safe<int> r {};
+    std::cout << r << std::endl;
+    return 0;
+}
+
+#endif
+
+#include <iostream>
+#include <sstream>
+#include <boost/safe_numerics/safe_integer.hpp>
+
+int main(){
+    try {
+      boost::safe_numerics::safe<unsigned> u;
+      std::istringstream is{"-1"};
+      is >> u;
+      std::cout << u << std::endl;
+    }
+    catch (std::exception const& e)
+    {
+      std::cerr << "ERR: " << e.what() << std::endl;
+    }
     return 0;
 }
