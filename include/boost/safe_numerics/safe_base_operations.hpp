@@ -259,7 +259,7 @@ constexpr static casting_helper(const T & t, const U & u){
     >::cast(base_value(t));
     const R tr = tx.exception()
         ? static_cast<R>(t)
-        : tx.m_r;
+        : tx.m_contents.m_r;
 
     const r_type ux = heterogeneous_checked_operation<
         R,
@@ -270,7 +270,7 @@ constexpr static casting_helper(const T & t, const U & u){
     >::cast(base_value(u));
     const R ur = ux.exception()
         ? static_cast<R>(u)
-        : ux.m_r;
+        : ux.m_contents.m_r;
     return std::pair<R, R>(tr, ur);
 }
 
@@ -315,7 +315,7 @@ private:
         return
             rx.exception()
             ? r.first + r.second
-            : rx.m_r;
+            : rx.m_contents.m_r;
     }
 
     using r_type_interval_t = interval<r_type>;
@@ -434,7 +434,7 @@ private:
         return
             rx.exception()
             ? r.first + r.second
-            : rx.m_r;
+            : rx.m_contents.m_r;
     }
     using r_type_interval_t = interval<r_type>;
 
@@ -554,7 +554,7 @@ private:
         return
             rx.exception()
             ? r.first * r.second
-            : rx.m_r;
+            : rx.m_contents.m_r;
     }
 
     using r_type_interval_t = interval<r_type>;
@@ -1187,7 +1187,7 @@ private:
         return
             rx.exception()
             ? r.first << r.second
-            : rx.m_r;
+            : rx.m_contents.m_r;
     }
 
     using r_type_interval_t = interval<r_type>;
@@ -1318,7 +1318,7 @@ struct right_shift_result {
         return
             rx.exception()
             ? r.first >> r.second
-            : rx.m_r;
+            : rx.m_contents.m_r;
     }
 
     using r_type_interval_t = interval<r_type>;
