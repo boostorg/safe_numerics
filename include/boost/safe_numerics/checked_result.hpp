@@ -92,7 +92,7 @@ struct checked_result {
 
     // disallow assignment
     checked_result & operator=(const checked_result &) = delete;
-};
+}; // checked_result
 
 template <class R>
 class make_checked_result {

@@ -34,7 +34,7 @@ namespace boost {
 namespace safe_numerics {
 
 template<typename T>
-constexpr void display(const boost::safe_numerics::checked_result<T> & c){
+constexpr inline void display(const boost::safe_numerics::checked_result<T> & c){
     switch(c.m_e){
     case safe_numerics_error::success:
         std::terminate();
