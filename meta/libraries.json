@@ -11,5 +11,6 @@
     ],
     "maintainers": [
         "Robert Ramey <ramey -at- rrsd.com>"
-    ]
+    ],
+    "cxxstd": "14"
 }
