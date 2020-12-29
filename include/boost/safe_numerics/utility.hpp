@@ -129,23 +129,34 @@ namespace ilog2_detail {
         return LogTable256[t];
     }
     constexpr inline static unsigned int ilog2(const boost::uint_t<16>::exact & t){
-        const boost::uint_t<8>::exact upper_half = (t >> 8);
-        return upper_half == 0
-            ? ilog2(static_cast<boost::uint_t<8>::exact>(t))
-            : 8 + ilog2(upper_half);
+        using half_type = boost::uint_t<8>::exact;
+        const half_type upper_half = static_cast<half_type>(t >> 8);
+        const half_type lower_half = static_cast<half_type>(t);
+        return upper_half == 0 ? ilog2(lower_half) : 8 + ilog2(upper_half);
     }
     constexpr inline static unsigned int ilog2(const boost::uint_t<32>::exact & t){
-        const boost::uint_t<16>::exact upper_half = (t >> 16);
-        return upper_half == 0
-            ? ilog2(static_cast<boost::uint_t<16>::exact>(t))
-            : 16 + ilog2(upper_half);
+        using half_type = boost::uint_t<16>::exact;
+        const half_type upper_half = static_cast<half_type>(t >> 16);
+        const half_type lower_half = static_cast<half_type>(t);
+        return upper_half == 0 ? ilog2(lower_half) : 16 + ilog2(upper_half);
     }
     constexpr inline static unsigned int ilog2(const boost::uint_t<64>::exact & t){
-        const boost::uint_t<32>::exact upper_half = (t >> 32);
-        return upper_half == 0
-            ? ilog2(static_cast<boost::uint_t<32>::exact>(t))
-            : 32 + ilog2(upper_half);
+        using half_type = boost::uint_t<32>::exact;
+        const half_type upper_half = static_cast<half_type>(t >> 32);
+        const half_type lower_half = static_cast<half_type>(t);
+        return upper_half == 0 ? ilog2(lower_half) : 32 + ilog2(upper_half);
     }
+#if 0
+    // damn! if I couldn't get this work!  If this worked I could eliminate the code above.
+    // It would shorter and slicker. 
+    template<int N>
+    constexpr inline static unsigned int ilog2(const typename boost::uint_t<N>::exact & t){
+        using half_type = typename boost::uint_t<N/2>::exact;
+        constexpr const half_type upper_half = static_cast<half_type>(t >> N/2);
+        constexpr const half_type lower_half = static_cast<half_type>(t);
+        return upper_half == 0 ? ilog2(lower_half) : N/2 + ilog2(upper_half);
+    }
+#endif
 
 } // ilog2_detail
 
