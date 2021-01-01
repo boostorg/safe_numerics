@@ -114,12 +114,15 @@ Using int table elements may be faster, depending on your architecture.
 
 namespace ilog2_detail {
 
-    // I've "improved" the above and recast as C++ code which depends upon
-    // the optimizer to minimize the operations.  This should result in
-    // nine operations to calculate the position of the highest order
-    // bit in a 64 bit number. RR
-
-    constexpr inline static unsigned int ilog2(const boost::uint_t<8>::exact & t){
+    template<int N>
+    constexpr inline unsigned int ilog2(const typename boost::uint_t<N>::exact & t){
+        using half_type = typename boost::uint_t<N/2>::exact;
+        const half_type upper_half = static_cast<half_type>(t >> N/2);
+        const half_type lower_half = static_cast<half_type>(t);
+        return upper_half == 0 ? ilog2<N/2>(lower_half) : N/2 + ilog2<N/2>(upper_half);
+    }
+    template<>
+    constexpr inline unsigned int ilog2<8>(const typename boost::uint_t<8>::exact & t){
         #define LT(n) n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n
         const char LogTable256[256] = {
             static_cast<char>(-1), 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -128,35 +131,6 @@ namespace ilog2_detail {
         };
         return LogTable256[t];
     }
-    constexpr inline static unsigned int ilog2(const boost::uint_t<16>::exact & t){
-        using half_type = boost::uint_t<8>::exact;
-        const half_type upper_half = static_cast<half_type>(t >> 8);
-        const half_type lower_half = static_cast<half_type>(t);
-        return upper_half == 0 ? ilog2(lower_half) : 8 + ilog2(upper_half);
-    }
-    constexpr inline static unsigned int ilog2(const boost::uint_t<32>::exact & t){
-        using half_type = boost::uint_t<16>::exact;
-        const half_type upper_half = static_cast<half_type>(t >> 16);
-        const half_type lower_half = static_cast<half_type>(t);
-        return upper_half == 0 ? ilog2(lower_half) : 16 + ilog2(upper_half);
-    }
-    constexpr inline static unsigned int ilog2(const boost::uint_t<64>::exact & t){
-        using half_type = boost::uint_t<32>::exact;
-        const half_type upper_half = static_cast<half_type>(t >> 32);
-        const half_type lower_half = static_cast<half_type>(t);
-        return upper_half == 0 ? ilog2(lower_half) : 32 + ilog2(upper_half);
-    }
-#if 0
-    // damn! if I couldn't get this work!  If this worked I could eliminate the code above.
-    // It would shorter and slicker. 
-    template<int N>
-    constexpr inline static unsigned int ilog2(const typename boost::uint_t<N>::exact & t){
-        using half_type = typename boost::uint_t<N/2>::exact;
-        constexpr const half_type upper_half = static_cast<half_type>(t >> N/2);
-        constexpr const half_type lower_half = static_cast<half_type>(t);
-        return upper_half == 0 ? ilog2(lower_half) : N/2 + ilog2(upper_half);
-    }
-#endif
 
 } // ilog2_detail
 
@@ -166,7 +140,7 @@ constexpr inline unsigned int ilog2(const T & t){
 //    assert(t > 0);
     if(t == 0)
         return 0;
-    return ilog2_detail::ilog2(
+    return ilog2_detail::ilog2<bits_type<T>::value>(
         static_cast<
             typename boost::uint_t<
                 bits_type<T>::value
