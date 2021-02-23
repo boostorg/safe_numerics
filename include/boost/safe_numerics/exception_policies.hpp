@@ -82,7 +82,7 @@ struct throw_exception {
 };
 
 // given an error code - return the action code which it corresponds to.
-constexpr safe_numerics_actions
+constexpr inline safe_numerics_actions
 make_safe_numerics_action(const safe_numerics_error & e){
     // we can't use standard algorithms since we want this to be constexpr
     // this brute force solution is simple and pretty fast anyway
@@ -154,7 +154,7 @@ namespace dispatch_switch {
 } // dispatch_switch
 
 template<class EP, safe_numerics_error E>
-constexpr void
+constexpr inline void
 dispatch(const char * msg){
     constexpr safe_numerics_actions a = make_safe_numerics_action(E);
     dispatch_switch::dispatch_case<EP, a>::invoke(E, msg);

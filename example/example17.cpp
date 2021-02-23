@@ -5,9 +5,10 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 #include <boost/safe_numerics/safe_integer.hpp>
+#include <cstdint> // uint8_t
 using namespace boost::safe_numerics;
 
-int f(int i){
+uint8_t f(uint8_t i){
     return i;
 }
 
