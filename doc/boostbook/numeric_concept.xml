@@ -101,8 +101,7 @@
 
           <tbody>
             <row>
-              <entry><code>std::numeric_limits&lt;T&gt;::is_bounded
-              </code></entry>
+              <entry><code>Numeric&lt;T&gt;()</code></entry>
 
               <entry><code>bool</code></entry>
 
@@ -110,7 +109,7 @@
             </row>
 
             <row>
-              <entry><code>std::numeric_limits&lt;T&gt;::is_integer</code></entry>
+              <entry><code>Numeric&lt;T&gt;::value</code></entry>
 
               <entry><code>bool</code></entry>
 
@@ -123,15 +122,6 @@
               <entry><code>bool</code></entry>
 
               <entry><code>true</code> or <code>false</code></entry>
-            </row>
-
-            <row>
-              <entry><code>std::numeric_limits&lt;T&gt;::is_specialized
-              </code></entry>
-
-              <entry><code>bool</code></entry>
-
-              <entry><code>true</code></entry>
             </row>
           </tbody>
         </tgroup>

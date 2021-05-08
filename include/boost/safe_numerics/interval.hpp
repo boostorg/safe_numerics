@@ -157,10 +157,6 @@ constexpr inline interval<T> operator%(const interval<T> & t, const interval<T> 
 
 template<typename T>
 constexpr inline interval<T> operator<<(const interval<T> & t, const interval<T> & u){
-    static_assert(
-        boost::safe_numerics::Integer<T>::value,
-        "left shift only defined for integral type"
-    );
     //return interval<T>{t.l << u.l, t.u << u.u};
     return utility::minmax<T>(
         std::initializer_list<T> {
@@ -174,10 +170,6 @@ constexpr inline interval<T> operator<<(const interval<T> & t, const interval<T>
 
 template<typename T>
 constexpr inline interval<T> operator>>(const interval<T> & t, const interval<T> & u){
-    static_assert(
-        boost::safe_numerics::Integer<T>::value,
-        "right shift only defined for integral type"
-    );
     //return interval<T>{t.l >> u.u, t.u >> u.l};
     return utility::minmax<T>(
         std::initializer_list<T> {

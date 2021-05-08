@@ -26,11 +26,10 @@
 
         <glossdef>
           <para>Andrzej Commented and reviewed the library as it was
-          originally posted on the <ulink
-          url="http://www.blincubator.com">Boost Library Incubator</ulink>.
-          The consequent back and forth motivated me to invest more effort in
-          developing documentation and examples to justify the utility, indeed
-          the necessity, for this library. He also noted many errors in code,
+          originally posted on the Boost Library Incubator. The consequent
+          back and forth motivated me to invest more effort in developing
+          documentation and examples to justify the utility, indeed the
+          necessity, for this library. He also noted many errors in code,
           documentation, and tests. Without his interest and effort, I do not
           believe the library would have progressed beyond its initial
           stages.</para>
@@ -45,7 +44,7 @@
           source of many useful observations from potential users and
           constructive criticism from very knowledgeable developers. During
           the Boost formal review, reviews and comments were posted by the
-          following persons: </para>
+          following persons:</para>
 
           <itemizedlist>
             <listitem>
@@ -73,7 +72,7 @@
             </listitem>
 
             <listitem>
-              <para> John McFarlane</para>
+              <para>John McFarlane</para>
             </listitem>
 
             <listitem>

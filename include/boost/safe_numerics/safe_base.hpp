@@ -231,18 +231,18 @@ public:
     }
 
     // mutating unary operators
-    safe_base & operator++(){      // pre increment
+    constexpr safe_base & operator++(){      // pre increment
         return *this = *this + 1;
     }
-    safe_base & operator--(){      // pre decrement
+    constexpr safe_base & operator--(){      // pre decrement
         return *this = *this - 1;
     }
-    safe_base operator++(int){   // post increment
+    constexpr safe_base operator++(int){   // post increment
         safe_base old_t = *this;
         ++(*this);
         return old_t;
     }
-    safe_base operator--(int){ // post decrement
+    constexpr safe_base operator--(int){ // post decrement
         safe_base old_t = *this;
         --(*this);
         return old_t;
