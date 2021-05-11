@@ -17,8 +17,6 @@
 
 #include "utility.hpp" // log
 
-#include "concept/integer.hpp"
-
 // from stack overflow
 // http://stackoverflow.com/questions/23815138/implementing-variadic-min-max-functions
 

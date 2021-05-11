@@ -1132,7 +1132,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     if(!e)
         os << static_cast<R>(r);
     else
-        os << std::error_code(r.m_e).message() << ':' << static_cast<const char * const>(r);
+        os << std::error_code(r.m_e).message() << ':' << static_cast<char const *>(r);
     return os;
 }
 
@@ -1146,7 +1146,7 @@ inline std::basic_ostream<CharT, Traits> & operator<<(
     if(! e)
         os << static_cast<std::int16_t>(r);
     else
-        os << std::error_code(r.m_e).message() << ':' << static_cast<const char * const>(r);
+        os << std::error_code(r.m_e).message() << ':' << static_cast<char const *>(r);
     return os;
 }
 
@@ -1160,7 +1160,7 @@ inline std::basic_istream<CharT, Traits> & operator>>(
     if(!e)
         is >> static_cast<R>(r);
     else
-        is >> std::error_code(r.m_e).message() >> ':' >> static_cast<const char * const>(r);
+        is >> std::error_code(r.m_e).message() >> ':' >> static_cast<char const *>(r);
     return is;
 }
 
@@ -1177,7 +1177,7 @@ inline std::basic_istream<CharT, Traits> & operator>>(
         r.m_contents.m_r = static_cast<signed char>(i);
     }
     else
-        is >> std::error_code(r.m_e).message() >> ':' >> static_cast<const char * const>(r);
+        is >> std::error_code(r.m_e).message() >> ':' >> static_cast<char const *>(r);
     return is;
 }
 
