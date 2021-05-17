@@ -59,9 +59,6 @@
     <xi:include href="integer_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-    <xi:include href="safe_numeric_concept.xml" xpointer="element(/1)"
-                xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
     <xi:include href="promotion_policy_concept.xml" xpointer="element(/1)"
                 xmlns:xi="http://www.w3.org/2001/XInclude"/>
 

@@ -84,6 +84,7 @@ compile-fail test_constexpr.cpp ;
 # compile success tests
 
 compile test_concept_numeric.cpp ;
+compile test_concept_integer.cpp ;
 
 # safe integer constexpr tests
 

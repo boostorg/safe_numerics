@@ -78,6 +78,7 @@ endforeach(test_name)
 # compile success tests
 set(compile_success_test_list
   test_concept_numeric
+  test_concept_integer
   test_stream_overload
 )
 

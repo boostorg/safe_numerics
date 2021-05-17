@@ -276,6 +276,10 @@ safe&lt;int&gt; f(safe&lt;int&gt; x, safe&lt;int&gt; y){
         <listitem>
           <para>enable_if</para>
         </listitem>
+
+        <listitem>
+          <para>type_traits</para>
+        </listitem>
       </itemizedlist>The Safe Numerics library is delivered with an exhaustive
     suite of test programs.</para>
   </section>

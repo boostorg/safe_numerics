@@ -1363,8 +1363,8 @@ template<class T, class U> using left_shift_operator
 
 template<class T, class U>
 typename boost::lazy_enable_if_c<
-    // exclude usage of >> for file input here
-    boost::safe_numerics::Numeric<T>::value
+    // exclude usage of << for file input here
+    boost::safe_numerics::Numeric<T>()
     && legal_overload<left_shift_operator, T, U>::value,
     left_shift_result<T, U>
 >::type
@@ -1377,13 +1377,31 @@ constexpr inline operator<<(const T & t, const U & u){
 template<class T, class U>
 typename std::enable_if<
     // exclude usage of << for file output here
-    boost::safe_numerics::Numeric<T>::value
+    boost::safe_numerics::Numeric<T>()
     && legal_overload<left_shift_operator, T, U>::value,
     T
 >::type
 constexpr inline operator<<=(T & t, const U & u){
     t = static_cast<T>(t << u);
     return t;
+}
+
+template<class T, class CharT, class Traits> using stream_output_operator
+    = decltype( std::declval<std::basic_ostream<CharT, Traits> &>() >> std::declval<T const&>() );
+
+template<class T, class CharT, class Traits>
+typename boost::lazy_enable_if_c<
+    boost::mp11::mp_valid< stream_output_operator, T, CharT, Traits>::value,
+    std::basic_ostream<CharT, Traits> &
+>::type
+constexpr inline operator>>(
+    std::basic_ostream<CharT, Traits> & os,
+    const T & t
+){
+    // INT13-CPP
+    // C++ standards document N4618 & 5.8.2
+    t.output(os);
+    return os;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -1502,7 +1520,7 @@ template<class T, class U> using right_shift_operator
 template<class T, class U>
 typename boost::lazy_enable_if_c<
     // exclude usage of >> for file input here
-    boost::safe_numerics::Numeric<T>::value
+    boost::safe_numerics::Numeric<T>()
     && legal_overload<right_shift_operator, T, U>::value,
     right_shift_result<T, U>
 >::type
@@ -1515,7 +1533,7 @@ constexpr inline operator>>(const T & t, const U & u){
 template<class T, class U>
 typename std::enable_if<
     // exclude usage of << for file output here
-    boost::safe_numerics::Numeric<T>::value
+    boost::safe_numerics::Numeric<T>()
     && legal_overload<right_shift_operator, T, U>::value,
     T
 >::type

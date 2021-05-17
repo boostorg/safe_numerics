@@ -9,16 +9,10 @@
 
 #include <limits>
 #include <cstdint>
-#include <boost/type_traits/is_detected_exact.hpp> // is_detected_exact
-#include <boost/mp11/function.hpp> // mp_and
-#include <boost/safe_numerics/utility.hpp> // print_types
-
+#include <type_traits>
 
 namespace boost {
 namespace safe_numerics {
-
-// Note: the following global operators will be found via
-// argument dependent lookup.
 
 template<class T>
 using Numeric = std::integral_constant<bool, std::numeric_limits<T>::is_specialized>;
@@ -26,6 +20,4 @@ using Numeric = std::integral_constant<bool, std::numeric_limits<T>::is_speciali
 } // safe_numerics
 } // boost
 
-
-static_assert(boost::safe_numerics::Numeric<std::int16_t>::value, "asdfasdfasdf");
 #endif // BOOST_NUMERIC_CONCEPT_NUMERIC_HPP

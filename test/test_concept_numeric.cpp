@@ -6,6 +6,7 @@
 
 // test Numeric concept - compile only test
 
+#include <boost/safe_numerics/utility.hpp>
 #include <boost/safe_numerics/concept/numeric.hpp>
 #include "test_checked_values.hpp"
 
