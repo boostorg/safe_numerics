@@ -151,10 +151,9 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
 
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+    <para><link linkend="safe_numerics.integer_concept">Integer</link></para>
   </section>
 
   <section>

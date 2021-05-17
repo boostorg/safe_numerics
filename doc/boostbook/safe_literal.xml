@@ -20,10 +20,9 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
 
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+    <para><link linkend="safe_numerics.integer_concept">Integer</link></para>
 
     <para>This type inherits all the notation, associated types and template
     parameters and valid expressions of <link
@@ -85,7 +84,7 @@
             <entry><code>Value</code></entry>
 
             <entry><code><link
-            linkend="safe_numerics.numeric">Integer</link></code></entry>
+            linkend="safe_numerics.integer_concept">Integer</link></code></entry>
 
             <entry>value used to initialize the literal</entry>
           </row>

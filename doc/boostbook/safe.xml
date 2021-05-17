@@ -17,10 +17,9 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.integer">Integer</link></para>
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
 
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+    <para><link linkend="safe_numerics.integer_concept">Integer</link></para>
 
     <para>This type inherits all the notation, associated types and template
     parameters and valid expressions of <link
@@ -83,7 +82,7 @@
             <entry><code>T</code></entry>
 
             <entry><link
-            linkend="safe_numerics.integer">Integer&lt;T&gt;</link></entry>
+            linkend="safe_numerics.integer_concept">Integer&lt;T&gt;</link></entry>
 
             <entry><para>The underlying type. Currently only integer types are
             supported</para></entry>

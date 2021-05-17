@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE section PUBLIC "-//Boost//DTD BoostBook XML V1.1//EN"
 "http://www.boost.org/tools/boostbook/dtd/boostbook.dtd">
-<section id="safe_numerics.integer">
+<section id="safe_numerics.integer_concept">
   <title>Integer&lt;T&gt;</title>
 
   <?dbhtml stop-chunking?>
@@ -28,7 +28,7 @@
   <section>
     <title>Refinement of</title>
 
-    <para><link linkend="safe_numerics.numeric">Numeric</link></para>
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
   </section>
 
   <section>
