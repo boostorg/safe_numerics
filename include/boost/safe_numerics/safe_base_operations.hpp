@@ -162,7 +162,7 @@ template<class Stored, Stored Min, Stored Max, class P, class E>
 constexpr inline /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(){
     static_assert(
         std::is_arithmetic<Stored>(),
-        "currently, safe numeric base types must be arithmetic types"
+        "currently, safe numeric base types must currently be arithmetic types"
     );
     dispatch<E, safe_numerics_error::uninitialized_value>(
         "safe values must be initialized"
@@ -175,7 +175,12 @@ constexpr inline /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
     skip_validation
 ) :
     m_t(rhs)
-{}
+{
+    static_assert(
+        std::is_arithmetic<Stored>(),
+        "currently, safe numeric base types must currently be arithmetic types"
+    );
+}
 
 // construct an instance from an instance of a convertible underlying type.
 template<class Stored, Stored Min, Stored Max, class P, class E>
@@ -188,7 +193,12 @@ template<class Stored, Stored Min, Stored Max, class P, class E>
     >
 constexpr inline /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(const T &t) :
     m_t(validated_cast(t))
-{}
+{
+    static_assert(
+        std::is_arithmetic<Stored>(),
+        "currently, safe numeric base types must currently be arithmetic types"
+    );
+}
 
 // construct an instance of a safe type from a literal value
 template<class Stored, Stored Min, Stored Max, class P, class E>
@@ -197,7 +207,11 @@ constexpr inline /*explicit*/ safe_base<Stored, Min, Max, P, E>::safe_base(
     const safe_literal_impl<T, N, Px, Ex> & t
 ) :
     m_t(validated_cast(t))
-{}
+{    static_assert(
+        std::is_arithmetic<Stored>(),
+        "currently, safe numeric base types must currently be arithmetic types"
+    );
+}
 
 /////////////////////////////////////////////////////////////////
 // casting operators

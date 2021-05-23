@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>Boost Library Status Error Log</title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<table border="0">
+<h1>Library Status: safe_numerics/example</h1>
+<b>Run Date:</b> 15:12:29 UTC, Saturday 07 November 2020
+<br></table>
+<br>
+<h2><a name="bin.v2/libs/safe_numerics/example/example91.test/clang-darwin-14/debug/threading-multi/visibility-hidden">bin.v2/libs/safe_numerics/example/example91.test/clang-darwin-14/debug/threading-multi/visibility-hidden</a></h2>
+<h3>Compiler output:</h3><pre>
+In file included from example91.cpp:47:
+./motor1.c:26:1: error: unknown type name 'int16'
+int16 motor_pos = 0;    // absolute step number
+^
+./motor1.c:27:1: error: unknown type name 'int16'
+int16 pos_inc=0;        // motor_pos increment
+^
+./motor1.c:28:1: error: unknown type name 'uint16'
+uint16 phase=0;         // ccpPhase[phase_ix]
+^
+./motor1.c:29:1: error: unknown type name 'uint8'; did you mean 'uint'?
+uint8  phase_ix=0;      // index to ccpPhase[]
+^~~~~
+uint
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/types.h:92:33: note: 'uint' declared here
+typedef unsigned int            uint;           /* Sys V compatibility */
+                                ^
+In file included from example91.cpp:47:
+./motor1.c:30:1: error: unknown type name 'uint8'; did you mean 'uint'?
+uint8  phase_inc;       // phase_ix increment
+^~~~~
+uint
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/types.h:92:33: note: 'uint' declared here
+typedef unsigned int            uint;           /* Sys V compatibility */
+                                ^
+In file included from example91.cpp:47:
+./motor1.c:31:1: error: unknown type name 'uint8'; did you mean 'uint'?
+uint8  run_flg;         // true while motor is running
+^~~~~
+uint
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/types.h:92:33: note: 'uint' declared here
+typedef unsigned int            uint;           /* Sys V compatibility */
+                                ^
+In file included from example91.cpp:47:
+./motor1.c:32:1: error: unknown type name 'uint16'
+uint16 ccpr;            // copy of CCPR1&amp;amp;2
+^
+./motor1.c:33:1: error: unknown type name 'uint16'
+uint16 c;               // integer delay count
+^
+./motor1.c:34:1: error: unknown type name 'uint16'
+uint16 step_no;          // progress of move
+^
+./motor1.c:35:1: error: unknown type name 'uint16'
+uint16 step_down;       // start of down-ramp
+^
+./motor1.c:36:1: error: unknown type name 'uint16'
+uint16 move;             // total steps to move
+^
+./motor1.c:37:1: error: unknown type name 'uint16'
+uint16 midpt;           // midpoint of move
+^
+./motor1.c:38:1: error: unknown type name 'uint32'
+uint32 c32;              // 24.8 fixed point delay count
+^
+./motor1.c:39:1: error: unknown type name 'int16'
+int16 denom;            // 4.n+1 in ramp algo
+^
+./motor1.c:43:1: error: unknown type name 'uint16'
+uint16 const ccpPhase[] = {0x909, 0x908, 0x808, 0x809}; // 00,01,11,10
+^
+./motor1.c:48:1: error: unknown type name 'uint16'
+uint16 make16(uint8 l, uint8 r) {
+^
+./motor1.c:48:15: error: unknown type name 'uint8'; did you mean 'uint'?
+uint16 make16(uint8 l, uint8 r) {
+              ^~~~~
+              uint
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/types.h:92:33: note: 'uint' declared here
+typedef unsigned int            uint;           /* Sys V compatibility */
+                                ^
+In file included from example91.cpp:47:
+./motor1.c:48:24: error: unknown type name 'uint8'; did you mean 'uint'?
+uint16 make16(uint8 l, uint8 r) {
+                       ^~~~~
+                       uint
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/types.h:92:33: note: 'uint' declared here
+typedef unsigned int            uint;           /* Sys V compatibility */
+                                ^
+In file included from example91.cpp:47:
+./motor1.c:49:13: error: use of undeclared identifier 'uint16'
+    return (uint16) l &amp;lt;&amp;lt; 8 + r;
+            ^
+./motor1.c:49:28: warning: operator '&amp;lt;&amp;lt;' has lower precedence than '+'; '+' will be evaluated first [-Wshift-op-parentheses]
+    return (uint16) l &amp;lt;&amp;lt; 8 + r;
+                      ~~ ~~^~~
+./motor1.c:49:28: note: place parentheses around the '+' expression to silence this warning
+    return (uint16) l &amp;lt;&amp;lt; 8 + r;
+                           ^
+                         (    )
+./motor1.c:49:23: warning: expression result unused [-Wunused-value]
+    return (uint16) l &amp;lt;&amp;lt; 8 + r;
+                    ~ ^  ~~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+2 warnings and 20 errors generated.
+
+    &quot;clang++&quot; -x c++ -fvisibility-inlines-hidden -std=c++14 -Wall -Wc++0x-narrowing -fPIC -m64 -O0 -fno-inline -Wall -g -fvisibility=hidden  -DBOOST_ALL_NO_LIB=1 -I&quot;../../..&quot; -c -o &quot;../../../bin.v2/libs/safe_numerics/example/example91.test/clang-darwin-14/debug/threading-multi/visibility-hidden/example91.o&quot; &quot;example91.cpp&quot;
+
+</pre>
+<h2><a name="bin.v2/libs/safe_numerics/example/example81.test/clang-darwin-14/debug/threading-multi/visibility-hidden">bin.v2/libs/safe_numerics/example/example81.test/clang-darwin-14/debug/threading-multi/visibility-hidden</a></h2>
+<h3>Compiler output:</h3><pre>
+In file included from example81.cpp:9:
+In file included from ../../../boost/safe_numerics/safe_integer.hpp:15:
+In file included from ../../../boost/safe_numerics/safe_base.hpp:17:
+../../../boost/safe_numerics/exception_policies.hpp:28:9: error: type 'boost::safe_numerics::trap_exception' does not provide a call operator
+        AE()(e, msg);
+        ^~~~
+../../../boost/safe_numerics/exception_policies.hpp:138:17: note: in instantiation of member function 'boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;::on_arithmetic_error' requested here
+            EP::on_arithmetic_error(e, msg);
+                ^
+../../../boost/safe_numerics/exception_policies.hpp:160:44: note: in instantiation of member function 'boost::safe_numerics::dispatch_switch::dispatch_case&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, boost::safe_numerics::safe_numerics_actions::arithmetic_error&amp;gt;::invoke' requested here
+    dispatch_switch::dispatch_case&amp;lt;EP, a&amp;gt;::invoke(E, msg);
+                                           ^
+../../../boost/safe_numerics/exception_policies.hpp:170:9: note: in instantiation of function template specialization 'boost::safe_numerics::dispatch&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, boost::safe_numerics::safe_numerics_error::positive_overflow_error&amp;gt;' requested here
+        dispatch&amp;lt;EP, E&amp;gt;(msg);
+        ^
+../../../boost/safe_numerics/checked_integer.hpp:68:29: note: in instantiation of function template specialization 'boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;::invoke&amp;lt;boost::safe_numerics::safe_numerics_error::positive_overflow_error&amp;gt;' requested here
+                F::template invoke&amp;lt;safe_numerics_error::positive_overflow_error&amp;gt;(
+                            ^
+../../../boost/safe_numerics/checked_integer.hpp:148:31: note: in instantiation of member function 'boost::safe_numerics::heterogeneous_checked_operation&amp;lt;int, -2147483648, 2147483647, int, boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;, void&amp;gt;::cast_impl_detail::cast_impl' requested here
+            cast_impl_detail::cast_impl(
+                              ^
+../../../boost/safe_numerics/safe_base_operations.hpp:269:8: note: in instantiation of member function 'boost::safe_numerics::heterogeneous_checked_operation&amp;lt;int, -2147483648, 2147483647, int, boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;, void&amp;gt;::cast' requested here
+    &amp;gt;::cast(base_value(t));
+       ^
+../../../boost/safe_numerics/safe_base_operations.hpp:315:65: note: in instantiation of function template specialization 'boost::safe_numerics::casting_helper&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int, boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;, boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt; &amp;gt;' requested here
+        const std::pair&amp;lt;result_base_type, result_base_type&amp;gt; r = casting_helper&amp;lt;
+                                                                ^
+../../../boost/safe_numerics/safe_base_operations.hpp:380:13: note: in instantiation of member function 'boost::safe_numerics::addition_result&amp;lt;boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;, boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt; &amp;gt;::return_value' requested here
+            return_value(
+            ^
+../../../boost/safe_numerics/safe_base_operations.hpp:396:35: note: in instantiation of member function 'boost::safe_numerics::addition_result&amp;lt;boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;, boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt; &amp;gt;::return_value' requested here
+    return addition_result&amp;lt;T, U&amp;gt;::return_value(t, u);
+                                  ^
+example81.cpp:22:18: note: in instantiation of function template specialization 'boost::safe_numerics::operator+&amp;lt;boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;, boost::safe_numerics::safe_base&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt; &amp;gt;' requested here
+    safe_t z = x + y; // will fail to compile !
+                 ^
+1 error generated.
+(failed-as-expected) ../../../bin.v2/libs/safe_numerics/example/example81.test/clang-darwin-14/debug/threading-multi/visibility-hidden/example81.o
+</pre>
+<h2><a name="bin.v2/libs/safe_numerics/example/example14.test/clang-darwin-14/debug/threading-multi/visibility-hidden">bin.v2/libs/safe_numerics/example/example14.test/clang-darwin-14/debug/threading-multi/visibility-hidden</a></h2>
+<h3>Compiler output:</h3><pre>
+example14.cpp:23:24: warning: division by zero is undefined [-Wdivision-by-zero]
+        std::cout &amp;lt;&amp;lt; x / y; // will display &quot;0&quot;!
+                       ^ ~
+1 warning generated.
+</pre>
+<h2><a name="bin.v2/libs/safe_numerics/example/example17.test/clang-darwin-14/debug/threading-multi/visibility-hidden">bin.v2/libs/safe_numerics/example/example17.test/clang-darwin-14/debug/threading-multi/visibility-hidden</a></h2>
+<h3>Compiler output:</h3><pre>
+In file included from example17.cpp:7:
+In file included from ../../../boost/safe_numerics/safe_integer.hpp:15:
+In file included from ../../../boost/safe_numerics/safe_base.hpp:17:
+../../../boost/safe_numerics/exception_policies.hpp:28:9: error: type 'boost::safe_numerics::trap_exception' does not provide a call operator
+        AE()(e, msg);
+        ^~~~
+../../../boost/safe_numerics/exception_policies.hpp:138:17: note: in instantiation of member function 'boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;::on_arithmetic_error' requested here
+            EP::on_arithmetic_error(e, msg);
+                ^
+../../../boost/safe_numerics/exception_policies.hpp:160:44: note: in instantiation of member function 'boost::safe_numerics::dispatch_switch::dispatch_case&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, boost::safe_numerics::safe_numerics_actions::arithmetic_error&amp;gt;::invoke' requested here
+    dispatch_switch::dispatch_case&amp;lt;EP, a&amp;gt;::invoke(E, msg);
+                                           ^
+../../../boost/safe_numerics/exception_policies.hpp:170:9: note: in instantiation of function template specialization 'boost::safe_numerics::dispatch&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, boost::safe_numerics::safe_numerics_error::positive_overflow_error&amp;gt;' requested here
+        dispatch&amp;lt;EP, E&amp;gt;(msg);
+        ^
+../../../boost/safe_numerics/checked_integer.hpp:68:29: note: in instantiation of function template specialization 'boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;::invoke&amp;lt;boost::safe_numerics::safe_numerics_error::positive_overflow_error&amp;gt;' requested here
+                F::template invoke&amp;lt;safe_numerics_error::positive_overflow_error&amp;gt;(
+                            ^
+../../../boost/safe_numerics/checked_integer.hpp:148:31: note: in instantiation of member function 'boost::safe_numerics::heterogeneous_checked_operation&amp;lt;int, -2147483648, 2147483647, long, boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;, void&amp;gt;::cast_impl_detail::cast_impl' requested here
+            cast_impl_detail::cast_impl(
+                              ^
+../../../boost/safe_numerics/safe_base_operations.hpp:51:16: note: in instantiation of member function 'boost::safe_numerics::heterogeneous_checked_operation&amp;lt;int, -2147483648, 2147483647, long, boost::safe_numerics::dispatch_and_return&amp;lt;boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt;, int&amp;gt;, void&amp;gt;::cast' requested here
+            &amp;gt;::cast(t);
+               ^
+../../../boost/safe_numerics/safe_base_operations.hpp:81:18: note: in instantiation of function template specialization 'boost::safe_numerics::validate_detail&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;::exception_possible::return_value&amp;lt;long&amp;gt;' requested here
+        &amp;gt;::type::return_value(t);
+                 ^
+../../../boost/safe_numerics/safe_base_operations.hpp:169:8: note: in instantiation of function template specialization 'boost::safe_numerics::validate_detail&amp;lt;int, -2147483648, 2147483647, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;::return_value&amp;lt;long&amp;gt;' requested here
+    &amp;gt;::return_value(m_t);
+       ^
+example17.cpp:20:7: note: in instantiation of function template specialization 'boost::safe_numerics::safe_base&amp;lt;long, -9223372036854775808, 9223372036854775807, boost::safe_numerics::native, boost::safe_numerics::exception_policy&amp;lt;boost::safe_numerics::trap_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception, boost::safe_numerics::ignore_exception&amp;gt; &amp;gt;::operator int&amp;lt;int, 0&amp;gt;' requested here
+    f(y);   // could overflow so trap at compile time
+      ^
+1 error generated.
+(failed-as-expected) ../../../bin.v2/libs/safe_numerics/example/example17.test/clang-darwin-14/debug/threading-multi/visibility-hidden/example17.o
+</pre>
+</body>
+</html>

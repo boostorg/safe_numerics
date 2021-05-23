@@ -900,6 +900,7 @@ int main(){
 
 #endif
 
+#if 0
 #include <cstdint>
 #include <iostream>
 #include <utility> // declval
@@ -942,4 +943,10 @@ int main() {
     }
     return 0;
 }
+#endif
 
+// #include <boost/safe_numerics/safe_integer.hpp>
+
+// boost::safe_numerics::safe<boost::safe_numerics::safe<int>> y;
+
+int main() {}

@@ -107,6 +107,12 @@ class safe_literal_impl;
 /////////////////////////////////////////////////////////////////
 // Main implementation
 
+// note in the current version of the library, it is a requirement than type
+// type "Stored" be a scalar type.  Problem is when violates this rule, the error message (on clang)
+// is "A non-type template parameter cannot have type ... " where ... is some non-scalar type
+// The example which triggered this investigation is safe<safe<int>> .  It was difficult to make
+// the trip from the error message to the source of the problem, hence we're including this
+// comment here.
 template<
     class Stored,
     Stored Min,
@@ -119,17 +125,6 @@ private:
     BOOST_CONCEPT_ASSERT((PromotionPolicy<P>));
     BOOST_CONCEPT_ASSERT((ExceptionPolicy<E>));
     Stored m_t;
-
-    template<
-        class StoredX,
-        StoredX MinX,
-        StoredX MaxX,
-        class PX, // promotion polic
-        class EX  // exception policy
-    >
-    friend class safe_base;
-
-    friend class std::numeric_limits<safe_base>;
 
     template<class T>
     constexpr Stored validated_cast(const T & t) const;

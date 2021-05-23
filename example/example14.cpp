@@ -11,7 +11,7 @@
 
 int main(int, const char *[]){
     // problem: cannot recover from arithmetic errors
-    std::cout << "example 8: ";
+    std::cout << "example 14: ";
     std::cout << "cannot detect compile time arithmetic errors" << std::endl;
     std::cout << "Not using safe numerics" << std::endl;
 
