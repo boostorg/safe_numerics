@@ -43,7 +43,6 @@ struct print_value {
     };
 };
 
-#if 0
 // static warning - same as static_assert but doesn't
 // stop compilation. 
 template <typename T>
@@ -55,11 +54,7 @@ struct static_test<std::false_type>{
 };
 
 template<typename T>
-constexpr void inline static_warning(const T){
-   //using x = static_test<T>;
-   const static_test<T> x;
-}
-#endif
+using static_warning = static_test<T>;
 
 /*
 // can be called by constexpr to produce a compile time

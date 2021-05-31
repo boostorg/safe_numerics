@@ -877,6 +877,8 @@ int main(){
 
 #endif
 
+#if 0
+
 #include <iostream>
 #include <sstream>
 #include <boost/safe_numerics/safe_integer.hpp>
@@ -894,3 +896,57 @@ int main(){
     }
     return 0;
 }
+
+
+#endif
+
+#if 0
+#include <cstdint>
+#include <iostream>
+#include <utility> // declval
+#include <boost/safe_numerics/cpp.hpp>
+#include <boost/safe_numerics/exception.hpp>
+#include <boost/safe_numerics/exception_policies.hpp>
+#include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
+
+// generate runtime errors if operation could fail
+using exception_policy = boost::safe_numerics::default_exception_policy;
+
+using pic16_promotion = boost::safe_numerics::cpp<
+    8,  // char      8 bits
+    16, // short     16 bits
+    16, // int       16 bits
+    16, // long      16 bits
+    32  // long long 32 bits
+>;
+
+// generate compile time errors if operation could fail
+using trap_policy = boost::safe_numerics::loose_exception_policy;
+#define literal(n) (make_safe_literal(n, pic16_promotion, void))
+
+using phase_ix_t = boost::safe_numerics::safe_signed_range<
+    0,
+    3,
+    pic16_promotion,
+    trap_policy
+>;
+phase_ix_t phase = 3;
+
+int main() {
+    try{
+        std::uint8_t CCP2CON = phase << make_safe_literal(8, pic16_promotion, void);
+        //std::uint8_t CCP2CON = phase >> make_safe_literal(8, pic16_promotion, void);
+    }
+    catch(...){
+        std::cout << "program exception\n";
+    }
+    return 0;
+}
+#endif
+
+// #include <boost/safe_numerics/safe_integer.hpp>
+
+// boost::safe_numerics::safe<boost::safe_numerics::safe<int>> y;
+
+int main() {}

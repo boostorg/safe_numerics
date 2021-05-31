@@ -62,43 +62,6 @@ struct range {
   </section>
 
   <section>
-    <title>Concepts are Defined but Not Enforced.</title>
-
-    <para>The following is paraphrased from an issue raised by Andrzej
-    Krzemieński as a <ulink
-    url="https://github.com/robertramey/safe_numerics/issues/46">github
-    issue</ulink>.</para>
-
-    <para><quote>You do not need a concept to constrain anything with it, in
-    your library. Or is the purpose of the Type requirements to show in detail
-    what it means that safe&lt;T&gt; is a 'drop-in replacement for
-    T?</quote></para>
-
-    <para>Right - currently I don't use the concept to constrain anything.
-    They are currently a purely "conceptual" tool to keep the design from
-    getting off track. This is common with other libraries such as the C++
-    standard library where the concepts are defined but not enforced by
-    compile time predicates. Hopefully in future that might change - see
-    below</para>
-
-    <para><quote>If you want to extend safe&lt;T&gt; for other integer types,
-    Type requirement still need to be fixed:</quote></para>
-
-    <para>Hmmmm - I'm not quite sure that this is true. One thing that IS true
-    is the the interface and implementation of the library will need to be
-    enhanced to permit "safe" to be applied to user defined types. This is
-    apparent now, but as my brain can only comprehend the library one piece at
-    a time, this design feature was lost during the implementation. In
-    implementing co-existence of floats with safe integers, I did refactor the
-    implementation in a way which I believe my eventually permit the
-    application to any user supplied T which implements all the required
-    operations of Numeric types. So as it is now this is pending. If the
-    library were to become widely used, there might be motivation to do this.
-    Time will tell. So for now I'm leaving these in the documentation and
-    code, even though they are not actually used.</para>
-  </section>
-
-  <section>
     <title>Other Pending Issues</title>
 
     <para><itemizedlist>

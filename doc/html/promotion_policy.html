@@ -6,7 +6,7 @@
 <meta name="generator" content="DocBook XSL Stylesheets V1.79.1">
 <link rel="home" href="index.html" title="Safe Numerics">
 <link rel="up" href="concepts.html" title="Type Requirements">
-<link rel="prev" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">
+<link rel="prev" href="integer_concept.html" title="Integer&lt;T&gt;">
 <link rel="next" href="exception_policy.html" title="ExceptionPolicy&lt;EP&gt;">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
@@ -15,21 +15,21 @@
 <td><h2>Safe Numerics</h2></td>
 </tr></table>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_numeric_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="integer_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
 <a name="safe_numerics.promotion_policy"></a>PromotionPolicy&lt;PP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="promotion_policy.html#idm488720444512">Description</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm488720433728">Notation</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm488720424512">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm488720399600">Models</a></span></dt>
-<dt><span class="section"><a href="promotion_policy.html#idm488720304592">Header</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm462685120784">Description</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm462685110000">Notation</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm462685100784">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm462685075872">Models</a></span></dt>
+<dt><span class="section"><a href="promotion_policy.html#idm462684980816">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488720444512"></a>Description</h4></div></div></div>
+<a name="idm462685120784"></a>Description</h4></div></div></div>
 <p>In C++ expressions, arguments must be of the same type. If they are
     not, all arguments are converted to a common type in accordance with rules
     of the C++ standard. For some applications of the safe numerics library,
@@ -46,7 +46,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488720433728"></a>Notation</h4></div></div></div>
+<a name="idm462685110000"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -72,7 +72,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488720424512"></a>Valid Expressions</h4></div></div></div>
+<a name="idm462685100784"></a>Valid Expressions</h4></div></div></div>
 <p>Any operations which result in integers which cannot be represented
     as some Numeric type will throw an exception.These expressions return a
     type which can be used as the basis create a SafeNumeric type.</p>
@@ -145,7 +145,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488720399600"></a>Models</h4></div></div></div>
+<a name="idm462685075872"></a>Models</h4></div></div></div>
 <p>The library contains a number of pre-made promotion policies:</p>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem">
@@ -157,7 +157,7 @@
 <span class="keyword">auto</span> <span class="identifier">z</span> <span class="special">=</span> <span class="identifier">x</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// could result in overflow</span>
 <span class="identifier">safe</span><span class="special">&lt;</span><span class="keyword">int</span><span class="special">,</span> <span class="identifier">native</span><span class="special">&gt;</span> <span class="identifier">sx</span><span class="special">;</span>
 <span class="keyword">auto</span> <span class="identifier">sz</span> <span class="special">=</span> <span class="identifier">sx</span> <span class="special">+</span> <span class="identifier">y</span><span class="special">;</span> <span class="comment">// standard C++ code which detects errors</span></pre>
-<p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
+<p>Type sz will be a <a class="link" href="">SafeNumeric</a> type
         based on <code class="computeroutput">int</code>. If the result exceeds the maximum value
         that can be stored in an <code class="computeroutput">int</code>, an error is
         detected.</p>
@@ -184,7 +184,7 @@
 <span class="identifier">safe_unsigned_range</span><span class="special">&lt;</span><span class="number">2</span><span class="special">,</span> <span class="number">4</span><span class="special">&gt;</span> <span class="identifier">b</span><span class="special">;</span>
 <span class="keyword">auto</span> <span class="identifier">c</span> <span class="special">=</span> <span class="identifier">a</span> <span class="special">+</span> <span class="identifier">b</span><span class="special">;</span> <span class="comment">// c will be a safe type with a range [3,8] and cannot overflow</span>
 </pre>
-<p>Type sz will be a <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
+<p>Type sz will be a <a class="link" href="">SafeNumeric</a> type
         which is guaranteed to hold he result of x + y. In this case that will
         be a long int (or perhaps a long long) depending upon the compiler and
         machine architecture. In this case, there will be no need for any
@@ -225,7 +225,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488720304592"></a>Header</h4></div></div></div>
+<a name="idm462684980816"></a>Header</h4></div></div></div>
 <p><a href="../../include/boost/safe_numerics/concept/promotion_policy.hpp" target="_top"><code class="computeroutput">#include
     &lt;boost/safe_numerics/concepts/promotion_policy.hpp&gt;
     </code></a></p>
@@ -239,7 +239,7 @@
 </tr></table>
 <hr>
 <div class="spirit-nav">
-<a accesskey="p" href="safe_numeric_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
+<a accesskey="p" href="integer_concept.html"><img src="images/prev.png" alt="Prev"></a><a accesskey="u" href="concepts.html"><img src="images/up.png" alt="Up"></a><a accesskey="h" href="index.html"><img src="images/home.png" alt="Home"></a><a accesskey="n" href="exception_policy.html"><img src="images/next.png" alt="Next"></a>
 </div>
 </body>
 </html>

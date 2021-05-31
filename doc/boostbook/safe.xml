@@ -15,20 +15,6 @@
   </section>
 
   <section>
-    <title>Model of</title>
-
-    <para><link linkend="safe_numerics.integer">Integer</link></para>
-
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
-
-    <para>This type inherits all the notation, associated types and template
-    parameters and valid expressions of <link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> types. The
-    following specify additional features of this type.</para>
-  </section>
-
-  <section>
     <title>Notation</title>
 
     <informaltable>
@@ -51,6 +37,34 @@
 
             <entry>Underlying type from which a safe type is being
             derived</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </section>
+
+  <section>
+    <title>Associated Types</title>
+
+    <informaltable>
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*"/>
+
+        <colspec align="left" colwidth="8*"/>
+
+        <tbody>
+          <row>
+            <entry><code>PP</code></entry>
+
+            <entry>Promotion Policy. A type which specifies the result type of
+            an expression using safe types.</entry>
+          </row>
+
+          <row>
+            <entry><code>EP</code></entry>
+
+            <entry>Exception Policy. A type containing members which are
+            called when a correct result cannot be returned</entry>
           </row>
         </tbody>
       </tgroup>
@@ -83,10 +97,10 @@
             <entry><code>T</code></entry>
 
             <entry><link
-            linkend="safe_numerics.integer">Integer&lt;T&gt;</link></entry>
+            linkend="safe_numerics.integer_concept">std::is_integer&lt;T&gt;</link></entry>
 
-            <entry><para>The underlying type. Currently only integer types are
-            supported</para></entry>
+            <entry><para>The underlying type. Currently only built-in integer
+            types are supported</para></entry>
           </row>
 
           <row>
@@ -116,18 +130,24 @@
   </section>
 
   <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
+
+    <para><link linkend="safe_numerics.numeric_concept">Integer</link></para>
+  </section>
+
+  <section>
     <title>Valid Expressions</title>
 
-    <para>Implements all expressions and only those expressions defined by the
-    <link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link>&lt;T&gt;
-    type requirements. Note that all these expressions are
-    <code>constexpr</code>. Thus, the result type of such an expression will
-    be another safe type. The actual type of the result of such an expression
+    <para>Implements all expressions and only those expressions supported by
+    the base type T. Note that all these expressions are
+    <code>constexpr</code>. The result type of such an expression will be
+    another safe type. The actual type of the result of such an expression
     will depend upon the specific promotion policy template parameter.</para>
 
     <para>When a binary operand is applied to two instances of safe&lt;T, PP,
-    EP&gt;on of the following must be true:<itemizedlist>
+    EP&gt;one of the following must be true:<itemizedlist>
         <listitem>
           <para>The promotion policies of the two operands must be the same or
           one of them must be void</para>
@@ -175,7 +195,7 @@
 #include &lt;safe_integer.hpp&gt;
 
 void f(){
-    using namespace boost::numeric;
+    using namespace boost::safe_numerics;
     safe&lt;int&gt; j;
     try {
         safe&lt;int&gt; i;

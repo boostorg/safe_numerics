@@ -18,20 +18,6 @@
   </section>
 
   <section>
-    <title>Model of</title>
-
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
-
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
-
-    <para>This type inherits all the notation, associated types and template
-    parameters and valid expressions of <link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> types. The
-    following specify additional features of this type.</para>
-  </section>
-
-  <section>
     <title>Associated Types</title>
 
     <informaltable>
@@ -85,7 +71,7 @@
             <entry><code>Value</code></entry>
 
             <entry><code><link
-            linkend="safe_numerics.numeric">Integer</link></code></entry>
+            linkend="safe_numerics.integer_concept">Integer</link></code></entry>
 
             <entry>value used to initialize the literal</entry>
           </row>
@@ -116,20 +102,27 @@
   </section>
 
   <section>
+    <title>Model of</title>
+
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
+
+    <para><link linkend="safe_numerics.integer_concept">Integer</link></para>
+  </section>
+
+  <section>
     <title>Inherited Valid Expressions</title>
 
     <para>safe literal types are immutable. Hence they only inherit those
     valid expressions which don't change the value. <emphasis>This excludes
     assignment, increment, and decrement and all unary operators except unary
-    -, + and ~</emphasis>. Other than that, they can be used anywhere a <link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type can
-    be used. Note that the default promotion and exception policies are void.
-    This is usually convenient since when a safe literal is used in a binary
-    operation, this will inherit the policies of the other type. On the other
-    hand, this can be inconvenient when operands of a binary expression are
-    both safe literals. This will fail to compile since there are no
-    designated promotion and exception policies. The way to address this to
-    assign specific policies as in this example.</para>
+    -, + and ~</emphasis>. Other than that, they can be used anywhere a Value
+    type can be used. Note that the default promotion and exception policies
+    are void. This is usually convenient since when a safe literal is used in
+    a binary operation, this will inherit the policies of the other type. On
+    the other hand, this can be inconvenient when operands of a binary
+    expression are both safe literals. This will fail to compile since there
+    are no designated promotion and exception policies. The way to address
+    this to assign specific policies as in this example.</para>
 
     <para><programlisting>template&lt;typename T&gt;
 using compile_time_value = safe_signed_literal&lt;T&gt;;

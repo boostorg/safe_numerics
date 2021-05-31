@@ -21,15 +21,14 @@
 <div class="titlepage"><div><div><h2 class="title" style="clear: both">
 <a name="safe_numerics.pending_issues"></a>Pending Issues</h2></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="pending_issues.html#idm488718234528"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm488718194080">Concepts are Defined but Not Enforced.</a></span></dt>
-<dt><span class="section"><a href="pending_issues.html#idm488718189120">Other Pending Issues</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm462682896128"><code class="computeroutput">safe_base</code> Only Works for Scalar Types</a></span></dt>
+<dt><span class="section"><a href="pending_issues.html#idm462682856528">Other Pending Issues</a></span></dt>
 </dl></div>
 <p>The library is under development. There are a number of issues still
   pending.</p>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm488718234528"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
+<a name="idm462682896128"></a><code class="computeroutput">safe_base</code> Only Works for Scalar Types</h3></div></div></div>
 <p>The following is paraphrased from an issue raised by Andrzej
     Krzemieński as a <a href="https://github.com/robertramey/safe_numerics/issues/44" target="_top">github
     issue</a>. It touches upon fundamental ideas behind the library and
@@ -75,38 +74,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="idm488718194080"></a>Concepts are Defined but Not Enforced.</h3></div></div></div>
-<p>The following is paraphrased from an issue raised by Andrzej
-    Krzemieński as a <a href="https://github.com/robertramey/safe_numerics/issues/46" target="_top">github
-    issue</a>.</p>
-<p><span class="quote">“<span class="quote">You do not need a concept to constrain anything with it, in
-    your library. Or is the purpose of the Type requirements to show in detail
-    what it means that safe&lt;T&gt; is a 'drop-in replacement for
-    T?</span>”</span></p>
-<p>Right - currently I don't use the concept to constrain anything.
-    They are currently a purely "conceptual" tool to keep the design from
-    getting off track. This is common with other libraries such as the C++
-    standard library where the concepts are defined but not enforced by
-    compile time predicates. Hopefully in future that might change - see
-    below</p>
-<p><span class="quote">“<span class="quote">If you want to extend safe&lt;T&gt; for other integer types,
-    Type requirement still need to be fixed:</span>”</span></p>
-<p>Hmmmm - I'm not quite sure that this is true. One thing that IS true
-    is the the interface and implementation of the library will need to be
-    enhanced to permit "safe" to be applied to user defined types. This is
-    apparent now, but as my brain can only comprehend the library one piece at
-    a time, this design feature was lost during the implementation. In
-    implementing co-existence of floats with safe integers, I did refactor the
-    implementation in a way which I believe my eventually permit the
-    application to any user supplied T which implements all the required
-    operations of Numeric types. So as it is now this is pending. If the
-    library were to become widely used, there might be motivation to do this.
-    Time will tell. So for now I'm leaving these in the documentation and
-    code, even though they are not actually used.</p>
-</div>
-<div class="section">
-<div class="titlepage"><div><div><h3 class="title">
-<a name="idm488718189120"></a>Other Pending Issues</h3></div></div></div>
+<a name="idm462682856528"></a>Other Pending Issues</h3></div></div></div>
 <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
 <li class="listitem"><p>The library is currently limited to integers. If there is
           interest, it could be extended to floats and possible to user

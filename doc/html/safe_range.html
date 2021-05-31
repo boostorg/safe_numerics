@@ -22,18 +22,18 @@
 <a name="safe_numerics.safe_range"></a>safe_signed_range&lt;MIN, MAX, PP, EP&gt; and
   safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</h3></div></div></div>
 <div class="toc"><dl class="toc">
-<dt><span class="section"><a href="safe_range.html#idm488719907856">Description</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719904976">Notation</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719897616">Associated Types</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719890528">Template Parameters</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719869264">Model of</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719866608">Valid Expressions</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719864320">Example of use</a></span></dt>
-<dt><span class="section"><a href="safe_range.html#idm488719697936">Header</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684558896">Description</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684556016">Notation</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684548656">Associated Types</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684541568">Template Parameters</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684517440">Model of</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684514832">Valid Expressions</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684508320">Example of use</a></span></dt>
+<dt><span class="section"><a href="safe_range.html#idm462684358368">Header</a></span></dt>
 </dl></div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719907856"></a>Description</h4></div></div></div>
+<a name="idm462684558896"></a>Description</h4></div></div></div>
 <p>This type holds a signed or unsigned integer in the closed range
     [MIN, MAX]. A <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
     <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> can be used
@@ -43,7 +43,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719904976"></a>Notation</h4></div></div></div>
+<a name="idm462684556016"></a>Notation</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -62,7 +62,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719897616"></a>Associated Types</h4></div></div></div>
+<a name="idm462684548656"></a>Associated Types</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -84,7 +84,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719890528"></a>Template Parameters</h4></div></div></div>
+<a name="idm462684541568"></a>Template Parameters</h4></div></div></div>
 <div class="informaltable"><table class="table">
 <colgroup>
 <col align="left">
@@ -97,6 +97,12 @@
 <th align="left">Description</th>
 </tr></thead>
 <tbody>
+<tr>
+<td align="left"><code class="computeroutput">T</code></td>
+<td align="left"><a class="link" href="integer_concept.html" title="Integer&lt;T&gt;">std::is_integer&lt;T&gt;</a></td>
+<td align="left"><p>The underlying type. Currently only built-in integer
+            types are supported</p></td>
+</tr>
 <tr>
 <td align="left"><code class="computeroutput">MIN</code></td>
 <td align="left">must be a non-negative literal</td>
@@ -116,12 +122,12 @@
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">PP</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">PromotionPolicy&lt;PP&gt;</a></td>
+<td align="left"><a class="link" href="">PromotionPolicy&lt;PP&gt;</a></td>
 <td align="left"><p>Default value is <a class="link" href="promotion_policies/native.html" title="native"><code class="computeroutput">boost::numeric::native</code></a></p></td>
 </tr>
 <tr>
 <td align="left"><code class="computeroutput">EP</code></td>
-<td align="left"><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Exception
+<td align="left"><a class="link" href="">Exception
             Policy&lt;EP&gt;</a></td>
 <td align="left"><p>Default value is <a class="link" href="exception_policies.html#safe_numerics.exception_policies.default_exception_policy"><code class="computeroutput">boost::numeric::default_exception_policy</code></a></p></td>
 </tr>
@@ -130,22 +136,34 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719869264"></a>Model of</h4></div></div></div>
-<p><a class="link" href="numeric.html" title="Numeric&lt;T&gt;">Integer</a></p>
-<p><a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a></p>
+<a name="idm462684517440"></a>Model of</h4></div></div></div>
+<p><a class="link" href="numeric_concept.html" title="Numeric&lt;T&gt;">Numeric</a></p>
+<p><a class="link" href="integer_concept.html" title="Integer&lt;T&gt;">Integer</a></p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719866608"></a>Valid Expressions</h4></div></div></div>
-<p>Implements all expressions and only those expressions defined by the
-    <a class="link" href="safe_numeric_concept.html" title="SafeNumeric&lt;T&gt;">SafeNumeric</a> type
-    requirements. Thus, the result type of such an expression will be another
-    safe type. The actual type of the result of such an expression will depend
-    upon the specific promotion policy template parameter.</p>
+<a name="idm462684514832"></a>Valid Expressions</h4></div></div></div>
+<p>Implements all expressions and only those expressions supported by
+    the base type T. Note that all these expressions are
+    <code class="computeroutput">constexpr</code>. The result type of such an expression will be
+    another safe type. The actual type of the result of such an expression
+    will depend upon the specific promotion policy template parameter.</p>
+<p>When a binary operand is applied to two instances of A
+    <code class="computeroutput">safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
+    <code class="computeroutput">safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> one of the
+    following must be true:</p>
+<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
+<li class="listitem"><p>The promotion policies of the two operands must be the same or
+          one of them must be void</p></li>
+<li class="listitem"><p>The exception policies of the two operands must be the same or
+          one of them must be void</p></li>
+</ul></div>
+<p>If either of the above is not true, a compile error will
+    result.</p>
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719864320"></a>Example of use</h4></div></div></div>
+<a name="idm462684508320"></a>Example of use</h4></div></div></div>
 <pre class="programlisting"><span class="comment">//  Copyright (c) 2018 Robert Ramey</span>
 <span class="comment">//</span>
 <span class="comment">// Distributed under the Boost Software License, Version 1.0. (See</span>
@@ -214,7 +232,7 @@
 </div>
 <div class="section">
 <div class="titlepage"><div><div><h4 class="title">
-<a name="idm488719697936"></a>Header</h4></div></div></div>
+<a name="idm462684358368"></a>Header</h4></div></div></div>
 <p><code class="filename"><a href="../../include/boost/safe_numerics/safe_integer_range.hpp" target="_top">#include
     &lt;boost/numeric/safe_numerics/safe_range.hpp&gt;</a></code></p>
 </div>

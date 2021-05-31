@@ -98,6 +98,16 @@
 
         <tbody>
           <row>
+            <entry><code>T</code></entry>
+
+            <entry><link
+            linkend="safe_numerics.integer_concept">std::is_integer&lt;T&gt;</link></entry>
+
+            <entry><para>The underlying type. Currently only built-in integer
+            types are supported</para></entry>
+          </row>
+
+          <row>
             <entry><code>MIN</code></entry>
 
             <entry>must be a non-negative literal</entry>
@@ -151,20 +161,35 @@
   <section>
     <title>Model of</title>
 
-    <para><link linkend="safe_numerics.numeric">Integer</link></para>
+    <para><link linkend="safe_numerics.numeric_concept">Numeric</link></para>
 
-    <para><link
-    linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link></para>
+    <para><link linkend="safe_numerics.integer_concept">Integer</link></para>
   </section>
 
   <section>
     <title>Valid Expressions</title>
 
-    <para>Implements all expressions and only those expressions defined by the
-    <link linkend="safe_numerics.safe_numeric_concept">SafeNumeric</link> type
-    requirements. Thus, the result type of such an expression will be another
-    safe type. The actual type of the result of such an expression will depend
-    upon the specific promotion policy template parameter.</para>
+    <para>Implements all expressions and only those expressions supported by
+    the base type T. Note that all these expressions are
+    <code>constexpr</code>. The result type of such an expression will be
+    another safe type. The actual type of the result of such an expression
+    will depend upon the specific promotion policy template parameter.</para>
+
+    <para>When a binary operand is applied to two instances of A
+    <code>safe_signed_range&lt;MIN, MAX, PP, EP&gt;</code> or
+    <code>safe_unsigned_range&lt;MIN, MAX, PP, EP&gt;</code> one of the
+    following must be true:<itemizedlist>
+        <listitem>
+          <para>The promotion policies of the two operands must be the same or
+          one of them must be void</para>
+        </listitem>
+
+        <listitem>
+          <para>The exception policies of the two operands must be the same or
+          one of them must be void</para>
+        </listitem>
+      </itemizedlist>If either of the above is not true, a compile error will
+    result.</para>
   </section>
 
   <section>

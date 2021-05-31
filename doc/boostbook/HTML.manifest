@@ -20,9 +20,8 @@
 ../html/safety_critical_embedded_controller.html
 ../html/notes.html
 ../html/concepts.html
-../html/numeric.html
-../html/integer.html
-../html/safe_numeric_concept.html
+../html/numeric_concept.html
+../html/integer_concept.html
 ../html/promotion_policy.html
 ../html/exception_policy.html
 ../html/types.html

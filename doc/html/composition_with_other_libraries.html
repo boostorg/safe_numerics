@@ -108,7 +108,7 @@ c * d = multiplication overflow: positive overflow error
 </pre>
 <p>The <a href="http://www.boost.org/doc/libs/1_64_0/libs/rational/" target="_top">rational library
   documentation</a> is quite specific as to the <a href="http://www.boost.org/doc/libs/1_64_0/libs/rational/rational.html#Integer%20Type%20Requirements" target="_top">type
-  requirements</a> placed on the underlying type. Turns out the our <a class="link" href="integer.html" title="Integer&lt;T&gt;">own definition of an integer type</a>
+  requirements</a> placed on the underlying type. Turns out the our <a class="link" href="">own definition of an integer type</a>
   fulfills (actually surpasses) these requirements. So we have reason to hope
   that we can use <code class="computeroutput">safe&lt;int&gt;</code> as the underlying type to
   create what we might call a "<code class="computeroutput">safe_rational</code>". This we have done

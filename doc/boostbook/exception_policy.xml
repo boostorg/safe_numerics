@@ -229,7 +229,7 @@ struct log_runtime_exception {
           <tbody>
             <row>
               <entry
-              id="safe_numerics.exception_policies.loose_exception_policy">loose_exception_policy</entry>
+              id="safe_numerics.exception_policies.loose_exception_policy"><code>loose_exception_policy</code></entry>
 
               <entry>Throws runtime exception on any arithmetic error.
               Undefined and implementation defined behavior is permitted as

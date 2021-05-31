@@ -106,5 +106,5 @@ int main(){
         return 1;
     }
     std::cout << "end test\n";
-    return 1;
+    return 0;
 } 
