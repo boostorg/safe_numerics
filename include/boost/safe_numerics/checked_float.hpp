@@ -61,7 +61,7 @@ struct heterogeneous_checked_operation<
     F,
     typename std::enable_if<
         std::is_floating_point<R>::value
-        && std::is_integralt<T>::value
+        && std::is_integral<T>::value
     >::type
 >{
     constexpr static checked_result<R>
