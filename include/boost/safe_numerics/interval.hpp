@@ -61,7 +61,7 @@ struct interval {
         return u >= t.u && l <= t.l;
     }
 
-    // return true if this interval contains the given point
+    // return true if this interval excludes the given point
     constexpr tribool excludes(const R & t) const {
         return t < l || t > u;
     }
