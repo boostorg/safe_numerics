@@ -39,7 +39,7 @@ jobs:
             os: ubuntu-18.04
           - toolset: clang
             cxxstd: "14,17,2a"
-            os: macos-10.15
+            os: macos-11
 
     runs-on: ${{matrix.os}}
 
