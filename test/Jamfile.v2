@@ -7,9 +7,11 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 
 import testing ;
-import ../../config/checks/config : requires ;
-project 
-    : requirements 
+import-search /boost/config/checks ;
+import config : requires ;
+project
+    : requirements
+        <library>/boost/safe_numerics//boost_safe_numerics
         [ requires cxx14_constexpr ]
         # toolset optimizations
         <c++-template-depth>256
@@ -65,7 +67,7 @@ run test_performance.cpp # sources
     :  <variant>debug:<build>no # requirements
     ;
 run test_range.cpp ;
-run test_rational.cpp ;
+run test_rational.cpp : : : <library>/boost/rational//boost_rational ;
 run test_right_shift_automatic.cpp ;
 run test_right_shift_native.cpp ;
 run test_safe_compare.cpp ;

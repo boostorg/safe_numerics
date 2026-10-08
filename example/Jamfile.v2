@@ -8,6 +8,8 @@
 
 import testing ;
 
+project : requirements <library>/boost/safe_numerics//boost_safe_numerics ;
+
 run example1.cpp ;
 run example2.cpp ;
 run example3.cpp ;
@@ -24,7 +26,7 @@ run example10.cpp ;
 run example11.cpp ;
 run example13.cpp ;
 run example14.cpp ;
-run example15.cpp ;
+run example15.cpp : : : <library>/boost/rational//boost_rational ;
 run example16.cpp ;
 compile-fail example17.cpp ;
 run example18.cpp ;

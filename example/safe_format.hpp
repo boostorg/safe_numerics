@@ -15,6 +15,7 @@
 
 #include <ostream>
 #include <typeinfo>
+#include <limits>
 
 #include <boost/core/demangle.hpp>
 #include <boost/safe_numerics/safe_common.hpp>

@@ -20,6 +20,7 @@
 // integer type is an "extended" integer.
 
 #include <cassert>
+#include <exception>  // std::terminate()
 
 #include <boost/logic/tribool.hpp>
 

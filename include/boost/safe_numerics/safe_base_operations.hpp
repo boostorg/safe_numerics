@@ -29,8 +29,9 @@
 #include "interval.hpp"
 #include "utility.hpp"
 
+#include <boost/mp11/integral.hpp> // mp_false
 #include <boost/mp11/utility.hpp> // mp_valid
-#include <boost/mp11/function.hpp> // mp_and, mp_or
+#include <boost/mp11/function.hpp> // mp_or
 
 namespace boost {
 namespace safe_numerics {
@@ -359,16 +360,17 @@ constexpr inline static std::pair<R, R> casting_helper(const T & t, const U & u)
 // Note: the following global operators will be found via
 // argument dependent lookup.
 namespace {
+
+// mp_valid must not be evaluated unless an operand is safe, otherwise
+// overload resolution recurses back into these operators. See issue 135.
+template<bool AnySafe, template<class...> class F, class T, class U>
+struct legal_overload_impl : ::boost::mp11::mp_false {};
+
+template<template<class...> class F, class T, class U>
+struct legal_overload_impl<true, F, T, U> : ::boost::mp11::mp_valid<F, typename base_type<T>::type, typename base_type<U>::type> {};
+
 template<template<class...> class F, class T, class U >
-using legal_overload =
-    boost::mp11::mp_and<
-        boost::mp11::mp_or< is_safe<T>, is_safe<U> >,
-        boost::mp11::mp_valid<
-            F,
-            typename base_type<T>::type,
-            typename base_type<U>::type
-        >
-    >;
+using legal_overload = legal_overload_impl< ::boost::mp11::mp_or<is_safe<T>, is_safe<U>>::value, F, T, U>;
 } // anon
 
 /////////////////////////////////////////////////////////////////

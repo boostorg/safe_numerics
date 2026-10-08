@@ -1,0 +1,28 @@
+# Copyright René Ferdinand Rivera Morell 2023-2024
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at
+# http://www.boost.org/LICENSE_1_0.txt)
+
+require-b2 5.2 ;
+
+constant boost_dependencies :
+    /boost/concept_check//boost_concept_check
+    /boost/config//boost_config
+    /boost/core//boost_core
+    /boost/integer//boost_integer
+    /boost/logic//boost_logic
+    /boost/mp11//boost_mp11 ;
+
+project /boost/safe_numerics
+    : common-requirements
+        <include>include
+    ;
+
+explicit
+    [ alias boost_safe_numerics : : : : <library>$(boost_dependencies) ]
+    [ alias all : boost_safe_numerics example test ]
+    ;
+
+call-if : boost-library safe_numerics
+    ;
+
