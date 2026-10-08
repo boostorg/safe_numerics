@@ -18,37 +18,29 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - toolset: gcc-6
-            cxxstd: "14,1z"
-            os: ubuntu-16.04
-            install: g++-6
-          - toolset: gcc-7
-            cxxstd: "14,17"
-            os: ubuntu-18.04
-          - toolset: gcc-8
-            cxxstd: "14,17,2a"
-            os: ubuntu-18.04
           - toolset: gcc-9
             cxxstd: "14,17,2a"
-            os: ubuntu-18.04
+            os: ubuntu-22.04
+            install: g++-9
           - toolset: gcc-10
             cxxstd: "14,17,2a"
-            os: ubuntu-18.04
+            os: ubuntu-22.04
+            install: g++-10
           - toolset: clang
             cxxstd: "14,17,2a"
-            os: ubuntu-18.04
+            os: ubuntu-22.04
           - toolset: clang
             cxxstd: "14,17,2a"
-            os: macos-11
+            os: macos-14
 
     runs-on: ${{matrix.os}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install packages
         if: matrix.install
-        run: sudo apt install ${{matrix.install}}
+        run: sudo apt-get update && sudo apt-get install -y ${{matrix.install}}
 
       - name: Setup Boost
         run: |
@@ -59,7 +51,7 @@ jobs:
           cd boost-root
           cp -r $GITHUB_WORKSPACE/* libs/$LIBRARY
           git submodule update --init tools/boostdep
-          python tools/boostdep/depinst/depinst.py --git_args "--jobs 3" $LIBRARY
+          python3 tools/boostdep/depinst/depinst.py --git_args "--jobs 3" $LIBRARY
           ./bootstrap.sh
           ./b2 -d0 headers
 
