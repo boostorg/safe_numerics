@@ -256,9 +256,13 @@ public:
         };
 
         constexpr static r_interval_type rx(){
+            // if the divisor can't be zero, the operation is done in the
+            // result type.  So it has to hold both operands and the quotient
+            // (a % b is undefined if a / b doesn't fit).  The remainder lies
+            // between zero and the dividend so it fits as well.
             if(u_interval.u < r_type(0)
             || u_interval.l > r_type(0))
-                return t_interval / u_interval;
+                return (t_interval / u_interval) | t_interval | u_interval;
             return utility::minmax(
                 std::initializer_list<r_type> {
                     t_interval.l % u_interval.l,

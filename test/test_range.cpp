@@ -4,6 +4,7 @@
 
 #include <boost/safe_numerics/utility.hpp>
 #include <boost/safe_numerics/safe_integer_range.hpp>
+#include <boost/safe_numerics/safe_integer_literal.hpp>
 
 template<typename T>
 void display_log(T Max){
@@ -78,6 +79,26 @@ bool test2(){
     return true;
 }
 
+// the result of % has to hold both operands - see issue 152
+bool test3(){
+    using namespace boost::safe_numerics;
+    std::cout << "test3" << std::endl;
+    const safe_unsigned_literal<7, automatic> seven;
+    const safe_unsigned_literal<1001, automatic> big;
+    for(unsigned int i = 0; i <= 1000; ++i){
+        const safe_unsigned_range<0, 1000, automatic> x = i;
+        const unsigned int z1 = x % seven;
+        const unsigned int z2 = x % big;
+        if(z1 != i % 7 || z2 != i){
+            std::cout
+                << i << " % 7 = " << z1 << ", "
+                << i << " % 1001 = " << z2 << std::endl;
+            return false;
+        }
+    }
+    return true;
+}
+
 int main(){
     //using namespace boost::safe_numerics;
     //safe_signed_literal2<100> one_hundred;
@@ -86,8 +107,8 @@ int main(){
     bool rval = 
         test_significant_bits() &&
         test1() &&
-        test2() /* &&
-        test3() &&
+        test2() &&
+        test3() /* &&
         test4()
         */
     ;
